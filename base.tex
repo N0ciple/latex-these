@@ -1,0 +1,124 @@
+\documentclass{report}
+
+%====================== PACKAGES ======================
+%\usepackage{extsize}
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+%pour gérer les positionnement d'images
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{url}
+%pour les informations sur un document compilé en PDF et les liens externes / internes
+\usepackage[hidelinks]{hyperref}
+%pour la mise en page des tableaux
+\usepackage{array}
+\usepackage{tabularx}
+%pour utiliser \floatbarrier
+%\usepackage{placeins}
+%\usepackage{floatrow}
+%espacement entre les lignes
+\usepackage{setspace}
+%modifier la mise en page de l'abstract
+\usepackage{abstract}
+%police et mise en page (marges) du document
+\usepackage[T1]{fontenc}
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+%Pour les galerie d'images
+\usepackage{subfig}
+
+%====================== PACKAGES PERSO ======================
+\usepackage{lmodern} % autre police d'écriture qui supporte le scaling
+\usepackage[noabbrev]{cleveref} % références croisées [noabbrev] pour éviter les abréviations
+\usepackage{acro} % acronymes (voir ici : https://tex.stackexchange.com/questions/492175/how-to-generate-list-of-abbreviations-in-latex)
+\usepackage{mathrsfs}  % pour les polices mathématiques ex: \mathscr{X}
+\usepackage{dsfont,amsfonts} % pour les polices mathématiques ex: \mathds{X}
+\usepackage{subfig} % pour les sous figures
+%====================== COMMANDES PERSO ======================
+\newcommand\myfunc[5]{%
+  \begingroup
+  \setlength\arraycolsep{0pt}
+  #1\colon\begin{array}[t]{c >{{}}c<{{}} c}
+             #2 & \to & #3 \\ #4 & \mapsto & #5 
+          \end{array}%
+  \endgroup}
+
+%====================== INFORMATION ET REGLES ======================
+
+%rajouter les numérotation pour les \paragraphe et \subparagraphe
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+% Réglage propres au document PDF
+
+% \hypersetup{							% Information sur le document
+% pdfauthor = {Premier Auteur,
+% 			Deuxième Auteur,
+% 			Troisième Auteur,
+%     		Quatrième Auteur},			% Auteurs
+% pdftitle = {Nom du Projet -
+% 			Sujet du Projet},			% Titre du document
+% pdfsubject = {Mémoire de Projet},		% Sujet
+% pdfkeywords = {Tag1, Tag2, Tag3, ...},	% Mots-clefs
+% pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
+% %pdfcreator = {MikTeX},% Logiciel qui a crée le document
+% %pdfproducer = {}} % Société avec produit le logiciel
+
+
+%====================== SECTION PERSO ====================== 
+\input{accronymes.tex}
+%======================== DEBUT DU DOCUMENT ========================
+
+\begin{document}
+\fontsize{14}{16}\selectfont
+
+
+%régler l'espacement entre les lignes
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+%page de garde
+%\input{./title.tex}
+
+%page blanche
+%\newpage
+~
+%ne pas numéroter cette page
+%\thispagestyle{empty}
+%\newpage
+
+%\input{./abstract.tex}
+
+\tableofcontents
+\thispagestyle{empty}
+\setcounter{page}{0}
+%ne pas numéroter le sommaire
+
+\newpage
+\printacronyms
+
+%espacement entre les lignes d'un tableau
+\renewcommand{\arraystretch}{1.5}
+
+%====================== INCLUSION DES PARTIES ======================
+
+~
+\thispagestyle{empty}
+%recommencer la numérotation des pages à "1"
+\setcounter{page}{0}
+\newpage
+
+\input{./chapter_1/chapter_1.tex}
+
+\newpage
+
+%récupérer les citation avec "/footnotemark"
+\nocite{*}
+
+%choix du style de la biblio
+\bibliographystyle{plain}
+%inclusion de la biblio
+\bibliography{bibliography.bib}
+%voir wiki pour plus d'information sur la syntaxe des entrées d'une bibliographie
+
+\end{document}
