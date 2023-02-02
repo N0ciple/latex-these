@@ -282,10 +282,12 @@ $\mathbf{\hat w}_\ell$ of $\hat{f}$ is derived from the standard weight
 $\mathbf{w}_\ell$ of $f$ by applying the following reparametrization: 
 \begin{equation}
   \label{eqn:reparam}
-  \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
+  \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
 \end{equation}
 \noindent with $h_t$ being the reparametrization function and $t$ its
-temperature parameter. This reparametrization function enforces the prior that
+temperature parameter. Here, $\odot$ represents the Hadamar product. It means
+that the reparametrization is element-wise, and every single weight has its own
+reparametrization. This reparametrization function enforces the prior that
 smallest weights should be removed from the network and act as a surrogate $L_0$
 norm for the budget loss (see \cref{sec:chap1:budget_loss}). In order to achieve
 this objective, $h_t$ should exhibit four properties: \\
@@ -336,7 +338,7 @@ negative weights, so that only their magnitudes matter. It implies that the
 reparametrization function should be symmetric with respect to the origin.\\
 
 
-\noindent\textbf{Fourth Property - } \\
+\noindent\textbf{Fourth Property - Upper Bounded Segment} \\
 
 \begin{equation}
     \centering
@@ -424,7 +426,7 @@ denominator and thus to ensure that the first property
 satisfy the four properties, they do not possess the exact same shapes, as
 demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
 
-\begin{figure}[htb]
+\begin{figure}
   \centering
   \centerline{\includegraphics[width=0.5\linewidth]{chapter_1/assets/h_stable_vs_unstable.pdf}}
   \caption{\centering The unstable reparametrization function $h_t^*$ and its
@@ -435,4 +437,102 @@ demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
 \subsection{Budget Loss}
 \label{sec:chap1:budget_loss}
 
+Most traditional pruning methods in deep learning do not explicitly incorporate
+the target weight budget during the optimization procedure. The amount of
+weights pruned is typically enforced post-training, which can lead to suboptimal
+results compared to methods that consider the weight budget during optimization.
+Our method introduces a budget loss term, in addition to the main task loss
+term, that drives the network to match and respect a given weight budget during
+the training process. Consequently, the trained network can be pruned to the
+desired pruning rate with a marginal loss in accuracy and does not need
+fine-tuning.\\
+
+
+The considered budget is weight-based and should quantify the target fraction of
+active connection in the network. To build the budget loss, we first introduce a
+cost function that quantify the number of active connection in the network. Let
+$C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\})$ be the {\em current} cost associated
+to a neural network and its set of {\em current} weights and $C_\text{target}$
+the {\em targeted} one. $C_\text{target}$ is the number of connections that
+should be active at the end of the training procedure. The budget loss is
+defined as \\
+
+\begin{equation}
+  \label{eqn:chap1:simple_budget}
+  {\cal L}_\text{budget} = \bigl( C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) - C_\text{target} \bigr)^2.
+\end{equation} \\
+
+
+\noindent This budget loss is combined with the main task loss (that is a
+classification loss in our experiments - see \cref{sec:chap1:experiments}). The
+budget loss $ {\cal L}_\text{budget}$ is in quadratic form to ensure the
+minimisation if this loss will in turn minimise the difference between the {\em
+current} cost and the {\em targeted} one. For a better  conditioning of this
+combination, we normalize the budget loss by $C_\text{initial}$. The latter
+corresponds to the cost of the primary unpruned network and it is set in
+practice to the number of its parameters (see also
+\cref{sec:chap1:experiments}). Hence, \cref{eqn:chap1:simple_budget} is updated
+as  \\
+
+\begin{equation}
+  \label{eqn:realbudget}
+  {\cal L}_\text{budget} = \biggl( \displaystyle\frac{C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) - C_\text{target}}{C_\text{initial}} \biggr)^2.
+\end{equation}\\
+
+Finally, the two losses are combined together via a strictly positive mixing
+parameter $\lambda$ that  controls the relative importance of  the budget loss
+${\cal L}_\text{budget}$ compared to the main task loss ${\cal L}_\text{task}$,
+leading to\\
+
+\begin{equation}
+  \label{eqn:globalloss}
+   {\cal L} =  {\cal L}_\text{task} + \lambda \cdot {\cal L}_\text{budget}.
+\end{equation} \\
+
+Ideally, the budget of a neural network could be evaluated as the number of
+multiply-add operations, often referred as \ac{FLOPs}, needed for a forward pass
+or through the $\ell_0$ norm of its weights. However, neither are known to be
+differentiable and therefore cannot be used in a gradient-based optimization. In
+order to circumvent this limitation, we use our weight reparametrizaion as a
+surrogae measure of $\ell_0$ and we define the cost function as \\
+
+\begin{equation}
+  \label{eqn:chap1:cost_function}
+  C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) = \displaystyle \sum_{i=1}^{L} h_t(\mathbf{w}_i). 
+\end{equation} \\
+
+One could argue that the cost should be normalized layer-wise and therefore that
+the right hand term of \cref{eqn:chap1:cost_function} should be written as
+$$\displaystyle\sum_{i=1}^{L}\frac{h_t(\mathbf{w}_i)}{\text{Card}(\mathbf{w}_i)}$$
+where $\text{Card}(.)$ denotes the cardinal function, it is to say in this case
+the number of scalar elements in a weight tensor. However, the number of
+elements in a layer greatly varies from one layer to another (as demonstrated in
+\cref{fig:chap1:vgg16_per_layer_param_and_norm_factor}). As a result,  the
+budget loss relative importance would vary from one layer to another. More
+importantly, the optimization process would have less incentive to introduce
+sparsity in larger layers since their normalization factor would make the budget
+loss negligable compared to other layers or the main task loss. This is critical
+since the large layers are generaly the one where the highest pruning rates can
+be achieved \cite{DBLP:journals/corr/abs-2202-12002}. Regarding the
+aforementioned reasons, a better alternative is to normalize by the initial cost
+$C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
+
+
+
+\begin{figure}
+  \centering
+  \subfloat[Number of parameters]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/vgg16_num_params_per_layer.pdf}
+      \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalization factor]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/vgg16_normalization_factor_per_layer.pdf}
+      \label{fig:chap1:norm_factor_vgg16}} \caption{\centering Log-scale plot of
+      number of parameters and normalization factor per layer for a VGG16
+      network. The significant differences in term of the number of parameters
+      yields dramaticaly different normalization factors. Some of them are 4
+      orders of magnitude appart, and all of them are vanishingly small compared
+      to a standard main task loss value.} 
+  \label{fig:chap1:vgg16_per_layer_param_and_norm_factor}
+\end{figure}
+
 \section{Experiments And Results}
+\label{sec:chap1:experiments}
