@@ -536,3 +536,76 @@ $C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
 
 \section{Experiments And Results}
 \label{sec:chap1:experiments}
+
+\begin{figure}
+  \centering
+  \subfloat[Conv4 - CIFAR10]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar10.pdf}
+      \label{fig:chap1:reparam_vs_mpft_conv4_cifar10}}
+  \subfloat[Conv4 - CIFAR100]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar100.pdf}
+      \label{fig:chap1:reparam_vs_mpft_conv4_cifar100}}
+      \\
+  \subfloat[Conv4 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar10.pdf}}
+  \subfloat[Conv4 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar100.pdf}}
+  \caption{\centering Performances comparison of our method {\em(Ours)} against
+  magnitude pruning without {\em(MP w/o FT)} and with fine-tuning {\em(MP w/ FT)} with a Conv4 network on
+  CIFAR10 and CIFAR100 datasets, for different pruning rates.
+  \Cref{fig:chap1:reparam_vs_mpft_conv4_cifar10} and
+  \cref{fig:chap1:reparam_vs_mpft_conv4_cifar100} show the testing accuracy of
+  the model and \cref{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs} and
+  \cref{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs} the number of epochs
+  needed to obtain the best model.}
+  \label{fig:chap1:reparam_vs_mpft_conv4}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[VGG16 - CIFAR10]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar10.pdf}
+      \label{fig:chap1:reparam_vs_mpft_vgg16_cifar10}} 
+  \subfloat[VGG16 - CIFAR100]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar100.pdf}
+      \label{fig:chap1:reparam_vs_mpft_vgg16_cifar100}} 
+  \\
+  \subfloat[VGG16 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs}]{
+    \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar10.pdf}}
+  \subfloat[VGG16 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar100.pdf}}
+
+    
+  \caption{\centering Performances comparison of our method \em{(Ours)} against
+  magnitude pruning with fine-tuning \em{(MP+FT)} with a VGG16 network on
+  CIFAR10 and CIFAR100 datasets, for different pruning rates.
+  \Cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10} and
+  \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar100} show the testing accuracy of
+  the model and \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs} and
+  \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs} the
+  number of epochs needed to obtain the best model.}
+  \label{fig:chap1:reparam_vs_mpft_vgg16}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[ResNet20 - CIFAR10\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar10.pdf}}
+  \subfloat[ResNet20 - CIFAR100\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar100.pdf}} 
+  \\
+  \subfloat[ResNet20 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs}  ]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar10.pdf}}
+  \subfloat[ResNet20 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}]{
+      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar100.pdf}}
+  \caption{\centering Performances comparison of our method \em{(Ours)} against
+  magnitude pruning with fine-tuning \em{(MP+FT)} with a ResNet20 network on
+  CIFAR10 and CIFAR100 datasets, for different pruning rates.
+  \Cref{fig:chap1:reparam_vs_mpft_resnet20_cifar10} and
+  \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar100} show the
+  testing accuracy of the model and
+  \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs} and
+  \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}
+  the number of epochs needed to obtain the best model.}
+  \label{fig:chap1:reparam_vs_mpft_resnet20}
+\end{figure}
