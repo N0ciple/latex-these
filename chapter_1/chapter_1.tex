@@ -5,7 +5,7 @@
 \end{abstract}
 
 \section{Introduction And Related Work}
-
+% region
 The introduction of neural networks has revolutionised the field of machine
 learning, leading to breakthroughs in various areas such as image and speech
 recognition, natural language processing, and game playing. However, the size of
@@ -176,18 +176,19 @@ standard primary architectures (namely Conv4, VGG19 and ResNet18), show the
 ability of our method to train effective surrogate pruned networks without any
 fine-tuning.
 
-\section{Pruning With Weight Reparametrization And Budget Loss}
+% endregion
 
-Consider the general case of a a multi-layer neural network, denoted as a
-function $f$ of two variables: $\theta$ and $X$. $f$ can be seen as the topology
-of the network: a computation graph whose edge values are given by $\theta$.
-Indeed, $\theta$ is the set of weights of the network, so that $\theta =
-\{\mathbf{w}_1, \mathbf{w}_2, \ldots, \mathbf{w}_L\}$, where $L$ is the number
-of layer of the network. $X$ is the input taken by the network. The input $X$ is
-an element of a dataset $\mathcal{D}=\{ \mathcal{X}, \mathcal{Y} \}$, where
-$\mathcal{X}$ is the set of the input data, and $\mathcal{Y}$ is the set of the
-corresponding labels. The elements of $\mathcal{X}$ and $\mathcal{Y}$ are real
-valued tensors.
+\section{Pruning With Weight Reparametrization And Budget Loss}
+% region
+Consider the general case of a multi-layer neural network, denoted as a function
+$f$ of two variables: $\theta$ and $X$. $f$ can be seen as the topology of the
+network: a computation graph whose edge values are given by $\theta$. Indeed,
+$\theta$ is the set of weights of the network: $\theta = \{\mathbf{w}_1,
+\mathbf{w}_2, \ldots, \mathbf{w}_L\}$, where $L$ is the number of layer of the
+network. $X$ is the input taken by the network. The input $X$ is an element of a
+dataset $\mathcal{D}=\{ \mathcal{X}, \mathcal{Y} \}$, where $\mathcal{X}$ is the
+set of the input data, and $\mathcal{Y}$ is the set of the corresponding labels.
+The elements of $\mathcal{X}$ and $\mathcal{Y}$ are real-valued tensors.
 
 \begin{equation}
     % \centering
@@ -229,10 +230,10 @@ budget added to the loss function $\mathcal{L}$. \\
 \begin{figure}[h]
     \centerline{\includegraphics[width=12.5cm]{chapter_1/assets/comparison_reparam_vs_mag_pruning.pdf}}
   \caption{Comparison of our method and magnitude pruning. Magnitude pruning
-  does not include any prior on the weights during the initial training phase
+  does not include any prior on weights during the initial training phase
   and needs an additional fine-tuning procedure. Our method embeds a saliency
   heuristic based on the weight magnitude in the weight reparametrization and
-  does not requires fine-tuning.}
+  does not require fine-tuning.}
   \label{fig:chap1:comparison_reparam_vs_mag_pruning}
 \end{figure}
 
@@ -241,7 +242,7 @@ Our proposed framework allows for a joint optimization of the network weights
 and topology. On the one hand, it prevents disconnections which may lead to
 degenerate networks with an irrecoverable performance drop. On the other hand,
 it allows reaching a targeted pruning budget in a more convenient way than $L_1$
-regularization. Our reparametrization also helps minimizing the discrepancy
+regularization. Our reparametrization also helps minimize the discrepancy
 between the primary and the surrogate networks by maintaining competitive
 performances without fine-tuning. Learning the surrogate network requires only
 one step that achieves pruning as a part of network design. This step zeroes out
@@ -251,8 +252,8 @@ to vanish.
 \subsection{Weight Reparametrization}
 \label{sec:chap1:weight_reparam}
 
-We consider the priramy network $f$ as a combination of $L$ layers. The global
-expression of $f$ can be recursively defined the application of the layer $\ell$
+We consider the primary network $f$ as a combination of $L$ layers. The global
+expression of $f$ can be recursively defined by the application of the layer $\ell$
 to the output of the layer $\ell-1$. Without a loss of generality, we omit the
 bias for the sake of clarity. This expression is shown on
 \cref{eqn:chap1:layer_eq_f}.
@@ -307,7 +308,7 @@ this objective, $h_t$ should exhibit four properties: \\
     \label{eqn:chap1:reparam_prop1}
 \end{equation}
 \\
-There should not be any co-adaptation between the weights and its
+There should not be any co-adaptation between the weights and their
 reparametrization. Indeed, the reparametrization function should not act as a
 scaling factor for the weight and scale it so that the apparent weight is larger
 than the original weight. Finally, the apparent weight should have the same sign
@@ -334,7 +335,7 @@ derivable to ensure that it has a computable gradient.\\
 \end{equation}
 \\
 The reparametrization function should not induce any bias toward the positive or
-negative weights, so that only their magnitudes matter. It implies that the
+negative weights so that only their magnitudes matter. It implies that the
 reparametrization function should be symmetric with respect to the origin.\\
 
 
@@ -361,10 +362,10 @@ that filter. \\
 \begin{figure}
     \centering
     \subfloat[$h_{t}$ with $t=1$ and varying $n$]{
-        \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_funct_varying_n.pdf}
+        \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_funct_varying_n.pdf}
         \label{fig:chap1:reparam_funct_varying_n}} \subfloat[$h_{t}$ with $n=2$
     and varying $t$]{
-        \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_funct_varying_t.pdf}
+        \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_funct_varying_t.pdf}
         \label{fig:chap1:reparam_funct_varying_t}} \caption{\centering
     Reparametrization function $h_t$ with varying temperature parameter $t$ and
     power $n$. $t$ controls the width of the pit and $n$ controls the steepness
@@ -428,7 +429,7 @@ demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
 
 \begin{figure}
   \centering
-  \centerline{\includegraphics[width=0.5\linewidth]{chapter_1/assets/h_stable_vs_unstable.pdf}}
+  \centerline{\includegraphics[width=0.49\linewidth]{chapter_1/assets/h_stable_vs_unstable.pdf}}
   \caption{\centering The unstable reparametrization function $h_t^*$ and its
   stable alternative $h_t$, with $t=1$ and $n=4$ for both functions.} 
   \label{fig:chap1:h_stable_vs_unstable}
@@ -501,6 +502,22 @@ surrogae measure of $\ell_0$ and we define the cost function as \\
   C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) = \displaystyle \sum_{i=1}^{L} h_t(\mathbf{w}_i). 
 \end{equation} \\
 
+
+\begin{figure}
+  \centering
+  \subfloat[Number of parameters]{
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_num_params_per_layer.pdf}
+      \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalization factor]{
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_normalization_factor_per_layer.pdf}
+      \label{fig:chap1:norm_factor_vgg16}} \caption{\centering Log-scale plot of
+      number of parameters and normalization factor per layer for a VGG16
+      network. The significant differences in term of the number of parameters
+      yields dramaticaly different normalization factors. Some of them are 4
+      orders of magnitude appart, and all of them are vanishingly small compared
+      to a standard main task loss value.} 
+  \label{fig:chap1:vgg16_per_layer_param_and_norm_factor}
+\end{figure}
+
 One could argue that the cost should be normalized layer-wise and therefore that
 the right hand term of \cref{eqn:chap1:cost_function} should be written as
 $$\displaystyle\sum_{i=1}^{L}\frac{h_t(\mathbf{w}_i)}{\text{Card}(\mathbf{w}_i)}$$
@@ -517,39 +534,127 @@ be achieved \cite{DBLP:journals/corr/abs-2202-12002}. Regarding the
 aforementioned reasons, a better alternative is to normalize by the initial cost
 $C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
 
-
-
-\begin{figure}
-  \centering
-  \subfloat[Number of parameters]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/vgg16_num_params_per_layer.pdf}
-      \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalization factor]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/vgg16_normalization_factor_per_layer.pdf}
-      \label{fig:chap1:norm_factor_vgg16}} \caption{\centering Log-scale plot of
-      number of parameters and normalization factor per layer for a VGG16
-      network. The significant differences in term of the number of parameters
-      yields dramaticaly different normalization factors. Some of them are 4
-      orders of magnitude appart, and all of them are vanishingly small compared
-      to a standard main task loss value.} 
-  \label{fig:chap1:vgg16_per_layer_param_and_norm_factor}
-\end{figure}
+% endregion
 
 \section{Experiments And Results}
 \label{sec:chap1:experiments}
 
+In this section, we will explore the effectiveness of our method on  deep neural
+networks for image classification. We have chosen to use three reference
+databases in the field of computer vision: CIFAR10 \cite{CIFARdataset}, CIFAR100
+\cite{CIFARdataset}, and TinyImageNet \cite{TinyImageNet}. We will evaluate the
+impact of our method on several neural network architectures: VGG16
+\cite{DBLP:journals/corr/SimonyanZ14a}, Conv4 \cite{DBLP:conf/iclr/FrankleC19},
+ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. This study will allow us
+to demonstrate the effectiveness of our method for compressing image
+classification models, as well as its influence on prediction accuracy. To that
+extent we will review the impact of both our reparametrization and our budget
+loss.\\
+
+The CIFAR10 and CIFAR100 datasets both contain 60,000 color images of size 32x32 pixels,
+split in 10 and 100 classes respectively. The TinyImageNet dataset is shrunk version of
+the ImageNet dataset \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, and contains
+100,000 images of size 64x64 pixels, split in 200 classes. Each dataset is
+divided in to two folds: a training set and a test set. In addition to these two
+folds, we also use a validation set to tune the hyperparameters of our method,
+before testing it on the test set. The validation dataset is obtained by
+selecting 10\% of the training set. \Cref{tab:chap1:datasets} summarizes the
+composition of the three datasets.\\
+
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Dataset} & \textbf{Number of images} & \textbf{Number of classes} &
+    \textbf{Image size} & \textbf{Size of test set} \\ 
+    \hline
+    CIFAR10 & 60,000 & 10 & 32x32 & 10,000 \\ 
+    CIFAR100 & 60,000 & 100 & 32x32 & 10,000\\ 
+    TinyImageNet & 100,000 & 200 & 64x64 &10,000 \\ 
+    \bottomrule
+  \end{tabular}
+  \caption{The number of images, of classes, image size and size of the test set for the three datasets used.}
+  \label{tab:chap1:datasets}
+\end{table}
+
+In combination with these datasets, we use four different neural networks. Conv4
+is a small and reasonably lightweight convolutional neural network which is a
+shrunk-down version of the VGG16 architecture. VGG16 is a convolutional neural
+of larger size and depth, which is a popular choice for image classification, we
+used a slightly modified version of VGG16 that is better suited to CIFAR10. We
+do not use dropout but we use batch normalization, and the fully connected
+section has only one layer. ResNet18 is a residual neural network that
+introduces skip connection in its architectural design. ResNet20 is a modified
+version of the ResNet18 architecture to make it suited for CIFAR10 and CIFAR100
+datasets. \Cref{tab:chap1:networks_size} summarizes the size of the different
+models. In our experiments, we use ResNet18 exclusively for TinyImageNet and the
+other networks for CIFAR10 and CIFAR100.\\
+
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{lllll}
+  \cline{2-5}
+                       & Conv4     & VGG16      & ResNet20 & ResNet18   \\ \hline
+  Number of Parameters & 2,425,930 & 14,728,266 & 269,034  & 11,685,608 \\ \hline
+  \end{tabular}
+  \caption{\centering Number of parameters for the four neural network architectures used.}
+  \label{tab:chap1:networks_size}
+\end{table}
+
+\subsection{Performances}
+\label{sec:chap1:performances}
+Performances of our method are evaluated on CIFAR10 and CIFAR100 with Conv4, VGG16
+and ResNet20. On TinyImageNet, we evaluate our method on ResNet18. We compare
+our method against magnitude pruning \cite{DBLP:conf/nips/HanPTD15}. The key
+differences between our method and magnitude pruning are the following: $(i)$
+our method uses a budget loss to encourage sparsity, which takes into account the
+final pruning rate from the beginning of the training process, $(ii)$ our method
+does not require fine-tuning after pruning. Because of the latter, we compare
+our method against magnitude pruning with and without fine-tuning. Both methods
+share the following setup: networks are trained during 300 epochs with an
+initial learning rate of 0.1. A {\em Reduce On Plateau} policy is applied to the
+learning rate: if the validation accuracy is not improving for 10 epochs in a
+row, then the learning rate is decreased by a factor 0.3. A weight decay is
+applied on the weights with a penalization factor of $5\times10^{−5}$. An Early
+Stopping policy was used to stop prematurely the training if no improvement of
+the test accuracy is observed in 60 epochs. To keep the comparison fair, for
+magnitude pruning, the 300 epochs are split into two phases: the first 150 epochs
+are dedicated to the training of the network, and the last 150 epochs are used
+for fine-tuning the pruned network. In the fine-tuning phase, the learning rate
+is divided by 100 to allow for better convergence. \\
+
+Results are repported on
+\cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
+On the aforementioned figures, our method (denoted \emph{Ours}) is compared to
+magnitude pruning with and without fine-tuning (denoted \emph{MP w/ FT} and
+\emph{MP w/o FT}, respectively). All three methods are evaluated on the test
+fold of the dataset once the network has been pruned up to the pruning rate
+indicated on the \emph{x-axis}. The test accuracy is reported on the
+\emph{y-axis} as a float between 0 and 1 (0 being all images wrongly classified
+and 1 being all images correctly classified). Each solid line representing a
+method is the mean of 5 independent runs. The colored area surrounding the solid
+line represents the range within plus or minus one standard deviation. In
+addition to the 3 methods, the dashed lines represent the performances of an
+unpruned network trained without weight reparametrization and budget loss
+(denoted \emph{baseline}) and the accuracy of our method before the effective
+pruning (denoted \emph{Ours (pre pruning)}).\\
+
+% region: perfs_figures
 \begin{figure}
   \centering
   \subfloat[Conv4 - CIFAR10]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar10.pdf}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar10.pdf}
       \label{fig:chap1:reparam_vs_mpft_conv4_cifar10}}
   \subfloat[Conv4 - CIFAR100]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar100.pdf}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar100.pdf}
       \label{fig:chap1:reparam_vs_mpft_conv4_cifar100}}
       \\
   \subfloat[Conv4 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar10.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar10.pdf}}
   \subfloat[Conv4 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar100.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar100.pdf}}
   \caption{\centering Performances comparison of our method {\em(Ours)} against
   magnitude pruning without {\em(MP w/o FT)} and with fine-tuning {\em(MP w/ FT)} with a Conv4 network on
   CIFAR10 and CIFAR100 datasets, for different pruning rates.
@@ -564,16 +669,16 @@ $C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
 \begin{figure}
   \centering
   \subfloat[VGG16 - CIFAR10]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar10.pdf}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar10.pdf}
       \label{fig:chap1:reparam_vs_mpft_vgg16_cifar10}} 
   \subfloat[VGG16 - CIFAR100]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar100.pdf}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar100.pdf}
       \label{fig:chap1:reparam_vs_mpft_vgg16_cifar100}} 
   \\
   \subfloat[VGG16 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs}]{
-    \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar10.pdf}}
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar10.pdf}}
   \subfloat[VGG16 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar100.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar100.pdf}}
 
     
   \caption{\centering Performances comparison of our method \em{(Ours)} against
@@ -590,14 +695,14 @@ $C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
 \begin{figure}
   \centering
   \subfloat[ResNet20 - CIFAR10\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar10.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar10.pdf}}
   \subfloat[ResNet20 - CIFAR100\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar100.pdf}} 
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar100.pdf}} 
   \\
   \subfloat[ResNet20 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs}  ]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar10.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar10.pdf}}
   \subfloat[ResNet20 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}]{
-      \includegraphics[height=0.36\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar100.pdf}}
+      \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar100.pdf}}
   \caption{\centering Performances comparison of our method \em{(Ours)} against
   magnitude pruning with fine-tuning \em{(MP+FT)} with a ResNet20 network on
   CIFAR10 and CIFAR100 datasets, for different pruning rates.
@@ -609,3 +714,79 @@ $C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
   the number of epochs needed to obtain the best model.}
   \label{fig:chap1:reparam_vs_mpft_resnet20}
 \end{figure}
+
+% endregion: perfs_figures
+
+\subsection{Impact of \texorpdfstring{$\lambda$}{Lambda}}
+\label{sec:chap1:impact_of_lambda}
+
+See \cref{fig:chap1:lambda_impact} for the impact of $\lambda$ on the respect
+of the budget. Low pruning rate on \cref{fig:chap1:lambda_impact_pruning_90} and
+high pruing rates on \cref{fig:chap1:lambda_impact_pruning_95} are obtained.
+The tradeoff between the budget loss and the main task loss is clearly visible
+on table \ref{tab:chap1:lambda_impact}. 
+
+\begin{table}[tbp]
+  \centering
+  \begin{center}
+    \begin{tabular}{llcc}
+      \toprule
+      Pruning Rate & $\lambda$ & Achieved Budget & Test Accuracy (post pruning) \\
+      \midrule
+      \multirow{4}{*}{0.9} & 0.005 & 5.25 $\pm$ 0.69 & 85.83 $\pm$ 0.83 \\
+      & 0.5 & 8.06 $\pm$ 0.19 & 86.34 $\pm$ 0.64 \\
+      & 5 & 9.93 $\pm$ 0.03 & 85.82 $\pm$ 0.74 \\
+      & 50 & \textbf{10.00 $\pm$ 0.01} & \textbf{86.52 $\pm$ 0.46} \\
+      \midrule
+      \multirow{4}{*}{0.95} & 0.005 & 5.22 $\pm$ 0.73 & \textbf{86.27 $\pm$ 0.32} \\
+      & 0.5 & 4.33 $\pm$ 0.41 & 85.66 $\pm$ 0.74 \\
+      & 5 & 4.85 $\pm$ 0.19 & 86.11 $\pm$ 0.48 \\
+      & 50 & \textbf{5.03 $\pm$ 0.02} & 85.37 $\pm$ 0.37 \\
+      \midrule
+      \multirow{4}{*}{0.99} & 0.005 & 4.60 $\pm$ 0.29 & 40.52 $\pm$ 5.27 \\
+      & 0.5 & 3.69 $\pm$ 0.38 & 42.45 $\pm$ 9.02 \\
+      & 5 & 1.89 $\pm$ 0.45 & \textbf{76.85 $\pm$ 6.34} \\
+      & 50 & \textbf{2.09 $\pm$ 0.15} & 10.00 $\pm$ 0.00 \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \caption{\centering
+    Impact of the parameter $\lambda$ on the achieved budget and the post-pruning test accuracy of the model for a Conv4 network on CIFAR10 dataset,
+    for various pruning rates. Although a high value of $\lambda$ ensures that
+    the target budget is reached, it also leads to a lower test accuracy when
+    the pruning rate increases.}
+    \label{tab:chap1:lambda_impact}
+\end{table}
+
+
+
+\subsection{Impact of the budget loss}
+\label{sec:chap1:impact_of_budget_loss}
+
+% \subsection{Impact of the reparametrization}
+% \label{sec:chap1:impact_of_reparametrization}
+
+\subsection{Fine tuning context}
+\label{sec:chap1:impact_of_fine_tuning}
+
+
+
+\begin{figure}
+\centering
+\subfloat[Pruning 90\% of the weights\label{fig:chap1:lambda_impact_pruning_90}]{
+  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_90_C4_CIFAR10.pdf}}
+\subfloat[Pruning 95\% of the weights\label{fig:chap1:lambda_impact_pruning_95}]{
+  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_95_C4_CIFAR10.pdf}}
+\\
+\subfloat[Pruning 99\% of the weights\label{fig:chap1:lambda_impact_pruning_99}]{
+  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR10.pdf}}
+  \caption{\centering Impact of the parameter $\lambda$ on the achieved final
+  budget for a Conv4 network on CIFAR10 dataset, for various pruning rates. A
+  too-small value of $\lambda$ does not make the actual budget match the desired
+  budget. The actual budget is either too small
+  (\cref{fig:chap1:lambda_impact_pruning_90}) or too high
+  (\cref{fig:chap1:lambda_impact_pruning_99}) compared to the target, depending
+  on the applied pruning rate.}
+\label{fig:chap1:lambda_impact}
+\end{figure}  
+
