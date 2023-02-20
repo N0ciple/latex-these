@@ -476,7 +476,7 @@ practice to the number of its parameters (see also
 as  \\
 
 \begin{equation}
-  \label{eqn:realbudget}
+  \label{eqn:chap1:real_budget}
   {\cal L}_\text{budget} = \biggl( \displaystyle\frac{C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) - C_\text{target}}{C_\text{initial}} \biggr)^2.
 \end{equation}\\
 
@@ -486,7 +486,7 @@ ${\cal L}_\text{budget}$ compared to the main task loss ${\cal L}_\text{task}$,
 leading to\\
 
 \begin{equation}
-  \label{eqn:globalloss}
+  \label{eqn:chap1:globalloss}
    {\cal L} =  {\cal L}_\text{task} + \lambda \cdot {\cal L}_\text{budget}.
 \end{equation} \\
 
@@ -532,7 +532,7 @@ loss negligable compared to other layers or the main task loss. This is critical
 since the large layers are generaly the one where the highest pruning rates can
 be achieved \cite{DBLP:journals/corr/abs-2202-12002}. Regarding the
 aforementioned reasons, a better alternative is to normalize by the initial cost
-$C_\text{initial}$, as done in \cref{eqn:realbudget}.\\
+$C_\text{initial}$, as done in \cref{eqn:chap1:real_budget}.\\
 
 % endregion
 
@@ -639,7 +639,34 @@ line represents the range within plus or minus one standard deviation. In
 addition to the 3 methods, the dashed lines represent the performances of an
 unpruned network trained without weight reparametrization and budget loss
 (denoted \emph{baseline}) and the accuracy of our method before the effective
-pruning (denoted \emph{Ours (pre pruning)}).\\
+pruning (denoted \emph{Ours (pre pruning)}). Sub-figures (c) and (d) of  \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
+represents the number of epochs (\emph{y-axis}) needed to obtain the best model for each method,
+depending on the pruning rate (\emph{x-axis}).\\
+
+
+Overall, our method performs consistently better than magnitude pruning without
+fine-tuning (\emph{MP w/o FT}) and for almost all pruning rates, better than
+magnitude pruning with fine-tuning (\emph{MP w/ FT}) on the CIFAR10 and CIFAR100
+datasets. In particular, our method significantly outperforms magnitude pruning
+in both setups (with and without fine-tuning) for Conv4 networks (cf.
+\cref{fig:chap1:reparam_vs_mpft_conv4_cifar10}). For the VGG16 network, we
+observe the same trend, although the difference is less significant. For
+ResNet20, magnitude pruning slightly overperforms our method on CIFAR100 for
+high pruning rates (more than 90\%).
+\Cref{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs,fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs,fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs,fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs,fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs,fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}
+show that our method requires an equivalent number of epochs compared to
+magnitude pruning for a higher level of performance (i.e. a higher test
+accuracy). Magnitude pruning requires fewer epochs than our method only at high
+pruning rates (more than 90\%). On TinyImageNet
+(\cref{fig:chap1:reparam_vs_mpft_resnet18}), our method outperforms magnitude
+pruning with and without finetuning, up until very high pruning rates (95\%). In
+any cases
+(\cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_vgg16,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_resnet18}),
+Our method produces much more stable results and variations from one run to
+another are significantly slimmer than the one in magnitude pruning. Indeed, the
+combination of the reparametrization and the budget loss act on the one hand as
+a regularizer and on the other hand helps preparing the network for the
+effective pruning step.\\
 
 % region: perfs_figures
 \begin{figure}
@@ -715,16 +742,43 @@ pruning (denoted \emph{Ours (pre pruning)}).\\
   \label{fig:chap1:reparam_vs_mpft_resnet20}
 \end{figure}
 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet18_tinyimagenet.pdf}
+  \caption{Performances comparison of our method \em{(Ours)} against
+  magnitude pruning with fine-tuning \em{(MP+FT)} with a ResNet18 network on
+  TinyImageNet dataset, for different pruning rates.}
+  \label{fig:chap1:reparam_vs_mpft_resnet18}
+\end{figure}
+
 % endregion: perfs_figures
 
 \subsection{Impact of \texorpdfstring{$\lambda$}{Lambda}}
 \label{sec:chap1:impact_of_lambda}
+Our method relies on a budget loss which relative importance compared to the
+main task loss is controlled by a parameter $\lambda$ (cf.
+\cref{eqn:chap1:globalloss}). The choice of this parameter is crucial
+to ensure a good tradeoff between \emph{(i)} the respect of the budget, in
+order to mitigate the performance drop following the effective pruning step; and
+\emph{(ii)} the optimization of the main task loss which influences the final
+performances. The achieved budget as a function of the parameter $\lambda$ is
+detailed for different purning rates in
+\Cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.\\
 
-See \cref{fig:chap1:lambda_impact} for the impact of $\lambda$ on the respect
-of the budget. Low pruning rate on \cref{fig:chap1:lambda_impact_pruning_90} and
-high pruing rates on \cref{fig:chap1:lambda_impact_pruning_95} are obtained.
-The tradeoff between the budget loss and the main task loss is clearly visible
-on table \ref{tab:chap1:lambda_impact}. 
+For low pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_90}), a low
+value of lambda does not enforce the respect of the budget, and in this case,
+the final network has a smaller achieved budget than the targeted one.
+Similarly, for higher pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_99}), a low value of lambda results in a budget
+in excess compared to the targeted one. In both cases, the perforamnces
+of networks trained with a low value of $\lambda$ are subpar compared to higher
+values, as reported in \cref{tab:chap1:lambda_impact}. On the opposite, high
+values of $\lambda$ lay too much emphasis on the budget loss, and the
+performances of the network are negatively impaced. Following the aforementioned
+considerations, we set the value of $\lambda$ to 5 for all the experiments. This
+values strikes the best balance between the two objectives: budget loss and main
+task loss.
+
 
 \begin{table}[tbp]
   \centering
@@ -790,3 +844,4 @@ on table \ref{tab:chap1:lambda_impact}.
 \label{fig:chap1:lambda_impact}
 \end{figure}  
 
+\section{Conclusion and perspectives}
