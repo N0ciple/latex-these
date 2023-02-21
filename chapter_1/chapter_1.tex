@@ -1,5 +1,7 @@
 \chapter{Weight Reparametrization}
 
+\localtableofcontents
+
 \begin{abstract}
     abstract of this part
 \end{abstract}
@@ -782,6 +784,27 @@ are negatively impacted. Following the abovementioned considerations, we set the
 value of $\lambda$ to 5 for all the experiments. This value strikes the best
 balance between the two objectives: budget loss and main task loss.
 
+% region: lambda_impact_figures
+
+\begin{figure}
+  \centering
+  \subfloat[Pruning 90\% of the weights\label{fig:chap1:lambda_impact_pruning_90}]{
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_90_C4_CIFAR10.pdf}}
+  \subfloat[Pruning 95\% of the weights\label{fig:chap1:lambda_impact_pruning_95}]{
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_95_C4_CIFAR10.pdf}}
+  \\
+  \subfloat[Pruning 99\% of the weights\label{fig:chap1:lambda_impact_pruning_99}]{
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR10.pdf}}
+    \caption{\centering Impact of the parameter $\lambda$ on the achieved final
+    budget for a Conv4 network on CIFAR10 dataset, for various pruning rates. A
+    too-small value of $\lambda$ does not make the actual budget match the desired
+    budget. The actual budget is either too small
+    (\cref{fig:chap1:lambda_impact_pruning_90}) or too high
+    (\cref{fig:chap1:lambda_impact_pruning_99}) compared to the target, depending
+    on the applied pruning rate.}
+  \label{fig:chap1:lambda_impact}
+  \end{figure}  
+
 
 \begin{table}[tbp]
   \centering
@@ -815,7 +838,7 @@ balance between the two objectives: budget loss and main task loss.
     \label{tab:chap1:lambda_impact}
 \end{table}
 
-
+% endregion: lambda_impact_figures
 
 \subsection{Impact of the budget loss}
 \label{sec:chap1:impact_of_budget_loss}
@@ -826,25 +849,121 @@ balance between the two objectives: budget loss and main task loss.
 \subsection{Fine tuning context}
 \label{sec:chap1:impact_of_fine_tuning}
 
+Although the method presented in this chapter was designed from the ground up to
+circumvent the need for fine-tuning, it can be used to fine-tune a network
+trained conventionally. In this section, we compare the performances of a
+network trained in a standard way, pruned and then fine-tuned with two methods:
+Our method and standard fine-tuning \cite{DBLP:conf/nips/HanPTD15}. This setup
+is evaluated on Conv4, ResNet20 and VGG16 for both CIFAR10 and CIFAR100. The
+results are shown in 
+\cref{fig:chap1:finetuning_impact_conv4,fig:chap1:finetuning_impact_resnet20,fig:chap1:finetuning_impact_vgg6}.
+First, a network is trained for 150 epochs on the main classification task. Then
+it is pruned up to a specified pruning rate. The pruning criterion used is the
+magnitude of the weights where weights with the smallest absolute value are
+removed in an unstructured way. The pruned network is then fine-tuned for 300
+epochs with an early stopping criterion based on the validation accuracy. The
+training is stopped prematurely if the validation accuracy does not improve for
+30 epochs. \\
+
+Except for results with the Conv4 networks, fine-tuning a network with our
+method overperforms the conventional fine-tuning method by a comfortable margin
+on ResNet20 across all pruning rates (\cref{fig:chap1:finetuning_impact_resnet20}) and VGG16
+(\cref{fig:chap1:finetuning_impact_vgg6}) for pruning rates higher than 96\%.
+Moreover, the networks produced by fine-tuning with our method are much more
+consistent from one run to another. This is illustrated by the standard
+deviation being so small that the colored area around the solid line is barely
+visible on the graphs. This is not the case for the conventional fine-tuning
+where performances vary greatly from one run to another. This is especially
+visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}. 
+
+% region: fine-tuning
+
+\begin{figure}
+\centering
+\subfloat[Conv4 CIFAR10\label{fig:chap1:finetuning_impact_conv4_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_Conv4.pdf}}
+  \subfloat[Conv4 CIFAR100\label{fig:chap1:finetuning_impact_conv4_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_Conv4.pdf}}
+  \caption{\centering Finetuning of a Conv4 network pruned by magnitude pruning
+  (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets for various pruning
+  rates. Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning
+  with our method (\emph{pruned+FT (w/ our method)}). Our method is shown for
+  comparison purposes (\emph{Ours}). On this network, our method performs better
+  than other approaches. Fine-tuning the network with our method provides better
+  results than fine-tuning it with a conventional method.}
+    \label{fig:chap1:finetuning_impact_conv4}
+\end{figure}
 
 
 \begin{figure}
 \centering
-\subfloat[Pruning 90\% of the weights\label{fig:chap1:lambda_impact_pruning_90}]{
-  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_90_C4_CIFAR10.pdf}}
-\subfloat[Pruning 95\% of the weights\label{fig:chap1:lambda_impact_pruning_95}]{
-  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_95_C4_CIFAR10.pdf}}
-\\
-\subfloat[Pruning 99\% of the weights\label{fig:chap1:lambda_impact_pruning_99}]{
-  \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR10.pdf}}
-  \caption{\centering Impact of the parameter $\lambda$ on the achieved final
-  budget for a Conv4 network on CIFAR10 dataset, for various pruning rates. A
-  too-small value of $\lambda$ does not make the actual budget match the desired
-  budget. The actual budget is either too small
-  (\cref{fig:chap1:lambda_impact_pruning_90}) or too high
-  (\cref{fig:chap1:lambda_impact_pruning_99}) compared to the target, depending
-  on the applied pruning rate.}
-\label{fig:chap1:lambda_impact}
-\end{figure}  
+\subfloat[ResNet20 CIFAR10\label{fig:chap1:finetuning_impact_resnet20_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableResNet20.pdf}}
+  \subfloat[ResNet20 CIFAR100\label{fig:chap1:finetuning_impact_resnet20_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableResNet20.pdf}}
+  \caption{\centering Finetuning of a ResNet20 network pruned by magnitude
+  pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
+  pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
+  fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
+  shown for comparison purposes (\emph{Ours}). On this network, fine-tuning with
+  our method considerably overperforms other approaches.}
+    \label{fig:chap1:finetuning_impact_resnet20}
+\end{figure}
+
+
+\begin{figure}
+\centering
+\subfloat[VGG16 CIFAR10\label{fig:chap1:finetuning_impact_vgg16_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableVGG16.pdf}}
+  \subfloat[VGG16 CIFAR100\label{fig:chap1:finetuning_impact_vgg16_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableVGG16.pdf}}
+  \caption{\centering Finetuning of a ResNet20 network pruned by magnitude
+  pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
+  pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
+  fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
+  shown for comparison purposes (\emph{Ours}). On this network, fine-tuning with
+  our method performs on par with other methods up to 95\% of pruning. For
+  higher pruning rates, it other performs other approaches.}
+    \label{fig:chap1:finetuning_impact_vgg6}
+\end{figure}
+
+% endregion: fine-tuning
+
+
+\begin{figure}
+  \centering
+  \subfloat[Conv4 CIFAR10\label{fig:chap1:no_budget_conv4_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_Conv4.pdf}}
+    \subfloat[Conv4 CIFAR100\label{fig:chap1:no_budget_conv4_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_Conv4.pdf}}
+    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
+      \label{fig:chap1:no_budget_conv4}
+\end{figure}
+  
+  
+
+\begin{figure}
+  \centering
+  \subfloat[ResNet20 CIFAR10\label{fig:chap1:no_budget_resnet20_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableResNet20.pdf}}
+    \subfloat[ResNet20 CIFAR100\label{fig:chap1:no_budget_resnet20_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableResNet20.pdf}}
+    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
+      \label{fig:chap1:no_budget_resnet20}
+\end{figure}
+  
+    
+
+\begin{figure}
+  \centering
+  \subfloat[VGG16 CIFAR10\label{fig:chap1:no_budget_vgg16_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableVGG16.pdf}}
+    \subfloat[VGG16 CIFAR100\label{fig:chap1:no_budget_vgg16_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableVGG16.pdf}}
+    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
+      \label{fig:chap1:no_budget_vgg16}
+\end{figure}
+  
+
 
 \section{Conclusion and perspectives}
