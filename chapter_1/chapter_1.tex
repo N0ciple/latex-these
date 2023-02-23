@@ -1,4 +1,4 @@
-\chapter{Weight Reparametrization}
+\chapter{Weight Reparametrisation}
 
 \localtableofcontents
 
@@ -97,7 +97,7 @@ al. \cite{anwar2017structured} proposed a pruning technique on various levels
 level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a streamlined
 approach that aims at pruning the most useless channels in the layers preceding
 \ac{batch norm} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity with
-$\ell_1$ penalization of the \ac{batch norm} scaling factors, each one
+$\ell_1$ penalisation of the \ac{batch norm} scaling factors, each one
 associated with a channel. Then channels are removed based on the relative
 importance of their associated scaling factor up to a predefined sparsity ratio.
 More recent work proposed an automatic policy for pruning, such as \ac{amc}
@@ -251,7 +251,7 @@ one step that achieves pruning as a part of network design. This step zeroes out
 the targeted number of connections by constraining their reparametrised weights
 to vanish.
 
-\subsection{Weight Reparametrization}
+\subsection{Weight Reparametrisation}
 \label{sec:chap1:weight_reparam}
 
 We consider the primary network $f$ as a combination of $L$ layers. The global
@@ -282,12 +282,12 @@ and $\hat{f}$ are the same. Only the weights are changing.
 is referred to as apparent weight. The apparent weight is a reparametrisation of
 $\mathbf{w}_\ell$, that includes a prior on its saliency. An apparent weight
 $\mathbf{\hat w}_\ell$ of $\hat{f}$ is derived from the standard weight
-$\mathbf{w}_\ell$ of $f$ by applying the following reparametrization: 
+$\mathbf{w}_\ell$ of $f$ by applying the following reparametrisation: 
 \begin{equation}
   \label{eqn:reparam}
   \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
 \end{equation}
-\noindent with $h_t$ being the reparametrization function and $t$ its
+\noindent with $h_t$ being the reparametrisation function and $t$ its
 temperature parameter. Here, $\odot$ represents the Hadamar product. It means
 that the reparametrisation is element-wise, and every single weight has its own
 reparametrisation. This reparametrisation function enforces the prior that
@@ -369,7 +369,7 @@ the smallest weights where the parameter $t$ controls the width of that filter.
     and varying $t$]{
         \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_funct_varying_t.pdf}
         \label{fig:chap1:reparam_funct_varying_t}} \caption{\centering
-    Reparametrization function $h_t$ with varying temperature parameter $t$ and
+    Reparametrisation function $h_t$ with varying temperature parameter $t$ and
     power $n$. $t$ controls the width of the pit, and $n$ controls the steepness
     of the slope.}
     \label{fig:stopband}
@@ -432,7 +432,7 @@ demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
 \begin{figure}
   \centering
   \centerline{\includegraphics[width=0.49\linewidth]{chapter_1/assets/h_stable_vs_unstable.pdf}}
-  \caption{\centering The unstable reparametrization function $h_t^*$ and its
+  \caption{\centering The unstable reparametrisation function $h_t^*$ and its
   stable alternative $h_t$, with $t=1$ and $n=4$ for both functions.} 
   \label{fig:chap1:h_stable_vs_unstable}
 \end{figure}
@@ -509,7 +509,7 @@ function as \\
   \centering
   \subfloat[Number of parameters]{
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_num_params_per_layer.pdf}
-      \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalization factor]{
+      \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalisation factor]{
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_normalization_factor_per_layer.pdf}
       \label{fig:chap1:norm_factor_vgg16}} \caption{\centering Log-scale plot of
       number of parameters and normalisation factor per layer for a VGG16
@@ -561,7 +561,7 @@ dataset is shrunk version of the ImageNet dataset
 training set and a test set. In addition to these two folds, we also use a
 validation set to tune the hyperparameters of our method before testing it on
 the test set. The validation dataset is obtained by selecting 10\% of the
-training set. \Cref{tab:chap1:datasets} summarizes the composition of the three
+training set. \Cref{tab:chap1:datasets} summaries the composition of the three
 datasets.\\
 
 
@@ -770,7 +770,7 @@ mitigate the performance drop following the effective pruning step; and
 performance. The achieved budget as a function of the parameter $\lambda$ is
 detailed for different pruning rates in
 \cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.
-In these figures, the achieved budget is computed as the sum of the weights reparametrization\\
+In these figures, the achieved budget is computed as the sum of the weights reparametrisation\\
 
 For low pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_90}), a low
 value of lambda does not enforce the respect of the budget and in this case, the
@@ -848,7 +848,7 @@ we present in this section the results of a comparative experimental analysis
 with alternative variants.  Specifically, we investigated the impact of the
 budget loss by comparing it with two other variants: \emph{(i)} a variant where the
 budget loss was removed, and \emph{(ii)} a variant where the budget loss is replaced
-with an $L_1$ regularization loss on the network weights. To remove the budget
+with an $L_1$ regularisation loss on the network weights. To remove the budget
 loss, the value of $\lambda$ is set to zero 0 in \cref{eqn:chap1:globalloss}. In the
 second variant, we varied the mixing coefficient $\lambda$ between 0.1 and 100.
 Considering the same issue of loss conditioning as in
@@ -902,7 +902,7 @@ diverse conditions, without the need to fine-tune the value of $\lambda$.
 Experiments presented in this section reveal that the budget loss is a critical
 component of the method to train networks and prune them, while introducing a
 minimal impact on the performance if no fine-tuning is applied. While the $L_1$
-regularization loss may achieve superior performance in certain cases, our
+regularisation loss may achieve superior performance in certain cases, our
 method is more straightforward and robust in its applicability across various
 scenarios.\\
 
@@ -970,8 +970,8 @@ scenarios.\\
 
 % endregion: no budget
 
-% \subsection{Impact of the reparametrization}
-% \label{sec:chap1:impact_of_reparametrization}
+% \subsection{Impact of the reparametrisation}
+% \label{sec:chap1:impact_of_reparametrisation}
 
 \subsection{Fine tuning context}
 \label{sec:chap1:impact_of_fine_tuning}
