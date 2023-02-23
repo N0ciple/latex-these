@@ -10,27 +10,27 @@
 % region
 The introduction of neural networks has revolutionised the field of machine
 learning, leading to breakthroughs in various areas such as image and speech
-recognition, natural language processing, and game playing. However, the size of
-neural networks has steadily increased in recent years, largely thanks to the
-availability of powerful \ac{GPUs}. They have made it possible to train larger
-and more complex models. However, as the size of neural networks has grown, so
-have the computational and memory requirements to train and deploy them. The
-evolution of neural network architectures can be traced back to the Rosenblatt
-Perceptron \cite{rosenblatt1958perceptron}, a single-layer feedforward network
-with only one neuron. Over time, neural network architectures became more
-complex and included multiple layers, known as multi-layer perceptron or fully
-connected networks. Then, with the introduction of \ac{CNNs}, neural network
-architectures for image recognition have grown even larger. Convolutional neural
-networks use convolutional layers to automatically and adaptively learn spatial
-hierarchies of features from input images. This adaptivity allows \ac{CNNs} to
-effectively learn and classify images with high accuracy. Some of the most
-notable \ac{CNN} architectures include AlexNet
-\cite{DBLP:conf/nips/KrizhevskySH12}, which was developed in 2012 and has 60
-million parameters. The VGG networks \cite{DBLP:journals/corr/SimonyanZ14a},
-developed in 2014, range from 132 to 143 million parameters. Inception
-\cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}, developed in 2014, had 27 million
-parameters in its third version. And the ResNet networks
-\cite{DBLP:conf/cvpr/HeZRS16}, developed in 2015, are ranging from 11 to 60
+recognition, natural language processing, as well as exotic domains like game
+playing or molecule folding. However, the size of neural networks has steadily
+increased in recent years, largely thanks to the availability of powerful
+\ac{GPUs}. They have made it possible to train larger and more complex models.
+However, as the size of neural networks has grown, so have the computational and
+memory requirements to train and deploy them. The evolution of neural network
+architectures can be traced back to the Rosenblatt Perceptron
+\cite{rosenblatt1958perceptron}, a single-layer feedforward network with only
+one neuron. Over time, neural network architectures became more complex and
+included multiple layers, known as multi-layer perceptron or fully connected
+networks. Then, with the introduction of \ac{CNNs}, neural network architectures
+for image recognition have grown even larger. \ac{CNNs} use
+convolutional layers to automatically and adaptively learn spatial hierarchies
+of features from input images. This adaptivity allows \ac{CNNs} to effectively
+learn and classify images with high accuracy. Some of the most notable \ac{CNN}
+architectures include AlexNet \cite{DBLP:conf/nips/KrizhevskySH12}, which was
+developed in 2012 and has 60 million parameters. The VGG networks
+\cite{DBLP:journals/corr/SimonyanZ14a}, developed in 2014, range from 132 to 143
+million parameters. Inception \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}, developed
+in 2014, has 27 million parameters in its third version. And the ResNet networks
+\cite{DBLP:conf/cvpr/HeZRS16}, developed in 2015, range from 11 to 60
 million parameters. \\
 
 
@@ -69,7 +69,7 @@ Brain Surgeon
 \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
 The former work focuses on pruning weights based on their impact on the loss,
 approximated by its Taylor series, which requires the computation of the hessian
-matrix of the loss. However, computing the hessian matrix is Intractable in
+matrix of the loss. However, computing the hessian matrix is intractable in
 practice due to the large number of parameters in the neural networks.
 Therefore, the authors introduced a few simplifying assumptions, most notably
 the diagonal assumption for the hessian matrix: loss perturbations following
@@ -97,17 +97,17 @@ al. \cite{anwar2017structured} proposed a pruning technique on various levels
 level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a streamlined
 approach that aims at pruning the most useless channels in the layers preceding
 \ac{batch norm} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity with
-$\ell_1$ penalisation of the \ac{batch norm} scaling factors, each one
+$L_1$ penalisation of the \ac{batch norm} scaling factors, each one
 associated with a channel. Then channels are removed based on the relative
 importance of their associated scaling factor up to a predefined sparsity ratio.
-More recent work proposed an automatic policy for pruning, such as \ac{amc}
+More recent works proposed an automatic policy for pruning, such as \ac{amc}
 \cite{DBLP:conf/eccv/HeLLWLH18}, which relies on reinforcement learning with two
 interacting agents; the first one iterates over the layers of the architecture
 and defines a targeted sparsity, and the second agent implements the targeted
 sparsity using channel pruning. The \ac{amc} algorithm is either constrained by
 accuracy or efficiency, depending on the reward assigned to the agents. Going
 further with the concept of automatic pruning and architecture search,
-Ramakrishnan et al. \cite{DBLP:conf/crv/RamakrishnanSN20} adapt $\ell_1$
+Ramakrishnan et al. \cite{DBLP:conf/crv/RamakrishnanSN20} adapt $L_1$
 penalisation from \cite{DBLP:conf/iccv/LiuLSHYZ17} to model the relative
 importance of layers, groups of layers or network parts that can be removed.
 Following the same line, \cite{DBLP:conf/icml/KangH20} proposed a channel
@@ -141,21 +141,24 @@ gates as a surrogate L0 norm and penalises non-zero weights during training.
 Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
 multiplicative gaussian noise as an alternative to binary dropout
 \cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
-an unbound dropout rate. Magnitude pruning regains significant attention after
+an unbound dropout rate. Magnitude pruning regained significant attention after
 the publication of the Lottery Ticket Hypothesis
-\cite{DBLP:conf/iclr/FrankleC19}ttery Tickets, whose training with initial
+\cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
+\cite{DBLP:conf/iclr/FrankleC19} shows that large pretrained networks
+encompass subnetworks, called \textit{Lottery Tickets}, whose training with initial
 weights taken from the large networks yields comparably accurate classifiers. To
 extract the lottery ticket, it is necessary to train the large network up to
 convergence, apply magnitude pruning and restore the original values of the
 unpruned weights. This Lottery Ticket can then be trained to match the level of
 performances of the large network, with at most the same number of epochs
 needed. Although remarkable, this result is hardly applicable in practice since
-it requires multiple computationally intensive training steps.\\
+it requires multiple computationally intensive training steps to obtain trained
+sparse subnetwork.\\
 
 
 These structured or unstructured methods propose different saliency indicators
 and pruning criteria that aim at identifying and removing redundant or
-unnecessary weights or groups of weights in order to remove them. Removing
+unnecessary weights or groups of weights to remove them. Removing
 weights introduces a loss of functional performance - depending on the task
 considered - that needs to be compensated for (with the exception of
 \cite{DBLP:conf/icml/KangH20}). This is achieved through fine-tuning the sparse
@@ -173,10 +176,10 @@ models the tensor of the parameters of the surrogate network as the Hadamard
 product of a weight tensor and an implicit mask. The latter makes it possible to
 implement unstructured pruning constrained with a budget loss that precisely
 controls the number of non-zero connections in the resulting network.
-Experiments conducted on the CIFAR10 and the TinyImageNet classification tasks,
-using standard primary architectures (namely Conv4, VGG19 and ResNet18), show
-the the ability of our method to train effective surrogate pruned networks
-without any fine-tuning.
+Experiments conducted on the CIFAR10, CIFAR100 and the TinyImageNet
+classification tasks, using standard primary architectures (namely Conv4, VGG16,
+ResNet20 and ResNet18), show the the ability of our method to train effective
+surrogate pruned networks without any fine-tuning.
 
 % endregion
 
@@ -187,10 +190,11 @@ $f$ of two variables: $\theta$ and $X$. $f$ can be seen as the topology of the
 network: a computation graph whose edge values are given by $\theta$. Indeed,
 $\theta$ is the set of weights of the network: $\theta = \{\mathbf{w}_1,
 \mathbf{w}_2, \ldots, \mathbf{w}_L\}$, where $L$ is the number of layer of the
-network. $X$ is the input taken by the network. The input $X$ is an element of a
+network. $X$ is the input given to the network. The input $X$ is an element of a
 dataset $\mathcal{D}=\{ \mathcal{X}, \mathcal{Y} \}$, where $\mathcal{X}$ is the
 set of the input data, and $\mathcal{Y}$ is the set of the corresponding labels.
-The elements of $\mathcal{X}$ and $\mathcal{Y}$ are real-valued tensors.
+The elements of $\mathcal{X}$ and $\mathcal{Y}$ are real-valued tensors. This
+functional conception of a neural network can be formally written as:
 
 \begin{equation}
     % \centering
@@ -201,7 +205,7 @@ The elements of $\mathcal{X}$ and $\mathcal{Y}$ are real-valued tensors.
              X & \mapsto & f(X, \theta) = \hat{y} 
           \end{array}
   \endgroup
-\end{equation}
+\end{equation}\\
 
 Evaluating the neural network $f(X_i, \theta)$ yields the output $\hat{y_i}$
 which is the prediction of the network for the input $X_i$. The discrepancy
@@ -218,7 +222,7 @@ which is useful for computing the weight budget. \\
 
 We aim to propose an end-to-end method that fits into the backpropagation
 framework. Therefore, adding a $L_0$ regulariser and a $L_0$ based weight budget
-is not possible since $L_0$ norm is not differentiable. Thus we propose our
+is not possible since $L_0$ norm is not differentiable. Thus, we propose our
 differentiable reparametrisation, which seeks to define a novel weight
 expression related to magnitude pruning
 \cite{DBLP:conf/nips/CunDS89,DBLP:conf/nips/HanPTD15}. This expression
@@ -229,7 +233,7 @@ mask that \emph{(i)} multiplies weights by soft-pruning factors which capture th
 importance and \emph{(ii)} pushes less important weights to zero through a particular
 budget added to the loss function $\mathcal{L}$. \\
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centerline{\includegraphics[width=12.5cm]{chapter_1/assets/comparison_reparam_vs_mag_pruning.pdf}}
   \caption{Comparison of our method and magnitude pruning. Magnitude pruning
   does not include any prior on weights during the initial training phase
@@ -244,12 +248,12 @@ Our proposed framework allows for a joint optimisation of the network weights
 and topology. On the one hand, it prevents disconnections which may lead to
 degenerate networks with an irrecoverable performance drop. On the other hand,
 it allows reaching a targeted pruning budget in a more convenient way than $L_1$
-regularisation. Our reparametrisation also helps minimise the discrepancy
-between the primary and the surrogate networks by maintaining competitive
-performances without fine-tuning. Learning the surrogate network requires only
-one step that achieves pruning as a part of network design. This step zeroes out
-the targeted number of connections by constraining their reparametrised weights
-to vanish.
+regularisation (cf. \cref{sec:chap1:impact_of_budget_loss}). Our
+reparametrisation also helps minimise the discrepancy between the primary and
+the surrogate networks by maintaining competitive performances without
+fine-tuning. Learning the surrogate network requires only one step that achieves
+pruning as a part of network design. This step zeroes out the targeted number of
+connections by constraining their reparametrised weights to vanish.
 
 \subsection{Weight Reparametrisation}
 \label{sec:chap1:weight_reparam}
@@ -288,7 +292,7 @@ $\mathbf{w}_\ell$ of $f$ by applying the following reparametrisation:
   \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
 \end{equation}
 \noindent with $h_t$ being the reparametrisation function and $t$ its
-temperature parameter. Here, $\odot$ represents the Hadamar product. It means
+temperature parameter (cf. \cref{eqn:chap1:reparam_prop4}). Here, $\odot$ represents the Hadamar product. It means
 that the reparametrisation is element-wise, and every single weight has its own
 reparametrisation. This reparametrisation function enforces the prior that
 smallest weights should be removed from the network and act as a surrogate $L_0$
@@ -357,9 +361,9 @@ small $\varepsilon$, it exists a temperature $t$ which guarantees that the
 reparametrisation of any $x$ is smaller than $\varepsilon$, provided that $x$ is
 in the segment $[-a, a]$. Hence, $h_t$ acts as a stopband filter, eliminating
 the smallest weights where the parameter $t$ controls the width of that filter.
-\\
-
-
+\Cref{fig:chap1:reparam_funct_varying_t} shows the impact of $t$ on the shape of
+the function, more precisely on the width of its pit, when the expresion of
+$h_t$ is the one of \cref{eqn:chap1:stable_h_expression}.\\
 
 \begin{figure}
     \centering
@@ -368,7 +372,7 @@ the smallest weights where the parameter $t$ controls the width of that filter.
         \label{fig:chap1:reparam_funct_varying_n}} \subfloat[$h_{t}$ with $n=2$
     and varying $t$]{
         \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_funct_varying_t.pdf}
-        \label{fig:chap1:reparam_funct_varying_t}} \caption{\centering
+        \label{fig:chap1:reparam_funct_varying_t}} \caption{
     Reparametrisation function $h_t$ with varying temperature parameter $t$ and
     power $n$. $t$ controls the width of the pit, and $n$ controls the steepness
     of the slope.}
@@ -376,7 +380,7 @@ the smallest weights where the parameter $t$ controls the width of that filter.
 \end{figure}
 
 Weight distribution varies tremendously from one layer to another. In order to
-match a specific budget (see \cref{sec:chap1:budget_loss}), the width of the
+match a specific budget (cf. \cref{sec:chap1:budget_loss}), the width of the
 stopband, controlled by $t$, is tuned according to the weight distribution of
 each layer. The manual setting of this parameter is non-trivial and cumbersome,
 so in practice, $t$ is learned as a part of gradient descent on a layer-by-layer
@@ -388,7 +392,7 @@ basis.\\
 
 
 Considering the aforementioned four properties of $h_t$, a simple choice of that
-function is 
+function is:
 \begin{equation}
   \label{eqn:chap1:h_star_expression}
   h_t^*(x) = \exp\bigg\{{-\displaystyle\frac{1}{(tx)^n}}\bigg\}, ~ n\in 2\mathds{N},
@@ -396,15 +400,16 @@ function is
 \noindent where $n$ controls the crispness of $h_t^*$. $n$ is not considered as
 a parameter of $h_t$ (or $h_t^*$) since we use a fixed value for our
 experiments, whereas $t$ is a learnt parameter and varies from one layer to
-another. Although the function described in \cref{eqn:chap1:h_star_expression}
-satisfies the four above properties, $h_t^*$ suffers from numerical instability
-as it generates \ac{nan} outputs in most of the widely used deep learning
-frameworks. Due to the way Backpropagation works, a single \ac{nan} in a weight
-tensor makes the whole optimisation process for the entire network no longer
-possible. We consider instead a stabilised variant with a similar behaviour, as
-\cref{eqn:chap1:h_star_expression},  that still satisfies the four above
-properties (see also \cref{fig:chap1:h_stable_vs_unstable}). This numerically
-stable variant is  defined as 
+another. \Cref{fig:chap1:reparam_funct_varying_n} show the impact of n on the
+general sharpness of the function. Although the function described in
+\cref{eqn:chap1:h_star_expression} satisfies the four above properties, $h_t^*$
+suffers from numerical instability as it generates \ac{nan} outputs in most of
+the widely used deep learning frameworks. Due to the way Backpropagation works,
+a single \ac{nan} in a weight tensor makes the whole optimisation process for
+the entire network no longer possible. We consider instead a stabilised variant
+with similar behaviour, as \cref{eqn:chap1:h_star_expression},  that still
+satisfies the four above properties. This numerically stable variant is defined
+as:
 \begin{equation}
   \label{eqn:chap1:stable_h_expression}
   h_t(x) = C_1 \biggl( \text{exp} \bigg\{-\displaystyle\frac{1}{(tx)^n +1}\bigg\} - C_2 \biggr),
@@ -424,7 +429,7 @@ continued numerical instability if not carefully chosen. The addition of the
 value 1 to the denominator provides a straightforward and sufficient mean to
 stabilise the function. Constants $C_1$ and $C_2$ are introduced to compensate
 for the slight alterations to the shape of the function caused by the addition
-of 1 to the denominator and thus to ensure that the first property
+of 1 to the denominator, and thus, to ensure that the first property
 (\cref{eqn:chap1:reparam_prop1}) is respected. Although both $h_t^*$ and $h_t$
 satisfy the four properties, they do not possess the exact same shapes, as
 demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
@@ -432,7 +437,7 @@ demonstrated in figure (\ref{fig:chap1:h_stable_vs_unstable}).\\
 \begin{figure}
   \centering
   \centerline{\includegraphics[width=0.49\linewidth]{chapter_1/assets/h_stable_vs_unstable.pdf}}
-  \caption{\centering The unstable reparametrisation function $h_t^*$ and its
+  \caption{ The unstable reparametrisation function $h_t^*$ and its
   stable alternative $h_t$, with $t=1$ and $n=4$ for both functions.} 
   \label{fig:chap1:h_stable_vs_unstable}
 \end{figure}
@@ -447,7 +452,7 @@ results compared to methods that consider the weight budget during optimisation.
 Our method introduces a budget loss term, in addition to the main task loss
 term, that drives the network to match and respect a given weight budget during
 the training process. Consequently, the trained network can be pruned to the
-desired pruning rate with a marginal loss in accuracy and does not need
+desired pruning rate with a marginal loss in performance and does not need
 fine-tuning.\\
 
 
@@ -474,7 +479,7 @@ the {\em targeted} one. For better conditioning of this combination, we
 normalise the budget loss by $C_\text{initial}$. The latter corresponds to the
 cost of the primary unpruned network, which is set in practice to the number of
 its parameters (see also \cref{sec:chap1:experiments}). Hence,
-\cref{eqn:chap1:simple_budget} is updated as  \\
+\cref{eqn:chap1:simple_budget} is updated as:\\
 
 \begin{equation}
   \label{eqn:chap1:real_budget}
@@ -493,10 +498,10 @@ leading to\\
 
 Ideally, the budget of a neural network could be evaluated as the number of
 multiply-add operations, often referred to as \ac{FLOPs}, needed for a forward
-pass or through the $\ell_0$ norm of its weights. However, neither are known to
+pass or through the $L_0$ norm of its weights. However, neither are known to
 be differentiable and, therefore, cannot be used in a gradient-based
-optimisation. In order to circumvent this limitation, we use our weight
-reparametrisation as a surrogate measure of $\ell_0$, and we define the cost
+optimisation. In order to circumvent these limitations, we use our weight
+reparametrisation as a surrogate measure of $L_0$, and we define the cost
 function as \\
 
 \begin{equation}
@@ -511,9 +516,9 @@ function as \\
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_num_params_per_layer.pdf}
       \label{fig:chap1:num_parap_vgg16}} \subfloat[Normalisation factor]{
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/vgg16_normalization_factor_per_layer.pdf}
-      \label{fig:chap1:norm_factor_vgg16}} \caption{\centering Log-scale plot of
+      \label{fig:chap1:norm_factor_vgg16}} \caption{ Log-scale plot of
       number of parameters and normalisation factor per layer for a VGG16
-      network. The significant differences in term of the number of parameters
+      network. The significant differences in terms of the number of parameters
       yields dramatically different normalisation factors. Some of them are 4
       orders of magnitude apart, and all of them are vanishingly small compared
       to a common main task loss value.} 
@@ -538,6 +543,67 @@ $C_\text{initial}$, as done in \cref{eqn:chap1:real_budget}.\\
 
 % endregion
 
+\section{Overview}
+\label{sec:chap1:overview}
+
+Our method is a combination of a weight reparametrisation and a budget loss. The
+two are combined in a global method that can be used in a standard training
+procedure using gradient descent. In the \cref{sec:chap1:experiments} our
+results are obtained after following the procedure described in
+\cref{alg:chap1:training_pruning}. In \cref{sec:chap1:impact_of_fine_tuning} the
+procedure is the same, except that the \emph{effective pruning} is applied before the
+training, which in this case is called fine-tuning because the initial weights
+$\theta$ are already tuned.\\
+
+\begin{algorithm}
+  \caption{Our training procedure}
+  \label{alg:chap1:training_pruning}
+  \begin{algorithmic}
+  \REQUIRE Dataset $\mathcal{D} = \{\mathcal{X}, \mathcal{Y}\}$, network $f$,
+  weights $\theta$, number of epochs $n$, mixing coefficient $\lambda$, learning
+  rate $\eta$, pruning rate $p$
+  \FOR{$t = 1$ to $n$}
+      \FOR{each $(x,y) \in \mathcal{D}$}
+          \STATE Compute the output of the network $\hat{y} = f(x; \theta_t)$
+          \STATE Compute the loss $\mathcal{L}= \mathcal{L}_{task}(y, \hat{y}) + \lambda \cdot \mathcal{L}^{p}_{budget}(\theta_t)$
+          \STATE Backpropagate the loss and update the weights $\theta_{t+1} = \theta_t - \eta \nabla_{\theta} \mathcal{L}$
+      \ENDFOR
+  \ENDFOR
+  \RETURN Trained network $f$
+  \STATE Perform \emph{effective pruning} on the weights $\theta$: set to 0 the
+  smallest $p$\% of the weights $w\in\theta$
+  \RETURN Trained and pruned network $f$
+  \end{algorithmic}
+  \end{algorithm}
+
+
+The interested reader can grasp a better understanding of the key differences of
+our method compared to the standard pruning pipeline that applies to most
+pruning methods, not only magnitude pruning method, by looking at
+\cref{fig:chap1:pruning_pipeline_comparison}. It highlights the fact that the
+target pruning rate is taken into account from the beginning thanks to the budget
+loss, and therefore, the network does not need a fine-tuning step after the
+\emph{effective pruning} step. On the contrary, the standard pruning pipeline
+applies the \emph{pruning criterion} and the \emph{effective pruning} after the
+initial training. This results in a drop in performance that needs to be
+compensated for with fine-tuning. \\
+
+\begin{figure}
+\centering
+\subfloat[Our Pipeline\label{fig:chjap1:our_pipeline}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/pipeline_comparison_with_pruning_reparam_pr.pdf}}
+\subfloat[Standard Pruning Pipeline\label{fig:chap1:standard_pruning_pipeline}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/pipeline_comparison_with_pruning_mag_pr.pdf}}
+  \caption{ Principle scheme of our pruning pipeline and the standard
+  pruning pipeline. With our pruning pipeline, the target pruning rate that will
+  be enforced during the \emph{effective pruning} step, is taken into account
+  from the beginning. Thus, our method does not need a fine-tuning step. In
+  contrary, the standard pruning pipeline applies the \emph{pruing criterion}
+  and the \emph{effective pruning} after the initial training. This results in a
+  drop in performance that needs to be compensated for with fine-tuning.}
+  \label{fig:chap1:pruning_pipeline_comparison}
+\end{figure}
+
 \section{Experiments And Results}
 \label{sec:chap1:experiments}
 
@@ -549,9 +615,9 @@ impact of our method on several neural network architectures: VGG16
 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4 \cite{DBLP:conf/iclr/FrankleC19},
 ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. This study will allow us
 to demonstrate the effectiveness of our method for compressing image
-classification models, as well as its influence on prediction accuracy. To that
-extent, we will review the impact of both our reparametrisation and our budget
-loss.\\
+classification models, as well as its influence on the performance, which is the
+prediction accuracy in this case. To that extent, we will review the impact of
+both our reparametrisation and our budget loss.\\
 
 The CIFAR10 and CIFAR100 datasets both contain 60,000 colour images of size
 32x32 pixels, split into 10 and 100 classes, respectively. The TinyImageNet
@@ -565,7 +631,7 @@ training set. \Cref{tab:chap1:datasets} summaries the composition of the three
 datasets.\\
 
 
-\begin{table}[h]
+\begin{table}[ht]
   \centering
   \begin{tabular}{lcccc}
     \toprule
@@ -595,14 +661,14 @@ models. In our experiments, we use ResNet18 exclusively for TinyImageNet and the
 other networks for CIFAR10 and CIFAR100.\\
 
 
-\begin{table}[h]
+\begin{table}[ht]
   \centering
   \begin{tabular}{lllll}
   \cline{2-5}
                        & Conv4     & VGG16      & ResNet20 & ResNet18   \\ \hline
   Number of Parameters & 2,425,930 & 14,728,266 & 269,034  & 11,685,608 \\ \hline
   \end{tabular}
-  \caption{\centering number of parameters for the four neural network architectures used.}
+  \caption{ number of parameters for the four neural network architectures used.}
   \label{tab:chap1:networks_size}
 \end{table}
 
@@ -621,13 +687,15 @@ fine-tuning. Both methods share the following setup: networks are trained during
 policy is applied to the learning rate: if the validation accuracy is not
 improving for 10 epochs in a row, then the learning rate is decreased by a
 factor of 0.3. A weight decay is applied on the weights with a penalisation
-factor of $5\times10^{−5}$. An Early Stopping policy was used to stop the
-training prematurely if no improvement of the test accuracy is observed in 60
-epochs. To keep the comparison fair, for magnitude pruning, the 300 epochs are
-split into two phases: the first 150 epochs are dedicated to the training of the
-network, and the last 150 epochs are used for fine-tuning the pruned network. In
-the fine-tuning phase, the learning rate is divided by 100 for better
-convergence. \\
+factor of $5\times10^{−5}$. This value is lower than the more conventional value
+of $1\times10^{-4}$, because we want some weights to be able to drift away from the
+origin, and therefore, escape from the pit of $h_t$. An Early Stopping policy was
+used to stop the training prematurely if no improvement of the test accuracy is
+observed in 60 epochs. To keep the comparison fair, for magnitude pruning, the
+300 epochs are split into two phases: the first 150 epochs are dedicated to the
+training of the network, and the last 150 epochs are used for fine-tuning the
+pruned network. In the fine-tuning phase, the learning rate is divided by 100
+for better convergence. \\
 
 Results are repported on
 \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
@@ -635,15 +703,15 @@ In the figures mentioned above, our method (denoted \emph{Ours}) is compared to
 magnitude pruning with and without fine-tuning (denoted \emph{MP w/ FT} and
 \emph{MP w/o FT}, respectively). All three methods are evaluated on the test
 fold of the dataset once the network has been pruned up to the pruning rate
-indicated on the \emph{x-axis}. The test accuracy is reported on the
-\emph{y-axis} as a float between 0 and 1 (0 being all images wrongly classified
-and 1 being all images correctly classified). Each solid line representing a
-method is the mean of 5 independent runs. The coloured area surrounding the
-solid line represents the range within plus or minus one standard deviation. In
-addition to the three methods, the dashed lines represent the performances of an
-unpruned network trained without weight reparametrisation and budget loss
-(denoted \emph{baseline}) and the accuracy of our method before the effective
-pruning (denoted \emph{Ours (pre pruning)}). Sub-figures (c) and (d) of
+indicated on the \emph{x-axis}. The test accuracy is reported on the \emph{y-axis} as a float between
+0 and 1 (0 being all images wrongly classified and 1 being all images correctly
+classified). Each solid line representing a method is the mean of 5 independent
+runs. The coloured area surrounding the solid line represents the range within
+plus or minus one standard deviation. In addition to the three methods, the
+dashed lines represent the performances of an unpruned network trained without
+weight reparametrisation and budget loss (denoted \emph{baseline}) and the
+accuracy of our method before the effective pruning (denoted \emph{Ours (pre
+pruning)}). Sub-figures (c) and (d) of
 \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
 represents the number of epochs (\emph{y-axis}) needed to obtain the best model
 for each method, depending on the pruning rate (\emph{x-axis}).\\
@@ -687,7 +755,7 @@ the effective pruning step.\\
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar10.pdf}}
   \subfloat[Conv4 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs}]{
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar100.pdf}}
-  \caption{\centering Performances comparison of our method {\em(Ours)} against
+  \caption{ Performances comparison of our method {\em(Ours)} against
   magnitude pruning without {\em(MP w/o FT)} and with fine-tuning {\em(MP w/ FT)} with a Conv4 network on
   CIFAR10 and CIFAR100 datasets, for different pruning rates.
   \Cref{fig:chap1:reparam_vs_mpft_conv4_cifar10} and
@@ -713,7 +781,7 @@ the effective pruning step.\\
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar100.pdf}}
 
     
-  \caption{\centering Performances comparison of our method \em{(Ours)} against
+  \caption{ Performances comparison of our method \em{(Ours)} against
   magnitude pruning with fine-tuning \em{(MP+FT)} with a VGG16 network on
   CIFAR10 and CIFAR100 datasets, for different pruning rates.
   \Cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10} and
@@ -735,7 +803,7 @@ the effective pruning step.\\
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar10.pdf}}
   \subfloat[ResNet20 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}]{
       \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar100.pdf}}
-  \caption{\centering Performances comparison of our method \em{(Ours)} against
+  \caption{ Performances comparison of our method \em{(Ours)} against
   magnitude pruning with fine-tuning \em{(MP+FT)} with a ResNet20 network on
   CIFAR10 and CIFAR100 datasets, for different pruning rates.
   \Cref{fig:chap1:reparam_vs_mpft_resnet20_cifar10} and
@@ -772,18 +840,19 @@ detailed for different pruning rates in
 \cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.
 In these figures, the achieved budget is computed as the sum of the weights reparametrisation\\
 
-For low pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_90}), a low
-value of lambda does not enforce the respect of the budget and in this case, the
+For low pruning rates (\cref{fig:chap1:lambda_impact_pruning_90}), a low value
+of $\lambda$ does not enforce the respect of the budget and in this case, the
 final network has a smaller achieved budget than the targeted one. Similarly,
-for higher pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_99}), a low
-value of lambda results in a budget in excess compared to the targeted one. In
-both cases, the performances of networks trained with a low value of $\lambda$
-are subpar compared to higher values, as reported in
+for higher pruning rates (\cref{fig:chap1:lambda_impact_pruning_99}), a low
+value of $\lambda$ results in a budget in excess compared to the targeted one.
+In both cases, the performances of networks trained with a low value of
+$\lambda$ are subpar compared to higher values, as reported in
 \cref{tab:chap1:lambda_impact}. On the opposite of the spectrum, high values of
 $\lambda$ lay too much emphasis on the budget loss, and the network performances
-are negatively impacted. Following the abovementioned considerations, we set the
-value of $\lambda$ to 5 for all the experiments. This value strikes the best
-balance between the two objectives: budget loss and main task loss.
+are negatively impacted, even though the budget is respected. Following the
+abovementioned considerations, we set the value of $\lambda$ to 5 for all the
+experiments. This value strikes the best balance between the two objectives:
+budget loss and main task loss.
 
 % region: lambda_impact_figures
 
@@ -796,7 +865,7 @@ balance between the two objectives: budget loss and main task loss.
   \\
   \subfloat[Pruning 99\% of the weights\label{fig:chap1:lambda_impact_pruning_99}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR10.pdf}}
-    \caption{\centering Impact of the parameter $\lambda$ on the achieved final
+    \caption{ Impact of the parameter $\lambda$ on the achieved final
     budget for a Conv4 network on CIFAR10 dataset, for various pruning rates. A
     too-small value of $\lambda$ does not make the actual budget match the desired
     budget. The actual budget is either too small
@@ -831,7 +900,7 @@ balance between the two objectives: budget loss and main task loss.
       \bottomrule
     \end{tabular}
   \end{center}
-  \caption{\centering
+  \caption{
     Impact of the parameter $\lambda$ on the achieved budget and the post-pruning test accuracy of the model for a Conv4 network on the CIFAR10 dataset
     for various pruning rates. Although a high value of $\lambda$ ensures 
     the target budget is reached, it also leads to a lower test accuracy when
@@ -853,8 +922,8 @@ loss, the value of $\lambda$ is set to zero 0 in \cref{eqn:chap1:globalloss}. In
 second variant, we varied the mixing coefficient $\lambda$ between 0.1 and 100.
 Considering the same issue of loss conditioning as in
 \cref{sec:chap1:budget_loss}, the $L_1$ loss is divided by the total number of
-parameters before being added to the global loss. The new global loss is
-expressed as :
+parameters before being added to the global loss. This specific global loss is
+expressed as:
 
 \begin{equation}
   \label{eqn:chap1:globalloss_l1}
@@ -881,12 +950,12 @@ with the budget loss. This is particularly visible in
 Removing the budget loss does not allow to introduce sparsity, much less to
 respect a target budget. Therefore, effective pruning impacts all the more
 negatively the network performance since it was not trained with a prior on
-neither sparsity nor budget. \\
+either sparsity or budget. \\
 
 Replacing the budget loss with a $L_1$ regularisation loss (variant \emph{(ii)})
 also impacts negatively the performance, with the exception of the ResNet20
-network (\cref{fig:chap1:no_budget_resnet20}). Although the performance are
-generally worse than our method (\emph{w/ budget}), results idicate that the
+network (\cref{fig:chap1:no_budget_resnet20}). Although performances are
+generally worse than our method (\emph{w/ budget}), results indicate that the
 mixing coefficient $\lambda$ has a major importance. Indeed, the $L_1$
 regulatisation does not target a precise budget, however, it still introduces
 sparsity in the network. Thus, for certain pruning rates, the variant
@@ -913,11 +982,11 @@ scenarios.\\
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_Conv4.pdf}}
     \subfloat[Conv4 CIFAR100\label{fig:chap1:no_budget_conv4_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_Conv4.pdf}}
-    \caption{\centering Comparison of our method and its vairant without the
-    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    \caption{ Comparison of our method and its variant without the
+    budget loss. The experimental results are denoted \emph{$L_1$ reg.}, wherein
     the budget loss is replaced by a $L_1$ regularisation loss on the network
     weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
-    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    depending on the experiment. \emph{w/o budget} denotes the absence of the
     budget loss (this is equivalent to $\lambda = 0$). On the other hand,
     \emph{w/ budget} corresponds to our method, with the same setup as described
     in \cref{sec:chap1:performances}. Results are presented for a Conv4 network,
@@ -934,11 +1003,11 @@ scenarios.\\
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableResNet20.pdf}}
     \subfloat[ResNet20 CIFAR100\label{fig:chap1:no_budget_resnet20_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableResNet20.pdf}}
-    \caption{\centering Comparison of our method and its vairant without the
-    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    \caption{ Comparison of our method and its variant without the
+    budget loss. The experimental results are denoted \emph{$L_1$ reg.}, wherein
     the budget loss is replaced by a $L_1$ regularisation loss on the network
     weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
-    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    depending on the experiment. \emph{w/o budget} denotes the absence of the
     budget loss (this is equivalent to $\lambda = 0$). On the other hand,
     \emph{w/ budget} corresponds to our method, with the same setup as described
     in \cref{sec:chap1:performances}. Results are presented for a ResNet20
@@ -955,11 +1024,11 @@ scenarios.\\
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableVGG16.pdf}}
     \subfloat[VGG16 CIFAR100\label{fig:chap1:no_budget_vgg16_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableVGG16.pdf}}
-    \caption{\centering Comparison of our method and its vairant without the
-    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    \caption{ Comparison of our method and its variant without the
+    budget loss. The experimental results are denoted \emph{$L_1$ reg.}, wherein
     the budget loss is replaced by a $L_1$ regularisation loss on the network
     weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
-    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    depending on the experiment. \emph{w/o budget} denotes the abscence of the
     budget loss (this is equivalent to $\lambda = 0$). On the other hand,
     \emph{w/ budget} corresponds to our method, with the same setup as described
     in \cref{sec:chap1:performances}. Results are presented for a VGG16 network,
@@ -973,7 +1042,7 @@ scenarios.\\
 % \subsection{Impact of the reparametrisation}
 % \label{sec:chap1:impact_of_reparametrisation}
 
-\subsection{Fine tuning context}
+\subsection{Fine-tuning context}
 \label{sec:chap1:impact_of_fine_tuning}
 
 Although the method presented in this chapter was designed from the ground up to
@@ -1001,7 +1070,15 @@ consistent from one run to another. This is illustrated by the standard
 deviation being so small that the colored area around the solid line is barely
 visible on the graphs. This is not the case for the conventional fine-tuning
 where performances vary greatly from one run to another. This is especially
-visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}. 
+visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.\\
+
+Although the method presented in this chapter was not designed to be used for
+fine-tuning networks, it achieves better performances than the popular standard
+fine-tuning. Indeed, it also shows an improvement in recovering from the performance drop
+that follows pruning. Moreover, the obtained networks are more consistent from
+one run to another than the networks produced by conventional fine-tuning. This
+reduces the susceptibility of the method to the random initialisation of the
+network and the random choice of the training set. \\ 
 
 % region: fine-tuning
 
@@ -1011,7 +1088,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_Conv4.pdf}}
   \subfloat[Conv4 CIFAR100\label{fig:chap1:finetuning_impact_conv4_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_Conv4.pdf}}
-  \caption{\centering Fine-tuning of a Conv4 network pruned by magnitude pruning
+  \caption{ Fine-tuning of a Conv4 network pruned by magnitude pruning
   (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets for various pruning
   rates. Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning
   with our method (\emph{pruned+FT (w/ our method)}). Our method is shown for
@@ -1028,7 +1105,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableResNet20.pdf}}
   \subfloat[ResNet20 CIFAR100\label{fig:chap1:finetuning_impact_resnet20_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableResNet20.pdf}}
-  \caption{\centering Fine-tuning of a ResNet20 network pruned by magnitude
+  \caption{ Fine-tuning of a ResNet20 network pruned by magnitude
   pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
   pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
   fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
@@ -1044,7 +1121,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableVGG16.pdf}}
   \subfloat[VGG16 CIFAR100\label{fig:chap1:finetuning_impact_vgg16_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableVGG16.pdf}}
-  \caption{\centering Fine-tuning of a ResNet20 network pruned by magnitude
+  \caption{ Fine-tuning of a ResNet20 network pruned by magnitude
   pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
   pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
   fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
@@ -1059,4 +1136,4 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
 
 
 
-\section{Conclusion and perspectives}
+\section{Conclusion and Perspectives}
