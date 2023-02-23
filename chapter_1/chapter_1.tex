@@ -225,8 +225,8 @@ expression related to magnitude pruning
 corresponds to the Hadamard product involving a weight tensor and a function
 applied entry-wise to the same tensor (as shown in
 \cref{fig:chap1:comparison_reparam_vs_mag_pruning}). This function acts as a
-mask that i) multiplies weights by soft-pruning factors which capture their
-importance and ii) pushes less important weights to zero through a particular
+mask that \emph{(i)} multiplies weights by soft-pruning factors which capture their
+importance and \emph{(ii)} pushes less important weights to zero through a particular
 budget added to the loss function $\mathcal{L}$. \\
 
 \begin{figure}[h]
@@ -759,7 +759,7 @@ the effective pruning step.\\
 
 % endregion: perfs_figures
 
-\subsection{Impact of \texorpdfstring{$\lambda$}{Lambda}}
+\subsection{Optimal value of \texorpdfstring{$\lambda$}{Lambda}}
 \label{sec:chap1:impact_of_lambda}
 Our method relies on a budget loss which relative importance compared to the
 main task loss is controlled by a parameter $\lambda$ (cf.
@@ -767,9 +767,10 @@ main task loss is controlled by a parameter $\lambda$ (cf.
 a good tradeoff between \emph{(i)} the respect of the budget, in order to
 mitigate the performance drop following the effective pruning step; and
 \emph{(ii)} the optimisation of the main task loss, which influences the final
-performances. The achieved budget as a function of the parameter $\lambda$ is
+performance. The achieved budget as a function of the parameter $\lambda$ is
 detailed for different pruning rates in
-\Cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.\\
+\cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.
+In these figures, the achieved budget is computed as the sum of the weights reparametrization\\
 
 For low pruning rates (cf. \cref{fig:chap1:lambda_impact_pruning_90}), a low
 value of lambda does not enforce the respect of the budget and in this case, the
@@ -842,6 +843,132 @@ balance between the two objectives: budget loss and main task loss.
 
 \subsection{Impact of the budget loss}
 \label{sec:chap1:impact_of_budget_loss}
+To establish the importance and the efficacy of the budget loss in our method,
+we present in this section the results of a comparative experimental analysis
+with alternative variants.  Specifically, we investigated the impact of the
+budget loss by comparing it with two other variants: \emph{(i)} a variant where the
+budget loss was removed, and \emph{(ii)} a variant where the budget loss is replaced
+with an $L_1$ regularization loss on the network weights. To remove the budget
+loss, the value of $\lambda$ is set to zero 0 in \cref{eqn:chap1:globalloss}. In the
+second variant, we varied the mixing coefficient $\lambda$ between 0.1 and 100.
+Considering the same issue of loss conditioning as in
+\cref{sec:chap1:budget_loss}, the $L_1$ loss is divided by the total number of
+parameters before being added to the global loss. The new global loss is
+expressed as :
+
+\begin{equation}
+  \label{eqn:chap1:globalloss_l1}
+  \mathcal{L} = \mathcal{L}_{task} + \lambda \cdot \frac{1}{N} \sum_{i=1}^{N} \left| w_i \right|
+\end{equation}
+
+Where $|~.~|$ represents the absolute value, and $N$ is the total number of
+parameters in the network (as reported in \cref{tab:chap1:networks_size}).\\
+
+In both variants, the reparametrisation is kept in order to isolate the impact
+of the budget loss. We evaluated the performance of our approach and the two
+variants on the CIFAR10 and CIFAR100 datasets using Conv4, VGG16, and ResNet20
+networks. The results are presented in
+\cref{fig:chap1:no_budget_conv4,fig:chap1:no_budget_resnet20,fig:chap1:no_budget_vgg16}.
+In the figures mentioned above, the variant without the budget loss is denoted
+\emph{w/o budget}, and the variant with a $L_1$ regularisation loss is referred
+as \emph{$L_1$ reg.}. The results denoted \emph{w/ budget} represents our method
+in the same setup as in \cref{sec:chap1:performances}.\\
+
+Removing the budget loss (variant \emph{(i)}) negatively impacts the network
+performances. The test accuracy is systematically lower than the one obtained
+with the budget loss. This is particularly visible in
+\cref{fig:chap1:no_budget_conv4_cifar100,fig:chap1:no_budget_vgg16_cifar100}.
+Removing the budget loss does not allow to introduce sparsity, much less to
+respect a target budget. Therefore, effective pruning impacts all the more
+negatively the network performance since it was not trained with a prior on
+neither sparsity nor budget. \\
+
+Replacing the budget loss with a $L_1$ regularisation loss (variant \emph{(ii)})
+also impacts negatively the performance, with the exception of the ResNet20
+network (\cref{fig:chap1:no_budget_resnet20}). Although the performance are
+generally worse than our method (\emph{w/ budget}), results idicate that the
+mixing coefficient $\lambda$ has a major importance. Indeed, the $L_1$
+regulatisation does not target a precise budget, however, it still introduces
+sparsity in the network. Thus, for certain pruning rates, the variant
+\emph{(ii)} can exhibit better results than our method (especially visible on
+\cref{fig:chap1:no_budget_resnet20_cifar10,fig:chap1:no_budget_resnet20_cifar100}).
+Nevertheless, the choice of $\lambda$ is critial and not trivial. Because of the
+absence of a budget loss, the level of sparsity is to be controlled only by the
+parameter $\lambda$, which makes it difficult to find a single value suited for
+a large range of pruning rates, networks and datasets.\\
+
+In contrast, our method is able to achieve good performance accross multiple and
+diverse conditions, without the need to fine-tune the value of $\lambda$.
+Experiments presented in this section reveal that the budget loss is a critical
+component of the method to train networks and prune them, while introducing a
+minimal impact on the performance if no fine-tuning is applied. While the $L_1$
+regularization loss may achieve superior performance in certain cases, our
+method is more straightforward and robust in its applicability across various
+scenarios.\\
+
+% region: no budget
+\begin{figure}
+  \centering
+  \subfloat[Conv4 CIFAR10\label{fig:chap1:no_budget_conv4_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_Conv4.pdf}}
+    \subfloat[Conv4 CIFAR100\label{fig:chap1:no_budget_conv4_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_Conv4.pdf}}
+    \caption{\centering Comparison of our method and its vairant without the
+    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    the budget loss is replaced by a $L_1$ regularisation loss on the network
+    weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
+    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    budget loss (this is equivalent to $\lambda = 0$). On the other hand,
+    \emph{w/ budget} corresponds to our method, with the same setup as described
+    in \cref{sec:chap1:performances}. Results are presented for a Conv4 network,
+    trained on CIFAR10 (\cref{fig:chap1:no_budget_conv4_cifar10}) and CIFAR100
+    (\cref{fig:chap1:no_budget_conv4_cifar100})} 
+      \label{fig:chap1:no_budget_conv4}
+\end{figure}
+  
+  
+
+\begin{figure}
+  \centering
+  \subfloat[ResNet20 CIFAR10\label{fig:chap1:no_budget_resnet20_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableResNet20.pdf}}
+    \subfloat[ResNet20 CIFAR100\label{fig:chap1:no_budget_resnet20_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableResNet20.pdf}}
+    \caption{\centering Comparison of our method and its vairant without the
+    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    the budget loss is replaced by a $L_1$ regularisation loss on the network
+    weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
+    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    budget loss (this is equivalent to $\lambda = 0$). On the other hand,
+    \emph{w/ budget} corresponds to our method, with the same setup as described
+    in \cref{sec:chap1:performances}. Results are presented for a ResNet20
+    network, trained on CIFAR10 (\cref{fig:chap1:no_budget_resnet20_cifar10})
+    and CIFAR100 (\cref{fig:chap1:no_budget_resnet20_cifar100})}       
+    \label{fig:chap1:no_budget_resnet20}
+\end{figure}
+  
+    
+
+\begin{figure}
+  \centering
+  \subfloat[VGG16 CIFAR10\label{fig:chap1:no_budget_vgg16_cifar10}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableVGG16.pdf}}
+    \subfloat[VGG16 CIFAR100\label{fig:chap1:no_budget_vgg16_cifar100}]{
+    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableVGG16.pdf}}
+    \caption{\centering Comparison of our method and its vairant without the
+    budget loss. The experimental reults are denoted \emph{$L_1$ reg.}, wherein
+    the budget loss is replaced by a $L_1$ regularisation loss on the network
+    weights. The mixing coefficient $\lambda$ is varied from 0.1 to 100,
+    depending on the experiment. \emph{w/o budget} denotes the asbcence of the
+    budget loss (this is equivalent to $\lambda = 0$). On the other hand,
+    \emph{w/ budget} corresponds to our method, with the same setup as described
+    in \cref{sec:chap1:performances}. Results are presented for a VGG16 network,
+    trained on CIFAR10 (\cref{fig:chap1:no_budget_vgg16_cifar10}) and CIFAR100
+    (\cref{fig:chap1:no_budget_vgg16_cifar100})}       
+    \label{fig:chap1:no_budget_vgg16}
+\end{figure}
+
+% endregion: no budget
 
 % \subsection{Impact of the reparametrization}
 % \label{sec:chap1:impact_of_reparametrization}
@@ -884,7 +1011,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_Conv4.pdf}}
   \subfloat[Conv4 CIFAR100\label{fig:chap1:finetuning_impact_conv4_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_Conv4.pdf}}
-  \caption{\centering Finetuning of a Conv4 network pruned by magnitude pruning
+  \caption{\centering Fine-tuning of a Conv4 network pruned by magnitude pruning
   (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets for various pruning
   rates. Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning
   with our method (\emph{pruned+FT (w/ our method)}). Our method is shown for
@@ -901,7 +1028,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableResNet20.pdf}}
   \subfloat[ResNet20 CIFAR100\label{fig:chap1:finetuning_impact_resnet20_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableResNet20.pdf}}
-  \caption{\centering Finetuning of a ResNet20 network pruned by magnitude
+  \caption{\centering Fine-tuning of a ResNet20 network pruned by magnitude
   pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
   pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
   fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
@@ -917,7 +1044,7 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableVGG16.pdf}}
   \subfloat[VGG16 CIFAR100\label{fig:chap1:finetuning_impact_vgg16_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableVGG16.pdf}}
-  \caption{\centering Finetuning of a ResNet20 network pruned by magnitude
+  \caption{\centering Fine-tuning of a ResNet20 network pruned by magnitude
   pruning (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various
   pruning rates. r  Conventional (\emph{MP w/ FT}) fine-tuning is compared to
   fine-tuning with our method (\emph{pruned+FT (w/ our method)}). Our method is
@@ -930,40 +1057,6 @@ visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.
 % endregion: fine-tuning
 
 
-\begin{figure}
-  \centering
-  \subfloat[Conv4 CIFAR10\label{fig:chap1:no_budget_conv4_cifar10}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_Conv4.pdf}}
-    \subfloat[Conv4 CIFAR100\label{fig:chap1:no_budget_conv4_cifar100}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_Conv4.pdf}}
-    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
-      \label{fig:chap1:no_budget_conv4}
-\end{figure}
-  
-  
-
-\begin{figure}
-  \centering
-  \subfloat[ResNet20 CIFAR10\label{fig:chap1:no_budget_resnet20_cifar10}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableResNet20.pdf}}
-    \subfloat[ResNet20 CIFAR100\label{fig:chap1:no_budget_resnet20_cifar100}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableResNet20.pdf}}
-    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
-      \label{fig:chap1:no_budget_resnet20}
-\end{figure}
-  
-    
-
-\begin{figure}
-  \centering
-  \subfloat[VGG16 CIFAR10\label{fig:chap1:no_budget_vgg16_cifar10}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableVGG16.pdf}}
-    \subfloat[VGG16 CIFAR100\label{fig:chap1:no_budget_vgg16_cifar100}]{
-    \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableVGG16.pdf}}
-    \caption{\centering Comparison of the performance of our method (\emph{Ours})}
-      \label{fig:chap1:no_budget_vgg16}
-\end{figure}
-  
 
 
 \section{Conclusion and perspectives}
