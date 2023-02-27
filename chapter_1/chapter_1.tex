@@ -663,9 +663,9 @@ other networks for CIFAR10 and CIFAR100.\\
 
 \begin{table}[ht]
   \centering
-  \begin{tabular}{lllll}
+  \begin{tabular}{lcccc}
   \cline{2-5}
-                       & Conv4     & VGG16      & ResNet20 & ResNet18   \\ \hline
+                       & \textbf{Conv4}     & \textbf{VGG16}      & \textbf{ResNet20} & \textbf{ResNet18}   \\ \hline
   Number of Parameters & 2,425,930 & 14,728,266 & 269,034  & 11,685,608 \\ \hline
   \end{tabular}
   \caption{ number of parameters for the four neural network architectures used.}
@@ -881,7 +881,7 @@ budget loss and main task loss.
   \begin{center}
     \begin{tabular}{llcc}
       \toprule
-      Pruning Rate & $\lambda$ & Achieved Budget & Test Accuracy (post pruning) \\
+      \textbf{Pruning Rate} & \textbf{$\lambda$} & \textbf{Achieved Budget} & \textbf{Test Accuracy (post pruning)} \\
       \midrule
       \multirow{4}{*}{0.9} & 0.005 & 5.25 $\pm$ 0.69 & 85.83 $\pm$ 0.83 \\
       & 0.5 & 8.06 $\pm$ 0.19 & 86.34 $\pm$ 0.64 \\
@@ -969,7 +969,7 @@ a large range of pruning rates, networks and datasets.\\
 In contrast, our method is able to achieve good performance accross multiple and
 diverse conditions, without the need to fine-tune the value of $\lambda$.
 Experiments presented in this section reveal that the budget loss is a critical
-component of the method to train networks and prune them, while introducing a
+component of the method to train networks and prune them while introducing a
 minimal impact on the performance if no fine-tuning is applied. While the $L_1$
 regularisation loss may achieve superior performance in certain cases, our
 method is more straightforward and robust in its applicability across various
@@ -1042,7 +1042,94 @@ scenarios.\\
 \subsection{Impact of the reparametrisation}
 \label{sec:chap1:impact_of_reparametrisation}
 
-\lipsum[1-2]
+The proposed method comprises two primary components: budget loss and weight
+reparametrization. The previous section establishes the significance of the
+budget loss in achieving optimal performance. In this section, we present the
+cruciality of incorporating weight reparametrization. To establish the necessity
+of weight reparametrisation, we compare our approach with a variant where the
+budget loss is applied but the weight reparametrisation is not. This variant is
+denoted \emph{budget only} in the following. The objective of this variant and
+the comparison is to isolate the impact of weight reparametrization.\\
+
+
+We evaluate the performance of our method and the \emph{budget only} variant on
+Conv4, ResNet20, and VGG16 networks using CIFAR10 and CIFAR100 datasets (see
+\Cref{fig:chap1:budget_only_conv4,fig:chap1:budget_only_resnet20,fig:chap1:budget_only_resnet20}).
+Both the proposed approach and \emph{budget only} variant are trained with the
+same hyperparameters. Among other things, the mixing coefficient $\lambda$ is
+set to 5. We perform experiments by varying $\lambda$ from 0.5 to 50, but the
+results are almost identical and the lines are indistinguishable. Therefore, we
+show the results only for $\lambda = 5$ to maintain figure clarity.\\
+
+\Cref{fig:chap1:budget_only_conv4,fig:chap1:budget_only_resnet20,fig:chap1:budget_only_resnet20}
+present the results of the performance comparison. Our method is denoted as
+\emph{budget + reparam} and is evaluated after pruning, whereas the \emph{budget
+nly} variant's results are presented both before and after pruning. On Conv4 and
+VGG16 (\cref{fig:chap1:budget_only_conv4,fig:chap1:budget_only_vgg16},
+respectively), our method performs on par with the \emph{budget only} variant
+before pruning while being already pruned, up to very high pruning rates (more
+than 98\%). On the contrary, and even for ResNet20, the \emph{budget only}
+post-pruning variant performs poorly. The \emph{budget only} variant performance
+is massively impaired by the \emph{effective pruning} step, even though the
+budget is thoroughly respected (\cref{tab:chap1:impact_of_reparametrisation}).
+In comparison, our method performs much better when both methods are pruned. The
+budget loss alone enforces a stricter adherence to the target budget
+(\cref{tab:chap1:impact_of_reparametrisation}), however, the lack of
+reparametrisation fails to prepare the network for the \emph{effective pruning}
+step. Indeed, weights are not soft-pruned and the network is not prepared for sparsity.\\
+
+\begin{table}
+\centering
+\begin{tabular}{lllc}
+  \toprule
+  \textbf{Dataset} & \textbf{Network} & \textbf{Pruning Rate} & \textbf{Achieved Budget} \\
+  \midrule
+  \multirow{9}{*}{CIFAR10} & \multirow{3}{*}{Conv4} & 0.9 & 9.99 $\pm$ 0.00 \\
+     &  & 0.95 & 4.97 $\pm$ 0.01 \\
+     &  & 0.99 & 0.98 $\pm$ 0.00 \\
+     \cline{2-4}
+   & \multirow{3}{*}{ResNet20} & 0.9 & 9.83 $\pm$ 0.02 \\
+     &  & 0.95 & 4.88 $\pm$ 0.01 \\
+     &  & 0.99 & 0.98 $\pm$ 0.00 \\
+     \cline{2-4}
+
+   & \multirow{3}{*}{VGG16} & 0.9 & 10.00 $\pm$ 0.00 \\
+     &  & 0.95 & 5.00 $\pm$ 0.00 \\
+    &  & 0.99 & 1.00 $\pm$ 0.00 \\
+    \midrule
+  \multirow{9}{*}{CIFAR100} & \multirow{3}{*}{Conv4} & 0.9 & 9.94 $\pm$ 0.02 \\
+     &  & 0.95 & 4.91 $\pm$ 0.02 \\
+    &  & 0.99 & 0.98 $\pm$ 0.00 \\
+    \cline{2-4}
+
+   & \multirow{3}{*}{ResNet20} & 0.9 & 9.84 $\pm$ 0.02 \\
+     &  & 0.95 & 4.91 $\pm$ 0.01 \\
+     &  & 0.99 & 1.00 $\pm$ 0.00 \\
+     \cline{2-4}
+
+   & \multirow{3}{*}{VGG16} & 0.9 & 10.00 $\pm$ 0.00 \\
+     &  & 0.95 & 5.00 $\pm$ 0.00 \\
+    &  & 0.99 & 1.00 $\pm$ 0.00 \\
+  \bottomrule
+  \end{tabular}
+  \caption{Achieved budget for the \emph{budget only} variant. Results are
+  presented for $\lambda=5$. Across all experiments, the achieved budget matches
+  closely the targeted budget (computed as $1-$pruning
+  rate).}
+  \label{tab:chap1:impact_of_reparametrisation}
+\end{table}
+
+The results presented in this comparison and the one of
+\cref{sec:chap1:budget_loss} indicate that both components of our method are of
+crucial importance. In particular, the reparametrization allows for a
+considerably better generalization of the network after pruning, thus enabling a
+much higher level of performance.
+\Cref{sec:chap1:impact_of_budget_loss,sec:chap1:impact_of_reparametrisation}
+demonstrate experimentally that no component of our method can be removed
+without significant impairment of the performance, and therefore, they
+function in synergy.
+
+% region: budget only
 
 \begin{figure}
 \centering
@@ -1050,9 +1137,13 @@ scenarios.\\
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
   \subfloat[Conv4 CIFAR100\label{fig:chap1:budget_only_conv4_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
-  \caption{Comparison of our method and its variant without the reparametrization.}
+  \caption{Comparison of our method and its variant without the
+  reparametrization on Conv4, evaluated on CIFAR10 and CIFAR100. Our method
+  (\emph{budget + reparam}) has similar performance to the \emph{budget only}
+  variant before pruning, whereas our method, is already pruned. Once pruned,
+  the \emph{budget only} variant is significantly impaired.}
+  \label{fig:chap1:budget_only_conv4}
 \end{figure}
-
 
 \begin{figure}
   \centering
@@ -1060,7 +1151,14 @@ scenarios.\\
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableResNet20.pdf}}
   \subfloat[ResNet20 CIFAR100\label{fig:chap1:budget_only_resnet20_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableResNet20.pdf}}
-  \caption{Comparison of our method and its variant without the reparametrization.}
+  \caption{Comparison of our method and its variant without the
+  reparametrization on ResNet20, evaluated on CIFAR10 and CIFAR100. Due to the
+  small size of the network (see \cref{tab:chap1:networks_size}), the pruned
+  version of our method (\emph{budget + reparam}) and the \emph{budget only}
+  variant cannot keep up with the unpruned version. Nevertheless, if considering
+  the pruned versions, our method scores better, thanks to the addition of the
+  reparametrization.}
+  \label{fig:chap1:budget_only_resnet20}
 \end{figure}
 
 \begin{figure}
@@ -1069,9 +1167,15 @@ scenarios.\\
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableVGG16.pdf}}
   \subfloat[VGG16 CIFAR100\label{fig:chap1:budget_only_vgg6_cifar100}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableVGG16.pdf}}
-  \caption{Comparison of our method and its variant without the reparametrization.}
+  \caption{Comparison of our method and its variant without the
+  reparametrizationn VGG16, evaluated on CIFAR10 and CIFAR100. Our method
+  (\emph{budget + reparam}) has similar performance to the \emph{budget only}
+  variant before pruning, whereas our method, is already pruned. Once pruned,
+  the \emph{budget only} variant is significantly impaired.}
+  \label{fig:chap1:budget_only_vgg16}
 \end{figure}
 
+% endregion: budget only
 
 \subsection{Fine-tuning context}
 \label{sec:chap1:impact_of_fine_tuning}
