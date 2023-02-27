@@ -1039,8 +1039,39 @@ scenarios.\\
 
 % endregion: no budget
 
-% \subsection{Impact of the reparametrisation}
-% \label{sec:chap1:impact_of_reparametrisation}
+\subsection{Impact of the reparametrisation}
+\label{sec:chap1:impact_of_reparametrisation}
+
+\lipsum[1-2]
+
+\begin{figure}
+\centering
+  \subfloat[Conv4 CIFAR10\label{fig:chap1:budget_only_conv4_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
+  \subfloat[Conv4 CIFAR100\label{fig:chap1:budget_only_conv4_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
+  \caption{Comparison of our method and its variant without the reparametrization.}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+  \subfloat[ResNet20 CIFAR10\label{fig:chap1:budget_only_resnet20_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableResNet20.pdf}}
+  \subfloat[ResNet20 CIFAR100\label{fig:chap1:budget_only_resnet20_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableResNet20.pdf}}
+  \caption{Comparison of our method and its variant without the reparametrization.}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \subfloat[VGG16 CIFAR10\label{fig:chap1:budget_only_vgg6_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableVGG16.pdf}}
+  \subfloat[VGG16 CIFAR100\label{fig:chap1:budget_only_vgg6_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableVGG16.pdf}}
+  \caption{Comparison of our method and its variant without the reparametrization.}
+\end{figure}
+
 
 \subsection{Fine-tuning context}
 \label{sec:chap1:impact_of_fine_tuning}
