@@ -3,7 +3,45 @@
 \localtableofcontents
 
 \begin{abstract}
-    abstract of this part
+  This chapter addresses the challenge of reducing the size of neural networks,
+  which have grown in size with the increase of computational power. Although
+  large neural networks have shown impressive performance across various
+  domains, they are not deployable on embedded devices due to their size. Among
+  the existing techniques, pruning is a popular approach to reduce the size of
+  neural networks by removing redundant or unnecessary weights. However, most
+  pruning methods rely on a saliency indicator that identifies the weights to be
+  removed after the training process, without consideration of the target
+  pruning rate.\\
+  \indent In this chapter, we propose an alternative approach that embeds the
+  pruning criterion within a weight reparametrization technique. In addition,
+  our method incorporates a budget loss to drive sparsity towards the target
+  pruning rate during training. The weight reparametrization acts as a mask,
+  that soft-prunes the smallest weights, while the budget loss serves as a
+  surrogate $L_0$ norm to regulate the network's budget. As a result, our
+  approach achieves a much smaller performance drop compared to other pruning
+  methods. We demonstrate experimentally the effectiveness of our method across
+  various pruning rates, datasets, and architectures, including Conv4, VGG16,
+  ResNet20 on CIFAR10 and CIFAR100, and ResNet18 on the more complex
+  TinyImageNet dataset.\\
+  \indent We also evaluate the effectiveness and relevance of our method's two
+  components in a comparative experimental analysis with variants of our
+  approach. Furthermore, we evaluate the proposed approach in a fine-tuning
+  scenario and show that it outperforms common fine-tuning methods. Our results
+  demonstrate that our proposed approach is a promising alternative to existing
+  pruning techniques, providing an efficient and effective way to reduce the
+  size of neural networks, while eliminating the need for costly fine-tuning
+  step.
+
+\noindent This chapter presents work that has resulted in the publication of the
+following conference article:
+ \bibentry{DBLP:conf/icip/DupontSM21}\\
+\begin{itemize}
+  \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight reparametrization for
+  budget-aware network pruning. In \emph{2021 IEEE International Conference on Image
+  Processing, ICIP 2021, Anchorage, AK, USA, September 19-22, 2021}, pages 789–793.
+  IEEE, 2021.
+\end{itemize}
+
 \end{abstract}
 
 \section{Introduction And Related Work}
@@ -576,16 +614,16 @@ $\theta$ are already tuned.\\
   \end{algorithm}
 
 
-The interested reader can grasp a better understanding of the key differences of
-our method compared to the standard pruning pipeline that applies to most
-pruning methods, not only magnitude pruning method, by looking at
+The reader can grasp a better understanding of the key differences of our method
+compared to the standard pruning pipeline that applies to most pruning methods,
+not only magnitude pruning method, by looking at
 \cref{fig:chap1:pruning_pipeline_comparison}. It highlights the fact that the
-target pruning rate is taken into account from the beginning thanks to the budget
-loss, and therefore, the network does not need a fine-tuning step after the
-\emph{effective pruning} step. On the contrary, the standard pruning pipeline
-applies the \emph{pruning criterion} and the \emph{effective pruning} after the
-initial training. This results in a drop in performance that needs to be
-compensated for with fine-tuning. \\
+target pruning rate is taken into account from the beginning thanks to the
+budget loss, and therefore, the network does not need a fine-tuning step after
+the \emph{effective pruning} step. On the contrary, the standard pruning
+pipeline applies the \emph{pruning criterion} and the \emph{effective pruning}
+after the initial training. This results in a drop in performance that needs to
+be compensated for with fine-tuning. \\
 
 \begin{figure}
 \centering
@@ -1298,4 +1336,40 @@ network and the random choice of the training set. \\
 % endregion: finetuning
 
 % endregion: experiments
-\section{Conclusion and Perspectives}
+
+\section{Conclusion}
+\label{sec:chap1:conclusion}
+
+% region: conclusion
+
+This section introduces a novel approach for pruning neural networks, which
+addresses the limitations of conventional pruning pipelines that apply a pruning
+criterion and prune networks after an initial training phase without taking into
+account the target pruning rate. This often requires a fine-tuning phase to
+restore the accuracy loss that follows pruning. In contrast, the proposed method
+does not require fine-tuning to achieve superior performance compared to
+state-of-the-art pruning methods. Experimental evaluations conducted on
+various datasets and networks commonly used for image classification
+benchmarking validate this claim.\\
+
+The proposed method consists of two key components: a budget loss and a weight
+reparametrisation function. Comparative analyses demonstrate the importance of
+both components, as variations without either the budget loss or the
+reparametrisation result in inferior performance compared to the full-fledged
+method. While the proposed method is designed to avoid computationally intensive
+fine-tuning, it can still be used in this scenario and performs comparatively
+better than the standard fine-tuning approach.\\
+
+The proposed method of this chapter focuses on weight reparametrisation with
+budget loss to enhance the network's robustness to pruning. This forces less
+useful weights to take small values, binding the weight's value to the network's
+topology. As such, the optimisation process learns both the weights and topology
+under the hypothesis that weights with smaller magnitudes will be removed. This
+method highlights the importance of determining the optimal topology in addition
+to the optimal weights, achieved in this chapter with the prior that magnitude
+is a saliency factor for weight relevance in the topology. In the next chapter,
+the discussed approach seeks to determine the optimal topology without any prior
+on the weights and without training them. In other words, the next method aims
+at determining the best topology, given a set of weights.
+
+% endregion: conclusion
