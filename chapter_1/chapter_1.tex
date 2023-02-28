@@ -51,17 +51,17 @@ learning, leading to breakthroughs in various areas such as image and speech
 recognition, natural language processing, as well as exotic domains like game
 playing or molecule folding. However, the size of neural networks has steadily
 increased in recent years, largely thanks to the availability of powerful
-\ac{GPUs}. They have made it possible to train larger and more complex models.
+\acp{GPU}. They have made it possible to train larger and more complex models.
 However, as the size of neural networks has grown, so have the computational and
 memory requirements to train and deploy them. The evolution of neural network
 architectures can be traced back to the Rosenblatt Perceptron
 \cite{rosenblatt1958perceptron}, a single-layer feedforward network with only
 one neuron. Over time, neural network architectures became more complex and
 included multiple layers, known as multi-layer perceptron or fully connected
-networks. Then, with the introduction of \ac{CNNs}, neural network architectures
-for image recognition have grown even larger. \ac{CNNs} use
+networks. Then, with the introduction of \acp{CNN}, neural network architectures
+for image recognition have grown even larger. \acp{CNN} use
 convolutional layers to automatically and adaptively learn spatial hierarchies
-of features from input images. This adaptivity allows \ac{CNNs} to effectively
+of features from input images. This adaptivity allows \acp{CNN} to effectively
 learn and classify images with high accuracy. Some of the most notable \ac{CNN}
 architectures include AlexNet \cite{DBLP:conf/nips/KrizhevskySH12}, which was
 developed in 2012 and has 60 million parameters. The VGG networks
@@ -80,7 +80,7 @@ consumption, which are impossible with large neural networks. Pruning techniques
 can reduce the size of neural networks, making them more suitable for deployment
 on embedded devices while still maintaining or improving their performance.
 Methods such as structured and unstructured weight pruning can reduce the number
-of parameters and \ac{FLOPs}, consequently reducing the network's size, memory and
+of parameters and \acp{FLOP}, consequently reducing the network's size, memory and
 power consumption.\\
 
 
@@ -150,7 +150,7 @@ penalisation from \cite{DBLP:conf/iccv/LiuLSHYZ17} to model the relative
 importance of layers, groups of layers or network parts that can be removed.
 Following the same line, \cite{DBLP:conf/icml/KangH20} proposed a channel
 pruning method based on batch normalisation parameters. The authors introduce
-masks that model the likelihood of feature maps being inhibited by the ReLU
+masks that model the likelihood of feature maps being inhibited by the \ac{ReLU}
 activation function, thereby not contributing to the evaluation of the
 underlying network. These masks are obtained by binarising the cumulative
 density function of the gaussian distribution parameterised by the scaling and
@@ -534,7 +534,7 @@ leading to\\
 \end{equation} \\
 
 Ideally, the budget of a neural network could be evaluated as the number of
-multiply-add operations, often referred to as \ac{FLOPs}, needed for a forward
+multiply-add operations, often referred to as \acp{FLOP}, needed for a forward
 pass or through the $L_0$ norm of its weights. However, neither are known to
 be differentiable and, therefore, cannot be used in a gradient-based
 optimisation. In order to circumvent these limitations, we use our weight
