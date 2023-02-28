@@ -30,11 +30,11 @@
   demonstrate that our proposed approach is a promising alternative to existing
   pruning techniques, providing an efficient and effective way to reduce the
   size of neural networks, while eliminating the need for costly fine-tuning
-  step.
+  step.\\
 
 \noindent This chapter presents work that has resulted in the publication of the
 following conference article:
- \bibentry{DBLP:conf/icip/DupontSM21}\\
+ \bibentry{DBLP:conf/icip/DupontSM21}
 \begin{itemize}
   \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight reparametrization for
   budget-aware network pruning. In \emph{2021 IEEE International Conference on Image
@@ -71,17 +71,19 @@ in 2014, has 27 million parameters in its third version. And the ResNet networks
 \cite{DBLP:conf/cvpr/HeZRS16}, developed in 2015, range from 11 to 60
 million parameters. \\
 
-
-The need for neural networks in embedded applications has grown in recent years.
-Examples include object detection in self-driving cars, image and speech
+The demand for neural networks in embedded applications has been rapidly
+increasing in recent years, driven in part by the widespread use of mobile
+devices. As these devices have become more advanced and ubiquitous, there has
+been a corresponding need for intelligent applications that can perform complex
+tasks such as object detection in self-driving cars, image and speech
 recognition in mobile devices, and natural language processing in smart
 speakers. These applications require real-time processing and low power
 consumption, which are impossible with large neural networks. Pruning techniques
 can reduce the size of neural networks, making them more suitable for deployment
 on embedded devices while still maintaining or improving their performance.
 Methods such as structured and unstructured weight pruning can reduce the number
-of parameters and \acp{FLOP}, consequently reducing the network's size, memory and
-power consumption.\\
+of parameters and \acp{FLOP}, consequently reducing the network's size, memory
+and power consumption.\\
 
 
 Pruning is an excellent way to obtain lightweight neural networks because it
@@ -169,21 +171,22 @@ the global structure. As a result, this method is much more flexible and leads
 to high sparsity rates and compression ratios. Han et al.
 \cite{DBLP:conf/nips/HanPTD15} introduced a simple yet effective three-step
 algorithm for unstructured weight pruning: a first standard training step to
-identify the most important connections, a magnitude pruning step to remove the
-smallest weight and a final fine-tuning step to compensate for the loss of
-accuracy. \cite{DBLP:journals/corr/HanMD15} used the same technique in
-combination with quantisation and Huffman coding, achieving a compression ratio
-of up to 49x for a VGG16 network. Other methods do not rely on weight magnitude,
-such as \cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic
-gates as a surrogate L0 norm and penalises non-zero weights during training.
-Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
-multiplicative gaussian noise as an alternative to binary dropout
+identify the most important connections, a magnitude pruning step to remove
+weights with the smallest magnitude (\emph{i.e.}, absolute value) and a final
+fine-tuning step to compensate for the loss of accuracy introduced by pruning.
+\cite{DBLP:journals/corr/HanMD15} used the same technique in combination with
+quantisation and Huffman coding, achieving a compression ratio of up to 49x for
+a VGG16 network. Other methods do not rely on weight magnitude, such as
+\cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic gates as a
+surrogate L0 norm and penalises non-zero weights during training. Variational
+Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a multiplicative gaussian
+noise as an alternative to binary dropout
 \cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
 an unbound dropout rate. Magnitude pruning regained significant attention after
 the publication of the Lottery Ticket Hypothesis
 \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
-\cite{DBLP:conf/iclr/FrankleC19} shows that large pretrained networks
-encompass subnetworks, called \textit{Lottery Tickets}, whose training with initial
+\cite{DBLP:conf/iclr/FrankleC19} shows that large pretrained networks encompass
+subnetworks, called \textit{Lottery Tickets}, whose training with initial
 weights taken from the large networks yields comparably accurate classifiers. To
 extract the lottery ticket, it is necessary to train the large network up to
 convergence, apply magnitude pruning and restore the original values of the
@@ -246,17 +249,19 @@ functional conception of a neural network can be formally written as:
 \end{equation}\\
 
 Evaluating the neural network $f(X_i, \theta)$ yields the output $\hat{y_i}$
-which is the prediction of the network for the input $X_i$. The discrepancy
-between the output of the neural network $\hat{y_i}$ and the ground truth $y_i
-\in \mathcal{Y}$ is computed with a loss function $\mathcal{L}$. This loss is
-then minimised by updating the parameters $\theta$ of the network, thanks to the
-backpropagation \cite{rumelhart1985learning,rumelhart1986learning} and gradient
+which is the prediction of the network for the input $X_i\in\mathcal{X}$. The
+discrepancy between the output of the neural network $\hat{y_i}$ and the ground
+truth $y_i \in \mathcal{Y}$ is computed with a loss function $\mathcal{L}$,
+which expresion depends on the considered task. This loss is then minimised by
+updating the parameters $\theta$ of the network, thanks to the backpropagation
+algorithm \cite{rumelhart1985learning,rumelhart1986learning} and gradient
 descent methods.\\
 
-The $L_0$ norm is perfectly suited for introducing sparsity in a network by, on
-the one hand, acting as a sparsity-inducing regulariser for the weights, and on
-the other hand, by indicating the number of non-zero weights in the network,
-which is useful for computing the weight budget. \\
+When used as a loss function, the $L_0$ norm is perfectly suited for introducing
+sparsity in a network by, on the one hand, acting as a sparsity-inducing
+regulariser for the weights ($\theta$), and on the other hand, by indicating the number of
+non-zero weights in the network, which is useful for computing the weight
+budget. \\
 
 We aim to propose an end-to-end method that fits into the backpropagation
 framework. Therefore, adding a $L_0$ regulariser and a $L_0$ based weight budget
@@ -286,7 +291,7 @@ Our proposed framework allows for a joint optimisation of the network weights
 and topology. On the one hand, it prevents disconnections which may lead to
 degenerate networks with an irrecoverable performance drop. On the other hand,
 it allows reaching a targeted pruning budget in a more convenient way than $L_1$
-regularisation (cf. \cref{sec:chap1:impact_of_budget_loss}). Our
+regularisation (see \cref{sec:chap1:impact_of_budget_loss}). Our
 reparametrisation also helps minimise the discrepancy between the primary and
 the surrogate networks by maintaining competitive performances without
 fine-tuning. Learning the surrogate network requires only one step that achieves
@@ -333,7 +338,7 @@ $\mathbf{w}_\ell$ of $f$ by applying the following reparametrisation:
   \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
 \end{equation}
 \noindent with $h_t$ being the reparametrisation function and $t$ its
-temperature parameter (cf. \cref{eqn:chap1:reparam_prop4}). Here, $\odot$ represents the Hadamar product. It means
+temperature parameter (see \cref{eqn:chap1:reparam_prop4}). Here, $\odot$ represents the Hadamar product. It means
 that the reparametrisation is element-wise, and every single weight has its own
 reparametrisation. This reparametrisation function enforces the prior that
 smallest weights should be removed from the network and act as a surrogate $L_0$
@@ -421,7 +426,7 @@ $h_t$ is the one of \cref{eqn:chap1:stable_h_expression}.\\
 \end{figure}
 
 Weight distribution varies tremendously from one layer to another. In order to
-match a specific budget (cf. \cref{sec:chap1:budget_loss}), the width of the
+match a specific budget (see \cref{sec:chap1:budget_loss}), the width of the
 stopband, controlled by $t$, is tuned according to the weight distribution of
 each layer. The manual setting of this parameter is non-trivial and cumbersome,
 so in practice, $t$ is learned as a part of gradient descent on a layer-by-layer
@@ -434,18 +439,18 @@ function is:
   h_t^*(x) = \exp\bigg\{{-\displaystyle\frac{1}{(tx)^n}}\bigg\}, ~ n\in 2\mathds{N},
 \end{equation}
 \noindent where $n$ controls the crispness of $h_t^*$. $n$ is not considered as
-a parameter of $h_t$ (or $h_t^*$) since we use a fixed value for our
-experiments, whereas $t$ is a learnt parameter and varies from one layer to
-another. \Cref{fig:chap1:reparam_funct_varying_n} show the impact of n on the
-general sharpness of the function. Although the function described in
-\cref{eqn:chap1:h_star_expression} satisfies the four above properties, $h_t^*$
-suffers from numerical instability as it generates \ac{nan} outputs in most of
-the widely used deep learning frameworks. Due to the way Backpropagation works,
-a single \ac{nan} in a weight tensor makes the whole optimisation process for
-the entire network no longer possible. We consider instead a stabilised variant
-with similar behaviour, as \cref{eqn:chap1:h_star_expression},  that still
-satisfies the four above properties. This numerically stable variant is defined
-as:
+a parameter of $h_t$ (or $h_t^*$) since we use a fixed value for our experiments
+(\cref{sec:chap1:experiments}), whereas $t$ is a learnt parameter and varies
+from one layer to another. \Cref{fig:chap1:reparam_funct_varying_n} show the
+impact of n on the general sharpness of the function. Although the function
+described in \cref{eqn:chap1:h_star_expression} satisfies the four above
+properties, in practice, $h_t^*$ suffers from numerical instability as it
+generates \ac{nan} outputs in most of the widely used deep learning frameworks.
+Due to the way backpropagation works, a single \ac{nan} in a weight tensor makes
+the whole optimisation process for the entire network no longer possible. We
+consider instead a stabilised variant with similar behaviour, as
+\cref{eqn:chap1:h_star_expression},  that still satisfies the four above
+properties. This numerically stable variant is defined as:
 \begin{equation}
   \label{eqn:chap1:stable_h_expression}
   h_t(x) = C_1 \biggl( \text{exp} \bigg\{-\displaystyle\frac{1}{(tx)^n +1}\bigg\} - C_2 \biggr),
@@ -583,14 +588,16 @@ $C_\text{initial}$, as done in \cref{eqn:chap1:real_budget}.\\
 \section{Overview}
 \label{sec:chap1:overview}
 % region : overview
-Our method is a combination of a weight reparametrisation and a budget loss. The
-two are combined in a global method that can be used in a standard training
-procedure using gradient descent. In the \cref{sec:chap1:experiments} our
-results are obtained after following the procedure described in
-\cref{alg:chap1:training_pruning}. In \cref{sec:chap1:impact_of_fine_tuning} the
-procedure is the same, except that the \emph{effective pruning} is applied before the
-training, which in this case is called fine-tuning because the initial weights
-$\theta$ are already tuned.\\
+Our method is a combination of a weight reparametrisation and a budget loss,
+both described in the previous sections. The two are combined in a global method
+that can be used in a standard training procedure using gradient descent. In the
+\cref{sec:chap1:experiments} our results are obtained after following the
+procedure described in \cref{alg:chap1:training_pruning}. In
+\cref{sec:chap1:impact_of_fine_tuning} the procedure is the same, except that
+the \emph{effective pruning} (see
+\cref{alg:chap1:training_pruning,fig:chap1:pruning_pipeline_comparison}) is
+applied before the training, which in this case is called fine-tuning because
+the initial weights $\theta$ are already tuned.\\
 
 \begin{algorithm}
   \caption{Our training procedure}
@@ -1352,13 +1359,13 @@ state-of-the-art pruning methods. Experimental evaluations conducted on
 various datasets and networks commonly used for image classification
 benchmarking validate this claim.\\
 
-The proposed method consists of two key components: a budget loss and a weight
-reparametrisation function. Comparative analyses demonstrate the importance of
-both components, as variations without either the budget loss or the
-reparametrisation result in inferior performance compared to the full-fledged
-method. While the proposed method is designed to avoid computationally intensive
-fine-tuning, it can still be used in this scenario and performs comparatively
-better than the standard fine-tuning approach.\\
+Our approach described in this chapter consists of two key components: a budget
+loss and a weight reparametrisation function. Comparative analyses demonstrate
+the importance of both components, as variations without either the budget loss
+or the reparametrisation result in inferior performance compared to the
+full-fledged method. While the proposed method is designed to avoid
+computationally intensive fine-tuning, it can still be used in this scenario and
+performs comparatively better than the standard fine-tuning approach.\\
 
 The proposed method of this chapter focuses on weight reparametrisation with
 budget loss to enhance the network's robustness to pruning. This forces less
