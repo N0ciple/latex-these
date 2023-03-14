@@ -54,6 +54,12 @@
           \end{array}%
   \endgroup}
 
+
+% Patch abstract pour ne pas utiliser de "titlepage" et ainsi avoir une
+% numérotation de page qui ne se remet pas à 1 à chaque chapitre.
+% Voir ici : https://tex.stackexchange.com/a/483381
+\patchcmd{\abstract}{\titlepage}{\cleardoublepage}{}{}
+\patchcmd{\endabstract}{\endtitlepage}{\clearpage}{}{}
 %====================== INFORMATION ET REGLES ======================
 
 %rajouter les numérotation pour les \paragraphe et \subparagraphe
