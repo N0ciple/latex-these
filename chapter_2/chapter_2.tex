@@ -278,51 +278,72 @@ $1_{\{\}}$ being the indicator function and following
   q_{ij} = {\text{argmax}_{k \in \{1,2\}}}\big[\log(\pi_k^{ij})+g_k^{ij}\big]
 \end{equation}\\
 
-\noindent the proposed \ac{STGS} algorithm enables the learning of probabilities
+with $\pi^{ij}_1 = p_{ij}$ and $\pi^{ij}_2 = 1-p_{ij}$, the probability for a
+weight to be selected or not in the sampled topology, respectively.\\
+
+The proposed \ac{STGS} algorithm enables the learning of probabilities
 $p_{ij}$ for each weight $\bm{w}_{ij}$ through \ac{SGD}. However, optimizing
 $p_{ij}$ (with \ac{SGD}) raises a major issue. Since the optimisation is not
 coinstrained, $p_{ij}$ can take values  larger than 1 or smaller than 0. As a
 consequence, it could no longer be interpreted as a probability, moreover,
-$\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.  On another hand,
-solving constrained SGD, besides being computationally expensive and
-challenging, may result into worse local minimum. In order to overcome all these
-issues, one may consider an alternative reparametrisation
+$\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.\\
+
+On another hand, solving constrained SGD, besides being computationally
+expensive and challenging, may result into worse local minimum. In order to
+overcome all these issues, one may consider an alternative reparametrisation
 $p_{ij}=\sigma(\bm{\hat{m}}_{ij})$, similar to the reparametrisation in
 \cite{DBLP:conf/nips/ZhouLLY19}, with $\bm{\hat{m}}_{ij}$ being a latent mask
 variable and $\sigma$ the sigmoid function which bounds $p_{ij}$ in $[0,1]$.
 However, this workaround suffers in practice from numerical instability in
-gradient estimation and is also computationally demanding. Both limitations are
-mostly due to the combination of log and sigmoid functions. \\
+gradient estimation and is also computationally demanding. Indeed, the
+combination of the log and the sigmoid functions leads to severe numerical
+instabilities, that necessitate a cumbersome stabilization by adding
+$\varepsilon$ to prevent $p_{ij}$ and $\log(1-p_{ij})$ from being to close to 0.
+Furthermore, it is important to note that the above formulation is tremendously
+computationally intensive, since it necessitates the evaluation of log and
+exponential for every mask in the network.\\
 
 
 \noindent\textbf{Arbitrarily Shifted Log Parametrisation.} In order to solve the
 issues related to \ac{STGS} in the context of this chapter, another alternative
-is to consider the following expressions for $p_{ij}$:\\
+is to consider the following expressions for $\log(\mathcal{P}_{ij})$:\\
 
 \begin{equation}
-  \left\{ \begin{array}{c}
+  \label{eqn:chap2:log-probabilities}
+  \log(\mathcal{P}_{ij}) =
+  \begin{bmatrix}
       \log(p_{ij}) = \bm{\hat{m}}_{ij} \\
       \log(1-p_{ij}) = \log(1-\exp(\bm{\hat{m}}_{ij}))
-    \end{array} 
-  \right.
+  \end{bmatrix} 
 \end{equation}\\
 
 \noindent and learn the underlying mask $\bm{\hat{m}}_{ij}$. However, this
 reparametrisation is also flawed in the same way as the aforementioned sigmoid
-reparametrisation. Indeed, the combination of the log and the exponential leads
-to severe numerical instabilities, that necessitate a cumbersome stabilization
-by adding $\varepsilon$ to prevent $p_{ij}$ and $\log(1-p_{ij})$ from being to
-close to 0. Furthermore, it is important to note that the above formulation is
-tremendously computationally intensive, since it necessitate the evaluation of
-log and exponential for evely mask in the network.\\
+reparametrisation, namely: numerically unstable and cumputaionnaly intensive\\
 
-In what follows, we propose an equivalent formulation which
-turns out to be highly effective and numerically more stable. Considering \\
-
-% // TODO: explliquer qu'au lieu de considerer le vecteuyr de proba, on fixe le
-% deuxième terme à 0 et on considère qu'il y a une variable C qui est ajouté.
+In what follows, we propose an equivalent formulation which turns out to be
+highly effective and numerically more stable.  Instead of using the logarithmic
+probabilities outlined in \cref{eqn:chap2:gumbel-softmax-input} as the input for
+the \ac{STGS} that would eventually lead to the formulation of
+\cref{eqn:chap2:log-probabilities}, we adopt the ensuing expression at the
+weight level:\\
 
 \begin{equation}
+  \label{eqn:chap2:our-input-formulation}
+  \begin{bmatrix}
+    \bm{\hat{m}}_{ij} \\
+    0  \\
+  \end{bmatrix}
+\end{equation}\\
+
+Here, the second coefficient of the vector, normally representing
+$\log(1-p_{ij})$, is set and fixed to 0. It is important to note that this
+formulation is not equal to the ones of
+\cref{eqn:chap2:gumbel-softmax-input,eqn:chap2:our-input-formulation}. We
+interpret this formulation as:
+
+\begin{equation}
+  \label{eqn:chap2:our-formulation}
   \begin{bmatrix}
     \bm{\hat{m}}_{ij} \\
     0  \\
@@ -332,36 +353,166 @@ turns out to be highly effective and numerically more stable. Considering \\
     \log(p_{ij}) + c \\
     \log(1-p_{ij}) + c\\
   \end{bmatrix},
-  \label{eqn:chap2:our-formulation}
 \end{equation}\\
 
-\noindent in the above definition, instead of using $\log(\mathcal{P}_{ij}(.))$
-as an input for \ac{STGS} (\emph{c.f.} \cref{eqn:chap2:gumbel-softmax-input}), we
-consider $\log(\mathcal{P}_{ij}(.)) + c$  as an input of the argmax in
+\noindent In the above expression, instead of using $\log(\mathcal{P}_{ij}(.))$
+as an input for \ac{STGS}, we interpret \cref{eqn:chap2:gumbel-softmax-input} as
+$\log(\mathcal{P}_{ij}(.)) + c$ , which is the input of the argmax in
 \cref{eqn:chap2:gumbel-softmax-argmax}.\\
 
-The constant $c \in \mathds{R}$ ensures that if $\bm{\hat{m}}_{ij} > 0$, then
-$\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in [0,1]$. This is
-enforced by setting the second coefficient of $\mathcal{P}_{ij}$ to 0, rather
-than computing it explicitly. The formulation of
+The constant $c \in \mathds{R}$ does not need to be known.
+Adding this constant ensures that even if $\bm{\hat{m}}_{ij} > 0$, we can still interpret $p_{ij}$
+as a probability with $\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in [0,1]$. This is
+enforced by setting the second coefficient of the vector to 0, rather
+than computing it explicitly. Although different, the formulation of
 \cref{eqn:chap2:our-formulation} is theoretically equivalent to the
 aforementioned sigmoid reparametrisation. Indeed, solving the system of
-\cref{eqn:chap2:our-formulation} w.r.t. $\bm{\hat{m}}_{ij}$ yields $p_{ij} =
-\sigma(\bm{\hat{m}}_{ij})$. \noindent Differently put, the formulation in
-\cref{eqn:chap2:our-formulation} considers a reparametrisation
-$\bm{\hat{m}}_{ij} = \log(p_{ij})+c$ which is strictly equivalent to the sigmoid
-one while being computationally more efficient and also stable. Note that adding
-any arbitrary constant $c$ to the log-probability makes the outcome of
-Gumbel-Softmax sampling and argmax invariant.
+\cref{eqn:chap2:our-formulation} with respect to $\bm{\hat{m}}_{ij}$ yields $p_{ij} =
+\sigma(\bm{\hat{m}}_{ij})$ (see \cref{prop:chap2:probability-interpretation}). \\
+
+\begin{proposition}
+  [Formulations equivalence]
+  \label{prop:chap2:probability-interpretation}
+  The formulation in \cref{eqn:chap2:our-formulation} is equivalent to defining
+  $p_{ij} = \sigma(\bm{\hat{m}}_{ij})$ with $\sigma$ the sigmoid function,
+  provided that $p_{ij}\in ~ ]0,1[$.
+\end{proposition}
+\vspace*{\baselineskip}
+
+\begin{proof}
+  Consider the following system of equations:\\
+  $$
+  \left\{ 
+    \begin{array}{l}
+      (1): \bm{\hat{m}}_{ij} = \log(p_{ij})+c\\ 
+      (2): 0 = \log(1-p_{ij})+c\\
+    \end{array} 
+    \right.
+  $$\\
+  Substracting $(2)$ from $(1)$ yields:\\
+  $$ (1) - (2) \Leftrightarrow \bm{\hat{m}}_{ij} = \displaystyle\log\left( \frac{p_{ij}}{1 - p_{ij}} \right)$$\\
+  $$ \Leftrightarrow \log\left(\frac{1-p_{ij}}{p_{ij}} \right) = -
+  \bm{\hat{m}}_{ij}$$\\
+  $$ \Leftrightarrow \frac{1}{p_{ij}} - 1 = \exp(-\bm{\hat{m}}_{ij})$$\\
+  $$ \Leftrightarrow \frac{1}{p_{ij}} = \exp(-\bm{\hat{m}}_{ij}) + 1$$\\
+  $$ \Leftrightarrow p_{ij} = \frac{1}{\exp(-\bm{\hat{m}}_{ij}) + 1}$$\\
+  $$ \Leftrightarrow p_{ij} = \sigma(\bm{\hat{m}}_{ij})$$\\
+
+\end{proof}
+
+
+Differently put, the formulation in \cref{eqn:chap2:our-formulation} considers a
+reparametrisation $\bm{\hat{m}}_{ij} = \log(p_{ij})+c$ and $\log(1-p_{ij})+ c =0$ which is strictly
+equivalent to the sigmoid one while being computationally more efficient and
+also numerically stable.\\
+
+\Cref{prop:chap2:probability-interpretation} assumes that $p_{ij}\in ~ ]0,1[$.
+In practice, this is never a problem as $\bm{\hat{m}}_{ij}$ are initialised to 0
+(see \cref{sec:chap2:experiments}) and because of the sigmoid function, the
+gradients becomes vanishingly small when $\bm{\hat{m}}_{ij}$ deviates from 0,
+which practically prevents reaching $\pm\infty$ and thus 0 or 1 for $p_{ij}$.\\
+
+A crucial point to consider is that adding any arbitrary constant $c$ to each
+coefficient of the log-probability vector does not change the outcome of
+Gumbel-Softmax sampling. This is because it does not alter the outcome of the
+argmax function, which remains unchanged regardless of the value of $c$,
+provided that the same value $c$ is added to both coefficient, which is the case
+in the our formulation (\emph{c.f.} \cref*{eqn:chap2:our-formulation}). The
+presence of this constant $c$, whose value is arbirtrary, that shifts the
+log-probabilities of our probability parametrisation gives the name of the
+method: \acl{ASLP}.\\ 
+
 % endregion: stochastic-sampling
 
 
 \subsection{Smart Weight rescaling}
+\label{sec:smart-rescale}
 % region: smart rescaling
+Subnetwork selection may disrupt the dynamic of the forward pass
+\cite{DBLP:conf/iccv/HeZRS15,DBLP:conf/cvpr/RamanujanWKFR20}, and thereby
+requires adapting  weights accordingly. \cite{DBLP:conf/iccv/HeZRS15} establish
+that the variance of the initial weight distribution has a critical impact on
+the network performances. Since in the context of this chapter, the weights are
+not trained, it is all the more important to address this issue. The pruning of
+the weights change the apparent weight distribution and therefore its
+statistics.\\
+
+\ac{DWR} \cite{DBLP:conf/nips/ZhouLLY19}, and scaled Kaiming distribution
+\cite{DBLP:conf/cvpr/RamanujanWKFR20}  are two known mechanisms that adapt the
+weights of the selected subnetworks to circumvent the issue mentioned above.
+However, some of these heuristics, besides being handcrafted,   rely on the
+strong assumption that rescaling should be proportional to the pruning rate.\\
+
+In what follows,  we consider a new weight adaptation mechanism, referred to as
+\ac{SR}. Instead of handcrafting this rescaling factor proportionally
+to the pruning rate (as achieved for instance in
+\cite{DBLP:conf/nips/ZhouLLY19}), \ac{SR} is learned layerwise and provides an
+effective (and also efficient)  way to adapt the dynamic of the forward pass
+without retraining the entire weights of the selected subnetwork. This
+rescaling ends up reducing the amount of epochs needed to reach convergence and
+also improving accuracy (at some extent) as shown later in \cref{sec:chap2:experiments}. \\ 
+
+With SR, the $\ell$-th layer network output becomes \\
+
+  \begin{equation}
+   \mathbf{z}_{\ell} = g_\ell(s_\ell \times (\bm{m}_\ell \odot \bm{w}_\ell) \otimes \mathbf{z}_{\ell-1}),
+  \end{equation}\\
+
+\noindent where  $s_\ell$ refers to the rescaling factor  of  the $\ell$-th
+layer (see also algorithm~\ref{alg:gumbel-forward}).  Smart Rescale increases
+the flexibility of subnetwork selection and adaptation compared to DWR (which
+is bound to the pruning rate).  Moreover,  scaling factors obtained with SR
+vary smoothly  ---  and this makes training more stable with stochastic
+gradient descent (SGD) --- compared to the ones obtained with DWR which are
+again set to the observed {\it pruning rates},  and changes of the latter are
+more abrupt due to stochastic mask sampling. \\
+
 % endregion: smart rescaling
 
+\subsection{Overview}
 
-\section{Experiments}
+Our method is a combination of the \acl{STGS} sampling and the \acl{SR}
+mechanism. The two are combined in a global method called \acf{ASLP}. This
+method generates lightweight networks by sampling topologies in a large
+untrained network and learning the probability of selection of each weight.
+Probabilities are learned with \acl{SGD} together with a conventional loss
+function (a cross-entropy loss in the case of image classification). \\
+
+% // TODO: ajouter quelques phrases sur le modèle de l'overview du chapitre 1,
+% puis ajouter les figures provenant du poster qui illustre les différences
+% entre notre méthode et une méthode de pruning classique.
+
+\begin{algorithm}
+  \caption{Our training procedure}
+  \label{alg:chap1:training_pruning2}
+  \begin{algorithmic}
+  \REQUIRE Dataset $\mathcal{D} = \{\mathcal{X}, \mathcal{Y}\}$, network $f$,
+  weights $\theta$, masks $\bm{\hat{m}}$ number of epochs $n$, learning rate $\eta$
+  \FOR{$t = 1$ to $n$}
+      \FOR{each $(x,y) \in \mathcal{D}$}
+        \STATE
+        $q_{i,j} \gets \text{argmax} 
+        \begin{bmatrix}
+          \bm{\hat{m}}_{i,j} + g_{i,j} \\
+          0 + g'_{i,j}\\
+        \end{bmatrix}$ \COMMENT{Sampling of a topology}    
+        \STATE $m_{ij} \gets 1_{\{q_{ij}=1\}}$
+      \COMMENT{Giving the masks $\bm{m}_{i,j}$ their values} 
+          
+      \STATE $\hat{y} = f(x; \theta_t)$ \COMMENT{Computing the output of the network}
+          \STATE ${\cal L}\big(f_\theta(\{{\bf x}_k\}_k;
+          \{s_\ell (\bm{m}_\ell \odot \bm{w}_\ell)\}_\ell),\{{\bf y}_k\}_k\big)$ 
+          \COMMENT{Computing the loss with masked weights and SR}
+          \STATE $\bm{\hat{m}}_{t+1} = \bm{\hat{m}}_t - \eta \nabla_{\bm{\hat{m}}} \mathcal{L}$ \COMMENT{Backpropagate the loss and update the masks}
+      \ENDFOR
+  \ENDFOR
+  \RETURN Network $f$ with unchanged weights $\theta$ and trained masks $\bm{\hat{m}}$.
+  \end{algorithmic}
+  \end{algorithm}
+
+
+\section{Experiments and results}
+\label{sec:chap2:experiments}
 % region: experiments
 
 \subsection{Performances}
@@ -472,54 +623,6 @@ Gumbel-Softmax sampling and argmax invariant.
 % region : conclusion
 %endregion : conclusion
 
-  % ------------------------------------------------------------------------------
-  \subsection{Weight Rescaling}
-  \label{sec:smart-rescale}
-Subnetwork selection may disrupt the dynamic of the forward pass
-\cite{DBLP:conf/iccv/HeZRS15,DBLP:conf/cvpr/RamanujanWKFR20}, and thereby
-requires adapting  weights accordingly.    Dynamic weight rescale (DWR)
-\cite{DBLP:conf/nips/ZhouLLY19}, and scaled Kaiming distribution
-\cite{DBLP:conf/cvpr/RamanujanWKFR20}  are two  known mechanisms that adapt the
-weights of the selected subnetworks.  However, some of these heuristics, besides
-being handcrafted,   rely on the strong assumption that rescaling should be
-proportional to the pruning rate.  In what follows,  we consider a new weight
-adaptation mechanism, referred to as Smart Rescale (SR). Instead of handcrafting
-this rescaling factor proportionally to the pruning rate (as achieved for
-instance in \cite{DBLP:conf/nips/ZhouLLY19}), SR is learned layerwise and
-provides an effective (and also efficient)  way to adapt the dynamic of the
-forward pass without retraining the entire weights of the selected subnetwork.
-Indeed, this rescaling ends up reducing the amount of epochs needed to reach
-convergence and also improving accuracy (at some extent) as shown later in
-experiments. \\ With SR, the $\ell$-th layer network output becomes 
-  \begin{equation}
-   \mathbf{z}_{\ell} = g_\ell(s_\ell \times (\bm{m}_\ell \odot \bm{w}_\ell) \otimes \mathbf{z}_{\ell-1}),
-  \end{equation}
-  \noindent where  $s_\ell$ refers to the rescaling factor  of  the $\ell$-th
-  layer (see also algorithm~\ref{alg:gumbel-forward}).  Smart Rescale increases
-  the flexibility of subnetwork selection and adaptation compared to DWR (which
-  is bound to the pruning rate).  Moreover,  scaling factors obtained with SR
-  vary smoothly  ---  and this makes training more stable with stochastic
-  gradient descent (SGD) --- compared to the ones obtained with DWR which are
-  again set to the observed {\it pruning rates},  and changes of the latter are
-  more abrupt due to stochastic mask sampling.    
-  \begin{algorithm}
-    \caption{Forward pass for our method}
-    \label{alg:gumbel-forward}
-    \begin{algorithmic}[1]
-    \REQUIRE A network $f_\theta$, with weights $\{\bm{w}_\ell\}_\ell$, ASLP  $\{\bm{\hat{m}}_\ell\}_\ell$, and input training data $\{({\bf x}_k,{\bf y}_k)\}_k$ 
-    \STATE
-    $q_{i,j} \gets \text{argmax} 
-    \begin{bmatrix}
-      \bm{\hat{m}}_{i,j} + g_{i,j} \\
-      0 + g'_{i,j}\\
-    \end{bmatrix}$ \COMMENT{Sampling of a topology} 
-    \STATE $m_{ij} \gets 1_{\{q_{ij}=1\}}$
-   \COMMENT{
-    Giving the masks $\bm{m}_{i,j}$ their values} 
-    \STATE {\bf Return} ${\cal L}\big(f_\theta(\{{\bf x}_k\}_k; \{s_\ell (\bm{m}_\ell \odot \bm{w}_\ell)\}_\ell),\{{\bf y}_k\}_k\big)$
-    \COMMENT{Computing the loss with masked weights and SR}
-    \end{algorithmic}
-  \end{algorithm} 
   % ==============================================================================
   \section{Experiments}\label{sec:experiments}
   
@@ -565,13 +668,13 @@ experiments. \\ With SR, the $\ell$-th layer network output becomes
     \end{tabular}
 }
 
-  \caption{\footnotesize Comparison of our method against \cite{DBLP:conf/nips/ZhouLLY19}
+  \caption{Comparison of our method against \cite{DBLP:conf/nips/ZhouLLY19}
   and \cite{DBLP:conf/cvpr/RamanujanWKFR20} on Conv2, Conv4 and Conv6. These
   results are averaged through five independent runs. "WR" (Weight Rescale)
   refers to ``Dynamic Weight Rescale'' or ``Smart Rescale'' depending on which
   methods is used (respectively \cite{DBLP:conf/nips/ZhouLLY19} or our proposed
-  ASLP). Again, "SC" refers to the ``Signed Constant'' distribution. The latest results on CIFAR 100
-  were recently obtained with data augmentation and WR+SC.}
+  ASLP). Again, "SC" refers to the ``Signed Constant'' distribution. The latest
+  results on CIFAR 100 were recently obtained with data augmentation and WR+SC.}
   \label{tbl:conv_compare}
 
 \end{table*}
@@ -625,9 +728,9 @@ are comparable. \\
   increases further its accuracy (excepting Conv2 w/o data augmentation).  The
   gain in performances increases  significantly with Conv6 and reaches up to 4
   points even when no data augmentation is used.   Note that the use of data
-  augmentation attenuates, at some extent, the effect of SR on larger networks
+  augmentation attenuates, at some extent, the effect of \ac{SR} on larger networks
   (conv4 and Conv6). Nonetheless,  as discussed in \cref{sec:SR-impact}, the
-  positive impact of SR resides also in training efficiency.   In contrast to
+  positive impact of \ac{SR} resides also in training efficiency.   In contrast to
   SR, signed constant improves accuracy by a small margin when combined with
   data augmentation. 
   
@@ -641,12 +744,12 @@ are comparable. \\
   \label{sec:SR-impact}
 DWR requires rectifying weights layerwise using the inverse of the observed
 (computed) pruning rates. These layerwise evaluations introduce a significant
-overhead at each training epoch. In contrast, SR consists in simple products
+overhead at each training epoch. In contrast, \ac{SR} consists in simple products
 involving one scalar per layer. When training Conv4, we found (on average) that
-enabling DWR increases epoch runtime by $0.2s$ while our SR by $0.13s$ only, so
+enabling DWR increases epoch runtime by $0.2s$ while our \ac{SR} by $0.13s$ only, so
 SR speeds up training overhead by 35\% compared to DWR.  When data augmentation
-and signed constant are used, SR allows a significant gain in the number of
-training epochs. Indeed, enabling SR on Conv4  saves (on average) 19.7\%
+and signed constant are used, \ac{SR} allows a significant gain in the number of
+training epochs. Indeed, enabling \ac{SR} on Conv4  saves (on average) 19.7\%
 training epochs (8.2\%, 14.0\%  on Conv2 and Conv6 respectively) before
 converging to its highest accuracy. Finally, our ``thresholding'' setting not
 only improves accuracy but makes subnetwork selection (training) and also
