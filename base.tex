@@ -45,6 +45,7 @@
 \usepackage{bibentry} % Pour ajouter des refs qui ne sont pas citée directement
 \usepackage{bm} % pour les polices mathématiques ex: \mathbf{X}
 \usepackage{amssymb} % symboles mathématiques suplémentaires (comme \varnothing)
+\usepackage{amsthm} % pour les théorèmes et surtout les preuves (voir ici: https://stackoverflow.com/questions/1449370/latex-error-environment-proof-undefined)
 %====================== COMMANDES PERSO ======================
 \newcommand\myfunc[5]{%
   \begingroup
@@ -53,6 +54,10 @@
              #2 & \to & #3 \\ #4 & \mapsto & #5 
           \end{array}%
   \endgroup}
+
+% Pour pouvoir créer des propotision (voir ici : https://www.overleaf.com/learn/latex/Theorems_and_proofs)
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem*{remark}{Remark} % spécifique pour les remarques
 
 
 % Patch abstract pour ne pas utiliser de "titlepage" et ainsi avoir une
