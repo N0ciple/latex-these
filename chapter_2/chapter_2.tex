@@ -1,4 +1,9 @@
 \chapter{Mask Training}
+\label{chap:chapter2}
+
+
+\localtableofcontents
+
 
 \begin{abstract}
     abstract of the chapter
@@ -6,60 +11,99 @@
 
 \section{Introduction and related work}
 % region: introduction
-Deep neural networks are nowadays becoming mainstream in solving many image
-processing tasks including visual category recognition. The success of these
-models has been reached at the expense of an increase in their inference time,
-memory consumption and energy footprint. With the era of intelligent embedded
-systems (provided with limited energy and computational resources), a current
-trend is to make these models {\it lightweight and frugal} while maintaining
-their high accuracy.   Existing solutions in lightweight network design are
-targeted toward creating small and efficient architectures from scratch
-\cite{DBLP:conf/cvpr/HuangLMW18, DBLP:conf/cvpr/SandlerHZZC18,
-DBLP:journals/corr/HowardZCKWWAA17, DBLP:conf/icml/TanL19} while others derive
-highly compact yet effective neural networks from larger ones. These methods
-predominantly include knowledge distillation
-\cite{DBLP:journals/corr/HintonVD15, DBLP:conf/iclr/ZagoruykoK17,
-DBLP:journals/corr/RomeroBKCGB14, DBLP:conf/aaai/MirzadehFLLMG20,
-DBLP:conf/cvpr/ZhangXHL18, DBLP:conf/cvpr/AhnHDLD19} and pruning
-\cite{DBLP:conf/nips/CunDS89, DBLP:conf/nips/HassibiS92,
-DBLP:conf/nips/HanPTD15}. \\  
+Deep neural networks are increasingly utilized for solving various image
+processing tasks, particularly in the domain of visual category recognition.
+While these models have shown significant success, their extensive computational
+requirements, memory consumption, and energy consumption are notable
+limitations. In light of the emergence of intelligent embedded systems with
+restricted computational resources and limited energy availability, there is a
+growing need to develop these models with lightweight architectures that
+prioritise efficiency while maintaining high accuracy. The aim is to make these
+models both "lightweight and frugal," which presents a significant challenge for
+researchers in the field.\\
 
-Pruning methods, either structured or unstructured, are particularly successful,
-and seek to remove connections with the least perceptible impact on
-classification accuracy. Structured pruning consists in {\it jointly} removing
-groups of weights, entire channels or subnetworks
-\cite{DBLP:conf/iclr/0022KDSG17, DBLP:conf/iccv/LiuLSHYZ17}, whereas
-unstructured pruning aims at removing weights {\it individually}
+Creating small and efficient neural network architectures from scratch is a
+viable approach to designing lightweight networks. Despite being smaller than
+typical state-of-the-art networks, these networks are still able to achieve good
+performance levels. SqueezeNet \cite{DBLP:journals/corr/IandolaMAHDK16} is an
+example of such a network, which achieves comparable performance to AlexNet on
+ImageNet but with only fifty times fewer parameters.  MobileNet
+\cite{howard2017mobilenets} and MobileNetV2 \cite{DongMobileNetV2} are also
+popular examples of lightweights networks that use depthwise separable
+convolution. ShuffleNet \cite{ZhangShuffleNet} and ShuffleNetV2
+\cite{MaShuffleNetV2} are other approaches that rely on the grouped convolution
+concept and channel shuffling. CondenseNet \cite{huang2018condensenet} levrage
+DenseNet-like \cite{huang2017densely} connections together with grouped
+convolution to pick the most useful feature from previous layer maps.\\
+
+Designing efficient lightweight neural networks requires significant efforts
+from human experts. These networks are designed from scratch, with a focus on
+reducing the number of parameters and computational complexity while maintaining
+high accuracy. The design process involves careful consideration of network
+architecture, layer types, hyperparameters, and optimisation techniques. The
+development of such networks, therefore, requires a significant amount of time
+and expertise.\\
+
+Another way of obtaining lightweight neural network is to reduce the size of an
+already existing large neural network, thourgh pruning. As discussed in
+\cref{chap:chapter1}, pruning methods, either structured or unstructured, are
+particularly successful at lightening large neural networks, and seek to remove
+connections with the least perceptible impact on classification accuracy.
+Structured pruning consists in {\it jointly} removing groups of weights, entire
+channels or subnetworks \cite{DBLP:conf/iclr/0022KDSG17,
+DBLP:conf/iccv/LiuLSHYZ17}, whereas unstructured pruning aims at removing
+weights {\it individually}
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}.  Unstructured pruning
-has witnessed a recent surge in interest in the wake of the Lottery Ticket
-Hypothesis  \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
-\cite{DBLP:conf/iclr/FrankleC19} shows that large pretrained networks encompass
-subnetworks, called \textit{Lottery Tickets}, whose training with initial
-weights taken from the large networks yields comparably accurate classifiers.
-Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and
-concludes that only the topology of these subnetworks is actually important in
-order to reach comparable performances.  In general, extracting an efficient
-subnetwork is still an open problem and is computationally demanding as this
-amounts to full training of large networks (till convergence) prior to their
-pruning. Existing alternatives approach this problem using early pruning
+has witnessed a recent surge in interest in the wake of the \ac{LTH}
+\cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
+\cite{DBLP:conf/iclr/FrankleC19} demonstrates that large pretrained networks
+encompass lightweight subnetworks, referred to as \textit{\acp{LT}}, which can
+achieve comparable performance to the original large network in a similar number
+of epochs when trained in isolation with initial weights taken from the large
+network. To identify these \acp{LT}, the large network is trained until
+convergence, followed by pruning the smallest weights based on their magnitude.
+The remaining weights are then rewound to their original value, it is to say the
+value they had before the training of the large network begins. This resulting
+subnetwork is known as a \textit{Lottery Ticket}.
+Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and concludes that
+only the topology of these subnetworks is actually important in order to reach
+comparable performances. Authors in \cite{DBLP:conf/iclr/LiuSZHD19} point out
+that the weights of the \acp{LT} are not important and can be randomly
+initialized, provided that the optimisation procedure is carefully designed.\\
+
+In general, extracting an efficient subnetwork is
+still an open problem and is computationally demanding as this amounts to full
+training of large networks (untill convergence) prior to their pruning. Existing
+alternatives approach this problem using early pruning
 \cite{DBLP:conf/iclr/LeeAT19,
 DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}, but still require to train
-the weights. In contrast to these works, our proposed solution in this paper
+the weights. In contrast to these works, our proposed solution in this chapter
 identifies effective subnetworks by training only their topology and without any
 weights tuning.\\ 
 
-A theoretical analysis in
-\cite{DBLP:conf/icml/MalachYSS20,DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}
-has established the sufficient conditions about the existence of efficient and
-effective subnetworks in over-parameterized large networks, nonetheless, no
-constructive proof has been provided in order to identify these subnetworks. In
-this context, Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19} proposed the first
-attempt to extract efficient subnetworks using stochastic mask training. A
-probability of selecting each weight is defined (as the sigmoid of a mask) and
-trained using the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}. During
-training, weights are frozen and only the masks are allowed to vary. However,
-the major drawback of this method resides in the vanishing gradient of the
-sigmoid which makes mask training numerically challenging. Ramanujan et al.
+At first, it seems counter intuitive that there exists a subnetwork in a large
+network, and that this subnetwork can achieve compelling performances without
+any weight training. This as been first conjectured in
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \ac{LTH}. A theoretical
+analysis brought proof that such subnetworks do exist.
+\cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of width $d$
+and depth $l$ can be approximated by pruning a randomly initialized one that is
+a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
+width has latter been improved by \cite{DBLP:conf/nips/OrseauHR20} to
+$O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
+upper bound was eventually rafined to $O(d\log(dl))$ by
+\cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of distributions, including
+the uniform distribution whihc is widely used for weight initialisation \cite{DBLP:conf/iccv/HeZRS15}.\\
+
+Although their existence has been proven, no constructive proof has been
+provided in order to identify the lightweight and efficient from scratch
+subnetworks. In this context, Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
+proposed the first attempt to extract efficient subnetworks using stochastic
+mask training. A probability of selecting each weight is defined (as the sigmoid
+of a mask) and trained using the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}.
+During training, weights are frozen and only the masks are allowed to vary.
+However, the major drawback of this method resides in the vanishing gradient of
+the sigmoid which makes mask training numerically challenging. Ramanujan et al.
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another alternative, based on
 binarized saliency indicators learned with \ac{STE}, which selects the most
 prominent weights in the resulting subnetworks. Nevertheless, since this method
@@ -68,14 +112,19 @@ higest performances has to be made through a cumbersome and time-consuming
 binary search or grid-search. \\ 
 
 Considering the limitation of the aforementioned related  work, we introduce in
-this paper a new stochastic subnetwork selection method based on Gumbel Softmax.
+this chapter a new stochastic subnetwork selection method based on \ac{GS}.
 The latter allows sampling subnetworks whose weights are the most relevant for
 classification. The proposed contribution also relies on a new mask
-parametrization, dubbed as \ac{ASLP}, that allows a better conditioning of the
-gradient and thereby mitigates numerical instability during mask optimization.
+parametrisation, dubbed as \ac{ASLP}, that allows a better conditioning of the
+gradient and thereby mitigates numerical instability during mask optimisation.
 Besides, when combining \ac{ASLP} with a learned weight rescaling mechanism,
 training is accelerated and the accuracy of the resulting subnetworks improves
 as shown later in experiments.
+
+The rest of this chapter is organized as follows.
+% // TODO: Completer "chapter organisation"
+
+
 % endregion: introduction
 
 
@@ -83,10 +132,228 @@ as shown later in experiments.
 % region: method
 % endregion: method
 
+Considering the same formalism as in \cref{chap:chapter1}, let $f_\theta$ be a
+deep neural network whose weights defined as $\theta =
+\left\{\bm{w}_1,\mathellipsis, \bm{w}_L \right\}$, with $L$ being its depth,
+$\bm{w}_\ell \in \mathbb{R}^{d_{\ell} \times d_{\ell-1}}$ its $\ell^\textrm{th}$
+layer weights, and $d_\ell$ the dimension of $\ell$. The output of a given layer
+$\ell$ is defined as \\
 
-\subsection{Mask Training with Gumbel Softmax}
-% region: mask training
-% endregion: mask training
+\begin{equation}
+  \label{eqn:chap2:layer_eq}
+  \mathbf{z}_{\ell} = g_\ell(\bm{w}_\ell \otimes \mathbf{z}_{\ell-1}),
+\end{equation}\\
+
+being  $g_\ell$ an activation function and $\otimes$ the usual matrix product.
+Without a loss of generality, we omit the bias in the definition of
+(\ref{eqn:chap2:layer_eq}).
+
+% ------------------------------------------------------------------------------
+\subsection{Stochastic Weight Sampling}
+% region: stochastic-sampling
+\indent Given a network $f_\theta$, weight pruning consists in removing
+connections in the graph of $f_\theta$. A node in this graph refers to a
+neural unit while an edge corresponds to a cross-layer connection. Pruning is
+usually obtained by freezing and zeroing out  a subset of weights in $\theta$,
+and this is achieved  by multiplying $\bm{w}_\ell$ by a binary mask
+$\bm{m}_\ell \in \{ 0,1 \}^{\text{dim}(\bm{w}_\ell)}$. The
+binary entries of $\bm{m}_\ell$ are set depending on whether the underlying
+layer connections are kept or removed, so \Cref{eqn:chap2:layer_eq} becomes\\
+
+\begin{equation}
+  \label{eqn:chap2:pruned_layer_eq}
+  \mathbf{z}_{\ell} = g_\ell( (\bm{m}_\ell \odot \bm{w}_\ell ) \otimes \mathbf{z}_{\ell-1} ).
+\end{equation}\\
+
+Here $\odot$ stands for the element-wise matrix product. In this definition, the
+masks $\{\bm{m}_\ell\}_\ell$ are stochastic and sampled from a Bernoulli
+distribution. However, sampling is not a differentiable operation, therefore,
+optimizing directly $\{{\bm{m}_\ell}\}_\ell$ is not possible. To overcome this
+issue, while staying in the \ac{SGD} framework the Straight Through Estimator
+(STE) technique is applied together with a reparametrisation of the mask.\\
+
+\noindent\textbf{Straight Through Estimator.} Zhou et
+al. \cite{DBLP:conf/nips/ZhouLLY19} consider a Bernoulli parametrisation of
+$\{\bm{m}_\ell\}_\ell$ in order to sample masks in
+\Cref{eqn:chap2:pruned_layer_eq}. Since sampling is not a differentiable
+operation, they rely on the \ac{STE}. It is a technique developed in
+\cite{DBLP:journals/corr/BengioLC13} that enables the training of neural
+networks with discrete activations, such as binary or quantized activations. The
+technique involves using a continuous approximation to the non-differentiable
+activation function during forward propagation, and simply passing the gradient
+of the loss function through the non-differentiable activation during
+backpropagation. This allows for the use of \ac{SGD} to optimize the network,
+which was previously not possible with discrete activations. \\
+
+In order to apply \ac{STE} to the problem of Bernoulli stochastic mask
+sampling, the definition of $\{\bm{m}_\ell\}_\ell$ is based on another
+{\it latent} parametrisation $\{\bm{\hat{m}}_\ell\}_\ell$, detailed
+subsequently, and obtained by applying a sigmoid function $\sigma(.)$ to
+$\bm{\hat{m}}_\ell$. This allows optimizing $\bm{\hat{m}}_\ell$  using gradient
+descent by considering the following surrogate of
+\cref{eqn:chap2:pruned_layer_eq} in the backward pass of the backpropagation
+algorithm:\\
+
+\begin{equation}
+  \label{eqn:chap2:pruned_layer_eq2}
+  \mathbf{z}_{\ell} = g_\ell( ( \sigma(\bm{\hat{m}}_\ell) \odot \bm{w}_\ell ) \otimes \mathbf{z}_{\ell-1} ).
+\end{equation} \\
+
+\noindent As a result, although masks $\bm{m}_\ell$ are sampled and thus
+disconnected from the computation graph (sampling being not differentiable),
+their reparametrisation $\bm{\hat{m}}_\ell$ can be updated as if they were used in
+the computational graph as in \cref{eqn:chap2:pruned_layer_eq}.\\
+
+
+\noindent\textbf{Gumbel-Softmax.} In what follows, we consider an alternative to
+\ac{STE} based on Gumbel-Softmax \cite{DBLP:conf/iclr/JangGP17} that demonstrate
+better performances for differentiable categorical sampling. Gumbel-Softmax is a
+technique that can be used to approximate a discrete categorical distribution
+with a continuous relaxation. Gumbel-Softmax works by using the Gumbel
+distribution to add noise to a categorical distribution and then applying the
+Softmax function to obtain a continuous relaxation of the discrete distribution.
+The proposed method, dubbed as \ac{STGS}, is based on a variant of \ac{GS}
+combined with \ac{STE}. In the forward pass, the softmax of \ac{GS} is replaced
+by an argmax operator. Since this operator is not differentiable, the standard
+softmax if considered in the backward pass. The argmax operator allows sampling
+from a categorical distribution, as the limit of \ac{GS} (\emph{i.e.}, when its
+softmax temperature approaches zero). \\
+
+Let $z$ be a categorical random variable, associated with $n$ class probability
+distribution $\mathcal{P} = [\pi_1,\dots,\pi_n]$. to sample in a
+differentiable manner, the Gumbel-Softmax estimator takes as an input a vector
+of log-probabilities \\
+
+\begin{equation}
+  \label{eqn:chap2:gumbel-softmax-input}
+  \log(\mathcal{P}) =[\log(\pi_1),\dots, \log(\pi_n)] 
+\end{equation}\\
+
+then it disrupts the latter with a random additive noise sampled from the Gumbel
+distribution, and finally takes the argmax of it, yielding a categorical
+variable. More formally, following \cite{DBLP:conf/iclr/JangGP17}, the value $q$
+of our categorical variable $z$ is obtained as \\
+
+\begin{equation}
+  \label{eqn:chap2:gumbel-softmax-argmax}
+  q = \underset{k}{ \text{argmax}} \ [ \log(\pi_k)+g_k ],
+\end{equation}\\
+
+with $g_k$ being independent and identically distributed sampled from  the
+Gumbel distribution noted $\mathcal{G}(0,1)$.\\
+
+For mask sampling, only two possible outcomes are considered. Either the
+corresponding weight is selected and its mask is set to 1, or it is pruned
+from the sampled topology and its mask is set to 0. In what follows, and
+unless stated otherwise, we omit $\ell$ from $\bm{w}_\ell$ and we write it for
+short as $\bm{w}$. Let $\bm{w}_{ij}$ be the weight associated to the i-th and
+j-th neurons respectively belonging to layers $\ell-1$ and $\ell$. Since there
+are two possible outcomes for the masks define a two-class categorical distribution
+$\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
+
+\begin{equation}
+    \left\{ \begin{array}{c}
+    \mathcal{P}_{ij}(z=1)=\pi_1^{ij} \\ 
+    \mathcal{P}_{ij}(z=0)=\pi_2^{ij}
+    \end{array} \right.
+\end{equation}\\
+
+with $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
+underlying connection. Since there are only to mutualy exclusive outcomes,
+$\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or
+not) in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
+Considering \Cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
+is defined as\\
+
+\begin{equation}
+  \label{eqn:chap2:mask_value}
+  \bm{m}_{ij} = 1_{\{q_{ij}=1\}}
+\end{equation}\\
+ 
+$1_{\{\}}$ being the indicator function and following
+\cref{eqn:chap2:gumbel-softmax-argmax}, $q_{ij}$ is\\
+
+\begin{equation}
+  \label{eqn:chap2:q_ij_expression}
+  q_{ij} = {\text{argmax}_{k \in \{1,2\}}}\big[\log(\pi_k^{ij})+g_k^{ij}\big]
+\end{equation}\\
+
+\noindent the proposed \ac{STGS} algorithm enables the learning of probabilities
+$p_{ij}$ for each weight $\bm{w}_{ij}$ through \ac{SGD}. However, optimizing
+$p_{ij}$ (with \ac{SGD}) raises a major issue. Since the optimisation is not
+coinstrained, $p_{ij}$ can take values  larger than 1 or smaller than 0. As a
+consequence, it could no longer be interpreted as a probability, moreover,
+$\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.  On another hand,
+solving constrained SGD, besides being computationally expensive and
+challenging, may result into worse local minimum. In order to overcome all these
+issues, one may consider an alternative reparametrisation
+$p_{ij}=\sigma(\bm{\hat{m}}_{ij})$, similar to the reparametrisation in
+\cite{DBLP:conf/nips/ZhouLLY19}, with $\bm{\hat{m}}_{ij}$ being a latent mask
+variable and $\sigma$ the sigmoid function which bounds $p_{ij}$ in $[0,1]$.
+However, this workaround suffers in practice from numerical instability in
+gradient estimation and is also computationally demanding. Both limitations are
+mostly due to the combination of log and sigmoid functions. \\
+
+
+\noindent\textbf{Arbitrarily Shifted Log Parametrisation.} In order to solve the
+issues related to \ac{STGS} in the context of this chapter, another alternative
+is to consider the following expressions for $p_{ij}$:\\
+
+\begin{equation}
+  \left\{ \begin{array}{c}
+      \log(p_{ij}) = \bm{\hat{m}}_{ij} \\
+      \log(1-p_{ij}) = \log(1-\exp(\bm{\hat{m}}_{ij}))
+    \end{array} 
+  \right.
+\end{equation}\\
+
+\noindent and learn the underlying mask $\bm{\hat{m}}_{ij}$. However, this
+reparametrisation is also flawed in the same way as the aforementioned sigmoid
+reparametrisation. Indeed, the combination of the log and the exponential leads
+to severe numerical instabilities, that necessitate a cumbersome stabilization
+by adding $\varepsilon$ to prevent $p_{ij}$ and $\log(1-p_{ij})$ from being to
+close to 0. Furthermore, it is important to note that the above formulation is
+tremendously computationally intensive, since it necessitate the evaluation of
+log and exponential for evely mask in the network.\\
+
+In what follows, we propose an equivalent formulation which
+turns out to be highly effective and numerically more stable. Considering \\
+
+% // TODO: explliquer qu'au lieu de considerer le vecteuyr de proba, on fixe le
+% deuxième terme à 0 et on considère qu'il y a une variable C qui est ajouté.
+
+\begin{equation}
+  \begin{bmatrix}
+    \bm{\hat{m}}_{ij} \\
+    0  \\
+  \end{bmatrix}
+  = \log\big(\mathcal{P}_{ij}(.)\big) + c =
+  \begin{bmatrix}
+    \log(p_{ij}) + c \\
+    \log(1-p_{ij}) + c\\
+  \end{bmatrix},
+  \label{eqn:chap2:our-formulation}
+\end{equation}\\
+
+\noindent in the above definition, instead of using $\log(\mathcal{P}_{ij}(.))$
+as an input for \ac{STGS} (\emph{c.f.} \cref{eqn:chap2:gumbel-softmax-input}), we
+consider $\log(\mathcal{P}_{ij}(.)) + c$  as an input of the argmax in
+\cref{eqn:chap2:gumbel-softmax-argmax}.\\
+
+The constant $c \in \mathds{R}$ ensures that if $\bm{\hat{m}}_{ij} > 0$, then
+$\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in [0,1]$. This is
+enforced by setting the second coefficient of $\mathcal{P}_{ij}$ to 0, rather
+than computing it explicitly. The formulation of
+\cref{eqn:chap2:our-formulation} is theoretically equivalent to the
+aforementioned sigmoid reparametrisation. Indeed, solving the system of
+\cref{eqn:chap2:our-formulation} w.r.t. $\bm{\hat{m}}_{ij}$ yields $p_{ij} =
+\sigma(\bm{\hat{m}}_{ij})$. \noindent Differently put, the formulation in
+\cref{eqn:chap2:our-formulation} considers a reparametrisation
+$\bm{\hat{m}}_{ij} = \log(p_{ij})+c$ which is strictly equivalent to the sigmoid
+one while being computationally more efficient and also stable. Note that adding
+any arbitrary constant $c$ to the log-probability makes the outcome of
+Gumbel-Softmax sampling and argmax invariant.
+% endregion: stochastic-sampling
 
 
 \subsection{Smart Weight rescaling}
@@ -99,6 +366,101 @@ as shown later in experiments.
 
 \subsection{Performances}
 
+% region: perf-tables
+\begin{table}
+  \centering
+  \resizebox{16.5cm}{!} {
+    \begin{tabular}{llcccccccc}
+      \cmidrule[\heavyrulewidth]{3-10}
+        &  & \multicolumn{4}{c}{\textbf{w/ data augmentation}} & \multicolumn{4}{c}{\textbf{w/o augmentation}} \\
+       &  &  $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} & $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} \\
+      \toprule
+
+      % Conv 2 results
+      \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding) & \textbf{75.70 $\pm$ 0.30} & \textbf{75.81 $\pm$ 0.69} & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} & \textbf{68.24 $\pm$ 0.14} &\textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
+        & ASLP (averaging)& 75.42 $\pm$ 0.25 & 75.50 $\pm$ 0.56 & 76.05 $\pm$ 0.44 & 76.44 $\pm$ 0.19 & 68.09 $\pm$ 0.35 & 67.69 $\pm$ 0.52 & 65.79 $\pm$ 0.65 & 65.35 $\pm$ 0.83 \\
+        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)& - & - & - & - & 67.12 $\pm$ 0.25 & 66.34 $\pm$ 0.41 & 56.71 $\pm$ 2.99 & 56.26 $\pm$ 1.64 \\
+        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 74.18 $\pm$ 0.76 & 75.19 $\pm$ 0.56 & 74.51 $\pm$ 0.31 & 75.45 $\pm$ 0.44 & - & - & - & - \\
+      \midrule
+
+      % Conv 4 results
+       \multirow{4}{*}{\textbf{Conv4}} & ASLP (thresholding) & \textbf{83.03 $\pm$ 0.31} & \textbf{83.73 $\pm$ 0.46} & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37} & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
+        & ASLP (averaging)& 82.29 $\pm$ 0.25 & 83.22 $\pm$ 0.56 & 82.79 $\pm$ 0.30 & 83.46 $\pm$ 0.49 & 70.88 $\pm$ 0.47 & 68.77 $\pm$ 1.42 & 71.82 $\pm$ 0.53 & 71.09 $\pm$ 0.69 \\
+        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)& - & - & - & - & 68.09 $\pm$ 0.84 & 67.48 $\pm$ 0.52 & 58.13 $\pm$ 2.39 & 53.84 $\pm$ 5.00 \\
+        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 82.38 $\pm$ 0.29 & 83.61 $\pm$ 0.38 & 81.71 $\pm$ 0.59 & 83.55 $\pm$ 0.32 & - & - & - & - \\
+      \midrule
+
+      % Conv 6 results
+       \multirow{4}{*}{\textbf{Conv6}} & ASLP (thresholding) & \textbf{84.98 $\pm$ 0.33} & \textbf{86.49 $\pm$ 0.36} & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46} & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
+        & ASLP (averaging)& 84.24 $\pm$ 0.28 & 85.67 $\pm$ 0.34 & 84.51 $\pm$ 0.35 & 85.49 $\pm$ 0.38 & 72.62 $\pm$ 0.57 & 69.53 $\pm$ 1.68 & 75.24 $\pm$ 0.69 & 74.50 $\pm$ 0.96 \\
+        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 70.71 $\pm$ 0.98 & 69.16 $\pm$ 1.92 & 44.77 $\pm$ 17.02 & 36.59 $\pm$ 15.32 \\
+        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 84.67 $\pm$ 0.35 & 85.87 $\pm$ 0.13 & 84.37 $\pm$ 0.58 & 85.84 $\pm$ 0.51 & - & - & - & - \\
+      \bottomrule
+    \end{tabular}
+  }
+  \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR10
+  using various configurations. We use the configurations tested by the author
+  of the aforementioned articles. Performance measures reported are accuracy and
+  are presented with and without data augmentation, weight rescaling (WR), and
+  the signed constant weight distribution (SC). We report performances for both
+  "thresholding" and "averaging" setups for our method. For edge-popup, we use
+  the best $k$ value for Conv\{2,4,6\} repported in
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20}.  Across all setups, our method ASLP
+  outperforms Edge-Popup and Supermask}
+  \label{tab:chap2:con_performances_comparison_cifar10}
+  
+\end{table}
+
+
+
+\begin{table}
+  \centering
+  \resizebox{16.5cm}{!}{
+    \begin{tabular}{lllllllllll}
+      \cmidrule[\heavyrulewidth]{3-10}
+      &  & \multicolumn{4}{c}{\textbf{w/ data augmentation}} & \multicolumn{4}{c}{\textbf{w/o augmentation}} \\
+      &  &  $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} & $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} \\
+      \toprule
+      \multirow{12}{*}{}
+      \multirow{4}{*}{Conv2} & ASLP (thresholding) & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75 & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23 & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
+      & ASLP (averaging) & 38.49 $\pm$ 0.61 & 38.18 $\pm$ 0.81 & 41.12 $\pm$ 0.66 & 41.17 $\pm$ 0.54 & 38.40 $\pm$ 0.81 & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39 & 41.42 $\pm$ 0.55 \\
+      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 38.09 $\pm$ 1.03 & 37.28 $\pm$ 0.47 & 26.03 $\pm$ 2.23 & 23.49 $\pm$ 1.36 \\
+      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 38.47 $\pm$ 0.46 & \textbf{39.83 $\pm$ 0.46} & 38.57 $\pm$ 0.59 & 39.87 $\pm$ 0.78 & - & - & - & - \\
+      \midrule
+
+      \multirow{4}{*}{Conv4} & ASLP (thresholding) & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77 & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
+      & ASLP (averaging) & 47.18 $\pm$ 1.17 & 48.78 $\pm$ 0.79 & 49.39 $\pm$ 0.30 & 50.17 $\pm$ 0.50 & 46.89 $\pm$ 0.52 & 48.74 $\pm$ 0.47 & 49.55 $\pm$ 0.57 & 50.23 $\pm$ 0.87 \\
+      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 45.84 $\pm$ 1.01 & 47.72 $\pm$ 0.75 & 27.70 $\pm$ 2.41 & 27.53 $\pm$ 5.20 \\
+      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 47.75 $\pm$ 0.63 & \textbf{50.16 $\pm$ 0.47} & 48.20 $\pm$ 0.72 & 50.02 $\pm$ 0.65 & - & - & - & - \\
+      \midrule
+
+      \multirow{4}{*}{Conv6} & ASLP (thresholding) & 51.09 $\pm$ 0.92 & 53.00 $\pm$ 0.52 & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50 & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
+      & ASLP (averaging) & 50.22 $\pm$ 1.09 & 51.72 $\pm$ 0.73 & 50.56 $\pm$ 0.33 & 51.59 $\pm$ 0.24 & 50.47 $\pm$ 0.42 & 52.00 $\pm$ 0.27 & 50.38 $\pm$ 0.33 & 51.82 $\pm$ 0.34 \\
+      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 49.19 $\pm$ 0.75 & 50.66 $\pm$ 0.47 & 2.54 $\pm$ 1.63 & 9.21 $\pm$ 5.50 \\
+      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39} & \textbf{53.48 $\pm$ 0.51} & 51.06 $\pm$ 1.11 & \textbf{54.01 $\pm$ 0.35} & - & - & - & - \\
+      \bottomrule
+    \end{tabular}
+  }
+  \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR100
+  using various configurations. We use the configurations tested by the author
+  of the aforementioned articles. Performance measures reported are accuracy and
+  are presented with and without data augmentation, weight rescaling (WR), and
+  the signed constant weight distribution (SC). Pre-pruning results are reported
+  for ASLP and Supermask. Since pruning is baked in the Edge-Popup method, we do
+  not report a specific pre-pruning performance for it. We report performances for both
+  "thresholding" and "averaging" setups for our method. For edge-popup, we use
+  the best $k$ value for Conv\{2,4,6\} repported in
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
+  the other methods, with the exception of the SC setup for Conv2 and Conv4.
+  However, for Conv6, ASLP's performance is superior when data augmentation is
+  disabled, while edge-popup achieves better results with data augmentation
+  enabled (except for the WR setup).}
+  \label{tab:chap2:con_performances_comparison_cifar100}
+\end{table}
+% endregion: perf-tables
+
 \subsection{Impact of initialisation}
 
 \subsection{Impact of smart rescaling}
@@ -109,143 +471,6 @@ as shown later in experiments.
 \section{Conclusion}
 % region : conclusion
 %endregion : conclusion
-
-
-Let $f_\theta$ be a deep neural network whose weights defined as $\theta =
-\left\{\bm{w}_1,\mathellipsis, \bm{w}_L \right\}$, with $L$ being its depth,
-$\bm{w}_\ell \in \mathbb{R}^{d_{\ell} \times d_{\ell-1}}$ its
-$\ell^\textrm{th}$ layer weights, and $d_\ell$ the dimension of $\ell$. The
-output of a given layer $\ell$ is defined as 
-\begin{equation}
-  \label{eq:layer_eq}
-  \mathbf{z}_{\ell} = g_\ell(\bm{w}_\ell \otimes \mathbf{z}_{\ell-1}),
-\end{equation}
-being  $g_\ell$ an activation function and $\otimes$ the usual matrix product.
-Without a loss of generality, we omit the bias in the definition of
-(\ref{eq:layer_eq}).
-
-% ------------------------------------------------------------------------------
-\subsection{Stochastic Weight Sampling}
-\indent Given a network $f_\theta$, weight pruning consists in removing
-connections in the graph of $f_\theta$. A node in this graph refers to a
-neural unit while an edge corresponds  to a cross-layer connection. Pruning is
-usually obtained by freezing and zeroing-out  a subset of weights in $\theta$,
-and this is achieved  by multiplying $\bm{w}_\ell$ by a binary mask
-$\bm{m}_\ell \in \{ 0,1 \}^{\text{dim}(\bm{w}_\ell)}$. The
-binary entries of $\bm{m}_\ell$ are set depending on whether the underlying
-layer connections are kept or removed, so \Cref{eq:layer_eq} becomes
-\begin{equation}
-  \label{eq:pruned_layer_eq}
-  \mathbf{z}_{\ell} = g_\ell( (\bm{m}_\ell \odot \bm{w}_\ell ) \otimes \mathbf{z}_{\ell-1} ).
-\end{equation}
-Here $\odot$ stands for the element-wise matrix product. In this definition,
-the masks $\{\bm{m}_\ell\}_\ell$ are stochastic and sampled from a Bernoulli
-distribution.\\
-
-\noindent\textbf{Straight Through Estimator.} Zhou et
-al.~\cite{DBLP:conf/nips/ZhouLLY19} consider a Bernoulli parametrization of
-$\{\bm{m}_\ell\}_\ell$ in order to sample masks in \Cref{eq:pruned_layer_eq}.
-However, due to sampling which is not a differentiable operation, optimizing directly
-$\{{\bm{m}_\ell}\}_\ell$ is not possible. Existing
-solutions, including \cite{DBLP:conf/nips/ZhouLLY19}, rely on the Straight
-Trough Estimator (STE), already described
-in~\cite{DBLP:journals/corr/BengioLC13}.  The definition of
-$\{\bm{m}_\ell\}_\ell$ is instead based on another {\it latent}
-parametrization $\{\bm{\hat{m}}_\ell\}_\ell$, detailed subsequently, and
-obtained by applying a sigmoid function $\sigma(.)$ to $\bm{\hat{m}}_\ell$.
-This allows optimizing $\bm{\hat{m}}_\ell$  using gradient descent while
-considering the following surrogate of  \Cref{eq:pruned_layer_eq} 
-\begin{equation}
-  \label{eq:pruned_layer_eq2}
-  \mathbf{z}_{\ell} = g_\ell( ( \sigma(\bm{\hat{m}}_\ell) \odot \bm{w}_\ell ) \otimes \mathbf{z}_{\ell-1} ).
-\end{equation}
-
-\noindent Authors in  \cite{DBLP:conf/nips/ZhouLLY19} use the STE in
-order to back-propagate the gradient and to update the parameters of the
-Bernoulli distribution $\bm{\hat{m}}_\ell$ with gradient descent.\\
-
-\noindent\textbf{Gumbel-Softmax.} In what follows, we consider an alternative
-STE based on Gumbel Softmax (GS)~\cite{DBLP:conf/iclr/JangGP17}. The proposed
-method, dubbed as Straight Through Gumbel Softmax (STGS), is based (i) on a
-variant of GS, and also (ii) on the argmax operator which allows sampling from
-a categorical distribution, as the limit of GS (i.e., when its softmax temperature
-approaches zero).  Let $z$ be a categorical random variable, associated with $n$
-class probability distribution $\mathcal{P} = [\pi_1,\dots,\pi_n]$. The Gumbel
-Softmax estimator (i) takes a vector of log-probabilities $\log(\mathcal{P})
-=[\log(\pi_1),\dots, \log(\pi_n)]$ as an input, (ii) disrupts the latter with
-a random additive noise sampled from the Gumbel distribution, and (iii) takes
-the argmax, yielding a categorical variable. More formally, following
-\cite{DBLP:conf/iclr/JangGP17}, the value $q$ of our categorical variable $z$
-is obtained as 
-\begin{equation}
-  \label{eq:gumbel-softmax-argmax}
-  q = \underset{k}{ \text{argmax}} \ [ \log(\pi_k)+g_k ],
-\end{equation}
-with $g_k$ being i.i.d sampled from  the Gumbel distribution.\\
-\noindent In what follows, and unless stated otherwise, we omit $\ell$ from
-$\bm{w}_\ell$ and we write it for short as $\bm{w}$. Let $\bm{w}_{ij}$ be the
-weight associated to the i-th and j-th neurons  respectively belonging to
-layers $\ell-1$ and $\ell$; we define a two-class categorical
-distribution $\mathcal{P}_{ij}$ on $\{0,1\}$ as
-$\mathcal{P}_{ij}(z=1)=\pi_1^{ij}$, and $\mathcal{P}_{ij}(z=0)=\pi_2^{ij}$
-with $\pi_1^{ij}=p_{ij}$, $\pi_2^{ij}=1-p_{ij}$ and $p_{ij}$ being the
-probability to keep the underlying connection. In other words, keeping the
-weight $\bm{w}_{ij}$ (or not) in the sampled topology is a Bernoulli trial
-with a probability $p_{ij}$. Considering
-\Cref{eq:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$ is defined as
-$1_{\{q_{ij}=1\}}$, $1_{\{\}}$ being the indicator function and $q_{ij} =
-{\text{argmax}_{k \in \{1,2\}}}\big[\log(\pi_k^{ij})+g_k^{ij}\big]$.
-\noindent Thanks to STGS, it becomes possible to learn $p_{ij}$ for each
-weight through stochastic gradient descent (SGD). However, optimizing $p_{ij}$
-(with SGD) raises a major issue as $p_{ij}$ may not be appropriately bounded
-and thereby $\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.  On
-another hand,  solving constrained SGD, besides being computationally
-expensive and challenging, may result into worse local minimum. In order to
-overcome all these issues, one may consider an alternative
-reparametrization $p_{ij}=\sigma(\bm{\hat{m}}_{ij})$, with $\bm{\hat{m}}_{ij}$
-being a latent mask variable and $\sigma$ the sigmoid function which bounds
-$p_{ij}$ in $[0,1]$. However, this workaround suffers (in practice) from
-numerical instability in gradient estimation (due to the log and the sigmoid)
-and is also computationally demanding. \\
-
-  
-
-\noindent\textbf{Arbitrarily Shifted Log Parametrization.}
-Another alternative is to consider $\bm{\hat{m}}_{ij} =
-\log(p_{ij})$ and $\log(1-p_{ij}) = \log(1-\exp(\bm{\hat{m}}_{ij}))$ and learn
-the underlying mask. However, this reparametrization is also flawed in the
-same way as the aforementioned sigmoid reparametrization. In what follows, we
-propose an equivalent formulation which turns out to be highly effective and
-numerically more stable. Considering  
-
-\begin{equation}
-  \begin{bmatrix}
-    \bm{\hat{m}}_{ij} \\
-    0  \\
-  \end{bmatrix}
-  = \log\big(\mathcal{P}_{ij}(.)\big) + c =
-  \begin{bmatrix}
-    \log(p_{ij}) + c \\
-    \log(1-p_{ij}) + c\\
-  \end{bmatrix},
-  \label{eq:our-formulation}
-\end{equation}
-
-\noindent in the above definition, instead of using $\log(\mathcal{P}_{ij}(.))$, we
-consider $\log(\mathcal{P}_{ij}(.)) + c$  as an input of the argmax in
-\cref{eq:gumbel-softmax-argmax}. The constant $c \in \mathds{R}$ ensures that
-if $\bm{\hat{m}}_{ij} > 0$, then $\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow
-p_{ij} \in [0,1]$. This is enforced by setting the second coefficient of
-$\mathcal{P}_{ij}$ to 0, rather than computing it explicitly. The formulation
-of \cref{eq:our-formulation} is theoretically equivalent to the aforementioned
-sigmoid reparametrization. Indeed, solving the system of
-\cref{eq:our-formulation} w.r.t. $\bm{\hat{m}}_{ij}$ yields $p_{ij} =
-\sigma(\bm{\hat{m}}_{ij})$. \noindent Differently put, the formulation in
-\cref{eq:our-formulation} considers a reparametrization $\bm{\hat{m}}_{ij} =
-\log(p_{ij})+c$ which is strictly equivalent to the sigmoid one while being
-computationally more efficient and also stable. Note that adding any arbitrary constant $c$ to the log-probability
-makes the outcome of Gumbel-Softmax sampling and argmax invariant.
-
 
   % ------------------------------------------------------------------------------
   \subsection{Weight Rescaling}
@@ -308,7 +533,7 @@ experiments. \\ With SR, the $\ell$-th layer network output becomes
   training,  the maximum number of epochs is set to 1000 and early stopping is
   triggered  if the accuracy on the validation set stops improving during 100
   epochs.   In all these experiments, neither weight decay nor $\ell_2$
-  regularization are applied. See implementation details and our code on the ASLP GitHub
+  regularisation are applied. See implementation details and our code on the ASLP GitHub
   \cite{Dupont2022}.
 
 \begin{table*}[htbp]
@@ -377,7 +602,7 @@ method reaches a  high accuracy despite learning a single subnetwork topology,
 and this makes it also highly efficient for training compared to  the related
 work \cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.\\ 
 \indent Furthermore, our method and \cite{DBLP:conf/nips/ZhouLLY19} do not
-impose a pruning rate. The optimal pruning rate is found during optimization and
+impose a pruning rate. The optimal pruning rate is found during optimisation and
 is is arround 51\%, whereas \cite{DBLP:conf/cvpr/RamanujanWKFR20} enforces a 50\%
 pruning rate ($k=50\%$). Thus, the networks capacities
 are comparable. \\
@@ -451,116 +676,3 @@ This work was performed using HPC resources from GENCI-IDRIS (Grant 2021-AD01101
 It has been achieved within a partnership between Sorbonne University and Netatmo.
 
 \noindent\textbf{Code.} Our code is available at:\\ \href{https://github.com/N0ciple/ASLP}{\texttt{https://github.com/N0ciple/ASLP}}
-
-\begin{table}
-  \centering
-  \resizebox{16.5cm}{!} {
-    \begin{tabular}{llcccccccc}
-      \cmidrule[\heavyrulewidth]{3-10}
-        &  & \multicolumn{4}{c}{\textbf{w/ data augmentation}} & \multicolumn{4}{c}{\textbf{w/o augmentation}} \\
-       &  &  $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} & $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} \\
-      \toprule
-
-      % Conv 2 results
-      \multirow{18}{*}{} \multirow{6}{*}{\textbf{Conv2}} & ASLP (pre-pruning) & 75.55 $\pm$ 0.15 & 75.47 $\pm$ 0.69 & 76.04 $\pm$ 0.44 & 76.29 $\pm$ 0.28 & 68.05 $\pm$ 0.46 & 67.68 $\pm$ 0.68 & 65.98 $\pm$ 0.77 & 65.25 $\pm$ 0.68 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & - & 67.21 $\pm$ 0.34 & 66.35 $\pm$ 0.78 & 56.57 $\pm$ 2.99 & 56.25 $\pm$ 1.77 \\
-      \cmidrule(lr){2-10}
-      % Conv 2 post pruining
-        & ASLP (thresholding) & \textbf{75.70 $\pm$ 0.30} & \textbf{75.81 $\pm$ 0.69} & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} & \textbf{68.24 $\pm$ 0.14} &\textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
-        & ASLP (averaging)& 75.42 $\pm$ 0.25 & 75.50 $\pm$ 0.56 & 76.05 $\pm$ 0.44 & 76.44 $\pm$ 0.19 & 68.09 $\pm$ 0.35 & 67.69 $\pm$ 0.52 & 65.79 $\pm$ 0.65 & 65.35 $\pm$ 0.83 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)& - & - & - & - & 67.12 $\pm$ 0.25 & 66.34 $\pm$ 0.41 & 56.71 $\pm$ 2.99 & 56.26 $\pm$ 1.64 \\
-        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 74.18 $\pm$ 0.76 & 75.19 $\pm$ 0.56 & 74.51 $\pm$ 0.31 & 75.45 $\pm$ 0.44 & - & - & - & - \\
-      \midrule
-
-      % Conv 4 results
-       \multirow{6}{*}{\textbf{Conv4}} & ASLP (pre-pruning) & 82.28 $\pm$ 0.22 & 83.30 $\pm$ 0.56 & 82.80 $\pm$ 0.27 & 83.60 $\pm$ 0.59 & 70.71 $\pm$ 0.67 & 68.64 $\pm$ 1.34 & 71.68 $\pm$ 0.48 & 71.04 $\pm$ 0.79 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & - & 68.14 $\pm$ 0.71 & 67.55 $\pm$ 0.67 & 58.01 $\pm$ 2.27 & 53.89 $\pm$ 4.81 \\
-      \cmidrule(lr){2-10}
-      % Conv 4 post pruining
-        & ASLP (thresholding) & \textbf{83.03 $\pm$ 0.31} & \textbf{83.73 $\pm$ 0.46} & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37} & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
-        & ASLP (averaging)& 82.29 $\pm$ 0.25 & 83.22 $\pm$ 0.56 & 82.79 $\pm$ 0.30 & 83.46 $\pm$ 0.49 & 70.88 $\pm$ 0.47 & 68.77 $\pm$ 1.42 & 71.82 $\pm$ 0.53 & 71.09 $\pm$ 0.69 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)& - & - & - & - & 68.09 $\pm$ 0.84 & 67.48 $\pm$ 0.52 & 58.13 $\pm$ 2.39 & 53.84 $\pm$ 5.00 \\
-        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 82.38 $\pm$ 0.29 & 83.61 $\pm$ 0.38 & 81.71 $\pm$ 0.59 & 83.55 $\pm$ 0.32 & - & - & - & - \\
-      \midrule
-
-      % Conv 6 results
-       \multirow{6}{*}{\textbf{Conv6}} & ASLP (pre-pruning) & 84.40 $\pm$ 0.39 & 85.58 $\pm$ 0.30 & 84.59 $\pm$ 0.35 & 85.62 $\pm$ 0.29 & 72.73 $\pm$ 0.70 & 69.52 $\pm$ 1.79 & 75.20 $\pm$ 1.05 & 74.55 $\pm$ 0.99 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & - & 70.74 $\pm$ 1.09 & 69.06 $\pm$ 1.93 & 45.01 $\pm$ 17.09 & 36.65 $\pm$ 15.43 \\
-      \cmidrule(lr){2-10}
-      % Conv 6 post pruining
-        & ASLP (thresholding) & \textbf{84.98 $\pm$ 0.33} & \textbf{86.49 $\pm$ 0.36} & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46} & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
-        & ASLP (averaging)& 84.24 $\pm$ 0.28 & 85.67 $\pm$ 0.34 & 84.51 $\pm$ 0.35 & 85.49 $\pm$ 0.38 & 72.62 $\pm$ 0.57 & 69.53 $\pm$ 1.68 & 75.24 $\pm$ 0.69 & 74.50 $\pm$ 0.96 \\
-        & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 70.71 $\pm$ 0.98 & 69.16 $\pm$ 1.92 & 44.77 $\pm$ 17.02 & 36.59 $\pm$ 15.32 \\
-        & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 84.67 $\pm$ 0.35 & 85.87 $\pm$ 0.13 & 84.37 $\pm$ 0.58 & 85.84 $\pm$ 0.51 & - & - & - & - \\
-      \bottomrule
-    \end{tabular}
-  }
-  \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
-  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR10
-  using various configurations. We use the configurations tested by the author
-  of the aforementioned articles. Performance measures reported are accuracy and
-  are presented with and without data augmentation, weight rescaling (WR), and
-  the signed constant weight distribution (SC). We report performances for both
-  "thresholding" and "averaging" setups for our method. For edge-popup, we use
-  the best $k$ value for Conv\{2,4,6\} repported in
-  \cite{DBLP:conf/cvpr/RamanujanWKFR20}.  Across all setups, our method ASLP
-  outperforms Edge-Popup and Supermask}
-  \label{tab:chap2:con_performances_comparison_cifar10}
-  
-\end{table}
-
-
-
-% pre prun
-\begin{table}
-  \centering
-  \resizebox{16.5cm}{!}{
-    \begin{tabular}{lllllllllll}
-      \cmidrule[\heavyrulewidth]{3-10}
-      &  & \multicolumn{4}{c}{\textbf{w/ data augmentation}} & \multicolumn{4}{c}{\textbf{w/o augmentation}} \\
-      &  &  $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} & $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} \\
-      \toprule
-      \multirow{18}{*}{}
-      \multirow{6}{*}{Conv2} & ASLP (pre-pruning) & 38.45 $\pm$ 0.59 & 38.20 $\pm$ 0.96 & 41.23 $\pm$ 0.78 & 41.33 $\pm$ 0.77 & 38.46 $\pm$ 0.87 & 38.58 $\pm$ 1.05 & 41.53 $\pm$ 0.38 & 41.53 $\pm$ 0.46 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & - & 38.01 $\pm$ 1.18 & 37.40 $\pm$ 0.70 & 26.25 $\pm$ 2.41 & 23.63 $\pm$ 1.38 \\ 
-      \cmidrule(lr){2-10}
-      & ASLP (thresholding) & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75 & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23 & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
-      & ASLP (averaging) & 38.49 $\pm$ 0.61 & 38.18 $\pm$ 0.81 & 41.12 $\pm$ 0.66 & 41.17 $\pm$ 0.54 & 38.40 $\pm$ 0.81 & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39 & 41.42 $\pm$ 0.55 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 38.09 $\pm$ 1.03 & 37.28 $\pm$ 0.47 & 26.03 $\pm$ 2.23 & 23.49 $\pm$ 1.36 \\
-      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 38.47 $\pm$ 0.46 & \textbf{39.83 $\pm$ 0.46} & 38.57 $\pm$ 0.59 & 39.87 $\pm$ 0.78 & - & - & - & - \\
-      \midrule
-      \multirow{6}{*}{Conv4} & ASLP (pre-pruning) & 47.20 $\pm$ 1.08 & 48.82 $\pm$ 0.73 & 49.22 $\pm$ 0.24 & 50.15 $\pm$ 0.89 & 46.93 $\pm$ 0.39 & 48.52 $\pm$ 0.57 & 49.75 $\pm$ 0.54 & 50.14 $\pm$ 0.86 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & - & 45.73 $\pm$ 1.00 & 47.88 $\pm$ 1.04 & 27.84 $\pm$ 2.28 & 27.77 $\pm$ 5.17 \\
-      \cmidrule(lr){2-10}
-      & ASLP (thresholding) & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77 & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
-      & ASLP (averaging) & 47.18 $\pm$ 1.17 & 48.78 $\pm$ 0.79 & 49.39 $\pm$ 0.30 & 50.17 $\pm$ 0.50 & 46.89 $\pm$ 0.52 & 48.74 $\pm$ 0.47 & 49.55 $\pm$ 0.57 & 50.23 $\pm$ 0.87 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 45.84 $\pm$ 1.01 & 47.72 $\pm$ 0.75 & 27.70 $\pm$ 2.41 & 27.53 $\pm$ 5.20 \\
-      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 47.75 $\pm$ 0.63 & \textbf{50.16 $\pm$ 0.47} & 48.20 $\pm$ 0.72 & 50.02 $\pm$ 0.65 & - & - & - & - \\
-      \midrule
-      \multirow{6}{*}{Conv6} & ASLP (pre-pruning) & 50.25 $\pm$ 1.08 & 51.65 $\pm$ 0.76 & 50.61 $\pm$ 0.46 & 51.67 $\pm$ 0.34 & 50.50 $\pm$ 0.39 & 51.96 $\pm$ 0.39 & 50.41 $\pm$ 0.38 & 51.87 $\pm$ 0.54 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (pre-pruning) & - & - & - & 1.80 $\pm$ 1.50 & 49.21 $\pm$ 0.84 & 50.63 $\pm$ 0.73 & 2.56 $\pm$ 1.66 & 9.16 $\pm$ 5.51 \\
-      \cmidrule(lr){2-10}
-      & ASLP (thresholding) & 51.09 $\pm$ 0.92 & 53.00 $\pm$ 0.52 & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50 & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
-      & ASLP (averaging) & 50.22 $\pm$ 1.09 & 51.72 $\pm$ 0.73 & 50.56 $\pm$ 0.33 & 51.59 $\pm$ 0.24 & 50.47 $\pm$ 0.42 & 52.00 $\pm$ 0.27 & 50.38 $\pm$ 0.33 & 51.82 $\pm$ 0.34 \\
-      & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 49.19 $\pm$ 0.75 & 50.66 $\pm$ 0.47 & 2.54 $\pm$ 1.63 & 9.21 $\pm$ 5.50 \\
-      & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39} & \textbf{53.48 $\pm$ 0.51} & 51.06 $\pm$ 1.11 & \textbf{54.01 $\pm$ 0.35} & - & - & - & - \\
-      \bottomrule
-    \end{tabular}
-  }
-  \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
-  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR100
-  using various configurations. We use the configurations tested by the author
-  of the aforementioned articles. Performance measures reported are accuracy and
-  are presented with and without data augmentation, weight rescaling (WR), and
-  the signed constant weight distribution (SC). Pre-pruning results are reported
-  for ASLP and Supermask. Since pruning is baked in the Edge-Popup method, we do
-  not report a specific pre-pruning performance for it. We report performances for both
-  "thresholding" and "averaging" setups for our method. For edge-popup, we use
-  the best $k$ value for Conv\{2,4,6\} repported in
-  \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
-  the other methods, with the exception of the SC setup for Conv2 and Conv4.
-  However, for Conv6, ASLP's performance is superior when data augmentation is
-  disabled, while edge-popup achieves better results with data augmentation
-  enabled (except for the WR setup).}
-  \label{tab:chap2:con_performances_comparison_cifar100}
-\end{table}
