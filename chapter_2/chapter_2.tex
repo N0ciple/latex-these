@@ -12,14 +12,14 @@
 \section{Introduction and related work}
 % region: introduction
 Deep neural networks are increasingly utilized for solving various image
-processing tasks, particularly in the domain of visual category recognition.
+processing tasks, especially in the domain of visual category recognition.
 While these models have shown significant success, their extensive computational
 requirements, memory consumption, and energy consumption are notable
 limitations. In light of the emergence of intelligent embedded systems with
 restricted computational resources and limited energy availability, there is a
 growing need to develop these models with lightweight architectures that
 prioritise efficiency while maintaining high accuracy. The aim is to make these
-models both "lightweight and frugal," which presents a significant challenge for
+models both lightweight and efficient, which presents a significant challenge for
 researchers in the field.\\
 
 Creating small and efficient neural network architectures from scratch is a
@@ -36,8 +36,8 @@ concept and channel shuffling. CondenseNet \cite{huang2018condensenet} levrage
 DenseNet-like \cite{huang2017densely} connections together with grouped
 convolution to pick the most useful feature from previous layer maps.\\
 
-Designing efficient lightweight neural networks requires significant efforts
-from human experts. These networks are designed from scratch, with a focus on
+Designing efficient lightweight neural networks requires substantial effort from
+human experts. These networks are designed from scratch, with a focus on
 reducing the number of parameters and computational complexity while maintaining
 high accuracy. The design process involves careful consideration of network
 architecture, layer types, hyperparameters, and optimisation techniques. The
@@ -45,7 +45,7 @@ development of such networks, therefore, requires a significant amount of time
 and expertise.\\
 
 Another way of obtaining lightweight neural network is to reduce the size of an
-already existing large neural network, thourgh pruning. As discussed in
+already existing large neural network, through pruning. As discussed in
 \cref{chap:chapter1}, pruning methods, either structured or unstructured, are
 particularly successful at lightening large neural networks, and seek to remove
 connections with the least perceptible impact on classification accuracy.
@@ -62,10 +62,10 @@ achieve comparable performance to the original large network in a similar number
 of epochs when trained in isolation with initial weights taken from the large
 network. To identify these \acp{LT}, the large network is trained until
 convergence, followed by pruning the smallest weights based on their magnitude.
-The remaining weights are then rewound to their original value, it is to say the
-value they had before the training of the large network begins. This resulting
-subnetwork is known as a \textit{Lottery Ticket}.
-Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and concludes that
+The remaining weights are then rewound to their original value, that is, the
+value they had before the training of the large network began. This resulting
+subnetwork is known as a \textit{Lottery Ticket}. Another study
+\cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and concludes that
 only the topology of these subnetworks is actually important in order to reach
 comparable performances. Authors in \cite{DBLP:conf/iclr/LiuSZHD19} point out
 that the weights of the \acp{LT} are not important and can be randomly
@@ -85,7 +85,7 @@ At first, it seems counter intuitive that there exists a subnetwork in a large
 network, and that this subnetwork can achieve compelling performances without
 any weight training. This as been first conjectured in
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \ac{LTH}. A theoretical
-analysis brought proof that such subnetworks do exist.
+analysis provided evidence that such subnetworks do exist.
 \cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of width $d$
 and depth $l$ can be approximated by pruning a randomly initialized one that is
 a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
@@ -93,23 +93,23 @@ width has latter been improved by \cite{DBLP:conf/nips/OrseauHR20} to
 $O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
 upper bound was eventually rafined to $O(d\log(dl))$ by
 \cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of distributions, including
-the uniform distribution whihc is widely used for weight initialisation \cite{DBLP:conf/iccv/HeZRS15}.\\
+the uniform distribution which is widely used for weight initialisation \cite{DBLP:conf/iccv/HeZRS15}.\\
 
-Although their existence has been proven, no constructive proof has been
+Although their existence has been established, no constructive proof has been
 provided in order to identify the lightweight and efficient from scratch
 subnetworks. In this context, Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
 proposed the first attempt to extract efficient subnetworks using stochastic
 mask training. A probability of selecting each weight is defined (as the sigmoid
 of a mask) and trained using the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}.
 During training, weights are frozen and only the masks are allowed to vary.
-However, the major drawback of this method resides in the vanishing gradient of
-the sigmoid which makes mask training numerically challenging. Ramanujan et al.
-\cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another alternative, based on
-binarized saliency indicators learned with \ac{STE}, which selects the most
-prominent weights in the resulting subnetworks. Nevertheless, since this method
-enfore the pruning rate \textit{a priori}, finding the pruning rate giving the
-higest performances has to be made through a cumbersome and time-consuming
-binary search or grid-search. \\ 
+However, the major drawback of this method resides in the vanishing gradient
+issue of the sigmoid which makes mask training numerically challenging.
+Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another
+alternative, based on binarized saliency indicators learned with \ac{STE}, which
+selects the most prominent weights in the resulting subnetworks. Nevertheless,
+since this method enfore the pruning rate \textit{a priori}, finding the pruning
+rate giving the higest performances has to be made through a cumbersome and
+time-consuming binary search or grid-search. \\ 
 
 Considering the limitation of the aforementioned related  work, we introduce in
 this chapter a new stochastic subnetwork selection method based on \ac{GS}.
@@ -471,20 +471,41 @@ more abrupt due to stochastic mask sampling. \\
 
 \subsection{Overview}
 
-Our method is a combination of the \acl{STGS} sampling and the \acl{SR}
-mechanism. The two are combined in a global method called \acf{ASLP}. This
-method generates lightweight networks by sampling topologies in a large
-untrained network and learning the probability of selection of each weight.
-Probabilities are learned with \acl{SGD} together with a conventional loss
-function (a cross-entropy loss in the case of image classification). \\
+Our approach integrates the \acl{STGS} sampling technique and the \acl{SR}
+mechanism, resulting in a comprehensive method termed \acf{ASLP}. This strategy
+constructs lightweight neural networks by sampling topologies from a large,
+untrained network and learns the probability of selecting each weight.
+Probabilities are determined using \acl{SGD} in conjunction with a standard loss
+function, specifically cross-entropy loss for image classification tasks. The
+training procedure for our method is detailed in \Cref{alg:chap2:ASLP}. Unless
+otherwise noted, this procedure is implemented in
+\cref{sec:chap2:experiments}.\\
 
-% // TODO: ajouter quelques phrases sur le modèle de l'overview du chapitre 1,
+The core differences between our approach and standard pruning pipelines are
+illustrated in \Cref{fig:chap2:our-pipeline,fig:chap2:standard-pipeline}. As
+highlighted in \Cref{fig:chap2:our-pipeline}, our method focuses exclusively on
+topology selection without weight training, whereas conventional pruning
+pipelines rely on weight training and subsequent fine-tuning.\\
+
+
+\begin{figure}
+\centering
+\subfloat[Our pruning pipeline performs topology selection only. Weights are not
+trained.\label{fig:chap2:our-pipeline}]{
+  \includegraphics[width=0.45\textwidth]{chapter_2/assets/our_pruning_pipeline.png}}
+  \vspace{0.10\textwidth}
+\subfloat[Standard pruning pipelines relies on weight training and fine-tuning\label{fig:chap2:standard-pipeline}]{
+  \includegraphics[width=0.45\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
+\end{figure}
+
+% TODO: ajouter quelques phrases sur le modèle de l'overview du chapitre 1,
 % puis ajouter les figures provenant du poster qui illustre les différences
 % entre notre méthode et une méthode de pruning classique.
 
+
 \begin{algorithm}
   \caption{Our training procedure}
-  \label{alg:chap1:training_pruning2}
+  \label{alg:chap2:ASLP}
   \begin{algorithmic}
   \REQUIRE Dataset $\mathcal{D} = \{\mathcal{X}, \mathcal{Y}\}$, network $f$,
   weights $\theta$, masks $\bm{\hat{m}}$ number of epochs $n$, learning rate $\eta$
@@ -514,6 +535,20 @@ function (a cross-entropy loss in the case of image classification). \\
 \section{Experiments and results}
 \label{sec:chap2:experiments}
 % region: experiments
+  
+In this section, we show the performance of our method on the standard CIFAR10
+and CIFAR100 datasets.   They consist of  60k  colored images of $32\times 32$
+pixels each.  Training,  validation and test sets  include  45k,  5k and 10k
+images respectively.  \\  In order to demonstrate the effectiveness of our
+method, we chose the widely used SGD optimizer with a momentum of  0.9  and a
+learning rate of 50.    Faster convergence is obtained with higher learning
+rates,   however,  the latter also lead  to worse observed accuracy.   During
+training,  the maximum number of epochs is set to 1000 and early stopping is
+triggered  if the accuracy on the validation set stops improving during 100
+epochs.   In all these experiments, neither weight decay nor $\ell_2$
+regularisation are applied. See implementation details and our code on the ASLP GitHub
+\cite{Dupont2022}.
+
 
 \subsection{Performances}
 
@@ -592,15 +627,12 @@ function (a cross-entropy loss in the case of image classification). \\
       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39} & \textbf{53.48 $\pm$ 0.51} & 51.06 $\pm$ 1.11 & \textbf{54.01 $\pm$ 0.35} & - & - & - & - \\
       \bottomrule
     \end{tabular}
-  }
-  \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
+  } \caption{Comparison of ASLP's performance with Edge-Popup and Supermask
   \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR100
   using various configurations. We use the configurations tested by the author
   of the aforementioned articles. Performance measures reported are accuracy and
   are presented with and without data augmentation, weight rescaling (WR), and
-  the signed constant weight distribution (SC). Pre-pruning results are reported
-  for ASLP and Supermask. Since pruning is baked in the Edge-Popup method, we do
-  not report a specific pre-pruning performance for it. We report performances for both
+  the signed constant weight distribution (SC). We report performances for both
   "thresholding" and "averaging" setups for our method. For edge-popup, we use
   the best $k$ value for Conv\{2,4,6\} repported in
   \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
