@@ -609,19 +609,19 @@ regularisation are applied. See implementation details and our code on the ASLP 
       &  &  $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} & $\varnothing$ & \textbf{SC} & \textbf{WR} & \textbf{WR+SC} \\
       \toprule
       \multirow{12}{*}{}
-      \multirow{4}{*}{Conv2} & ASLP (thresholding) & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75 & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23 & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
+      \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding) & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75 & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23 & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
       & ASLP (averaging) & 38.49 $\pm$ 0.61 & 38.18 $\pm$ 0.81 & 41.12 $\pm$ 0.66 & 41.17 $\pm$ 0.54 & 38.40 $\pm$ 0.81 & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39 & 41.42 $\pm$ 0.55 \\
       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 38.09 $\pm$ 1.03 & 37.28 $\pm$ 0.47 & 26.03 $\pm$ 2.23 & 23.49 $\pm$ 1.36 \\
       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 38.47 $\pm$ 0.46 & \textbf{39.83 $\pm$ 0.46} & 38.57 $\pm$ 0.59 & 39.87 $\pm$ 0.78 & - & - & - & - \\
       \midrule
 
-      \multirow{4}{*}{Conv4} & ASLP (thresholding) & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77 & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
+      \multirow{4}{*}{\textbf{Conv4}} & ASLP (thresholding) & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77 & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
       & ASLP (averaging) & 47.18 $\pm$ 1.17 & 48.78 $\pm$ 0.79 & 49.39 $\pm$ 0.30 & 50.17 $\pm$ 0.50 & 46.89 $\pm$ 0.52 & 48.74 $\pm$ 0.47 & 49.55 $\pm$ 0.57 & 50.23 $\pm$ 0.87 \\
       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 45.84 $\pm$ 1.01 & 47.72 $\pm$ 0.75 & 27.70 $\pm$ 2.41 & 27.53 $\pm$ 5.20 \\
       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 47.75 $\pm$ 0.63 & \textbf{50.16 $\pm$ 0.47} & 48.20 $\pm$ 0.72 & 50.02 $\pm$ 0.65 & - & - & - & - \\
       \midrule
 
-      \multirow{4}{*}{Conv6} & ASLP (thresholding) & 51.09 $\pm$ 0.92 & 53.00 $\pm$ 0.52 & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50 & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
+      \multirow{4}{*}{\textbf{Conv6}} & ASLP (thresholding) & 51.09 $\pm$ 0.92 & 53.00 $\pm$ 0.52 & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50 & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
       & ASLP (averaging) & 50.22 $\pm$ 1.09 & 51.72 $\pm$ 0.73 & 50.56 $\pm$ 0.33 & 51.59 $\pm$ 0.24 & 50.47 $\pm$ 0.42 & 52.00 $\pm$ 0.27 & 50.38 $\pm$ 0.33 & 51.82 $\pm$ 0.34 \\
       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging) & - & - & - & - & 49.19 $\pm$ 0.75 & 50.66 $\pm$ 0.47 & 2.54 $\pm$ 1.63 & 9.21 $\pm$ 5.50 \\
       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39} & \textbf{53.48 $\pm$ 0.51} & 51.06 $\pm$ 1.11 & \textbf{54.01 $\pm$ 0.35} & - & - & - & - \\
@@ -642,6 +642,36 @@ regularisation are applied. See implementation details and our code on the ASLP 
   enabled (except for the WR setup).}
   \label{tab:chap2:con_performances_comparison_cifar100}
 \end{table}
+
+
+\begin{table}[htbp]
+  \centering\begin{tabular}{llcc}
+    \cmidrule[\heavyrulewidth]{3-4}
+     &  & \multicolumn{2}{c}{\textbf{Dataset}} \\
+     &  & \textbf{CIFAR-10} & \textbf{CIFAR-100}  \\
+    \toprule
+    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet20}} & ASLP (thresholding) &\textbf{ 81.08 $\pm$ 0.50} & \textbf{44.63 $\pm$ 0.91} \\
+    & ASLP (averaging)& 78.85 $\pm$ 0.41 & 42.91 $\pm$ 1.14 \\ 
+    & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)  & 69.83 $\pm$ 1.20 & 30.60 $\pm$ 0.91 \\
+    & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 75.09 $\pm$ 1.41 & 22.47 $\pm$ 1.37 \\
+    \midrule
+     \multirow{4}{*}{\textbf{VGG16}} & ASLP (thresholding) & \textbf{24.93 $\pm$ 0.69} & \textbf{8.66 $\pm$ 0.33} \\
+     & ASLP (averaging) & 24.93 $\pm$ 0.77 & 8.58 $\pm$ 0.32 \\
+     & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)  & 25.07 $\pm$ 0.34 & 7.97 $\pm$ 0.35 \\
+     & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 23.05 $\pm$ 0.84 & 6.65 $\pm$ 0.38 \\
+    \bottomrule
+    \end{tabular}
+  \caption{Comparison of ASLP's performance against Edge-Popup and Supermask
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on both
+  CIFAR-10 and CIFAR-100 datasets using VGG16 and ResNet20 architectures. The
+  results showcase the scenario with data augmentation, weight rescaling (WR),
+  and signed constant weight distribution. Across all datasets and network
+  architectures, ASLP surpasses the competing methods in its "thresholding"
+  configuration.}
+  \label{tab:chap2:r20_VGG16_performances_comparison}
+\end{table}
+
+
 % endregion: perf-tables
 
 \subsection{Impact of initialisation}
@@ -653,6 +683,7 @@ regularisation are applied. See implementation details and our code on the ASLP 
 
 \section{Conclusion}
 % region : conclusion
+
 %endregion : conclusion
 
   % ==============================================================================
@@ -715,6 +746,14 @@ regularisation are applied. See implementation details and our code on the ASLP 
 
 % ------------------------------------------------------------------------------
 \subsection{Performance and comparison}
+
+% TODO: analyser les perfs sur VGG16 et R20
+
+% TODO: inclure tableau de perfs
+ 
+% TODO:  
+
+
 The accuracy of our method is evaluated on subnetworks whose topology
 corresponds to connections with  (trained) probabilities larger than 0.5;  in
 other words,  if {\it the binary event of keeping a connection is more likely
