@@ -46,6 +46,7 @@
 \usepackage{bm} % pour les polices mathématiques ex: \mathbf{X}
 \usepackage{amssymb} % symboles mathématiques suplémentaires (comme \varnothing)
 \usepackage{amsthm} % pour les théorèmes et surtout les preuves (voir ici: https://stackoverflow.com/questions/1449370/latex-error-environment-proof-undefined)
+\usepackage[square,numbers]{natbib} % pour citer les auteurs directement [DEUX REFS] (1):https://tex.stackexchange.com/questions/69379/how-do-i-cite-author-in-latex (2) https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib
 %====================== COMMANDES PERSO ======================
 \newcommand\myfunc[5]{%
   \begingroup
@@ -147,7 +148,7 @@
 \nocite{*}
 
 %choix du style de la biblio
-\bibliographystyle{plain}
+\bibliographystyle{plainnat}
 %inclusion de la biblio
 \bibliography{bibliography.bib}
 %voir wiki pour plus d'information sur la syntaxe des entrées d'une bibliographie
