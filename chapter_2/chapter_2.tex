@@ -535,25 +535,114 @@ trained.\label{fig:chap2:our-pipeline}]{
 \section{Experiments and results}
 \label{sec:chap2:experiments}
 % region: experiments
-  
-In this section, we show the performance of our method on the standard CIFAR10
-and CIFAR100 datasets.   They consist of  60k  colored images of $32\times 32$
-pixels each.  Training,  validation and test sets  include  45k,  5k and 10k
-images respectively.  \\  In order to demonstrate the effectiveness of our
-method, we chose the widely used SGD optimizer with a momentum of  0.9  and a
-learning rate of 50.    Faster convergence is obtained with higher learning
-rates,   however,  the latter also lead  to worse observed accuracy.   During
-training,  the maximum number of epochs is set to 1000 and early stopping is
-triggered  if the accuracy on the validation set stops improving during 100
-epochs.   In all these experiments, neither weight decay nor $\ell_2$
-regularisation are applied. See implementation details and our code on the ASLP GitHub
-\cite{Dupont2022}.
+
+
+In this section, we present a series of experiments designed to evaluate the
+efficacy of our proposed method, as well as to investigate the influence of
+various parameters and configurations. To accomplish this, we employ the same
+networks and datasets previously introduced in \cref{chap:chapter1}. The
+datasets utilised include CIFAR-10, CIFAR-100, and TinyImageNet. They are
+described in \cref{sec:chap1:experiments}. Unless stated otherwise, on each
+table we report the test accuracy, given in percentages (plus or minus the
+standard deviation), evaluated on the test set of the said datasets. Values are
+obtained by averaging 5 independent runs. The architectures considered are
+Conv2, Conv4, Conv6, VGG16, ResNet-20, and ResNet-18. Excluding Conv2 and Conv6,
+these networks are described in \cref{sec:chap1:experiments}. Conv2 and Conv6
+are modified versions of the Conv4 architecture, featuring 2 and 6 convolutional
+layers, respectively, instead of the original 4 layers. The number of parameters
+for these architectures is provided in \cref{tab:chap2:conv_num_params}.
+Although these networks, introduced by \citeauthor{DBLP:conf/iclr/FrankleC19},
+are less common in the literature,  we use them since they are also used by the
+methods we compare ours to.\\
+
+\begin{table}[htbp]
+  \centering\begin{tabular}{lccc}
+    \cmidrule[\heavyrulewidth]{2-4}
+                         & \textbf{Conv2}     & \textbf{Conv4}     & \textbf{Conv6}     \\ \toprule
+    Number of Parameters & 4,301,642 & 2,425,930 & 2,262,602 \\ \bottomrule
+    \end{tabular}
+  \caption{Number of parameters for the Conv2, Conv4 and Conv6 architectures.}
+  \label{tab:chap2:conv_num_params}
+\end{table}
+
 
 
 \subsection{Performances}
 
+To demonstrate the efficacy of our method in a standard image classification
+scenario, we compare our approach with state-of-the-art methods, specifically
+Edge-popup \cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
+\cite{DBLP:conf/nips/ZhouLLY19}. We re-implemented both methods in PyTorch
+\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19} and employed a uniform training
+procedure for all methods: networks are trained for 1000 epochs with a fixed
+learning rate of 50 (except for Edge-popup, which utilises a learning rate of
+0.1). The learning rate of \ac{SR} is set to $1\times10^{-3}$, and  neither
+weight decay nor $L_2$ regularisation is applied. This section examines
+several configurations initially presented in \cite{DBLP:conf/nips/ZhouLLY19},
+which encompass combinations of techniques or enhancements employed for method
+evaluation. The various techniques include data augmentation, the application of
+\ac{WR}, and the use of \ac{SC} weight distribution.\\
+
+\noindent\textbf{Data augmentation.} Although \cite{DBLP:conf/nips/ZhouLLY19}
+did not introduce data augmentation, it is a widely accepted practice in image
+classification and is generally applied even if not explicitly mentioned in the
+article. Consequently, we consider two configurations: with (w/) and without
+(w/o) data augmentation. The data augmentation we apply has been observed in
+various state-of-the-art implementations and is the following: first, images
+are padded with zeroes, expanding them to one-eighth of their initial size.
+Next, a random crop of the original size is extracted from the enlarged image.
+Lastly, a random horizontal flip is performed.\\
+
+\noindent\textbf{Weight
+Rescaling.} Each method discussed in this section incorporates its own weight
+rescaling technique: \ac{DWR} for \cite{DBLP:conf/nips/ZhouLLY19}, \ac{FS} for
+\cite{DBLP:conf/cvpr/RamanujanWKFR20}, and \ac{SR} for \ac{ASLP}. All of these
+techniques are denoted as \ac{WR} in this section.\\ 
+
+\noindent\textbf{SignedConstant Distribution.} The signed constant distribution
+was introduced by \cite{DBLP:conf/nips/ZhouLLY19}. Weights sampled from this
+distribution can take only two values: $-\sigma$ and $\sigma$, where $\sigma$
+represents the standard deviation of the weight tensor upon initialization using
+the widely adopted Kaiming initialization \cite{DBLP:conf/iccv/HeZRS15}. \\
+
+
+After training the neural networks, a pruning step is applied to extract a
+subnetwork for the large initial network. Our pruning technique is based on
+thresholding the weight probability selection: a weight is selected if its
+probability is above 0.5, otherwise, it is pruned. In other words, the weight is
+kept if the binary event of keeping a connection is more likely than its
+removal. This means retaining the weight $\bm{w}_{i,j}$ if $\bm{\hat{m}}_{i,j} >
+0$ and setting it to zero otherwise. We refer to this pruning method as
+\textit{thresholding}. As a matter of comparison we also consider the setting in
+\citeauthor{DBLP:conf/nips/ZhouLLY19} which is an averaging method to evaluate
+Supermask performance. It consists in sampling ten different topologies and
+averaging their test accuracies. We refer to this pruning method as
+\textit{averaging}. Edge-popup does not require pruning as it is integrated into
+the forward pass. \\
+
+Overall, in the analysis of our ASLP method's results, ASLP outperforms both
+Edge Popup and Supermask methods on CIFAR-10 and CIFAR-100 datasets, a trend
+consistent across all tested networks, including Conv2, Conv4, Conv6, VGG16, and
+ResNet20. Notably, our "thresholding" pruning strategy demonstrated superior
+performance compared to Supermask's "averaging" approach. However, it should be
+noted that on the CIFAR-100 dataset, our method slightly underperforms compared
+to Edge Popup for the Conv6 network.\\
+
+Remarkably, for larger networks such as VGG16 and ResNet20, our ASLP method
+employing the thresholding strategy consistently surpasses all other methods.
+Although, when evaluating the ResNet-20 network with the TinyImageNet dataset,
+our method appears to be less optimal than others. Despite this, it is essential
+to recognize the overall effectiveness and versatility of our ASLP method across
+diverse networks and datasets.\\
+
+
+%=============================================
+
+
+
+
 % region: perf-tables
-\begin{table}
+\begin{table}[htbp]
   \centering
   \resizebox{16.5cm}{!} {
     \begin{tabular}{llcccccccc}
@@ -590,7 +679,7 @@ regularisation are applied. See implementation details and our code on the ASLP 
   of the aforementioned articles. Performance measures reported are accuracy and
   are presented with and without data augmentation, weight rescaling (WR), and
   the signed constant weight distribution (SC). We report performances for both
-  "thresholding" and "averaging" setups for our method. For edge-popup, we use
+  \textit{thresholding} and \textit{averaging} setups for our method. For edge-popup, we use
   the best $k$ value for Conv\{2,4,6\} repported in
   \cite{DBLP:conf/cvpr/RamanujanWKFR20}.  Across all setups, our method ASLP
   outperforms Edge-Popup and Supermask}
@@ -600,7 +689,7 @@ regularisation are applied. See implementation details and our code on the ASLP 
 
 
 
-\begin{table}
+\begin{table}[htbp]
   \centering
   \resizebox{16.5cm}{!}{
     \begin{tabular}{lllllllllll}
@@ -633,7 +722,7 @@ regularisation are applied. See implementation details and our code on the ASLP 
   of the aforementioned articles. Performance measures reported are accuracy and
   are presented with and without data augmentation, weight rescaling (WR), and
   the signed constant weight distribution (SC). We report performances for both
-  "thresholding" and "averaging" setups for our method. For edge-popup, we use
+  \textit{thresholding} and \textit{averaging} setups for our method. For edge-popup, we use
   the best $k$ value for Conv\{2,4,6\} repported in
   \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
   the other methods, with the exception of the SC setup for Conv2 and Conv4.
@@ -650,7 +739,7 @@ regularisation are applied. See implementation details and our code on the ASLP 
      &  & \multicolumn{2}{c}{\textbf{Dataset}} \\
      &  & \textbf{CIFAR-10} & \textbf{CIFAR-100}  \\
     \toprule
-    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet20}} & ASLP (thresholding) &\textbf{ 81.08 $\pm$ 0.50} & \textbf{44.63 $\pm$ 0.91} \\
+    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet-20}} & ASLP (thresholding) &\textbf{ 81.08 $\pm$ 0.50} & \textbf{44.63 $\pm$ 0.91} \\
     & ASLP (averaging)& 78.85 $\pm$ 0.41 & 42.91 $\pm$ 1.14 \\ 
     & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)  & 69.83 $\pm$ 1.20 & 30.60 $\pm$ 0.91 \\
     & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 75.09 $\pm$ 1.41 & 22.47 $\pm$ 1.37 \\
@@ -663,14 +752,60 @@ regularisation are applied. See implementation details and our code on the ASLP 
     \end{tabular}
   \caption{Comparison of ASLP's performance against Edge-Popup and Supermask
   \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on both
-  CIFAR-10 and CIFAR-100 datasets using VGG16 and ResNet20 architectures. The
+  CIFAR-10 and CIFAR-100 datasets using VGG16 and ResNet-20 architectures. The
   results showcase the scenario with data augmentation, weight rescaling (WR),
   and signed constant weight distribution. Across all datasets and network
-  architectures, ASLP surpasses the competing methods in its "thresholding"
+  architectures, ASLP surpasses the competing methods in its \textit{thresholding}
   configuration.}
   \label{tab:chap2:r20_VGG16_performances_comparison}
 \end{table}
 
+\begin{table}[htbp]
+  \centering
+  \begin{tabular}{llc}
+    \cmidrule[\heavyrulewidth]{3-3}
+     &  & \textbf{TinyImageNet} \\
+    \toprule
+   \multirow{4}{*}{\textbf{ResNet-18}} & ASLP  (thresholding) & 33.56 $\pm$ 1.18 \\
+    & ASLP (averaging) & 34.16 $\pm$ 0.26 \\
+    & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)  & 34.83 $\pm$ 0.46 \\
+    & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) &  \textbf{38.00 $\pm$ 0.26} \\
+    \bottomrule
+    \end{tabular}
+    
+  \caption{Comparison of ASLP's performance against Edge-Popup and Supermask
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on both
+  TinyImageNet datasets using ResNet-18 architecture. The
+  results showcase the scenario with data augmentation, weight rescaling (WR),
+  and signed constant weight distribution. \cite{DBLP:conf/cvpr/RamanujanWKFR20}
+  performs the best in this scenario.}
+  \label{tab:chap2:tinyimagenet_performances_comparison}
+\end{table}
+
+\begin{table}[htbp]
+  \centering\begin{tabular}{lcc}
+    \cmidrule[\heavyrulewidth]{2-3}
+     & \multicolumn{2}{c}{\textbf{Dataset}} \\
+     & \textbf{CIFAR-10} & \textbf{CIFAR-100} \\
+    \toprule
+    \textbf{Conv2} & 48.20 $\pm$ 0.14 & 48.10 $\pm$ 0.16 \\
+    \textbf{Conv4} & 48.22 $\pm$ 0.46 & 47.17 $\pm$ 0.40 \\
+    \textbf{Conv6} & 48.72 $\pm$ 0.40 & 47.85 $\pm$ 1.35 \\
+    \textbf{ResNet-20} & 48.37 $\pm$ 0.09 & 47.27 $\pm$ 0.28 \\
+    \textbf{VGG16} & 39.19 $\pm$ 1.56 & 39.11 $\pm$ 1.04 \\
+    \midrule
+     & \multicolumn{2}{c}{\textbf{TinyImageNet}} \\
+     \textbf{ResNet-18} & \multicolumn{2}{c}{47.27 $\pm$ 0.28} \\
+    \bottomrule
+    \end{tabular}
+  \caption{Comparison of the ASLP method's sparsity levels across 
+  various neural network architectures and datasets (CIFAR-10 and CIFAR-100) 
+  after applying the thresholding procedure. The results are presented 
+  as mean sparsity percentages with their respective standard deviations, for
+  the setup with data augmentation, weight rescaling (WR), and signed constant
+  weight distribution.}
+  \label{<label>}
+\end{table}
 
 % endregion: perf-tables
 
@@ -683,6 +818,9 @@ regularisation are applied. See implementation details and our code on the ASLP 
 
 \section{Conclusion}
 % region : conclusion
+
+\newpage
+\newpage
 
 %endregion : conclusion
 
@@ -834,7 +972,7 @@ during inference.
 \section{Conclusion}
 
 In this paper, we introduce a novel method that extracts effective subnetworks
-from larger networks without training its weights. The proposed method optimizes
+from larger networks without training its weights. The proposed method optimises
 a probability distribution which measures the relevance of weights, and only
 those with the highest relevance define the topology of the selected
 subnetworks. An efficient and effective weight rescaling mechanism is also
