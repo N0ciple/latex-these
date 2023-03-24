@@ -417,7 +417,7 @@ coefficient of the log-probability vector does not change the outcome of
 Gumbel-Softmax sampling. This is because it does not alter the outcome of the
 argmax function, which remains unchanged regardless of the value of $c$,
 provided that the same value $c$ is added to both coefficient, which is the case
-in the our formulation (\emph{c.f.} \cref*{eqn:chap2:our-formulation}). The
+in the our formulation (\emph{c.f.} \cref{eqn:chap2:our-formulation}). The
 presence of this constant $c$, whose value is arbirtrary, that shifts the
 log-probabilities of our probability parametrisation gives the name of the
 method: \acl{ASLP}.\\ 
@@ -498,11 +498,6 @@ trained.\label{fig:chap2:our-pipeline}]{
   \includegraphics[width=0.45\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
 \end{figure}
 
-% TODO: ajouter quelques phrases sur le modèle de l'overview du chapitre 1,
-% puis ajouter les figures provenant du poster qui illustre les différences
-% entre notre méthode et une méthode de pruning classique.
-
-
 \begin{algorithm}
   \caption{Our training procedure}
   \label{alg:chap2:ASLP}
@@ -561,7 +556,7 @@ methods we compare ours to.\\
                          & \textbf{Conv2}     & \textbf{Conv4}     & \textbf{Conv6}     \\ \toprule
     Number of Parameters & 4,301,642 & 2,425,930 & 2,262,602 \\ \bottomrule
     \end{tabular}
-  \caption{Number of parameters for the Conv2, Conv4 and Conv6 architectures.}
+  \caption{Number of parameters for the Conv2, Conv4 and Conv6 architectures, when used with the CIFAR-10 dataset}
   \label{tab:chap2:conv_num_params}
 \end{table}
 
@@ -593,47 +588,88 @@ are padded with zeroes, expanding them to one-eighth of their initial size.
 Next, a random crop of the original size is extracted from the enlarged image.
 Lastly, a random horizontal flip is performed.\\
 
-\noindent\textbf{Weight
-Rescaling.} Each method discussed in this section incorporates its own weight
-rescaling technique: \ac{DWR} for \cite{DBLP:conf/nips/ZhouLLY19}, \ac{FS} for
+\noindent\textbf{Weight Rescaling (WR).} Each method discussed in this section
+incorporates its own weight rescaling technique: \ac{DWR} for
+\cite{DBLP:conf/nips/ZhouLLY19}, \ac{FS} for
 \cite{DBLP:conf/cvpr/RamanujanWKFR20}, and \ac{SR} for \ac{ASLP}. All of these
 techniques are denoted as \ac{WR} in this section.\\ 
 
-\noindent\textbf{SignedConstant Distribution.} The signed constant distribution
+\noindent\textbf{Signed Constant Distribution (SC).} The signed constant distribution
 was introduced by \cite{DBLP:conf/nips/ZhouLLY19}. Weights sampled from this
 distribution can take only two values: $-\sigma$ and $\sigma$, where $\sigma$
 represents the standard deviation of the weight tensor upon initialization using
-the widely adopted Kaiming initialization \cite{DBLP:conf/iccv/HeZRS15}. \\
+the widely adopted Kaiming initialization \cite{DBLP:conf/iccv/HeZRS15}.
+\citeauthor{DBLP:conf/nips/ZhouLLY19} report that it improves performances over
+the standard weight initialisation scheme. \\
 
 
-After training the neural networks, a pruning step is applied to extract a
-subnetwork for the large initial network. Our pruning technique is based on
-thresholding the weight probability selection: a weight is selected if its
-probability is above 0.5, otherwise, it is pruned. In other words, the weight is
-kept if the binary event of keeping a connection is more likely than its
-removal. This means retaining the weight $\bm{w}_{i,j}$ if $\bm{\hat{m}}_{i,j} >
-0$ and setting it to zero otherwise. We refer to this pruning method as
-\textit{thresholding}. As a matter of comparison we also consider the setting in
-\citeauthor{DBLP:conf/nips/ZhouLLY19} which is an averaging method to evaluate
-Supermask performance. It consists in sampling ten different topologies and
-averaging their test accuracies. We refer to this pruning method as
-\textit{averaging}. Edge-popup does not require pruning as it is integrated into
-the forward pass. \\
+After training the selection probabilities of the neural network's weights, a
+pruning step is applied to extract a subnetwork for the large initial network.
+Our pruning strategy is based on thresholding the weight probability selection:
+a weight is selected if its probability of selection is above 0.5, otherwise, it
+is pruned. In other words, the weight is kept if the binary event of keeping a
+connection is more likely than its removal. This means retaining the weight
+$\bm{w}_{i,j}$ if $\bm{\hat{m}}_{i,j} > 0$ and setting it to zero otherwise. We
+refer to this pruning method as \textit{thresholding}. As a matter of comparison
+we also consider the setting in \citeauthor{DBLP:conf/nips/ZhouLLY19} which is
+an averaging strategy to evaluate Supermask performance. It consists in sampling
+ten different topologies and averaging their test accuracies. We refer to this
+pruning strategy as \textit{averaging}. Edge-popup does not require pruning as it
+is integrated into the forward pass. \\
 
-Overall, in the analysis of our ASLP method's results, ASLP outperforms both
-Edge Popup and Supermask methods on CIFAR-10 and CIFAR-100 datasets, a trend
-consistent across all tested networks, including Conv2, Conv4, Conv6, VGG16, and
-ResNet20. Notably, our "thresholding" pruning strategy demonstrated superior
-performance compared to Supermask's "averaging" approach. However, it should be
-noted that on the CIFAR-100 dataset, our method slightly underperforms compared
-to Edge Popup for the Conv6 network.\\
+Overall, the analysis of our ASLP method's results shows that ASLP outperforms
+both Edge Popup and Supermask methods on CIFAR-10 and CIFAR-100 datasets, a
+trend consistent across all tested networks, including Conv2, Conv4, Conv6,
+VGG16, and ResNet20. Notably, our \textit{thresholding} pruning strategy
+demonstrated superior performance compared to Supermask's \textit{averaging}
+approach. However, it should be noted that on the CIFAR-100 dataset, our method
+slightly underperforms compared to Edge Popup for the Conv6 network.\\
 
-Remarkably, for larger networks such as VGG16 and ResNet20, our ASLP method
-employing the thresholding strategy consistently surpasses all other methods.
-Although, when evaluating the ResNet-20 network with the TinyImageNet dataset,
-our method appears to be less optimal than others. Despite this, it is essential
-to recognize the overall effectiveness and versatility of our ASLP method across
-diverse networks and datasets.\\
+Remarkably, for larger networks such as VGG16 and ResNet-20, our ASLP method
+employing the \textit{thresholding} strategy also consistently surpasses all
+other methods. Although, when evaluating the ResNet-18 network with the
+TinyImageNet dataset, our method appears to be less optimal than others. \\
+
+% =========================================================
+
+We put forth several hypotheses to account for the reduced performance. First,
+the ResNet-18 architecture employed is the standard PyTorch implementation
+\cite{pytorch_resnet18}, designed for the ImageNet dataset
+\cite{deng2009imagenet}. As a result, it is tailored for $224 \times 224$ pixel
+images, while TinyImageNet images are merely $64 \times 64$ pixels. With a
+smaller input image size, each pixel encompasses a larger area of the input
+space, and an overly large receptive field for a smaller image like TinyImageNet
+may lead to the loss of crucial spatial information. We opted against upscaling
+TinyImageNet images to $224 \times 224$ as a preprocessing step in order to
+prevent an exponential increase in computational cost.\\
+
+Secondly, the ResNet-18 network is among the largest networks we examined (refer
+to \cref{tab:chap1:networks_size}). As a result, there are numerous possible
+weight combinations and subnetworks. Viewing \ac{ASLP} as a Neural Architecture
+Search method, the search space for ResNet-18 is considerably larger than for
+the Conv{2,4,6} networks. Nevertheless, the number of sampled topologies is only
+equal to the product of the number of batches and the number of epochs during
+which the network is trained. Since the number of images in the CIFAR and
+TinyImageNet datasets are of the same order of magnitude (see
+\cref{tab:chap1:datasets}), the number of evaluated topologies is roughly the
+same. This may be sufficient to explore the search space for Conv{2,4,6}
+networks but it might not be enough for a ResNet-18 network.\\
+
+% TODO: ajouter le nombre de paramètres dans les couches FC de ResNet-18 et VGG16
+
+However, this hypothesis warrants further clarification. Indeed, the VGG16
+network has more parameters than the ResNet-18, but \ac{ASLP} achieves superior
+results compared to other methods on this architecture. We suggest the following
+explanation: The ResNet-18 has very few weights in its fully connected layers,
+while the VGG16 has much more. We conjecture that the \ac{ASLP} method is more
+effective on fully connected layers than on convolutional layers. Supporting
+this conjecture is the observation that, on CIFAR-100, \ac{ASLP} performs
+relatively worse compared to other methods on the Conv6 network, but better on
+smaller networks. Nonetheless, there are fewer weights in the fully connected
+layers of the Conv6 network than in the Conv2 or Conv4 networks. This is due to
+an additional MaxPooling layer in the Conv6 network (compared to the Conv4
+network) that reduces the size of the feature maps and, consequently, the size
+of the subsequent fully connected layers.\\
 
 
 %=============================================
@@ -884,13 +920,6 @@ diverse networks and datasets.\\
 
 % ------------------------------------------------------------------------------
 \subsection{Performance and comparison}
-
-% TODO: analyser les perfs sur VGG16 et R20
-
-% TODO: inclure tableau de perfs
- 
-% TODO:  
-
 
 The accuracy of our method is evaluated on subnetworks whose topology
 corresponds to connections with  (trained) probabilities larger than 0.5;  in
