@@ -563,6 +563,7 @@ methods we compare ours to.\\
 
 
 \subsection{Performances}
+\label{sec:chap2:performances}
 
 To demonstrate the efficacy of our method in a standard image classification
 scenario, we compare our approach with state-of-the-art methods, specifically
@@ -834,20 +835,73 @@ of the subsequent fully connected layers.\\
      \textbf{ResNet-18} & \multicolumn{2}{c}{47.27 $\pm$ 0.28} \\
     \bottomrule
     \end{tabular}
-  \caption{Comparison of the ASLP method's sparsity levels across 
-  various neural network architectures and datasets (CIFAR-10 and CIFAR-100) 
-  after applying the thresholding procedure. The results are presented 
-  as mean sparsity percentages with their respective standard deviations, for
-  the setup with data augmentation, weight rescaling (WR), and signed constant
-  weight distribution.}
-  \label{<label>}
+  \caption{Comparison of the ASLP method's sparsity levels across various neural
+  network architectures and datasets (CIFAR-10 and CIFAR-100) after applying the
+  thresholding procedure. The results are presented as mean percentages of
+  remaining weights with their respective standard deviations, for the setup
+  with data augmentation, weight rescaling (WR), and signed constant weight
+  distribution.}
+  \label{tab:chap2:observed_sparsity}
 \end{table}
 
 % endregion: perf-tables
 
-\subsection{Impact of initialisation}
-
 \subsection{Impact of smart rescaling}
+
+% TODO: compléter section Smart Rescale
+
+
+\subsection{Increasing sparsity a posteriori}
+\label{sec:chap2:increasing_sparsity}
+
+Unlike \cite{DBLP:conf/cvpr/RamanujanWKFR20}, the proposed \ac{ASLP} approach
+does not enforce a predefined pruning rate during training. Instead, it allows
+the network to determine its best pruning rate by updating weight probabilities
+through backpropagation. The average pruning rate can be obtained by
+thresholding the probabilities of selection, which is explained in
+\cref{sec:chap2:performances}. The observed pruning rates are reported in
+\cref{tab:chap2:observed_sparsity}, and they are typically around 50\%. However,
+higher or lower pruning rates can be achieved by pruning weights based on their
+associated selection probability (i.e., the associated mask $\bm{\hat{m}}$),
+which enforces the pruning rate a posteriori and treats selection probabilities
+as saliency scores during pruning. Notably, even with this a posteriori pruning
+rate enforcement, Conv{2,4,6} networks trained with \ac{ASLP} achieve impressive
+performances on CIFAR-10 and CIFAR-100 datasets for higher pruning rates than
+their observed pruning rate, as shown in \cref{fig:chap2:sparsity_impact}. In
+this figure, the solid line represents the average test accuracy of five
+independent runs, and the shaded area represents plus or minus one standard
+deviation.\\
+
+Moreover, the results presented in \cref{fig:chap2:sparsity_impact} provide
+further support for the \textit{thresholding} strategy. The pruning achieved by
+the \textit{thresholding} strategy is comparable to the optimal pruning rate
+found in this section through computationally expensive search methods (as done
+in \cite{DBLP:conf/cvpr/RamanujanWKFR20}) across the tested architectures.
+
+\begin{figure}[htbp]
+\centering
+\caption{totototo}
+\label{fig:chap2:sparsity_impact}
+\subfloat[cifar10\label{fig:chap2:sparsity_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar10.pdf}}
+\subfloat[cifar100\label{fig:chap2:sparsity_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar100.pdf}}
+\end{figure}
+
+\subsection{Impact of learning rate}
+\label{sec:chap2:impact_learning_rate}
+
+\begin{figure}
+\centering
+\caption{LR IMPACT}
+\label{fig:chap2:lr_impact}
+\subfloat[Conv4\label{fig:chap2:lr_conv4}]{
+  \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_Conv4.pdf}}
+\subfloat[VGG16\label{fig:chap2:lr_vgg16}]{
+  \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableVGG16.pdf}}
+\subfloat[ResNet-20\label{fig:chap2:lr_resnet20}]{
+  \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableResNet20.pdf}}
+\end{figure}
 
 % endregion: experiments
 
