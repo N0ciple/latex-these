@@ -149,6 +149,7 @@ Without a loss of generality, we omit the bias in the definition of
 
 % ------------------------------------------------------------------------------
 \subsection{Stochastic Weight Sampling}
+\label{sec:chap2:stochastic-sampling}
 % region: stochastic-sampling
 \indent Given a network $f_\theta$, weight pruning consists in removing
 connections in the graph of $f_\theta$. A node in this graph refers to a
@@ -647,12 +648,12 @@ Secondly, the ResNet-18 network is among the largest networks we examined (refer
 to \cref{tab:chap1:networks_size}). As a result, there are numerous possible
 weight combinations and subnetworks. Viewing \ac{ASLP} as a Neural Architecture
 Search method, the search space for ResNet-18 is considerably larger than for
-the Conv{2,4,6} networks. Nevertheless, the number of sampled topologies is only
+the Conv\{2,4,6\} networks. Nevertheless, the number of sampled topologies is only
 equal to the product of the number of batches and the number of epochs during
 which the network is trained. Since the number of images in the CIFAR and
 TinyImageNet datasets are of the same order of magnitude (see
 \cref{tab:chap1:datasets}), the number of evaluated topologies is roughly the
-same. This may be sufficient to explore the search space for Conv{2,4,6}
+same. This may be sufficient to explore the search space for Conv\{2,4,6\}
 networks but it might not be enough for a ResNet-18 network.\\
 
 % TODO: ajouter le nombre de paramètres dans les couches FC de ResNet-18 et VGG16
@@ -845,9 +846,47 @@ of the subsequent fully connected layers.\\
 
 % endregion: perf-tables
 
-\subsection{Impact of smart rescaling}
+\subsection{Rescaling the weights}
 
-% TODO: compléter section Smart Rescale
+In
+\cref{tab:chap2:con_performances_comparison_cifar10,tab:chap2:con_performances_comparison_cifar100},
+we observe that our weight rescaling technique, denoted as \acf{SR}, positively
+impacts performance, as evidenced by the increase in test accuracy compared to
+the baseline scenario (refered to as $\varnothing$). This improvement is
+consistent across both CIFAR-10 and CIFAR-100 datasets, irrespective of whether
+data augmentation is employed or not. Besides enhancing accuracy, \ac{SR} also
+contributes to a reduction in the number of epochs necessary for convergence.
+This observation is supported by \cref{fig:chap2:rescale_impact}, which
+demonstrates a significant decrease in the epochs required to achieve
+convergence for all tested architectures and datasets. Networks in
+\cref{fig:chap2:rescale_impact} have been trained with and without \ac{SR} using
+data augmentation in both cases. The number of epoch is set to 1000 and an early
+stopping policy, described in \cref{sec:chap2:experiments}, is applied.
+Convergence is reached when the early stopping policy stops the training.\\
+
+In addition to the performance improvements, and the reduction in the number of
+epochs required for convergence, \ac{SR} also offers a faster alternative to
+\acf{DWR} \cite{DBLP:conf/nips/ZhouLLY19}. DWR requires rectifying weights
+layerwise using the inverse of the observed pruning rates. To determine the
+observed pruning rate for a layer, it is required to store the sampled masks and
+compute the active fraction of them. These layerwise evaluations introduce a
+substantial overhead at each training epoch. On the other hand, \ac{SR} nvolves
+straightforward scalar multiplications for each layer, resulting in reduced
+complexity. In our experiments, we found that, on average, enabling \ac{DWR}
+increases the epoch runtime by 0.2 seconds for Conv4, while our \ac{SR} method
+only adds 0.13 seconds. This translates to a 35\% reduction in training overhead
+when using \ac{SR} compared to \ac{DWR} on this particular architecture.\\
+
+\begin{figure}[htbp]
+\centering
+\subfloat[CIFAR-10\label{fig:chap2:rescale_cifar10}]{
+  \includegraphics[width=0.49\textwidth]{chapter_2/assets/sr_impact_on_epochs_cifar10.pdf}}
+\subfloat[CIFAR-100\label{fig:chap2:rescale_cifar100}]{
+  \includegraphics[width=0.49\textwidth]{chapter_2/assets/sr_impact_on_epochs_cifar100.pdf}}
+\caption{Impact of \acf{SR} on the number of epochs required to reach
+convergence for Conv\{2,3,4\} on CIFAR-10 and CIFAR-100.}
+\label{fig:chap2:rescale_impact}  
+\end{figure}
 
 
 \subsection{Increasing sparsity a posteriori}
@@ -864,7 +903,7 @@ higher or lower pruning rates can be achieved by pruning weights based on their
 associated selection probability (i.e., the associated mask $\bm{\hat{m}}$),
 which enforces the pruning rate a posteriori and treats selection probabilities
 as saliency scores during pruning. Notably, even with this a posteriori pruning
-rate enforcement, Conv{2,4,6} networks trained with \ac{ASLP} achieve impressive
+rate enforcement, Conv\{2,4,6\} networks trained with \ac{ASLP} achieve impressive
 performances on CIFAR-10 and CIFAR-100 datasets for higher pruning rates than
 their observed pruning rate, as shown in \cref{fig:chap2:sparsity_impact}. In
 this figure, the solid line represents the average test accuracy of five
@@ -882,28 +921,71 @@ in \cite{DBLP:conf/cvpr/RamanujanWKFR20}) across the tested architectures.
 \subfloat[cifar10\label{fig:chap2:sparsity_cifar10}]{
   \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar10.pdf}}
   \subfloat[cifar100\label{fig:chap2:sparsity_cifar100}]{
-    \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar100.pdf}}
-\caption{totototo}
+  \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar100.pdf}}
+  \caption{Comparative analysis of ASLP performance for CIFAR-10 and CIFAR-100
+  datasets using various network architectures (Conv\{2,4,6\}, ResNet-20, and
+  VGG16) at different pruning rates. ASLP performances are evaluated with
+  \ac{WR}, \ac{SC} and data augmentation. Results demonstrate that Conv\{2,4,6\}
+  networks maintain strong performance even at higher pruning rates and indicate
+  that the pruning rate achieved by thresholding is optimal or near-optimal.}
 \label{fig:chap2:sparsity_impact}
 \end{figure}
 
-\subsection{Impact of learning rate}
+\subsection{Optimal learning rate value}
 \label{sec:chap2:impact_learning_rate}
+The learning rate is an essential hyperparameter for training neural networks,
+and a large learning rate typically results in divergence. However, in the case
+of ASLP, increasing the learning rate as much as desired does not cause
+divergence. It is worth noting that stability is not dependent on the learning
+rate. A high learning rate converges more quickly, exhibiting better performance
+initially, but is eventually outperformed if the training persists for an
+extended period. Conversely, an excessively low learning rate may not reach
+satisfactory performance levels in a reasonable amount of time, if at all. Our
+experimental findings indicate that varying the learning rate does not affect
+performance. In other words, opting for a high learning rate and subsequently
+decreasing it yields worse results than maintaining a lower, constant learning
+rate. We found that a learning rate of 50 strikes the optimal balance between
+performance and training speed. Interestingly, this learning rate remains
+consistent across all architectures and datasets.\\
 
-\begin{figure}
+\Cref{fig:chap2:lr_impact} shows the evolution of the test accuracy for Conv4,
+VGG16 and ResNet-20 on CIFAR-10. The solid line represents the average of five
+independent runs and the shaded area of the corresponding color indicates the
+range of $\pm$ one standard deviation. For ease of visualization, sequences have
+been padded with their final values up to 1000 epochs. networks have been
+trained with data augmentation, \ac{WR} and \ac{SC}.\\
+
+The robustness of ASLP to substantial learning rates can be attributed to the
+fact that the trained masks, denoted by $\bm{\hat{m}}$, can be interpreted as
+probabilities of selection by applying a sigmoid function (refer
+\cref{sec:chap2:stochastic-sampling,prop:chap2:probability-interpretation}). The
+sigmoid function is bounded between 0 and 1, ensuring that a large learning rate
+does not cause the network output or \ac{SGD} gradients
+to assume extremely large or even \ac{nan} values. Instead, it assigns very high or
+very low values to $\bm{\hat{m}}$, resulting in probabilities of selection close
+to 0 or 1. Due to the vanishingly small gradients as the masks move further away
+from the origin, it is practically impossible to reactivate those weights, let
+alone reactivate them with a smaller learning rate. This accounts for the
+observation that reducing the learning rate after using a high learning rate
+does not enhance performance.\\
+
+\begin{figure}[htbp]
 \centering
 \subfloat[Conv4\label{fig:chap2:lr_conv4}]{
   \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_Conv4.pdf}}
   \subfloat[VGG16\label{fig:chap2:lr_vgg16}]{
-    \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableVGG16.pdf}}
-    \subfloat[ResNet-20\label{fig:chap2:lr_resnet20}]{
-      \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableResNet20.pdf}}
-\caption{LR IMPACT}
+  \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableVGG16.pdf}}
+  \subfloat[ResNet-20\label{fig:chap2:lr_resnet20}]{
+  \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableResNet20.pdf}}
+  \caption{Evolution of the test accuracy for Conv4, VGG16 and ResNet-20 trained
+  with ASLP (with data augmentation, \ac{WR} and \ac{SC}) on CIFAR-10 for various learning
+  rates. A learning rate of 50 yields the optimal balance between performance
+  and training speed.}
 \label{fig:chap2:lr_impact}
 \end{figure}
 
 % endregion: experiments
-
+\newpage
 
 \section{Conclusion}
 % region : conclusion
