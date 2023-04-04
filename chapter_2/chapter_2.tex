@@ -6,7 +6,45 @@
 
 
 \begin{abstract}
-    abstract of the chapter
+
+  % TODO: écrire l'abstract du chapitre
+
+  This chapter focuses on the development of lightweight and efficient neural
+  networks for image processing tasks, particularly in visual category
+  recognition. These lightweight networks are increasingly important for
+  intelligent embedded systems with limited computational resources and energy
+  availability. Pruning techniques are a popular approach to designing
+  lightweight networks, but they require the training of weights. Those weights
+  are pruned according to a criterion or associated saliency indicators that are
+  trained together with the weights. 
+  
+  The chapter discusses approaches that seek to extract effective subnetworks by
+  pruning large untrained networks, without weight training. A new method, named
+  \acf{ASLP}, is proposed to extract effective subnetworks from a large,
+  untrained deep neural network using the \acf{STGS} technique. Additionally,
+  the \acf{SR} weight rescaling mechanism is introduced. It rescales the weight
+  distributions of the selected subnetworks and as a result, improves the
+  performances and reduces the number of epochs required for training.
+  
+  The ASLP method, which integrates the \ac{STGS} sampling technique and the
+  \ac{SR} mechanism, is evaluated through a series of experiments on CIFAR-10,
+  CIFAR-100, and TinyImageNet datasets. In most cases, ASLP outperforms other
+  state-of-the-art methods and consistently surpasses them for various networks
+  architectures. Further experiments show that the sparsity of the networks
+  extracted with \ac{ASLP} can be increased with a minimal impact on the
+  performances, and also demonstrate the robustness of the method to extreme
+  learning rate values and the effectiveness of the \ac{SR} mechanism.\\
+
+  This chapter presents work that has resulted in the publication of the
+  following conference article: 
+  \bibentry{DBLP:conf/icip/DupontASL22}
+  \begin{itemize}
+    \item Robin Dupont, Mohammed Amine Alaoui, Hichem Sahbi, and Alice
+    Lebois. Extracting effective subnetworks with gumbel-softmax. In \textit{2022
+    IEEE International Conference on Image Processing, ICIP 2022, Bordeaux,
+    France, 16-19 October 2022,} pages 931–935. IEEE, 2022.
+  \end{itemize}
+
 \end{abstract}
 
 \section{Introduction and related work}
@@ -32,7 +70,7 @@ ImageNet but with only fifty times fewer parameters.  MobileNet
 popular examples of lightweights networks that use depthwise separable
 convolution. ShuffleNet \cite{ZhangShuffleNet} and ShuffleNetV2
 \cite{MaShuffleNetV2} are other approaches that rely on the grouped convolution
-concept and channel shuffling. CondenseNet \cite{huang2018condensenet} levrage
+concept and channel shuffling. CondenseNet \cite{huang2018condensenet} leverage
 DenseNet-like \cite{huang2017densely} connections together with grouped
 convolution to pick the most useful feature from previous layer maps.\\
 
@@ -44,7 +82,7 @@ architecture, layer types, hyperparameters, and optimisation techniques. The
 development of such networks, therefore, requires a significant amount of time
 and expertise.\\
 
-Another way of obtaining lightweight neural network is to reduce the size of an
+Another way of obtaining lightweight neural networks is to reduce the size of an
 already existing large neural network, through pruning. As discussed in
 \cref{chap:chapter1}, pruning methods, either structured or unstructured, are
 particularly successful at lightening large neural networks, and seek to remove
@@ -56,7 +94,7 @@ weights {\it individually}
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}.  Unstructured pruning
 has witnessed a recent surge in interest in the wake of the \ac{LTH}
 \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
-\cite{DBLP:conf/iclr/FrankleC19} demonstrates that large pretrained networks
+\cite{DBLP:conf/iclr/FrankleC19} demonstrates that large pre-trained networks
 encompass lightweight subnetworks, referred to as \textit{\acp{LT}}, which can
 achieve comparable performance to the original large network in a similar number
 of epochs when trained in isolation with initial weights taken from the large
@@ -71,17 +109,16 @@ comparable performances. Authors in \cite{DBLP:conf/iclr/LiuSZHD19} point out
 that the weights of the \acp{LT} are not important and can be randomly
 initialized, provided that the optimisation procedure is carefully designed.\\
 
-In general, extracting an efficient subnetwork is
-still an open problem and is computationally demanding as this amounts to full
-training of large networks (untill convergence) prior to their pruning. Existing
-alternatives approach this problem using early pruning
-\cite{DBLP:conf/iclr/LeeAT19,
+In general, extracting an efficient subnetwork is still an open problem and is
+computationally demanding as this amounts to full training of large networks
+(until convergence) prior to their pruning. Existing alternatives approach this
+problem using early pruning \cite{DBLP:conf/iclr/LeeAT19,
 DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}, but still require to train
 the weights. In contrast to these works, our proposed solution in this chapter
 identifies effective subnetworks by training only their topology and without any
-weights tuning.\\ 
+weight tuning.\\ 
 
-At first, it seems counter intuitive that there exists a subnetwork in a large
+At first, it seems counterintuitive that there exists a subnetwork in a large
 network, and that this subnetwork can achieve compelling performances without
 any weight training. This as been first conjectured in
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \ac{LTH}. A theoretical
@@ -91,12 +128,12 @@ and depth $l$ can be approximated by pruning a randomly initialized one that is
 a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
 width has latter been improved by \cite{DBLP:conf/nips/OrseauHR20} to
 $O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
-upper bound was eventually rafined to $O(d\log(dl))$ by
+upper bound was eventually refined to $O(d\log(dl))$ by
 \cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of distributions, including
 the uniform distribution which is widely used for weight initialisation \cite{DBLP:conf/iccv/HeZRS15}.\\
 
 Although their existence has been established, no constructive proof has been
-provided in order to identify the lightweight and efficient from scratch
+provided in order to identify the lightweight and efficient from-scratch
 subnetworks. In this context, Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
 proposed the first attempt to extract efficient subnetworks using stochastic
 mask training. A probability of selecting each weight is defined (as the sigmoid
@@ -107,8 +144,8 @@ issue of the sigmoid which makes mask training numerically challenging.
 Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another
 alternative, based on binarized saliency indicators learned with \ac{STE}, which
 selects the most prominent weights in the resulting subnetworks. Nevertheless,
-since this method enfore the pruning rate \textit{a priori}, finding the pruning
-rate giving the higest performances has to be made through a cumbersome and
+since this method enforce the pruning rate \textit{a priori}, finding the pruning
+rate giving the highest performances has to be made through a cumbersome and
 time-consuming binary search or grid-search. \\ 
 
 Considering the limitation of the aforementioned related  work, we introduce in
@@ -129,10 +166,9 @@ The rest of this chapter is organized as follows.
 
 \section{Extracting Effective Subnetworks with Gumbel-Softmax}
 % region: method
-% endregion: method
 
 Considering the same formalism as in \cref{chap:chapter1}, let $f_\theta$ be a
-deep neural network whose weights defined as $\theta =
+deep neural network whose weights are defined as $\theta =
 \left\{\bm{w}_1,\mathellipsis, \bm{w}_L \right\}$, with $L$ being its depth,
 $\bm{w}_\ell \in \mathbb{R}^{d_{\ell} \times d_{\ell-1}}$ its $\ell^\textrm{th}$
 layer weights, and $d_\ell$ the dimension of $\ell$. The output of a given layer
@@ -169,8 +205,8 @@ Here $\odot$ stands for the element-wise matrix product. In this definition, the
 masks $\{\bm{m}_\ell\}_\ell$ are stochastic and sampled from a Bernoulli
 distribution. However, sampling is not a differentiable operation, therefore,
 optimizing directly $\{{\bm{m}_\ell}\}_\ell$ is not possible. To overcome this
-issue, while staying in the \ac{SGD} framework the Straight Through Estimator
-(STE) technique is applied together with a reparametrisation of the mask.\\
+issue, while staying in the \ac{SGD} framework the \acf{STE} technique is
+applied together with a reparametrisation of the mask.\\
 
 \noindent\textbf{Straight Through Estimator.} Zhou et
 al. \cite{DBLP:conf/nips/ZhouLLY19} consider a Bernoulli parametrisation of
@@ -215,7 +251,7 @@ Softmax function to obtain a continuous relaxation of the discrete distribution.
 The proposed method, dubbed as \ac{STGS}, is based on a variant of \ac{GS}
 combined with \ac{STE}. In the forward pass, the softmax of \ac{GS} is replaced
 by an argmax operator. Since this operator is not differentiable, the standard
-softmax if considered in the backward pass. The argmax operator allows sampling
+softmax is considered in the backward pass. The argmax operator allows sampling
 from a categorical distribution, as the limit of \ac{GS} (\emph{i.e.}, when its
 softmax temperature approaches zero). \\
 
@@ -246,7 +282,7 @@ For mask sampling, only two possible outcomes are considered. Either the
 corresponding weight is selected and its mask is set to 1, or it is pruned
 from the sampled topology and its mask is set to 0. In what follows, and
 unless stated otherwise, we omit $\ell$ from $\bm{w}_\ell$ and we write it for
-short as $\bm{w}$. Let $\bm{w}_{ij}$ be the weight associated to the i-th and
+short as $\bm{w}$. Let $\bm{w}_{ij}$ be the weight associated with the i-th and
 j-th neurons respectively belonging to layers $\ell-1$ and $\ell$. Since there
 are two possible outcomes for the masks define a two-class categorical distribution
 $\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
@@ -259,7 +295,7 @@ $\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
 \end{equation}\\
 
 with $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
-underlying connection. Since there are only to mutualy exclusive outcomes,
+underlying connection. Since there are only two mutually exclusive outcomes,
 $\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or
 not) in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
 Considering \Cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
@@ -284,12 +320,12 @@ weight to be selected or not in the sampled topology, respectively.\\
 The proposed \ac{STGS} algorithm enables the learning of probabilities
 $p_{ij}$ for each weight $\bm{w}_{ij}$ through \ac{SGD}. However, optimizing
 $p_{ij}$ (with \ac{SGD}) raises a major issue. Since the optimisation is not
-coinstrained, $p_{ij}$ can take values  larger than 1 or smaller than 0. As a
+constrained, $p_{ij}$ can take values larger than 1 or smaller than 0. As a
 consequence, it could no longer be interpreted as a probability, moreover,
 $\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.\\
 
 On another hand, solving constrained SGD, besides being computationally
-expensive and challenging, may result into worse local minimum. In order to
+expensive and challenging, may result in a worse local minimum. In order to
 overcome all these issues, one may consider an alternative reparametrisation
 $p_{ij}=\sigma(\bm{\hat{m}}_{ij})$, similar to the reparametrisation in
 \cite{DBLP:conf/nips/ZhouLLY19}, with $\bm{\hat{m}}_{ij}$ being a latent mask
@@ -300,7 +336,7 @@ combination of the log and the sigmoid functions leads to severe numerical
 instabilities, that necessitate a cumbersome stabilization by adding
 $\varepsilon$ to prevent $p_{ij}$ and $\log(1-p_{ij})$ from being to close to 0.
 Furthermore, it is important to note that the above formulation is tremendously
-computationally intensive, since it necessitates the evaluation of log and
+computationally intensive since it necessitates the evaluation of log and
 exponential for every mask in the network.\\
 
 
@@ -319,7 +355,7 @@ is to consider the following expressions for $\log(\mathcal{P}_{ij})$:\\
 
 \noindent and learn the underlying mask $\bm{\hat{m}}_{ij}$. However, this
 reparametrisation is also flawed in the same way as the aforementioned sigmoid
-reparametrisation, namely: numerically unstable and cumputaionnaly intensive\\
+reparametrisation, namely: numerically unstable and computationnaly intensive\\
 
 In what follows, we propose an equivalent formulation which turns out to be
 highly effective and numerically more stable.  Instead of using the logarithmic
@@ -409,16 +445,16 @@ also numerically stable.\\
 \Cref{prop:chap2:probability-interpretation} assumes that $p_{ij}\in ~ ]0,1[$.
 In practice, this is never a problem as $\bm{\hat{m}}_{ij}$ are initialised to 0
 (see \cref{sec:chap2:experiments}) and because of the sigmoid function, the
-gradients becomes vanishingly small when $\bm{\hat{m}}_{ij}$ deviates from 0,
+gradients become vanishingly small when $\bm{\hat{m}}_{ij}$ deviates from 0,
 which practically prevents reaching $\pm\infty$ and thus 0 or 1 for $p_{ij}$.\\
 
 A crucial point to consider is that adding any arbitrary constant $c$ to each
 coefficient of the log-probability vector does not change the outcome of
 Gumbel-Softmax sampling. This is because it does not alter the outcome of the
 argmax function, which remains unchanged regardless of the value of $c$,
-provided that the same value $c$ is added to both coefficient, which is the case
-in the our formulation (\emph{c.f.} \cref{eqn:chap2:our-formulation}). The
-presence of this constant $c$, whose value is arbirtrary, that shifts the
+provided that the same value $c$ is added to both coefficients, which is the case
+in our formulation (\emph{c.f.} \cref{eqn:chap2:our-formulation}). The
+presence of this constant $c$, whose value is arbitrary, that shifts the
 log-probabilities of our probability parametrisation gives the name of the
 method: \acl{ASLP}.\\ 
 
@@ -430,11 +466,11 @@ method: \acl{ASLP}.\\
 % region: smart rescaling
 Subnetwork selection may disrupt the dynamic of the forward pass
 \cite{DBLP:conf/iccv/HeZRS15,DBLP:conf/cvpr/RamanujanWKFR20}, and thereby
-requires adapting  weights accordingly. \cite{DBLP:conf/iccv/HeZRS15} establish
+requires adapting weights accordingly. \cite{DBLP:conf/iccv/HeZRS15} establish
 that the variance of the initial weight distribution has a critical impact on
 the network performances. Since in the context of this chapter, the weights are
 not trained, it is all the more important to address this issue. The pruning of
-the weights change the apparent weight distribution and therefore its
+the weights changes the apparent weight distribution and therefore its
 statistics.\\
 
 \ac{DWR} \cite{DBLP:conf/nips/ZhouLLY19}, and scaled Kaiming distribution
@@ -449,8 +485,8 @@ to the pruning rate (as achieved for instance in
 \cite{DBLP:conf/nips/ZhouLLY19}), \ac{SR} is learned layerwise and provides an
 effective (and also efficient)  way to adapt the dynamic of the forward pass
 without retraining the entire weights of the selected subnetwork. This
-rescaling ends up reducing the amount of epochs needed to reach convergence and
-also improving accuracy (at some extent) as shown later in \cref{sec:chap2:experiments}. \\ 
+rescaling ends up reducing the number of epochs needed to reach convergence and
+also improving accuracy (to some extent) as shown later in \cref{sec:chap2:experiments}. \\ 
 
 With SR, the $\ell$-th layer network output becomes \\
 
@@ -469,8 +505,9 @@ more abrupt due to stochastic mask sampling. \\
 
 % endregion: smart rescaling
 
-\subsection{Overview}
 
+\subsection{Overview}
+% region: overview
 Our approach integrates the \acl{STGS} sampling technique and the \acl{SR}
 mechanism, resulting in a comprehensive method termed \acf{ASLP}. This strategy
 constructs lightweight neural networks by sampling topologies from a large,
@@ -526,6 +563,9 @@ trained.\label{fig:chap2:our-pipeline}]{
   \end{algorithmic}
   \end{algorithm}
 
+% endregion: overview
+
+% endregion: method
 
 \section{Experiments and results}
 \label{sec:chap2:experiments}
@@ -611,7 +651,7 @@ a weight is selected if its probability of selection is above 0.5, otherwise, it
 is pruned. In other words, the weight is kept if the binary event of keeping a
 connection is more likely than its removal. This means retaining the weight
 $\bm{w}_{i,j}$ if $\bm{\hat{m}}_{i,j} > 0$ and setting it to zero otherwise. We
-refer to this pruning method as \textit{thresholding}. As a matter of comparison
+refer to this pruning method as \textit{thresholding}. As a matter of comparison,
 we also consider the setting in \citeauthor{DBLP:conf/nips/ZhouLLY19} which is
 an averaging strategy to evaluate Supermask performance. It consists in sampling
 ten different topologies and averaging their test accuracies. We refer to this
@@ -637,7 +677,7 @@ We put forth several hypotheses to account for the reduced performance. First,
 the ResNet-18 architecture employed is the standard PyTorch implementation
 \cite{pytorch_resnet18}, designed for the ImageNet dataset
 \cite{deng2009imagenet}. As a result, it is tailored for $224 \times 224$ pixel
-images, while TinyImageNet images are merely $64 \times 64$ pixels. With a
+images, while TinyImageNet images are only $64 \times 64$ pixels. With a
 smaller input image size, each pixel encompasses a larger area of the input
 space, and an overly large receptive field for a smaller image like TinyImageNet
 may lead to the loss of crucial spatial information. We opted against upscaling
@@ -652,26 +692,19 @@ the Conv\{2,4,6\} networks. Nevertheless, the number of sampled topologies is on
 equal to the product of the number of batches and the number of epochs during
 which the network is trained. Since the number of images in the CIFAR and
 TinyImageNet datasets are of the same order of magnitude (see
-\cref{tab:chap1:datasets}), the number of evaluated topologies is roughly the
+\cref{tab:chap1:datasets}), and the number of evaluated topologies is roughly the
 same. This may be sufficient to explore the search space for Conv\{2,4,6\}
 networks but it might not be enough for a ResNet-18 network.\\
-
-% TODO: ajouter le nombre de paramètres dans les couches FC de ResNet-18 et VGG16
 
 However, this hypothesis warrants further clarification. Indeed, the VGG16
 network has more parameters than the ResNet-18, but \ac{ASLP} achieves superior
 results compared to other methods on this architecture. We suggest the following
-explanation: The ResNet-18 has very few weights in its fully connected layers,
-while the VGG16 has much more. We conjecture that the \ac{ASLP} method is more
-effective on fully connected layers than on convolutional layers. Supporting
-this conjecture is the observation that, on CIFAR-100, \ac{ASLP} performs
-relatively worse compared to other methods on the Conv6 network, but better on
-smaller networks. Nonetheless, there are fewer weights in the fully connected
-layers of the Conv6 network than in the Conv2 or Conv4 networks. This is due to
-an additional MaxPooling layer in the Conv6 network (compared to the Conv4
-network) that reduces the size of the feature maps and, consequently, the size
-of the subsequent fully connected layers.\\
-
+explanation: Although the VGG16 has more parameters, it has fewer weights in its
+fully connected layers since the datasets it is evaluated on has fewer classes.
+Thus, the search space for the fully connected part of the VGG network is much
+smaller than on the ResNet-18 network. The final fully connected layers of a
+neural network play a crucial role in determining its overall performance and
+accuracy in predicting outcomes.\\
 
 %=============================================
 
@@ -717,7 +750,7 @@ of the subsequent fully connected layers.\\
   are presented with and without data augmentation, weight rescaling (WR), and
   the signed constant weight distribution (SC). We report performances for both
   \textit{thresholding} and \textit{averaging} setups for our method. For edge-popup, we use
-  the best $k$ value for Conv\{2,4,6\} repported in
+  the best $k$ value for Conv\{2,4,6\} reported in
   \cite{DBLP:conf/cvpr/RamanujanWKFR20}.  Across all setups, our method ASLP
   outperforms Edge-Popup and Supermask}
   \label{tab:chap2:con_performances_comparison_cifar10}
@@ -760,7 +793,7 @@ of the subsequent fully connected layers.\\
   are presented with and without data augmentation, weight rescaling (WR), and
   the signed constant weight distribution (SC). We report performances for both
   \textit{thresholding} and \textit{averaging} setups for our method. For edge-popup, we use
-  the best $k$ value for Conv\{2,4,6\} repported in
+  the best $k$ value for Conv\{2,4,6\} reported in
   \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
   the other methods, with the exception of the SC setup for Conv2 and Conv4.
   However, for Conv6, ASLP's performance is superior when data augmentation is
@@ -852,7 +885,7 @@ In
 \cref{tab:chap2:con_performances_comparison_cifar10,tab:chap2:con_performances_comparison_cifar100},
 we observe that our weight rescaling technique, denoted as \acf{SR}, positively
 impacts performance, as evidenced by the increase in test accuracy compared to
-the baseline scenario (refered to as $\varnothing$). This improvement is
+the baseline scenario (referred to as $\varnothing$). This improvement is
 consistent across both CIFAR-10 and CIFAR-100 datasets, irrespective of whether
 data augmentation is employed or not. Besides enhancing accuracy, \ac{SR} also
 contributes to a reduction in the number of epochs necessary for convergence.
@@ -860,7 +893,7 @@ This observation is supported by \cref{fig:chap2:rescale_impact}, which
 demonstrates a significant decrease in the epochs required to achieve
 convergence for all tested architectures and datasets. Networks in
 \cref{fig:chap2:rescale_impact} have been trained with and without \ac{SR} using
-data augmentation in both cases. The number of epoch is set to 1000 and an early
+data augmentation in both cases. The number of epochs is set to 1000 and an early
 stopping policy, described in \cref{sec:chap2:experiments}, is applied.
 Convergence is reached when the early stopping policy stops the training.\\
 
@@ -870,7 +903,7 @@ epochs required for convergence, \ac{SR} also offers a faster alternative to
 layerwise using the inverse of the observed pruning rates. To determine the
 observed pruning rate for a layer, it is required to store the sampled masks and
 compute the active fraction of them. These layerwise evaluations introduce a
-substantial overhead at each training epoch. On the other hand, \ac{SR} nvolves
+substantial overhead at each training epoch. On the other hand, \ac{SR} involves
 straightforward scalar multiplications for each layer, resulting in reduced
 complexity. In our experiments, we found that, on average, enabling \ac{DWR}
 increases the epoch runtime by 0.2 seconds for Conv4, while our \ac{SR} method
@@ -985,170 +1018,36 @@ does not enhance performance.\\
 \end{figure}
 
 % endregion: experiments
-\newpage
 
 \section{Conclusion}
-% region : conclusion
+% region : Conclusion
 
-\newpage
-\newpage
+In this chapter, we introduced the \acl{ASLP} method, which focuses on selecting
+efficient subnetworks from large, untrained neural networks through stochastic
+pruning, without training the weights. \acl{ASLP} is a stochastic subnetwork selection
+method that uses \acl{GS} sampling and a new mask parametrisation to
+optimize the subnetwork topology while mitigating numerical instabilities.
+Additionally, we presented the \acl{SR} technique to accelerate training and
+improve the accuracy of the resulting subnetworks. Our experimental results show
+that ASLP outperforms state-of-the-art methods, such as Edge-popup
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
+\cite{DBLP:conf/nips/ZhouLLY19}, on the CIFAR-10 and CIFAR-100 datasets across
+various network architectures. The proposed \textit{thresholding} pruning
+strategy consistently yields better performance than Supermask's
+\textit{averaging} approach. Furthermore, our \acl{SR} method leads to faster
+convergence and improved accuracy compared to other weight-rescaling techniques,
+such as \acl{DWR}. \acl{ASLP} also exhibits robustness to substantial learning
+rates, ensuring stable performance across different network architectures and
+datasets.\\
+
+All-in-all, the \acl{ASLP} method provides a promising solution for selecting
+efficient subnetworks from large untrained neural networks through stochastic
+pruning, offering improved performance and faster convergence. 
+
+% TODO: ajouter la partie qui lie le prochain chapitre.
+
+% Future research could explore the application of \acl{ASLP} to other neural
+% network architectures and tasks or investigate additional techniques for
+% further improving subnetwork selection and adaptation.
 
 %endregion : conclusion
-
-  % ==============================================================================
-  \section{Experiments}\label{sec:experiments}
-  
-  In this section, we show the performance of our method on the standard CIFAR10
-  and CIFAR100 datasets.   They consist of  60k  colored images of $32\times 32$
-  pixels each.  Training,  validation and test sets  include  45k,  5k and 10k
-  images respectively.  \\  In order to demonstrate the effectiveness of our
-  method, we chose the widely used SGD optimizer with a momentum of  0.9  and a
-  learning rate of 50.    Faster convergence is obtained with higher learning
-  rates,   however,  the latter also lead  to worse observed accuracy.   During
-  training,  the maximum number of epochs is set to 1000 and early stopping is
-  triggered  if the accuracy on the validation set stops improving during 100
-  epochs.   In all these experiments, neither weight decay nor $\ell_2$
-  regularisation are applied. See implementation details and our code on the ASLP GitHub
-  \cite{Dupont2022}.
-
-\begin{table*}[htbp]
-  \centering
-  \resizebox{14.0cm}{!} 
-{
-  \begin{tabular}{@{}llcccccccc|c@{}}
-    \cline{3-11}
-                       &                                                        & \multicolumn{8}{c|}{Cifar 10}                                                                                                 & Cifar 100 \\ 
-                       \cline{3-11}
-                            &                                                       & \multicolumn{4}{c}{w/o data augmentation}                                     & \multicolumn{4}{c|}{with data augmentation (w.d.a)}         &  w.d.a  \\
-                            &                                                        & $\varnothing$ & WR             & SC            & WR+SC          & $\varnothing$ & WR             & SC            & WR+SC          &           WR+SC   \\ \midrule
-    \multirow{4}{*}{Conv2} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)         &64.4          & 65.0          & 66.3          & 66.0          & -             & -             & -             & -            &               -        \\
-                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark ($k=50\%$)  &               &   -           &         -     &         -     &       -       &      -        & 71.5   &       71.7       &     40.9         \\ 
-                            & Our ASLP (averaging)                                     & 68.2          & 66.9          & 68.3          & 66.5          & \textbf{76.0} & \textbf{76.6} & 76.8          & 77.3          &       -         \\
-                            & Our ASLP (thresholding)                                     & \textbf{68.7} & \textbf{67.8} & \textbf{68.4} & \textbf{67.1} & 75.9          & 76.4          & \textbf{77.5} & \textbf{77.5} &    \textbf{43.3}          \\
-                            \midrule
-  
-    \multirow{4}{*}{Conv4} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)       & 65.4          & 71.1          & 66.2          & 72.5          & -             & -             & -             & -             &             -           \\
-                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark[\value{footnote}] ($k=50\%$) &        -      &  -            &            -  &  -            &  -            &  -            & 81.6  &     80.5    &  51.1  \\ 
-                            & Our ASLP (averaging)                                          & 70.6          & 71.8          & 69.5          & 71.8          & 83.4          & 84.4          & 83.7          & 84.1          &        -   \\
-                            & Our ASLP (thresholding)                                      & \textbf{71.5}  & \textbf{72.8}& \textbf{70.2} & \textbf{72.7} & \textbf{83.7}& \textbf{85.0} & \textbf{84.5} & \textbf{84.8} &         \textbf{51.7}  \\
-                            \midrule
-    \multirow{4}{*}{Conv6} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)    & 63.5          & 76.3          & 65.4          & 76.5          & -             & -             & -             & -      &  -       \\
-                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark[\value{footnote}] ($k=50\%$) &      -        &    -          &        -      &     -         &      -        &           -   &  85.4 &    85.1   &   \textbf{53.8}   \\ 
-                            & Our ASLP (averaging)                                      & 72.9          & 76.1          & 71.9          & 75.6          & 85.3          & 86.2          & 85.3          & 86.2          &  - \\
-                            & Our ASLP (thresholding)                                       & \textbf{73.7} &\textbf{77.0}  &\textbf{72.6}  &\textbf{76.6}  &\textbf{86.0}  &\textbf{86.9}  & \textbf{86.3} &\textbf{86.9}  &   52.8 \\
-                            \bottomrule
-    \end{tabular}
-}
-
-  \caption{Comparison of our method against \cite{DBLP:conf/nips/ZhouLLY19}
-  and \cite{DBLP:conf/cvpr/RamanujanWKFR20} on Conv2, Conv4 and Conv6. These
-  results are averaged through five independent runs. "WR" (Weight Rescale)
-  refers to ``Dynamic Weight Rescale'' or ``Smart Rescale'' depending on which
-  methods is used (respectively \cite{DBLP:conf/nips/ZhouLLY19} or our proposed
-  ASLP). Again, "SC" refers to the ``Signed Constant'' distribution. The latest
-  results on CIFAR 100 were recently obtained with data augmentation and WR+SC.}
-  \label{tbl:conv_compare}
-
-\end{table*}
-
-    
-
-% ------------------------------------------------------------------------------
-\subsection{Performance and comparison}
-
-The accuracy of our method is evaluated on subnetworks whose topology
-corresponds to connections with  (trained) probabilities larger than 0.5;  in
-other words,  if {\it the binary event of keeping a connection is more likely
-than its removal}.  This setting is referred to as  {\it thresholding}.  As a
-matter of comparison,  we also consider the setting in
-\cite{DBLP:conf/nips/ZhouLLY19} which consists in sampling ten different
-subnetworks and evaluating an average accuracy over  these subnetworks.  This
-setting  is referred to as {\it averaging}.  In these experiments,  we use the
-same networks as
-\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20} (originally
-introduced by  Frankle and Carbin \cite{DBLP:conf/iclr/FrankleC19}) namely
-Conv2,  Conv4 and Conv6 which are  variants of  VGG16. \\
-\indent   \cref{tbl:conv_compare}  shows a comparison of our method against
-\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.    These
-results show means of five independent runs; each run corresponds either to
-``thresholding'' or ``averaging''.  These performances show a consistent gain
-(in accuracy) of our subnetwork selection.   We also observe that
-``thresholding'' is already effective compared to ``averaging''; indeed, our
-method reaches a  high accuracy despite learning a single subnetwork topology,
-and this makes it also highly efficient for training compared to  the related
-work \cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.\\ 
-\indent Furthermore, our method and \cite{DBLP:conf/nips/ZhouLLY19} do not
-impose a pruning rate. The optimal pruning rate is found during optimisation and
-is is arround 51\%, whereas \cite{DBLP:conf/cvpr/RamanujanWKFR20} enforces a 50\%
-pruning rate ($k=50\%$). Thus, the networks capacities
-are comparable. \\
-
-
-  % ------------------------------------------------------------------------------
-  \subsection{Ablation study}
-  In this section, we discuss the impact of all the components of the method
-  when taken individually and combined,  namely the use of weight rescaling
-  (WR): either DWR or our proposed SR.   We also consider another criterion:
-  signed constant  (SC) which consists in replacing weights in a given layer by
-  the products of their signs and the standard deviation of their original
-  weight distribution.  We show  all these results with and without data
-  augmentation, which is composed of the combination of zero-padding,  random crops and
-  random  horizontal flips.   Note that  pixel intensities are normalized  from
-  their original values in $[0,255]$ to $[0,1]$.
-    
-  From the results in table~\ref{tbl:conv_compare}, we observe a clear gain of
-  our method alone w.r.t.  \cite{DBLP:conf/nips/ZhouLLY19} and the use of SR
-  increases further its accuracy (excepting Conv2 w/o data augmentation).  The
-  gain in performances increases  significantly with Conv6 and reaches up to 4
-  points even when no data augmentation is used.   Note that the use of data
-  augmentation attenuates, at some extent, the effect of \ac{SR} on larger networks
-  (conv4 and Conv6). Nonetheless,  as discussed in \cref{sec:SR-impact}, the
-  positive impact of \ac{SR} resides also in training efficiency.   In contrast to
-  SR, signed constant improves accuracy by a small margin when combined with
-  data augmentation. 
-  
-  \footnotetext{Performances for \cite{DBLP:conf/cvpr/RamanujanWKFR20} are reported
-  with the optimizer described in \cref{sec:experiments}. It is possible to
-  improve performances by tuning the learning rate scheduler but this is out of
-  the scope of this paper.}
-  
-  % ------------------------------------------------------------------------------
-  \subsection{Computational efficiency}
-  \label{sec:SR-impact}
-DWR requires rectifying weights layerwise using the inverse of the observed
-(computed) pruning rates. These layerwise evaluations introduce a significant
-overhead at each training epoch. In contrast, \ac{SR} consists in simple products
-involving one scalar per layer. When training Conv4, we found (on average) that
-enabling DWR increases epoch runtime by $0.2s$ while our \ac{SR} by $0.13s$ only, so
-SR speeds up training overhead by 35\% compared to DWR.  When data augmentation
-and signed constant are used, \ac{SR} allows a significant gain in the number of
-training epochs. Indeed, enabling \ac{SR} on Conv4  saves (on average) 19.7\%
-training epochs (8.2\%, 14.0\%  on Conv2 and Conv6 respectively) before
-converging to its highest accuracy. Finally, our ``thresholding'' setting not
-only improves accuracy but makes subnetwork selection (training) and also
-inference more efficient compared to the related work
-\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20},  as this
-selection is again achieved  once and thereby only one subnetwork is applied
-during inference.
- 
-
-% ==============================================================================
-\section{Conclusion}
-
-In this paper, we introduce a novel method that extracts effective subnetworks
-from larger networks without training its weights. The proposed method optimises
-a probability distribution which measures the relevance of weights, and only
-those with the highest relevance define the topology of the selected
-subnetworks. An efficient and effective weight rescaling mechanism is also
-introduced and allows rectifying the parameters of the selected subnetworks
-which improves performances and reduces the number epochs needed to reach
-convergence. Experiments conducted on the standard CIFAR10 and  CIFAR100
-datasets show the effectiveness of our subnetwork selection method w.r.t. the
-related work. Future work includes the study of the scalability of the proposed
-method on more complex datasets and other larger networks.\\
-
-\noindent\textbf{Acknowledgement.} 
-This work was performed using HPC resources from GENCI-IDRIS (Grant 2021-AD011011427R1). \\
-It has been achieved within a partnership between Sorbonne University and Netatmo.
-
-\noindent\textbf{Code.} Our code is available at:\\ \href{https://github.com/N0ciple/ASLP}{\texttt{https://github.com/N0ciple/ASLP}}
