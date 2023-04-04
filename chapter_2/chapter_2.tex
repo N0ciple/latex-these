@@ -24,15 +24,15 @@
   untrained deep neural network using the \acf{STGS} technique. Additionally,
   the \acf{SR} weight rescaling mechanism is introduced. It rescales the weight
   distributions of the selected subnetworks and as a result, improves the
-  performances and reduces the number of epochs required for training.
+  performance and reduces the number of epochs required for training.
   
   The ASLP method, which integrates the \ac{STGS} sampling technique and the
   \ac{SR} mechanism, is evaluated through a series of experiments on CIFAR-10,
   CIFAR-100, and TinyImageNet datasets. In most cases, ASLP outperforms other
-  state-of-the-art methods and consistently surpasses them for various networks
+  state-of-the-art methods and consistently surpasses them for various network
   architectures. Further experiments show that the sparsity of the networks
-  extracted with \ac{ASLP} can be increased with a minimal impact on the
-  performances, and also demonstrate the robustness of the method to extreme
+  extracted with \ac{ASLP} can be increased with minimal impact on the
+  performance, and also demonstrate the robustness of the method to extreme
   learning rate values and the effectiveness of the \ac{SR} mechanism.\\
 
   This chapter presents work that has resulted in the publication of the
@@ -40,7 +40,7 @@
   \bibentry{DBLP:conf/icip/DupontASL22}
   \begin{itemize}
     \item Robin Dupont, Mohammed Amine Alaoui, Hichem Sahbi, and Alice
-    Lebois. Extracting effective subnetworks with gumbel-softmax. In \textit{2022
+    Lebois. Extracting effective subnetworks with Gumbel-Softmax. In \textit{2022
     IEEE International Conference on Image Processing, ICIP 2022, Bordeaux,
     France, 16-19 October 2022,} pages 931–935. IEEE, 2022.
   \end{itemize}
@@ -65,20 +65,19 @@ viable approach to designing lightweight networks. Despite being smaller than
 typical state-of-the-art networks, these networks are still able to achieve good
 performance levels. SqueezeNet \cite{DBLP:journals/corr/IandolaMAHDK16} is an
 example of such a network, which achieves comparable performance to AlexNet on
-ImageNet but with only fifty times fewer parameters.  MobileNet
+ImageNet but with only fifty times fewer parameters. MobileNet
 \cite{howard2017mobilenets} and MobileNetV2 \cite{DongMobileNetV2} are also
-popular examples of lightweights networks that use depthwise separable
+popular examples of lightweight networks that use depthwise separable
 convolution. ShuffleNet \cite{ZhangShuffleNet} and ShuffleNetV2
 \cite{MaShuffleNetV2} are other approaches that rely on the grouped convolution
-concept and channel shuffling. CondenseNet \cite{huang2018condensenet} leverage
-DenseNet-like \cite{huang2017densely} connections together with grouped
-convolution to pick the most useful feature from previous layer maps.\\
+concept and channel shuffling. CondenseNet \cite{huang2018condensenet} leverages
+DenseNet-like \cite{huang2017densely} connections together with grouped convolution to pick the most useful features from previous layer maps.\\
 
 Designing efficient lightweight neural networks requires substantial effort from
 human experts. These networks are designed from scratch, with a focus on
 reducing the number of parameters and computational complexity while maintaining
 high accuracy. The design process involves careful consideration of network
-architecture, layer types, hyperparameters, and optimisation techniques. The
+architecture, layer types, hyperparameters, and optimization techniques. The
 development of such networks, therefore, requires a significant amount of time
 and expertise.\\
 
@@ -107,7 +106,7 @@ subnetwork is known as a \textit{Lottery Ticket}. Another study
 only the topology of these subnetworks is actually important in order to reach
 comparable performances. Authors in \cite{DBLP:conf/iclr/LiuSZHD19} point out
 that the weights of the \acp{LT} are not important and can be randomly
-initialized, provided that the optimisation procedure is carefully designed.\\
+initialised, provided that the optimisation procedure is carefully designed.\\
 
 In general, extracting an efficient subnetwork is still an open problem and is
 computationally demanding as this amounts to full training of large networks
@@ -124,7 +123,7 @@ any weight training. This as been first conjectured in
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \ac{LTH}. A theoretical
 analysis provided evidence that such subnetworks do exist.
 \cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of width $d$
-and depth $l$ can be approximated by pruning a randomly initialized one that is
+and depth $l$ can be approximated by pruning a randomly initialised one that is
 a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
 width has latter been improved by \cite{DBLP:conf/nips/OrseauHR20} to
 $O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
@@ -142,17 +141,17 @@ During training, weights are frozen and only the masks are allowed to vary.
 However, the major drawback of this method resides in the vanishing gradient
 issue of the sigmoid which makes mask training numerically challenging.
 Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another
-alternative, based on binarized saliency indicators learned with \ac{STE}, which
+alternative, based on binarised saliency indicators learned with \ac{STE}, which
 selects the most prominent weights in the resulting subnetworks. Nevertheless,
-since this method enforce the pruning rate \textit{a priori}, finding the pruning
+since this method enforces the pruning rate \textit{a priori}, finding the pruning
 rate giving the highest performances has to be made through a cumbersome and
 time-consuming binary search or grid-search. \\ 
 
-Considering the limitation of the aforementioned related  work, we introduce in
+Considering the limitation of the aforementioned related work, we introduce in
 this chapter a new stochastic subnetwork selection method based on \ac{GS}.
 The latter allows sampling subnetworks whose weights are the most relevant for
 classification. The proposed contribution also relies on a new mask
-parametrisation, dubbed as \ac{ASLP}, that allows a better conditioning of the
+parametrisation, dubbed as \ac{ASLP}, that allows better conditioning of the
 gradient and thereby mitigates numerical instability during mask optimisation.
 Besides, when combining \ac{ASLP} with a learned weight rescaling mechanism,
 training is accelerated and the accuracy of the resulting subnetworks improves
@@ -180,7 +179,7 @@ $\ell$ is defined as \\
 \end{equation}\\
 
 being  $g_\ell$ an activation function and $\otimes$ the usual matrix product.
-Without a loss of generality, we omit the bias in the definition of
+Without loss of generality, we omit the bias in the definition of
 (\ref{eqn:chap2:layer_eq}).
 
 % ------------------------------------------------------------------------------
@@ -204,7 +203,7 @@ layer connections are kept or removed, so \Cref{eqn:chap2:layer_eq} becomes\\
 Here $\odot$ stands for the element-wise matrix product. In this definition, the
 masks $\{\bm{m}_\ell\}_\ell$ are stochastic and sampled from a Bernoulli
 distribution. However, sampling is not a differentiable operation, therefore,
-optimizing directly $\{{\bm{m}_\ell}\}_\ell$ is not possible. To overcome this
+optimising directly $\{{\bm{m}_\ell}\}_\ell$ is not possible. To overcome this
 issue, while staying in the \ac{SGD} framework the \acf{STE} technique is
 applied together with a reparametrisation of the mask.\\
 
@@ -214,11 +213,11 @@ $\{\bm{m}_\ell\}_\ell$ in order to sample masks in
 \Cref{eqn:chap2:pruned_layer_eq}. Since sampling is not a differentiable
 operation, they rely on the \ac{STE}. It is a technique developed in
 \cite{DBLP:journals/corr/BengioLC13} that enables the training of neural
-networks with discrete activations, such as binary or quantized activations. The
+networks with discrete activations, such as binary or quantised activations. The
 technique involves using a continuous approximation to the non-differentiable
 activation function during forward propagation, and simply passing the gradient
 of the loss function through the non-differentiable activation during
-backpropagation. This allows for the use of \ac{SGD} to optimize the network,
+backpropagation. This allows for the use of \ac{SGD} to optimise the network,
 which was previously not possible with discrete activations. \\
 
 In order to apply \ac{STE} to the problem of Bernoulli stochastic mask
@@ -474,19 +473,19 @@ the weights changes the apparent weight distribution and therefore its
 statistics.\\
 
 \ac{DWR} \cite{DBLP:conf/nips/ZhouLLY19}, and scaled Kaiming distribution
-\cite{DBLP:conf/cvpr/RamanujanWKFR20}  are two known mechanisms that adapt the
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} are two known mechanisms that adapt the
 weights of the selected subnetworks to circumvent the issue mentioned above.
-However, some of these heuristics, besides being handcrafted,   rely on the
+However, some of these heuristics, besides being handcrafted, rely on the
 strong assumption that rescaling should be proportional to the pruning rate.\\
 
-In what follows,  we consider a new weight adaptation mechanism, referred to as
+In what follows, we consider a new weight adaptation mechanism, referred to as
 \ac{SR}. Instead of handcrafting this rescaling factor proportionally
 to the pruning rate (as achieved for instance in
 \cite{DBLP:conf/nips/ZhouLLY19}), \ac{SR} is learned layerwise and provides an
-effective (and also efficient)  way to adapt the dynamic of the forward pass
+effective (and also efficient) way to adapt the dynamic of the forward pass
 without retraining the entire weights of the selected subnetwork. This
 rescaling ends up reducing the number of epochs needed to reach convergence and
-also improving accuracy (to some extent) as shown later in \cref{sec:chap2:experiments}. \\ 
+also improving accuracy (to some extent) as shown later in \cref{sec:chap2:experiments}. \\
 
 With SR, the $\ell$-th layer network output becomes \\
 
@@ -494,13 +493,13 @@ With SR, the $\ell$-th layer network output becomes \\
    \mathbf{z}_{\ell} = g_\ell(s_\ell \times (\bm{m}_\ell \odot \bm{w}_\ell) \otimes \mathbf{z}_{\ell-1}),
   \end{equation}\\
 
-\noindent where  $s_\ell$ refers to the rescaling factor  of  the $\ell$-th
-layer (see also algorithm~\ref{alg:chap2:ASLP}).  Smart Rescale increases
+\noindent where $s_\ell$ refers to the rescaling factor  of the $\ell$-th
+layer (see also algorithm~\ref{alg:chap2:ASLP}). Smart Rescale increases
 the flexibility of subnetwork selection and adaptation compared to DWR (which
-is bound to the pruning rate).  Moreover,  scaling factors obtained with SR
-vary smoothly  ---  and this makes training more stable with stochastic
+is bound to the pruning rate). Moreover, scaling factors obtained with SR
+vary smoothly --- and this makes training more stable with stochastic
 gradient descent (SGD) --- compared to the ones obtained with DWR which are
-again set to the observed {\it pruning rates},  and changes of the latter are
+again set to the observed {\it pruning rates}, and changes of the latter are
 more abrupt due to stochastic mask sampling. \\
 
 % endregion: smart rescaling
@@ -531,7 +530,7 @@ pipelines rely on weight training and subsequent fine-tuning.\\
 trained.\label{fig:chap2:our-pipeline}]{
   \includegraphics[width=0.45\textwidth]{chapter_2/assets/our_pruning_pipeline.png}}
   \vspace{0.10\textwidth}
-\subfloat[Standard pruning pipelines relies on weight training and fine-tuning\label{fig:chap2:standard-pipeline}]{
+\subfloat[Standard pruning pipelines rely on weight training and fine-tuning\label{fig:chap2:standard-pipeline}]{
   \includegraphics[width=0.45\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
 \end{figure}
 
@@ -540,7 +539,7 @@ trained.\label{fig:chap2:our-pipeline}]{
   \label{alg:chap2:ASLP}
   \begin{algorithmic}
   \REQUIRE Dataset $\mathcal{D} = \{\mathcal{X}, \mathcal{Y}\}$, network $f$,
-  weights $\theta$, masks $\bm{\hat{m}}$ number of epochs $n$, learning rate $\eta$
+  weights $\theta$, masks $\bm{\hat{m}}$, number of epochs $n$, learning rate $\eta$
   \FOR{$t = 1$ to $n$}
       \FOR{each $(x,y) \in \mathcal{D}$}
         \STATE
@@ -587,7 +586,7 @@ are modified versions of the Conv4 architecture, featuring 2 and 6 convolutional
 layers, respectively, instead of the original 4 layers. The number of parameters
 for these architectures is provided in \cref{tab:chap2:conv_num_params}.
 Although these networks, introduced by \citeauthor{DBLP:conf/iclr/FrankleC19},
-are less common in the literature,  we use them since they are also used by the
+are less common in the literature, we use them since they are also used by the
 methods we compare ours to.\\
 
 \begin{table}[htbp]
@@ -599,6 +598,7 @@ methods we compare ours to.\\
   \caption{Number of parameters for the Conv2, Conv4 and Conv6 architectures, when used with the CIFAR-10 dataset}
   \label{tab:chap2:conv_num_params}
 \end{table}
+
 
 
 
@@ -700,7 +700,7 @@ However, this hypothesis warrants further clarification. Indeed, the VGG16
 network has more parameters than the ResNet-18, but \ac{ASLP} achieves superior
 results compared to other methods on this architecture. We suggest the following
 explanation: Although the VGG16 has more parameters, it has fewer weights in its
-fully connected layers since the datasets it is evaluated on has fewer classes.
+fully connected layers since the dataset it is evaluated on has fewer classes.
 Thus, the search space for the fully connected part of the VGG network is much
 smaller than on the ResNet-18 network. The final fully connected layers of a
 neural network play a crucial role in determining its overall performance and
@@ -983,9 +983,9 @@ consistent across all architectures and datasets.\\
 
 \Cref{fig:chap2:lr_impact} shows the evolution of the test accuracy for Conv4,
 VGG16 and ResNet-20 on CIFAR-10. The solid line represents the average of five
-independent runs and the shaded area of the corresponding color indicates the
+independent runs and the shaded area of the corresponding colour indicates the
 range of $\pm$ one standard deviation. For ease of visualization, sequences have
-been padded with their final values up to 1000 epochs. networks have been
+been padded with their final values up to 1000 epochs. Networks have been
 trained with data augmentation, \ac{WR} and \ac{SC}.\\
 
 The robustness of ASLP to substantial learning rates can be attributed to the
@@ -1040,14 +1040,12 @@ such as \acl{DWR}. \acl{ASLP} also exhibits robustness to substantial learning
 rates, ensuring stable performance across different network architectures and
 datasets.\\
 
-All-in-all, the \acl{ASLP} method provides a promising solution for selecting
+All in all, the \acl{ASLP} method provides a promising solution for selecting
 efficient subnetworks from large untrained neural networks through stochastic
 pruning, offering improved performance and faster convergence. 
 
 % TODO: ajouter la partie qui lie le prochain chapitre.
 
-% Future research could explore the application of \acl{ASLP} to other neural
-% network architectures and tasks or investigate additional techniques for
-% further improving subnetwork selection and adaptation.
+\textit{Ajouter la partie qui lie le prochain chapitre.}
 
 %endregion : conclusion
