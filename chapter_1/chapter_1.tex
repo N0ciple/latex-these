@@ -4,34 +4,32 @@
 \localtableofcontents
 
 \begin{abstract}
-  This chapter addresses the challenge of reducing the size of neural networks,
-  which have grown in size with the increase of computational power. Although
-  large neural networks have shown impressive performance across various
-  domains, they are not deployable on embedded devices due to their size. Among
-  the existing techniques, pruning is a popular approach to reduce the size of
-  neural networks by removing redundant or unnecessary weights. However, most
-  pruning methods rely on a saliency indicator that identifies the weights to be
-  removed after the training process, without consideration of the target
-  pruning rate.\\
-  \indent In this chapter, we propose an alternative approach that embeds the
-  pruning criterion within a weight reparametrization technique. In addition,
-  our method incorporates a budget loss to drive sparsity towards the target
-  pruning rate during training. The weight reparametrization acts as a mask
-  that soft-prunes the smallest weights, while the budget loss serves as a
-  surrogate $L_0$ norm to regulate the network's budget. As a result, our
-  approach achieves a much smaller performance drop compared to other pruning
-  methods. We demonstrate experimentally the effectiveness of our method across
-  various pruning rates, datasets, and architectures, including Conv4, VGG16,
-  ResNet20 on CIFAR10 and CIFAR100, and ResNet18 on the more complex
-  TinyImageNet dataset.\\
-  \indent We also evaluate the effectiveness and relevance of our method's two
-  components in a comparative experimental analysis with variants of our
-  approach. Furthermore, we evaluate the proposed approach in a fine-tuning
-  scenario and show that it outperforms common fine-tuning methods. Our results
-  demonstrate that our proposed approach is a promising alternative to existing
-  pruning techniques, providing an efficient and effective way to reduce the
-  size of neural networks, while eliminating the need for costly fine-tuning
-  step.\\
+  This chapter addresses the challenge of compressing large neural network,
+  whose time and memory footprint are increasingly high. Although large neural
+  networks have shown impressive performances across various domains, they are
+  not deployable on embedded devices due to their size. Among the existing
+  techniques, pruning is a popular approach which seeks to reduce the size of
+  neural networks by removing redundant or unnecessary weights. However, most of
+  the pruning methods rely on saliency indicators that identify removable
+  weights after training without considering the targeted pruning rate.\\
+  \indent In this chapter, we propose an alternative pruning approach based on
+  weight reparametrization. Our method incorporates a budget loss that drives
+  sparsity towards the targeted pruning rate during training. The weight
+  reparametrization acts as a mask that soft-prunes the smallest weights, while
+  the budget loss serves as a surrogate $L_0$ norm that regulates the network
+  budget. As a result, our approach achieves a much smaller performance drop
+  with respect to the unpruned network compared to other pruning methods. We
+  demonstrate experimentally the effectiveness of our method across various
+  pruning rates, datasets, and architectures, including Conv4, VGG16, ResNet20
+  on CIFAR10 and CIFAR100, and ResNet18 on the more challenging TinyImageNet
+  dataset.\\
+  \indent We also evaluate the effectiveness and relevance of our method in a
+  comparative experimental analysis using different settings. Furthermore,
+  we evaluate the proposed approach in a fine-tuning scenario and show that it
+  outperforms common fine-tuning methods. Our results show that our
+  proposed approach is a promising alternative to existing pruning techniques,
+  providing an efficient and effective way to reduce the size of neural
+  networks while eliminating the need for costly fine-tuning step.\\
 
 \noindent This chapter presents work that has resulted in the publication of the
 following conference article:
@@ -45,62 +43,67 @@ following conference article:
 
 \end{abstract}
 
-\section{Introduction And Related Work}
+\section{Introduction and Related Work}
 % region
-The introduction of neural networks has revolutionised the field of machine
-learning, leading to breakthroughs in various areas such as image and speech
-recognition, natural language processing, as well as exotic domains like game
-playing or molecule folding. However, the size of neural networks has steadily
-increased in recent years, largely thanks to the availability of powerful
-\acp{GPU}. They have made it possible to train larger and more complex models.
-However, as the size of neural networks has grown, so have the computational and
-memory requirements to train and deploy them. The evolution of neural network
-architectures can be traced back to the Rosenblatt Perceptron
-\cite{rosenblatt1958perceptron}, a single-layer feedforward network with only
-one neuron. Over time, neural network architectures became more complex and
-included multiple layers, known as multi-layer perceptron or fully connected
-networks. Then, with the introduction of \acp{CNN}, neural network architectures
-for image recognition have grown even larger. \acp{CNN} use
-convolutional layers to automatically and adaptively learn spatial hierarchies
-of features from input images. This adaptivity allows \acp{CNN} to effectively
-learn and classify images with high accuracy. Some of the most notable \ac{CNN}
-architectures include AlexNet \cite{DBLP:conf/nips/KrizhevskySH12}, which was
-developed in 2012 and has 60 million parameters. The VGG networks
-\cite{DBLP:journals/corr/SimonyanZ14a}, developed in 2014, range from 132 to 143
-million parameters. Inception \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}, developed
-in 2014, has 27 million parameters in its third version. And the ResNet networks
-\cite{DBLP:conf/cvpr/HeZRS16}, developed in 2015, range from 11 to 60
-million parameters. \\
+Neural networks have disrupted the field of machine learning, leading to
+breakthroughs in various areas such as image and speech recognition, natural
+language processing, as well as exotic domains like game playing
+\cite{silver2016mastering,silver2018general} or molecule folding
+\cite{jumper2021highly}. However, the size of neural networks has steadily
+increased in recent years, thanks to the availability of powerful \acp{GPU}. The
+latter makes possible the training of larger and more complex models. As the
+complexity and scale of neural networks have expanded, there has been a
+corresponding increase in the computational and memory demands necessary for
+their effective training and deployment. The origins of neural network
+architectures are rooted in the Rosenblatt Perceptron
+\cite{rosenblatt1958perceptron}, which is a single-layer feedforward network
+consisting of only one neuron. Over time, neural network architectures
+\textbf{became} more complex and included multiple layers, known as multi-layer
+perceptron or fully connected network. Then, with the emergence of Convolutional
+Neural Networks (CNNs), the complexity of neural network architectures for image
+recognition has significantly increased. \acp{CNN} use convolutional layers to
+automatically and adaptively learn spatial hierarchies of features from input
+images. This adaptivity allows \acp{CNN} to effectively learn and classify
+images with high accuracy.This enhancement in accuracy, however, is accompanied
+by a rise in complexity and, notably, a higher number of parameters. Noteworthy
+\ac{CNN} architectures typically encompass millions of parameters. For instance,
+AlexNet (2012) comprises 60 million parameters
+\cite{DBLP:conf/nips/KrizhevskySH12}, VGG networks (2014) is composed of 132 to
+143 million parameters \cite{DBLP:journals/corr/SimonyanZ14a}, Inception (2014)
+incorporates 27 million parameters in its third version
+\cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} and ResNet networks (2015) span from 11
+to 60 million parameters \cite{DBLP:conf/cvpr/HeZRS16}.\\
 
 The demand for neural networks in embedded applications has been rapidly
 increasing in recent years, driven in part by the widespread use of mobile
 devices. As these devices have become more advanced and ubiquitous, there has
-been a corresponding need for intelligent applications that can perform complex
+been a \textbf{corresponding need} for intelligent applications that can perform complex
 tasks such as object detection in self-driving cars, image and speech
-recognition in mobile devices, and natural language processing in smart
-speakers. These applications require real-time processing and low power
+recognition in mobile devices, and natural language processing in \textbf{smart
+speakers}. These applications require real-time processing and low power
 consumption, which are impossible with large neural networks. Pruning techniques
 can reduce the size of neural networks, making them more suitable for deployment
 on embedded devices while still maintaining or improving their performance.
 Methods such as structured and unstructured weight pruning can reduce the number
+% TODO: ajouter les rédérences de pruning
 of parameters and \acp{FLOP}, consequently reducing the network's size, memory
 and power consumption.\\
 
 
 Pruning is an excellent way to obtain lightweight neural networks because it
 reduces the number of parameters in a pre-trained network without the need to
-design a new architecture from the ground up. Instead of starting from scratch,
-pruning techniques can be applied to existing architectures, which have been
-trained and tested on large-scale datasets. It aims to reduce the number of
-network parameters by removing redundant or unnecessary weights. Pruning methods
-can be split into two major categories: unstructured weight pruning, where
-individual weights of the network are removed based on their importance. And
+design a new architecture. Instead of starting from scratch, pruning techniques
+can be applied to existing architectures, which have been trained and tested on
+large-scale datasets. It aims to reduce the number of network parameters by
+removing redundant or unnecessary weights. Pruning methods can be split into two
+major categories: \textit{(i))} unstructured weight pruning, where individual
+weights of the network are removed based on their importance, and \textit{(ii))}
 structured pruning, where entire columns, rows, channels, filters or even
-subnetworks are removed. \\
+\textbf{subnetworks} are removed. \\
 
 
-The first methods to prune shallow networks were proposed in the late 1980s.
-Techniques from that area include removing the smallest connection
+Ealry pruning methods for shallow networks were proposed in the late 1980s.
+Techniques from that area are based on removing the smallest weight connections
 \cite{janowsky1989pruning}, introducing a weight scaling factor and the study of
 its impact on the loss function \cite{DBLP:conf/nips/MozerS88} or the study of
 the sensitivity of the weights based on the gradients
@@ -112,9 +115,9 @@ The former work focuses on pruning weights based on their impact on the loss,
 approximated by its Taylor series, which requires the computation of the hessian
 matrix of the loss. However, computing the hessian matrix is intractable in
 practice due to the large number of parameters in the neural networks.
-Therefore, the authors introduced a few simplifying assumptions, most notably
-the diagonal assumption for the hessian matrix: loss perturbations following
-weight pruning are assumed to be weight independent. \\
+Therefore, \citeauthor{DBLP:conf/icnn/HassibiSW93} introduced a few simplifying
+assumptions, most notably the diagonal assumption for the hessian matrix: loss
+perturbations following weight pruning are assumed to be weight independent. \\
 
 
 More recently, pruning regained traction with the work of Han et al.
