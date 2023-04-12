@@ -451,9 +451,15 @@ A crucial point to consider is that adding any arbitrary constant $c$ to each
 coefficient of the log-probability vector does not change the outcome of
 Gumbel-Softmax sampling. This is because it does not alter the outcome of the
 argmax function, which remains unchanged regardless of the value of $c$,
+<<<<<<< HEAD
 provided that the same value $c$ is added to both coefficients, which is the case
 in our formulation (\emph{c.f.} \cref{eqn:chap2:our-formulation}). The
 presence of this constant $c$, whose value is arbitrary, that shifts the
+=======
+provided that the same value $c$ is added to both coefficient, which is the case
+in the our formulation (\emph{c.f.} \cref{eqn:chap2:our-formulation}). The
+presence of this constant $c$, whose value is arbirtrary, that shifts the
+>>>>>>> c236d39fcd867d9ee45998baa86cbd4ce8901f3f
 log-probabilities of our probability parametrisation gives the name of the
 method: \acl{ASLP}.\\ 
 
@@ -651,7 +657,11 @@ a weight is selected if its probability of selection is above 0.5, otherwise, it
 is pruned. In other words, the weight is kept if the binary event of keeping a
 connection is more likely than its removal. This means retaining the weight
 $\bm{w}_{i,j}$ if $\bm{\hat{m}}_{i,j} > 0$ and setting it to zero otherwise. We
+<<<<<<< HEAD
 refer to this pruning method as \textit{thresholding}. As a matter of comparison,
+=======
+refer to this pruning method as \textit{thresholding}. As a matter of comparison
+>>>>>>> c236d39fcd867d9ee45998baa86cbd4ce8901f3f
 we also consider the setting in \citeauthor{DBLP:conf/nips/ZhouLLY19} which is
 an averaging strategy to evaluate Supermask performance. It consists in sampling
 ten different topologies and averaging their test accuracies. We refer to this
@@ -670,6 +680,50 @@ Remarkably, for larger networks such as VGG16 and ResNet-20, our ASLP method
 employing the \textit{thresholding} strategy also consistently surpasses all
 other methods. Although, when evaluating the ResNet-18 network with the
 TinyImageNet dataset, our method appears to be less optimal than others. \\
+<<<<<<< HEAD
+=======
+
+% =========================================================
+
+We put forth several hypotheses to account for the reduced performance. First,
+the ResNet-18 architecture employed is the standard PyTorch implementation
+\cite{pytorch_resnet18}, designed for the ImageNet dataset
+\cite{deng2009imagenet}. As a result, it is tailored for $224 \times 224$ pixel
+images, while TinyImageNet images are merely $64 \times 64$ pixels. With a
+smaller input image size, each pixel encompasses a larger area of the input
+space, and an overly large receptive field for a smaller image like TinyImageNet
+may lead to the loss of crucial spatial information. We opted against upscaling
+TinyImageNet images to $224 \times 224$ as a preprocessing step in order to
+prevent an exponential increase in computational cost.\\
+
+Secondly, the ResNet-18 network is among the largest networks we examined (refer
+to \cref{tab:chap1:networks_size}). As a result, there are numerous possible
+weight combinations and subnetworks. Viewing \ac{ASLP} as a Neural Architecture
+Search method, the search space for ResNet-18 is considerably larger than for
+the Conv{2,4,6} networks. Nevertheless, the number of sampled topologies is only
+equal to the product of the number of batches and the number of epochs during
+which the network is trained. Since the number of images in the CIFAR and
+TinyImageNet datasets are of the same order of magnitude (see
+\cref{tab:chap1:datasets}), the number of evaluated topologies is roughly the
+same. This may be sufficient to explore the search space for Conv{2,4,6}
+networks but it might not be enough for a ResNet-18 network.\\
+
+% TODO: ajouter le nombre de paramètres dans les couches FC de ResNet-18 et VGG16
+
+However, this hypothesis warrants further clarification. Indeed, the VGG16
+network has more parameters than the ResNet-18, but \ac{ASLP} achieves superior
+results compared to other methods on this architecture. We suggest the following
+explanation: The ResNet-18 has very few weights in its fully connected layers,
+while the VGG16 has much more. We conjecture that the \ac{ASLP} method is more
+effective on fully connected layers than on convolutional layers. Supporting
+this conjecture is the observation that, on CIFAR-100, \ac{ASLP} performs
+relatively worse compared to other methods on the Conv6 network, but better on
+smaller networks. Nonetheless, there are fewer weights in the fully connected
+layers of the Conv6 network than in the Conv2 or Conv4 networks. This is due to
+an additional MaxPooling layer in the Conv6 network (compared to the Conv4
+network) that reduces the size of the feature maps and, consequently, the size
+of the subsequent fully connected layers.\\
+>>>>>>> c236d39fcd867d9ee45998baa86cbd4ce8901f3f
 
 % =========================================================
 
@@ -1049,3 +1103,164 @@ pruning, offering improved performance and faster convergence.
 \textit{Ajouter la partie qui lie le prochain chapitre.}
 
 %endregion : conclusion
+<<<<<<< HEAD
+=======
+
+  % ==============================================================================
+  \section{Experiments}\label{sec:experiments}
+  
+  In this section, we show the performance of our method on the standard CIFAR10
+  and CIFAR100 datasets.   They consist of  60k  colored images of $32\times 32$
+  pixels each.  Training,  validation and test sets  include  45k,  5k and 10k
+  images respectively.  \\  In order to demonstrate the effectiveness of our
+  method, we chose the widely used SGD optimizer with a momentum of  0.9  and a
+  learning rate of 50.    Faster convergence is obtained with higher learning
+  rates,   however,  the latter also lead  to worse observed accuracy.   During
+  training,  the maximum number of epochs is set to 1000 and early stopping is
+  triggered  if the accuracy on the validation set stops improving during 100
+  epochs.   In all these experiments, neither weight decay nor $\ell_2$
+  regularisation are applied. See implementation details and our code on the ASLP GitHub
+  \cite{Dupont2022}.
+
+\begin{table*}[htbp]
+  \centering
+  \resizebox{14.0cm}{!} 
+{
+  \begin{tabular}{@{}llcccccccc|c@{}}
+    \cline{3-11}
+                       &                                                        & \multicolumn{8}{c|}{Cifar 10}                                                                                                 & Cifar 100 \\ 
+                       \cline{3-11}
+                            &                                                       & \multicolumn{4}{c}{w/o data augmentation}                                     & \multicolumn{4}{c|}{with data augmentation (w.d.a)}         &  w.d.a  \\
+                            &                                                        & $\varnothing$ & WR             & SC            & WR+SC          & $\varnothing$ & WR             & SC            & WR+SC          &           WR+SC   \\ \midrule
+    \multirow{4}{*}{Conv2} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)         &64.4          & 65.0          & 66.3          & 66.0          & -             & -             & -             & -            &               -        \\
+                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark ($k=50\%$)  &               &   -           &         -     &         -     &       -       &      -        & 71.5   &       71.7       &     40.9         \\ 
+                            & Our ASLP (averaging)                                     & 68.2          & 66.9          & 68.3          & 66.5          & \textbf{76.0} & \textbf{76.6} & 76.8          & 77.3          &       -         \\
+                            & Our ASLP (thresholding)                                     & \textbf{68.7} & \textbf{67.8} & \textbf{68.4} & \textbf{67.1} & 75.9          & 76.4          & \textbf{77.5} & \textbf{77.5} &    \textbf{43.3}          \\
+                            \midrule
+  
+    \multirow{4}{*}{Conv4} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)       & 65.4          & 71.1          & 66.2          & 72.5          & -             & -             & -             & -             &             -           \\
+                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark[\value{footnote}] ($k=50\%$) &        -      &  -            &            -  &  -            &  -            &  -            & 81.6  &     80.5    &  51.1  \\ 
+                            & Our ASLP (averaging)                                          & 70.6          & 71.8          & 69.5          & 71.8          & 83.4          & 84.4          & 83.7          & 84.1          &        -   \\
+                            & Our ASLP (thresholding)                                      & \textbf{71.5}  & \textbf{72.8}& \textbf{70.2} & \textbf{72.7} & \textbf{83.7}& \textbf{85.0} & \textbf{84.5} & \textbf{84.8} &         \textbf{51.7}  \\
+                            \midrule
+    \multirow{4}{*}{Conv6} & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)    & 63.5          & 76.3          & 65.4          & 76.5          & -             & -             & -             & -      &  -       \\
+                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20}\footnotemark[\value{footnote}] ($k=50\%$) &      -        &    -          &        -      &     -         &      -        &           -   &  85.4 &    85.1   &   \textbf{53.8}   \\ 
+                            & Our ASLP (averaging)                                      & 72.9          & 76.1          & 71.9          & 75.6          & 85.3          & 86.2          & 85.3          & 86.2          &  - \\
+                            & Our ASLP (thresholding)                                       & \textbf{73.7} &\textbf{77.0}  &\textbf{72.6}  &\textbf{76.6}  &\textbf{86.0}  &\textbf{86.9}  & \textbf{86.3} &\textbf{86.9}  &   52.8 \\
+                            \bottomrule
+    \end{tabular}
+}
+
+  \caption{Comparison of our method against \cite{DBLP:conf/nips/ZhouLLY19}
+  and \cite{DBLP:conf/cvpr/RamanujanWKFR20} on Conv2, Conv4 and Conv6. These
+  results are averaged through five independent runs. "WR" (Weight Rescale)
+  refers to ``Dynamic Weight Rescale'' or ``Smart Rescale'' depending on which
+  methods is used (respectively \cite{DBLP:conf/nips/ZhouLLY19} or our proposed
+  ASLP). Again, "SC" refers to the ``Signed Constant'' distribution. The latest
+  results on CIFAR 100 were recently obtained with data augmentation and WR+SC.}
+  \label{tbl:conv_compare}
+
+\end{table*}
+
+    
+
+% ------------------------------------------------------------------------------
+\subsection{Performance and comparison}
+
+The accuracy of our method is evaluated on subnetworks whose topology
+corresponds to connections with  (trained) probabilities larger than 0.5;  in
+other words,  if {\it the binary event of keeping a connection is more likely
+than its removal}.  This setting is referred to as  {\it thresholding}.  As a
+matter of comparison,  we also consider the setting in
+\cite{DBLP:conf/nips/ZhouLLY19} which consists in sampling ten different
+subnetworks and evaluating an average accuracy over  these subnetworks.  This
+setting  is referred to as {\it averaging}.  In these experiments,  we use the
+same networks as
+\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20} (originally
+introduced by  Frankle and Carbin \cite{DBLP:conf/iclr/FrankleC19}) namely
+Conv2,  Conv4 and Conv6 which are  variants of  VGG16. \\
+\indent   \cref{tbl:conv_compare}  shows a comparison of our method against
+\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.    These
+results show means of five independent runs; each run corresponds either to
+``thresholding'' or ``averaging''.  These performances show a consistent gain
+(in accuracy) of our subnetwork selection.   We also observe that
+``thresholding'' is already effective compared to ``averaging''; indeed, our
+method reaches a  high accuracy despite learning a single subnetwork topology,
+and this makes it also highly efficient for training compared to  the related
+work \cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.\\ 
+\indent Furthermore, our method and \cite{DBLP:conf/nips/ZhouLLY19} do not
+impose a pruning rate. The optimal pruning rate is found during optimisation and
+is is arround 51\%, whereas \cite{DBLP:conf/cvpr/RamanujanWKFR20} enforces a 50\%
+pruning rate ($k=50\%$). Thus, the networks capacities
+are comparable. \\
+
+
+  % ------------------------------------------------------------------------------
+  \subsection{Ablation study}
+  In this section, we discuss the impact of all the components of the method
+  when taken individually and combined,  namely the use of weight rescaling
+  (WR): either DWR or our proposed SR.   We also consider another criterion:
+  signed constant  (SC) which consists in replacing weights in a given layer by
+  the products of their signs and the standard deviation of their original
+  weight distribution.  We show  all these results with and without data
+  augmentation, which is composed of the combination of zero-padding,  random crops and
+  random  horizontal flips.   Note that  pixel intensities are normalized  from
+  their original values in $[0,255]$ to $[0,1]$.
+    
+  From the results in table~\ref{tbl:conv_compare}, we observe a clear gain of
+  our method alone w.r.t.  \cite{DBLP:conf/nips/ZhouLLY19} and the use of SR
+  increases further its accuracy (excepting Conv2 w/o data augmentation).  The
+  gain in performances increases  significantly with Conv6 and reaches up to 4
+  points even when no data augmentation is used.   Note that the use of data
+  augmentation attenuates, at some extent, the effect of \ac{SR} on larger networks
+  (conv4 and Conv6). Nonetheless,  as discussed in \cref{sec:SR-impact}, the
+  positive impact of \ac{SR} resides also in training efficiency.   In contrast to
+  SR, signed constant improves accuracy by a small margin when combined with
+  data augmentation. 
+  
+  \footnotetext{Performances for \cite{DBLP:conf/cvpr/RamanujanWKFR20} are reported
+  with the optimizer described in \cref{sec:experiments}. It is possible to
+  improve performances by tuning the learning rate scheduler but this is out of
+  the scope of this paper.}
+  
+  % ------------------------------------------------------------------------------
+  \subsection{Computational efficiency}
+  \label{sec:SR-impact}
+DWR requires rectifying weights layerwise using the inverse of the observed
+(computed) pruning rates. These layerwise evaluations introduce a significant
+overhead at each training epoch. In contrast, \ac{SR} consists in simple products
+involving one scalar per layer. When training Conv4, we found (on average) that
+enabling DWR increases epoch runtime by $0.2s$ while our \ac{SR} by $0.13s$ only, so
+SR speeds up training overhead by 35\% compared to DWR.  When data augmentation
+and signed constant are used, \ac{SR} allows a significant gain in the number of
+training epochs. Indeed, enabling \ac{SR} on Conv4  saves (on average) 19.7\%
+training epochs (8.2\%, 14.0\%  on Conv2 and Conv6 respectively) before
+converging to its highest accuracy. Finally, our ``thresholding'' setting not
+only improves accuracy but makes subnetwork selection (training) and also
+inference more efficient compared to the related work
+\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20},  as this
+selection is again achieved  once and thereby only one subnetwork is applied
+during inference.
+ 
+
+% ==============================================================================
+\section{Conclusion}
+
+In this paper, we introduce a novel method that extracts effective subnetworks
+from larger networks without training its weights. The proposed method optimises
+a probability distribution which measures the relevance of weights, and only
+those with the highest relevance define the topology of the selected
+subnetworks. An efficient and effective weight rescaling mechanism is also
+introduced and allows rectifying the parameters of the selected subnetworks
+which improves performances and reduces the number epochs needed to reach
+convergence. Experiments conducted on the standard CIFAR10 and  CIFAR100
+datasets show the effectiveness of our subnetwork selection method w.r.t. the
+related work. Future work includes the study of the scalability of the proposed
+method on more complex datasets and other larger networks.\\
+
+\noindent\textbf{Acknowledgement.} 
+This work was performed using HPC resources from GENCI-IDRIS (Grant 2021-AD011011427R1). \\
+It has been achieved within a partnership between Sorbonne University and Netatmo.
+
+% \noindent\textbf{Code.} Our code is available at:\\ \href{https://github.com/N0ciple/ASLP}{\texttt{https://github.com/N0ciple/ASLP}}
+>>>>>>> c236d39fcd867d9ee45998baa86cbd4ce8901f3f
