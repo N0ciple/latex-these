@@ -594,28 +594,38 @@ $C_\text{initial}$, as done in \cref{eqn:chap1:real_budget}.\\
 
 % endregion : budget loss
 
-\section{Overview}
+\section{Method and Algorithm Overview}
 \label{sec:chap1:overview}
-% region : overview
+% region : overview 
 Our method is a combination of a weight reparametrisation and a budget loss,
-both described in the previous sections. The two are combined in a global method
-that can be used in a standard training procedure using gradient descent. In the
-\cref{sec:chap1:experiments} our results are obtained after following the
-procedure described in \cref{alg:chap1:training_pruning}. In
-\cref{sec:chap1:impact_of_fine_tuning} the procedure is the same, except that
-the \emph{effective pruning} (see
-\cref{alg:chap1:training_pruning,fig:chap1:pruning_pipeline_comparison}) is
-applied before the training, which in this case is called fine-tuning because
-the initial weights $\theta$ are already tuned.\\
+both described in the previo Our method is a combination of a weight
+reparametrisation and a budget loss, both described in the previous sections.
+The two are combined in a global method that can be used in a standard training
+procedure using gradient descent. Once the neural network has been trained using
+our proposed method, we proceed to prune the smallest weights, w.r.t. their
+mangiture, to satisfy to the predetermined targeted budget. During this stage,
+we set the smallest weights to zero until the budget requirement is met. This
+process is referred to as \textit{effective pruning}.\\
+
+In
+\cref{sec:chap1:performances,sec:chap1:impact_of_lambda,sec:chap1:impact_of_reparametrisation,sec:chap1:impact_of_budget_loss}
+our results are obtained after following this procedure, which is described in
+\cref{alg:chap1:training_pruning}. In other words, the network are first trained
+with our reparametrisation and our budget loss, then the \textit{effective
+pruning} step is applied, and finally, the performances are evaluated. In
+\cref{sec:chap1:impact_of_fine_tuning}, we  assess the performance of our method
+in a fine-tuning context. Thus, our method is applied on an already trained and
+pruned network. the \emph{effective pruning} step is not applied in this
+specific case.\\
 
 \begin{algorithm}
   \caption{Our training procedure}
   \label{alg:chap1:training_pruning}
   \begin{algorithmic}
   \REQUIRE Dataset $\mathcal{D} = \{\mathcal{X}, \mathcal{Y}\}$, network $f$,
-  weights $\theta$, number of epochs $n$, mixing coefficient $\lambda$, learning
+  weights $\theta$, number of epochs $E$, mixing coefficient $\lambda$, learning
   rate $\eta$, pruning rate $p$
-  \FOR{$t = 1$ to $n$}
+  \FOR{$t = 1$ to $E$}
       \FOR{each $(x,y) \in \mathcal{D}$}
           \STATE Compute the output of the network $\hat{y} = f(x; \theta_t)$
           \STATE Compute the loss $\mathcal{L}= \mathcal{L}_{task}(y, \hat{y}) + \lambda \cdot \mathcal{L}^{p}_{budget}(\theta_t)$
@@ -634,7 +644,7 @@ The reader can grasp a better understanding of the key differences of our method
 compared to the standard pruning pipeline that applies to most pruning methods,
 not only magnitude pruning method, by looking at
 \cref{fig:chap1:pruning_pipeline_comparison}. It highlights the fact that the
-target pruning rate is taken into account from the beginning thanks to the
+targeted pruning rate is taken into account from the beginning thanks to the
 budget loss, and therefore, the network does not need a fine-tuning step after
 the \emph{effective pruning} step. On the contrary, the standard pruning
 pipeline applies the \emph{pruning criterion} and the \emph{effective pruning}
@@ -648,7 +658,7 @@ be compensated for with fine-tuning. \\
 \subfloat[Standard Pruning Pipeline\label{fig:chap1:standard_pruning_pipeline}]{
   \includegraphics[width=0.49\textwidth]{chapter_1/assets/pipeline_comparison_with_pruning_mag_pr.pdf}}
   \caption{ Principle scheme of our pruning pipeline and the standard
-  pruning pipeline. With our pruning pipeline, the target pruning rate that will
+  pruning pipeline. With our pruning pipeline, the targeted pruning rate that will
   be enforced during the \emph{effective pruning} step, is taken into account
   from the beginning. Thus, our method does not need a fine-tuning step. In
   contrary, the standard pruning pipeline applies the \emph{pruing criterion}
@@ -669,11 +679,10 @@ databases in the field of computer vision: CIFAR10 \cite{CIFARdataset}, CIFAR100
 \cite{CIFARdataset}, and TinyImageNet \cite{TinyImageNet}. We will evaluate the
 impact of our method on several neural network architectures: VGG16
 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4 \cite{DBLP:conf/iclr/FrankleC19},
-ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. This study will allow us
-to demonstrate the effectiveness of our method for compressing image
-classification models, as well as its influence on the performance, which is the
-prediction accuracy in this case. To that extent, we will review the impact of
-both our reparametrisation and our budget loss.\\
+ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. The goal is to show the
+effectiveness of our method for compressing image classification models, as well
+as its impact on the accuracy. To that extent, we will review the impact of both
+our reparametrisation and our budget loss.\\
 
 The CIFAR10 and CIFAR100 datasets both contain 60,000 colour images of size
 32x32 pixels, split into 10 and 100 classes, respectively. The TinyImageNet
@@ -681,7 +690,7 @@ dataset is shrunk version of the ImageNet dataset
 \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, and contains 100,000 images of size
 64x64 pixels, split into 200 classes. Each dataset is divided into two folds: a
 training set and a test set. In addition to these two folds, we also use a
-validation set to tune the hyperparameters of our method before testing it on
+validation set to tune the hyperparameters of our method before applying it on
 the test set. The validation dataset is obtained by selecting 10\% of the
 training set. \Cref{tab:chap1:datasets} summaries the composition of the three
 datasets.\\
@@ -704,13 +713,13 @@ datasets.\\
 \end{table}
 
 In combination with these datasets, we use four different neural networks. Conv4
-is a small and reasonably lightweight convolutional neural network which is a
-shrunk-down version of the VGG16 architecture. VGG16 is a convolutional neural
+is a reasonably small convolutional neural network which is a
+shrunk-down version of the VGG16 architecture. VGG16 is a \acl{CNN}
 of larger size and depth, which is a popular choice for image classification. We
 used a slightly modified version of VGG16 that is better suited to CIFAR10. We
 do not use dropout, but we use batch normalisation, and the fully connected
 section has only one layer. ResNet18 is a residual neural network that
-introduces skip connection in its architectural design. ResNet20 is a modified
+introduces skip connections in its architectural design. ResNet20 is a modified
 version of the ResNet18 architecture to make it suited for CIFAR10 and CIFAR100
 datasets. \Cref{tab:chap1:networks_size} summarises the size of the different
 models. In our experiments, we use ResNet18 exclusively for TinyImageNet and the
@@ -756,21 +765,22 @@ training of the network, and the last 150 epochs are used for fine-tuning the
 pruned network. In the fine-tuning phase, the learning rate is divided by 100
 for better convergence. \\
 
-Results are repported on
+Results are reported on
 \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
-In the figures mentioned above, our method (denoted \emph{Ours}) is compared to
-magnitude pruning with and without fine-tuning (denoted \emph{MP w/ FT} and
-\emph{MP w/o FT}, respectively). All three methods are evaluated on the test
-fold of the dataset once the network has been pruned up to the pruning rate
-indicated on the \emph{x-axis}. The test accuracy is reported on the \emph{y-axis} as a float between
-0 and 1 (0 being all images wrongly classified and 1 being all images correctly
-classified). Each solid line representing a method is the mean of 5 independent
-runs. The coloured area surrounding the solid line represents the range within
-plus or minus one standard deviation. In addition to the three methods, the
-dashed lines represent the performances of an unpruned network trained without
-weight reparametrisation and budget loss (denoted \emph{baseline}) and the
-accuracy of our method before the effective pruning (denoted \emph{Ours (pre
-pruning)}). Sub-figures (c) and (d) of
+In these figures, our method (denoted \emph{Ours}) is compared to magnitude
+pruning with and without fine-tuning (denoted \emph{MP w/ FT} and \emph{MP w/o
+FT}, respectively). All three methods are evaluated on the test fold of the
+dataset once the network has been pruned up to the pruning rate indicated on the
+\emph{x-axis}. The test accuracy is reported on the \emph{y-axis} as a float
+between 0 and 1 (0 being all images wrongly classified and 1 being all images
+correctly classified). Each solid line represents a method is the mean of 5
+independent runs. The coloured area surrounding the solid line represents the
+range within plus or minus one standard deviation. In addition to the three
+methods, the dashed lines represent the performances of an unpruned network
+trained without weight reparametrisation and budget loss (denoted
+\emph{baseline}) and the accuracy of our method before the effective pruning
+(denoted \emph{Ours (pre pruning)}), i.e. before we set the smallest weight,
+w.r.t. their magnitude, to zero. Sub-figures (c) and (d) of
 \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
 represents the number of epochs (\emph{y-axis}) needed to obtain the best model
 for each method, depending on the pruning rate (\emph{x-axis}).\\
@@ -791,11 +801,11 @@ magnitude pruning for a higher level of performance (\textit{i.e.} a higher test
 accuracy). Magnitude pruning requires fewer epochs than our method, only at high
 pruning rates (more than 90\%). On TinyImageNet
 (\cref{fig:chap1:reparam_vs_mpft_resnet18}), our method outperforms magnitude
-pruning with and without fine-tuning up until very high pruning rates (95\%). In
-any cases
+pruning with and without fine-tuning including at very high pruning rates
+(95\%). In all scenarios
 (\cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_vgg16,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_resnet18}),
-Our method produces much more stable results, and variations from one run to
-another are significantly slimmer than the ones in magnitude pruning. Indeed,
+our method produces much more stable results, and variations from one run to
+another are significantly smaller than the ones in magnitude pruning. Indeed,
 the combination of the reparametrisation and the budget loss act, on the one
 hand, as a regulariser and, on the other hand, helps to prepare the network for
 the effective pruning step.\\
@@ -821,7 +831,7 @@ the effective pruning step.\\
   \cref{fig:chap1:reparam_vs_mpft_conv4_cifar100} show the testing accuracy of
   the model and \cref{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs} and
   \cref{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs} the number of epochs
-  needed to obtain the best model.}
+  needed to obtain the best model. Best viewed in colours.}
   \label{fig:chap1:reparam_vs_mpft_conv4}
 \end{figure}
 
@@ -847,7 +857,7 @@ the effective pruning step.\\
   \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar100} show the testing accuracy of
   the model and \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs} and
   \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs} the
-  number of epochs needed to obtain the best model.}
+  number of epochs needed to obtain the best model. Best viewed in colours.}
   \label{fig:chap1:reparam_vs_mpft_vgg16}
 \end{figure}
 
@@ -870,7 +880,7 @@ the effective pruning step.\\
   testing accuracy of the model and
   \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs} and
   \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}
-  the number of epochs needed to obtain the best model.}
+  the number of epochs needed to obtain the best model. Best viewed in colours.}
   \label{fig:chap1:reparam_vs_mpft_resnet20}
 \end{figure}
 
@@ -893,28 +903,31 @@ the effective pruning step.\\
 
 % region: lambda value
 
-Our method relies on a budget loss which relative importance compared to the
+Our method relies on a budget loss whose relative importance compared to the
 main task loss is controlled by a parameter $\lambda$ (cf.
 \cref{eqn:chap1:globalloss}). The choice of this parameter is crucial to ensure
-a good tradeoff between \emph{(i)} the respect of the budget, in order to
-mitigate the performance drop following the effective pruning step; and
-\emph{(ii)} the optimisation of the main task loss, which influences the final
-performance. The achieved budget as a function of the parameter $\lambda$ is
-detailed for different pruning rates in
+a good tradeoff between \emph{(i)} adhering to the budget constraint, which
+ensures that the weights set to zero during the effective pruning step are
+already vanishingly small if the constraint is satisfied. This implies that
+zeroing these weights will have a minimal impact on performance; and \emph{(ii)}
+the optimisation of the main task loss, which directly impacts the final
+performance. The observed budget as a function of the parameter $\lambda$ is
+shown for different pruning rates in
 \cref{fig:chap1:lambda_impact_pruning_90,fig:chap1:lambda_impact_pruning_95,fig:chap1:lambda_impact_pruning_99}.
-In these figures, the achieved budget is computed as the sum of the weights reparametrisation\\
+In these figures, the observed budget is computed as the sum of the weights
+reparametrisation\\
 
-For low pruning rates (\cref{fig:chap1:lambda_impact_pruning_90}), a low value
-of $\lambda$ does not enforce the respect of the budget and in this case, the
-final network has a smaller achieved budget than the targeted one. Similarly,
-for higher pruning rates (\cref{fig:chap1:lambda_impact_pruning_99}), a low
-value of $\lambda$ results in a budget in excess compared to the targeted one.
-In both cases, the performances of networks trained with a low value of
+For low pruning rates (\cref{fig:chap1:lambda_impact_pruning_90}), a relatively
+low value of $\lambda$ does not guarantee adherence to the budget constraint and
+the final network has a smaller observed budget than the targeted one.
+Similarly, for higher pruning rates (\cref{fig:chap1:lambda_impact_pruning_99}),
+a low value of $\lambda$ results in a budget in excess compared to the targeted
+one. In both cases, the performances of networks trained with a low value of
 $\lambda$ are subpar compared to higher values, as reported in
 \cref{tab:chap1:lambda_impact}. On the opposite of the spectrum, high values of
 $\lambda$ lay too much emphasis on the budget loss, and the network performances
-are negatively impacted, even though the budget is respected. Following the
-abovementioned considerations, we set the value of $\lambda$ to 5 for all the
+are negatively impacted, even though the budget is satisfied. Following the
+abovementioned observations, we set the value of $\lambda$ to 5 for all the
 experiments. This value strikes the best balance between the two objectives:
 budget loss and main task loss.
 
@@ -967,7 +980,7 @@ budget loss and main task loss.
   \caption{
     Impact of the parameter $\lambda$ on the achieved budget and the post-pruning test accuracy of the model for a Conv4 network on the CIFAR10 dataset
     for various pruning rates. Although a high value of $\lambda$ ensures 
-    the target budget is reached, it also leads to a lower test accuracy when
+    the targeted budget is reached, it also leads to a lower test accuracy when
     the pruning rate increases.}
     \label{tab:chap1:lambda_impact}
 \end{table}
@@ -981,7 +994,7 @@ budget loss and main task loss.
 
 % region: budget impact
 
-To establish the importance and the efficacy of the budget loss in our method,
+To establish the importance and the effectiveness of the budget loss in our method,
 we present in this section the results of a comparative experimental analysis
 with alternative variants.  Specifically, we investigated the impact of the
 budget loss by comparing it with two other variants: \emph{(i)} a variant where the
