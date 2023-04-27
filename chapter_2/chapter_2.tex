@@ -526,13 +526,16 @@ pipelines rely on weight training and subsequent fine-tuning.\\
 
 \begin{figure}
 \centering
-\subfloat[Our pruning pipeline performs topology selection only. Weights are not
-trained.\label{fig:chap2:our-pipeline}]{
-  \includegraphics[width=0.45\textwidth]{chapter_2/assets/our_pruning_pipeline.png}}
+\subfloat[Our pruning pipeline\label{fig:chap2:our-pipeline}]{
+  \includegraphics[width=0.4\textwidth]{chapter_2/assets/our_pruning_pipeline.png}}
   \vspace{0.10\textwidth}
-\subfloat[Standard pruning pipelines rely on weight training and fine-tuning\label{fig:chap2:standard-pipeline}]{
-  \includegraphics[width=0.45\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
+  \subfloat[Standard pruning pipelines \label{fig:chap2:standard-pipeline}]{
+    \includegraphics[width=0.4\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
+    \caption{Overview of our pruning pipeline and standard pruning pipelines.
+    Our pipeline perfoms topology selection only: weights are not trained. 
+    On the contrary, standard pruning pipelines rely on weight training and fine-tuning.}
 \end{figure}
+
 
 \begin{algorithm}
   \caption{Our training procedure}
