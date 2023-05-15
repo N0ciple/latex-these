@@ -1,4 +1,4 @@
-\chapter{State of the art}
+\chapter{Deep Neural Network Compression}
 \label{chap:sota}
 
 
@@ -7,35 +7,39 @@
 
 \section{Introduction}
 % region: intro
-The development of neural networks and their performance has been accompanied by
-a significant increase in their size and more particularly in the number of
-weights of which they are composed. In parallel, the development of these
-networks has given rise to various applications, particularly embedded ones,
-whose resources are highly constrained in terms of computing power, energy
-consumption or memory footprint. In conjunction with the increase in the size of
-these networks, compression methods have been developed, in order to enable the
-use of these networks in the said applications. his chapter focuses on these
-latter techniques and presents state-of-the-art neural network compression
-methods, mostly based on reducing the number of weights. First, we will explore
-ad-hoc architectures, referred to here as "Efficient Architectures". These
-networks are lightweight networks that revolve around a core technique to reduce
-their size while preserving performance as much as possible. Subsequently, we
-will discuss \ac{NAS}, a method that automates the discovery of optimal network
-architectures tailored to specific tasks or constraints, potentially leading to
-more compact and efficient designs. Following this, we will examine fast
-convolution techniques, which aim to accelerate the computation of convolutions
-in neural networks, thereby reducing both the runtime and computational
-resources required. Next, we will delve into \ac{KD}, a process by which the
-knowledge of a larger, more complex network (denoted the \emph{teacher}) is
-transferred to a smaller, more efficient network (denoted the \emph{student}),
-enabling the latter to achieve comparable performance with a reduced footprint.
-Afterwards, we will address weight operations techniques, including methods such
-as low-rank factorisation and other linear algebra techniques, which help to
-reduce the complexity and size of the networks by exploiting inherent
-redundancies and structures in the weight matrices. Lastly, we will consider
-Neural Network Pruning, a set of techniques that involve the removal of
-redundant or insignificant connections and weights from the network, resulting
-in a sparser and more computationally efficient model.\\
+The development of neural networks and the increase of their performances has
+been accompanied by a significant growth of their size and more particularly
+in the number of weights of which they are composed. In parallel, the
+development of these networks has given rise to various applications,
+particularly embedded ones, whose resources are highly constrained in terms of
+computing power, energy consumption or memory footprint. In conjunction with the
+increase in the size of these networks, compression methods have been developed,
+in order to enable the use of these networks in the said applications. This
+chapter focuses on these latter techniques and presents state-of-the-art neural
+network compression methods, mostly based on reducing the number of weights.
+First, we will explore ad-hoc architectures, referred to here as \emph{Efficient
+Architectures}. These networks are lightweight networks that revolve around a
+core technique to reduce their size while preserving performance as much as
+possible. Subsequently, we will discuss \ac{NAS}, a method that automates the
+discovery of optimal network architectures tailored to specific tasks or
+constraints, potentially leading to more compact and efficient designs.
+Following this, we will examine fast convolution techniques, which aim to
+accelerate the computation of convolutions in neural networks, thereby reducing
+both the runtime and computational resources required. Next, we will delve into
+\ac{KD}, a process by which the knowledge of a larger, more complex network
+(denoted the \emph{teacher}) is transferred to a smaller, more efficient network
+(denoted the \emph{student}), enabling the latter to achieve comparable
+performance with a reduced footprint. Afterwards, we will address weight
+operations techniques, including methods such as low-rank factorisation and
+other linear algebra techniques, which help to reduce the complexity and size of
+the networks by exploiting inherent redundancies and structures in the weight
+matrices. Lastly, we will consider Neural Network Pruning, a set of techniques
+that involve the removal of redundant or insignificant connections and weights
+from the network, resulting in a sparser and more computationally efficient
+model.\\
+
+% TODO: reorganiser le paragraphe précédent qui introduit les sections dont on
+% va parler. Il faut être sûr que ça correspond aux sections qui suivent.
 
 % endregion: intro
 
@@ -182,7 +186,7 @@ ShuffleNet unit in the network. This process is represented in
 efficiency and the expressive capacity of the model.\\
 % endregion: shufflenet
 
-
+% region: mobilenetv2
 Depthwise Separable Convolutions were employed and improved in
 \cite{howard2017mobilenets}. \citeauthor{DongMobileNetV2} introduced skip
 connections and residual blocks into the MobileNet architecture, initially
@@ -217,7 +221,9 @@ information.\\
     \label{fig:sota:inverted_vs_residual_blocks}
 \end{figure}
 
+% endregion: mobilenetv2
 
+% region: mobilenetv3
 Advancing from MobileNet and MobileNetV2, its third iteration
 \cite{DBLP:conf/iccv/HowardPALSCWCTC19} incorporated \ac{SE} modules initially
 introduced in \cite{DBLP:conf/cvpr/HuSS18}. These modules adaptively recalibrate
@@ -231,6 +237,9 @@ between channels through two fully connected layers. The output of this
 mini-network are per-channel modulation weights that recalibrate the original
 feature maps, scaling or "exciting" them by these weights.\\
 
+% endregion: mobilenetv3
+
+% region: transition paragraph
 The architectures we have just reviewed hinge around specific key techniques
 like depthwise separable convolutions, fire modules, channel shuffling, and
 \ac{SE} modules, among others. These architectures, while
@@ -254,14 +263,216 @@ automated, which is the subject of the next section.\\
     \label{fig:sota:se_module}
 \end{figure}
 
-% Neural Architecture Search
-% (NAS). NAS is a method that automates the discovery of neural network
-% architectures, potentially leading to more compact, efficient designs and
-% reducing the need for manual intervention. Even though NAS might not explicitly
-% aim at producing lightweight architectures, it can still yield designs that
-% strike a good balance between performance and computational cost. By using
-% automated methods to search for optimal architectures, it is possible to further
-% enhance the efficiency of neural networks, opening up new possibilities for
-% their deployment in resource-constrained environments. This represents an
-% exciting area of ongoing research and development in the field of neural
-% networks.
+% endregion: transition paragraph
+
+\section{Neural Architecture Search}\label{sec:sota:nas} 
+
+\acf{NAS} is a method that automates the discovery of neural network
+architectures, potentially leading to more compact, efficient designs and
+reducing the need for manual intervention. Even though \ac{NAS} might not
+explicitly aim at producing lightweight architectures, it can still yield
+designs that strike a good balance between performance and computational cost
+\cite{DBLP:conf/cvpr/TanCPVSHL19,DBLP:conf/icml/TanL19}. By using automated
+methods to search for optimal architectures, it is possible to further enhance
+the efficiency of neural networks, opening up new possibilities for their
+deployment in resource-constrained environments. \ac{NAS} has emerged as an
+essential paradigm, aiming to automate the traditionally manual and
+labour-intensive process of designing efficient neural networks
+\cite{DBLP:journals/corr/MiikkulainenLMR17}. Early network architectures were
+indeed entirely handcrafted, requiring significant human effort and expertise.
+However, these manual methods are being replaced by \ac{NAS} techniques, which
+seek to automatically determine the optimal network structure given a training
+set \cite{DBLP:journals/corr/abs-2301-08727,elsken2019neural}.\\
+
+The performance and efficiency of \ac{NAS} are fundamentally determined by two
+key aspects: the \emph{search space} and the \emph{search strategy}. The search
+space, as the term suggests, defines the set of all possible architectures that
+can be discovered by the \ac{NAS} algorithm. It could be as broad as all
+possible configurations of a certain type of network, such as \acp{CNN}, or as
+narrow as different arrangements of a specific set of layers
+\cite{DBLP:conf/cvpr/LiuCSAHY019}. The search strategy, on the other hand,
+determines how the \ac{NAS} algorithm navigates through this search space in
+order to optimise their given objective. This could involves gradient-based
+strategies \cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20}, or
+stochastic methods, such as evolutionary algorithms and reinforcement learning
+strategies \cite{DBLP:conf/iclr/ZophL17,DBLP:conf/icml/RealMSSSTLK17}. The
+choice of search space and search strategy significantly influences the ability
+of \ac{NAS} to discover effective and efficient architectures, and is thus a
+critical aspect of NAS research. In the following paragraphs, we will delve
+deeper into some of these strategies and their impact on the field of
+\ac{NAS}.\\
+
+
+
+The search space is a critical aspect of \ac{NAS} as it bounds the possibilities
+of architectures and significantly influences the outcome of the search. The
+search space could be as broad as all possible configurations of a certain
+network type or as specific as various arrangements of a predefined set of
+layers or blocks. For instance, \cite{DBLP:conf/iclr/ZophL17} define their
+search space as a set of repeatable sub-structures composed of basis layers
+(convolution layers, fully connected layers, \ac{batch norm} layers, etc...)
+often called \emph{cells} that are stacked to form the final architecture, while
+\cite{DBLP:conf/iclr/XieZLL19} design their search space based on the
+connectivity patterns between network blocks. \cite{DBLP:conf/iclr/LiuSY19}
+propose a continuous search space where the architecture is parameterized as a
+differentiable function, allowing for efficient search using gradient-based
+methods. Hierarchical search spaces, on the other hand, offer a strategic
+approach to navigate the complexity of the architecture search in \ac{NAS}
+\cite{DBLP:conf/cvpr/LiuCSAHY019,DBLP:conf/cvpr/TanCPVSHL19}. In such a setup,
+the architecture is divided into several levels of hierarchy, with each level
+searched independently. This structure enables a more systematic and organized
+exploration of the search space, allowing the algorithm to uncover useful
+patterns and configurations at different levels of the network. The EfficientNet
+models are exemplary of innovative architecture search strategies
+\cite{DBLP:conf/icml/TanL19}. This series utilizes both \ac{NAS} and
+\emph{compound scaling}. A baseline, EfficientNet-B0, was developed through
+multi-objective \ac{NAS}, optimizing both accuracy and FLOPS. Subsequently,
+compound scaling method was applied to this baseline, uniformly scaling depth,
+width, and resolution via a \emph{compound coefficient} $\phi$. This approach
+yielded a series of progressively larger EfficientNet models, whose performances
+are show in \ref{fig:sota:efficientnet_perfs}.\\
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.70\textwidth]{chapter_sota/assets/efficientnet_perfs_overview.pdf}   
+    \caption{ImageNet top-1 accuracy vs model size (in millions of parameters).
+    The EfficientNet familly of models significantly outperforms other models of
+    similar size, optained either by \ac{NAS} or manual design. This graph is
+    taken from \cite{DBLP:conf/icml/TanL19}.
+    }
+    \label{fig:sota:efficientnet_perfs}
+\end{figure}
+
+
+The search strategy is another major component of \ac{NAS}, dictating how the
+algorithm explores the search space to find the optimal architecture. A wide
+range of search strategies have been proposed. Evolutionary algorithms
+\cite{DBLP:conf/icml/RealMSSSTLK17} use principles of natural evolution such as
+mutation, crossover, and selection to explore the search space. Despite their
+potential to find high-quality solutions, these methods often require
+substantial computational resources due to the large number of evaluations
+needed. Reinforcement Learning based methods \cite{DBLP:conf/iclr/ZophL17}
+employ a policy network to generate architectures and a reward signal, typically
+validation accuracy, to guide the search. While reinforcement learning methods
+can effectively navigate large search spaces, their success heavily depends on
+the quality of the reward signal. Gradient-based methods like
+\cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20} make the search space
+continuous and use gradient descent for optimization, which enables efficient
+exploration of the search space but requires careful regularization to prevent
+overfitting. \cite{DBLP:conf/nips/BergstraBBK11} uses bayesian optimization to
+build a probabilistic model of the objective function and uses it to select
+promising architectures, balancing exploitation and exploration. This method can
+be sample-efficient but might struggle with high-dimensional spaces. These
+diverse strategies offer multiple paths to navigate the complex landscape of
+architecture search, each with its unique trade-offs between efficiency,
+effectiveness, and computational demands.
+
+
+\section{Knowledge Distillation}
+
+\acf{KD} is a method that aims to transfer the knowledge of a large, complex and
+accurate network refered to as the \emph{teacher} to a smaller, more efficient
+one called the \emph{student}. The student is trained with a combination of the
+main task loss as well as a suplementary supervision signal which is derived
+from the feature maps of the teacher network at various depths.\\
+
+Methods in this paradigm are mostly based on the seminal work of \ac{KD}
+\cite{DBLP:journals/corr/HintonVD15}. The latter seeks to train simple networks
+yielding better performances compared to those trained from scratch. \ac{KD}
+relies on teacher and student networks, where the logits of the former are used
+as an additional supervision signal for the latter. When trained separately, the
+student network can only rely on classification labels in order to learn its own
+data representation while \ac{KD} relies on the logits of the teacher network
+which provide more insight about the hidden representations.\\
+
+Inspired by \ac{KD}, \cite{DBLP:journals/corr/RomeroBKCGB14} introduced FitNet,
+a two-stage training algorithm, where an intermediate layer of the teacher is
+chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
+\citeauthor{DBLP:journals/corr/RomeroBKCGB14}
+\cite{DBLP:journals/corr/RomeroBKCGB14} to denote a feature map used as a target
+for the student network.} for an intermediate layer of the student. First, the
+student is trained up to its selected layer to mimic the hint feature map. Then,
+the whole student network is trained with standard \ac{KD} against the whole
+teacher. At the first step, a regressor is needed in order to adapt the
+dimensions of feature map, that may differ from the teacher to the student
+networks, as illustrated in \cref{fig:sota:kd_frameworks}.
+\citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map matching
+utilised by FitNets is overly restrictive. Drawing inspiration from the
+techniques used in \cite{DBLP:journals/corr/GatysEB15a} for style transfer, they
+propose an alternative method. In the context of style transfer, the Gram matrix
+of the feature maps is employed to encapsulate the texture information of an
+image. Adapting this approach, the method presented in
+\cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across multiple layers
+feature maps. This computed Gram matrix, dubbed the Flow of Solution Procedure
+(FSP) matrix, then serves as a \emph{hint} for the student network, guiding its
+training process.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{chapter_sota/assets/kd_frameworks.pdf}
+    \caption{Overview of various knowledge distillation frameworks. From top to
+    bottom, left to right: Deep Mutual Learning
+    \cite{DBLP:conf/cvpr/ZhangXHL18}, FitNet
+    \cite{DBLP:journals/corr/RomeroBKCGB14}, Attention Transfer
+    \cite{DBLP:conf/iclr/ZagoruykoK17}, Teacher Assistant
+    \cite{DBLP:conf/aaai/MirzadehFLLMG20} and Knowledge Distillation
+    \cite{DBLP:journals/corr/HintonVD15}.}
+    \label{fig:sota:kd_frameworks}
+\end{figure}
+
+In practice, handling full-dimensional feature maps is cumbersome. That is why,
+in order to avoid this issue, \cite{DBLP:conf/iclr/ZagoruykoK17} use an
+attention map generated by squashing the feature maps to a 2D map allowing for a
+smaller 2D regressor to match attention map dimensions. Note that the
+aforementioned knowledge transfer methods require teacher-student pairs and
+assume that teachers are large trained models. \cite{DBLP:conf/cvpr/ZhangXHL18}
+relax this assumption by proposing Deep Mutual Learning which allows for a pool
+of networks of different architectures to learn together, provided that they
+have the same logit dimensions, and none of the models in the pool needs a
+pretraining step. The uncertainty of each model is distilled to each others
+which creates additional knowledge.\\
+
+In all the previous methods, the quality of knowledge distillation is heavily
+impacted by the size difference between the student and the teacher.
+\citeauthor{DBLP:conf/aaai/MirzadehFLLMG20} introduced the concept of
+\emph{Teacher Assistant}, networks of intermediary dimensions that aim at
+bridging the gap between student and teacher
+\cite{DBLP:conf/aaai/MirzadehFLLMG20}. Knowledge is first distilled from the
+teacher to the teacher assistant, and then from the teacher assistant to the
+student, allowing for better performances compared to straightforward \ac{KD}.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/variational_info_distillation.pdf}
+    \caption{Conceptual scheme of \cite{DBLP:conf/cvpr/AhnHDLD19}. The student
+    network efficiently learns the main task while retaining high mutual information
+    with the teacher network. The mutual information is maximized by learning to
+    estimate the distribution of the activations in the teacher network, provoking
+    the transfer of knowledge. Adapted from the original
+    scheme found in \cite{DBLP:conf/cvpr/AhnHDLD19}}
+    \label{fig:sota:vid_scheme}
+\end{figure}
+
+Other approaches that do not rely on direct feature map or logit matching have
+been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced Variational
+Information Distillation, which indirectly maximises the mutual information
+between the student and the teacher. This is done by using \emph{variational
+information maximisation} \cite{barber2004algorithm} to maximise a variational
+lower bound of the mutual information, since maximising the latter directly is
+intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise, \cite{DBLP:conf/eccv/PassalisT18} proposed a
+Probabilitic Knowledge Transfer method that do not match logits or feature maps,
+but rather represents the latter as a probability distribution and minimises
+divergence between the two (see \cref{fig:sota:pkt_scheme}).\\
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
+    \caption{ Conceptual scheme of the
+    Probabilistic Knowledge Transfer method. Both the student and the teacher
+    feature maps are modelled using probability distributions. The divergence of the
+    latters is minimised in order to transfer knowledge from the teacher to the
+    student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
+    \label{fig:sota:pkt_scheme}
+\end{figure}
