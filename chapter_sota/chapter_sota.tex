@@ -135,9 +135,10 @@ the input channels into groups and performing convolutions on each group
 independently. This reduces the number of operations and computational cost
 compared to traditional convolutions. To counteract the potential loss of
 expressive power caused by the separation of channels into groups, ShuffleNet
-incorporates \emph{channel shuffle operations} as shown in \cref{fig:sota:shuffle_net}. This technique allows for
-information exchange between groups, effectively maintaining accuracy by
-ensuring that different groups can capture diverse features in the input.\\
+incorporates \emph{channel shuffle operations} as shown in
+\cref{fig:sota:shuffle_net}. This technique allows for information exchange
+between groups, effectively maintaining accuracy by ensuring that different
+groups can capture diverse features in the input.\\
 
 \begin{figure}[htbp]
     \centering
@@ -368,7 +369,6 @@ diverse strategies offer multiple paths to navigate the complex landscape of
 architecture search, each with its unique trade-offs between efficiency,
 effectiveness, and computational demands.
 
-
 \section{Knowledge Distillation}
 
 \acf{KD} is a method that aims to transfer the knowledge of a large, complex and
@@ -476,3 +476,74 @@ divergence between the two (see \cref{fig:sota:pkt_scheme}).\\
     student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
     \label{fig:sota:pkt_scheme}
 \end{figure}
+
+\section{Optimising Convolution Computations}
+\label{sec:sota:fast_convolutions}
+
+Aside from reducing the number of weight, it is also possible to reduce the
+computational complexity of convolutions by using alternative algorithms to
+perform the convolution operation.\\
+
+The most popular ones rely on the \ac{FFT}
+\cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
+and levrage the Convolution Theorem. The Convolution Theorem states that the
+convolution of two signals in the source domain is the product of the two
+signals in the Fourier domain. This allows for a faster computation of the 2D
+convolution by using the \ac{FFT} to compute the convolution in the frequency
+domain \cite{oppenheim1997signals}.\\
+
+
+Other algorithm focuses on optimising matrix operations, such as the Strassen
+algorithm \cite{strassen1969gaussian}, used in \cite{DBLP:conf/icann/CongX14},
+is a fast method for matrix multiplication that reduces the computational
+complexity from the standard $\mathcal{O}(n^{3})$ to approximately
+$\mathcal{O}(n^{2.807})$ by recursively dividing the matrices of size $n$ into 4
+submatrices of size $\frac{n}{2} \times \frac{n}{2}$ and reorganizing and
+combining these multiplications to result to perform only 7 instead of 8 matrix
+multiplications. The Strassen algorithm has later been refined by
+\citeauthor{coppersmith1987matrix}, who introduced the Coppersmith-Winograd
+algorithm \cite{coppersmith1987matrix}. The latter brings down the complexity to
+$\mathcal{O}(n^{2.376})$. This algorithm is used in various works, mostly
+targeted towards a specific \ac{FPGA} architecture
+\cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
+
+
+Another technique for optimizing convolutions is the use of Toeplitz matrices. A
+Toeplitz matrix, or diagonal-constant matrix, has the unique characteristic of
+each descending diagonal from left to right being constant. $T$ is a example of
+a Toeplitz matrix. This property is particularly useful for convolutions, as
+they can be expressed as a multiplication by a Toeplitz matrix
+\cite{gray2006toeplitz}. This algorithm has been used in
+\cite{liao2019compressing}, with a focus on \ac{FPGA} architectures. Note that
+the representation of a convolution as a product with a Toeplitz matrix can
+further be accelerated by using the aforementioned optimisations to the matrix
+multiplication algorithm.\\
+
+
+$$
+T = 
+\left(
+\begin{array}{cccc}
+a & b & c & d \\
+e & a & b & c \\
+f & e & a & b \\
+g & f & e & a \\
+\end{array}
+\right)
+$$
+
+All the techniques presented in this section allows to speed up the computation
+of convolution operations, however, they requires relatively large matrices to
+be truly efficient. They are not widely used with the current architectures
+\cite{DBLP:conf/cvpr/HeZRS16,huang2017densely,liu2018efficient} since they use
+small $3 \times 3$ kernels which would not benefit directly from these
+algorithms.\\
+
+
+The algorithms presented in this section offer significant acceleration in the
+computation of convolution operations. However, their optimal efficiency is
+bound to the use of relatively large matrices. Current architectures
+\cite{DBLP:conf/cvpr/HeZRS16, huang2017densely, liu2018efficient} predominantly
+use small $3 \times 3$ kernels, rendering the direct application of these
+acceleration techniques less beneficial. As a consequence, these techniques have
+not gained widespread adoption in contemporary deep learning architectures.
