@@ -192,7 +192,7 @@ Depthwise Separable Convolutions were employed and improved in
 connections and residual blocks into the MobileNet architecture, initially
 proposed in \cite{DBLP:conf/cvpr/HeZRS16}. They also introduced the concept of
 inverted residuals and linear bottlenecks. In conventional residual blocks, the
-input is first compressed, then expanded, and finally compressed again, after
+input is first compressed, then expanded, and finally compressed again after
 being added to the original input. With inverted residual bottlenecks, on the
 other hand, this process is reversed: the input is first expanded, then a
 depthwise separable convolution is applied, and finally, it's compressed again.
@@ -200,11 +200,11 @@ In this architecture, the skip connections link the feature maps of smaller
 size, instead of the larger ones. This allows for a more memory-efficient
 architecture. The standard residual blocks and the inverted residual blocks are
 shown in \cref{fig:sota:inverted_vs_residual_blocks}. The linear bottlenecks, on
-the other hand, are convolutions without linear activation functions like ReLU.
-This takes advantage of the property that high-dimensional feature maps can be
-embedded in a lower-dimensional manifold. To do this, it is necessary to use
-linear transformations without using an activation function, which could destroy
-information.\\
+the other hand, are convolutions without non-linear activation functions like
+\ac{ReLU}. This takes advantage of the property that high-dimensional feature
+maps can be embedded in a lower-dimensional manifold. To do this, it is
+necessary to use linear transformations without an activation function, which
+could potentially destroy information.\\
 
 \begin{figure}
     \centering
@@ -215,8 +215,8 @@ information.\\
     \caption{Illustration scheme of the residual block and the inverted residual
     block. Note that on the inverted residual block, the feature maps with the lower
     channel count are the ones connected via the skip connection, whereas it is the
-    oposite on the standard residual block.Diagonally hatched layers do not use
-    non-linearities. The grey color indicates the beginning of the next block. Both
+    opposite on the standard residual block. Diagonally hatched layers do not use
+    non-linearities. The grey colour indicates the beginning of the next block. Both
     illustrations are taken from \cite{DongMobileNetV2}. Best viewed in colours.}
     \label{fig:sota:inverted_vs_residual_blocks}
 \end{figure}
