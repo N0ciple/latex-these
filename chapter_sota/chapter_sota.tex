@@ -7,43 +7,42 @@
 
 \section{Introduction}
 % region: intro
-The development of neural networks and the increase of their performances has
-been accompanied by a significant growth of their size and more particularly
-in the number of weights of which they are composed. In parallel, the
-development of these networks has given rise to various applications,
-particularly embedded ones, whose resources are highly constrained in terms of
-computing power, energy consumption or memory footprint. In conjunction with the
-increase in the size of these networks, compression methods have been developed,
-in order to enable the use of these networks in the said applications. This
-chapter focuses on these latter techniques and presents state-of-the-art neural
-network compression methods, mostly based on reducing the number of weights.
-First, we will explore ad-hoc architectures, referred to here as \emph{Efficient
-Architectures}. These networks are lightweight networks that revolve around a
-core technique to reduce their size while preserving performance as much as
-possible. Subsequently, we will discuss \ac{NAS}, a method that automates the
-discovery of optimal network architectures tailored to specific tasks or
-constraints, potentially leading to more compact and efficient designs.
-Following this, we will examine fast convolution techniques, which aim to
-accelerate the computation of convolutions in neural networks, thereby reducing
-both the runtime and computational resources required. Next, we will delve into
-\ac{KD}, a process by which the knowledge of a larger, more complex network
-(denoted the \emph{teacher}) is transferred to a smaller, more efficient network
-(denoted the \emph{student}), enabling the latter to achieve comparable
-performance with a reduced footprint. Afterwards, we will address weight
-operations techniques, including methods such as low-rank factorisation and
-other linear algebra techniques, which help to reduce the complexity and size of
-the networks by exploiting inherent redundancies and structures in the weight
-matrices. Lastly, we will consider Neural Network Pruning, a set of techniques
-that involve the removal of redundant or insignificant connections and weights
-from the network, resulting in a sparser and more computationally efficient
-model.\\
+The development of neural networks and the enhancement of their performances has
+been accompanied by a significant growth of their size, particularly in the
+number of weights constituting them. In parallel, the evolution of these
+networks has given rise to various applications, particularly embedded ones,
+whose resources are highly constrained in terms of computing power, energy
+consumption or memory footprint. Alongside the increase in the size of these
+networks, compression techniques have been devised, in order to enable the use
+of these algorithms in the said applications. This chapter focuses on these
+techniques and presents state-of-the-art neural network compression methods,
+predominantly based on reducing the number of weights. First, we will explore
+ad-hoc architectures, referred to here as \emph{Efficient Architectures}. These
+networks are lightweight networks that revolve around a core technique to reduce
+their size while preserving performance as much as possible. Following this, we
+will discuss \ac{NAS}, a method that automates the discovery of optimal network
+architectures tailored to specific tasks or constraints, potentially leading to
+more compact and efficient designs. Thereafter, we will examine fast convolution
+techniques, which aim to accelerate the computation of convolutions in neural
+networks, thereby reducing both the runtime and computational resources
+required. Subsequently, we will delve into \ac{KD}, a process by which the
+knowledge of a larger, more complex network (denoted the \emph{teacher}) is
+transferred to a smaller, more efficient network (denoted the \emph{student}),
+enabling the latter to achieve comparable performance with a reduced footprint.
+Afterwards, we will address weight operations techniques, including methods such
+as low-rank factorisation and other linear algebra techniques, which aim to
+reduce the complexity and size of the networks by capitalising on inherent
+redundancies and structures in the weight matrices. Lastly, we will consider
+Neural Network Pruning, a set of techniques that involve the removal of
+redundant or insignificant connections and weights from the network, resulting
+in a sparser and more computationally efficient model.\\
 
 % TODO: reorganiser le paragraphe précédent qui introduit les sections dont on
 % va parler. Il faut être sûr que ça correspond aux sections qui suivent.
 
 % endregion: intro
 
-\section{Efficient Architectures}
+\section{Efficient Architectures Design}
 
 % region: depthwise separable convolutions
 
