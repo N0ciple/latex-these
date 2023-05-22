@@ -269,7 +269,7 @@ can be automated, which is the subject of the next section.\\
 
 \acf{NAS} is a method that automates the discovery of neural network
 architectures, potentially leading to more compact, efficient designs and
-reducing the need for manual intervention. Even though \ac{NAS} might not
+reducing the need for manual intervention. Although \ac{NAS} might not
 explicitly aim at producing lightweight architectures, it can still yield
 designs that strike a good balance between performance and computational cost
 \cite{DBLP:conf/cvpr/TanCPVSHL19,DBLP:conf/icml/TanL19}. By using automated
@@ -292,7 +292,7 @@ possible configurations of a certain type of network, such as \acp{CNN}, or as
 narrow as different arrangements of a specific set of layers
 \cite{DBLP:conf/cvpr/LiuCSAHY019}. The search strategy, on the other hand,
 determines how the \ac{NAS} algorithm navigates through this search space in
-order to optimise their given objective. This could involves gradient-based
+order to optimise its given objective. This could involve gradient-based
 strategies \cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20}, or
 stochastic methods, such as evolutionary algorithms and reinforcement learning
 strategies \cite{DBLP:conf/iclr/ZophL17,DBLP:conf/icml/RealMSSSTLK17}. The
@@ -309,7 +309,7 @@ of architectures and significantly influences the outcome of the search. The
 search space could be as broad as all possible configurations of a certain
 network type or as specific as various arrangements of a predefined set of
 layers or blocks. For instance, \cite{DBLP:conf/iclr/ZophL17} define their
-search space as a set of repeatable sub-structures composed of basis layers
+search space as a set of repeatable sub-structures composed of basic layers
 (convolution layers, fully connected layers, \ac{batch norm} layers, etc...)
 often called \emph{cells} that are stacked to form the final architecture, while
 \cite{DBLP:conf/iclr/XieZLL19} design their search space based on the
@@ -326,19 +326,19 @@ patterns and configurations at different levels of the network. The EfficientNet
 models are exemplary of innovative architecture search strategies
 \cite{DBLP:conf/icml/TanL19}. This series utilizes both \ac{NAS} and
 \emph{compound scaling}. A baseline, EfficientNet-B0, was developed through
-multi-objective \ac{NAS}, optimizing both accuracy and FLOPS. Subsequently,
+multi-objective \ac{NAS}, optimizing both accuracy and \acp{FLOP}. Subsequently, a
 compound scaling method was applied to this baseline, uniformly scaling depth,
 width, and resolution via a \emph{compound coefficient} $\phi$. This approach
 yielded a series of progressively larger EfficientNet models, whose performances
-are show in \ref{fig:sota:efficientnet_perfs}.\\
+are shown in \ref{fig:sota:efficientnet_perfs}.\\\
 
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.70\textwidth]{chapter_sota/assets/efficientnet_perfs_overview.pdf}   
     \caption{ImageNet top-1 accuracy vs model size (in millions of parameters).
-    The EfficientNet familly of models significantly outperforms other models of
-    similar size, optained either by \ac{NAS} or manual design. This graph is
+    The EfficientNet family of models significantly outperforms other models of
+    similar size, obtained either by \ac{NAS} or manual design. This graph is
     taken from \cite{DBLP:conf/icml/TanL19}.
     }
     \label{fig:sota:efficientnet_perfs}
@@ -352,7 +352,7 @@ range of search strategies have been proposed. Evolutionary algorithms
 mutation, crossover, and selection to explore the search space. Despite their
 potential to find high-quality solutions, these methods often require
 substantial computational resources due to the large number of evaluations
-needed. Reinforcement Learning based methods \cite{DBLP:conf/iclr/ZophL17}
+needed. Reinforcement Learning-based methods \cite{DBLP:conf/iclr/ZophL17}
 employ a policy network to generate architectures and a reward signal, typically
 validation accuracy, to guide the search. While reinforcement learning methods
 can effectively navigate large search spaces, their success heavily depends on
@@ -360,30 +360,31 @@ the quality of the reward signal. Gradient-based methods like
 \cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20} make the search space
 continuous and use gradient descent for optimization, which enables efficient
 exploration of the search space but requires careful regularization to prevent
-overfitting. \cite{DBLP:conf/nips/BergstraBBK11} uses bayesian optimization to
+overfitting. \cite{DBLP:conf/nips/BergstraBBK11} uses Bayesian optimization to
 build a probabilistic model of the objective function and uses it to select
 promising architectures, balancing exploitation and exploration. This method can
 be sample-efficient but might struggle with high-dimensional spaces. These
 diverse strategies offer multiple paths to navigate the complex landscape of
 architecture search, each with its unique trade-offs between efficiency,
-effectiveness, and computational demands.
+effectiveness, and computational demands.\\
 
 \section{Knowledge Distillation}
 
 \acf{KD} is a method that aims to transfer the knowledge of a large, complex and
-accurate network refered to as the \emph{teacher} to a smaller, more efficient
+accurate network referred to as the \emph{teacher} to a smaller, more efficient
 one called the \emph{student}. The student is trained with a combination of the
-main task loss as well as a suplementary supervision signal which is derived
+main task loss as well as a supplementary supervision signal which is derived
 from the feature maps of the teacher network at various depths.\\
 
-Methods in this paradigm are mostly based on the seminal work of \ac{KD}
-\cite{DBLP:journals/corr/HintonVD15}. The latter seeks to train simple networks
-yielding better performances compared to those trained from scratch. \ac{KD}
-relies on teacher and student networks, where the logits of the former are used
-as an additional supervision signal for the latter. When trained separately, the
-student network can only rely on classification labels in order to learn its own
-data representation while \ac{KD} relies on the logits of the teacher network
-which provide more insight about the hidden representations.\\
+Methods in this paradigm are mostly based on the seminal work of
+\citeauthor{DBLP:journals/corr/HintonVD15} \cite{DBLP:journals/corr/HintonVD15}.
+The latter seeks to train simple networks with \acl{KD} yielding better
+performances compared to those trained from scratch. \ac{KD} relies on teacher
+and student networks, where the logits of the former are used as an additional
+supervision signal for the latter. When trained separately, the student network
+can only rely on classification labels in order to learn its own data
+representation while \ac{KD} relies on the logits of the teacher network which
+provide more insight about the hidden representations.\\
 
 Inspired by \ac{KD}, \cite{DBLP:journals/corr/RomeroBKCGB14} introduced FitNet,
 a two-stage training algorithm, where an intermediate layer of the teacher is
@@ -393,8 +394,8 @@ chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
 for the student network.} for an intermediate layer of the student. First, the
 student is trained up to its selected layer to mimic the hint feature map. Then,
 the whole student network is trained with standard \ac{KD} against the whole
-teacher. At the first step, a regressor is needed in order to adapt the
-dimensions of feature map, that may differ from the teacher to the student
+teacher. In the first step, a regressor is needed in order to adapt the
+dimensions of the feature map, which may differ from the teacher to the student
 networks, as illustrated in \cref{fig:sota:kd_frameworks}.
 \citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map matching
 utilised by FitNets is overly restrictive. Drawing inspiration from the
@@ -426,27 +427,31 @@ attention map generated by squashing the feature maps to a 2D map allowing for a
 smaller 2D regressor to match attention map dimensions. Note that the
 aforementioned knowledge transfer methods require teacher-student pairs and
 assume that teachers are large trained models. \cite{DBLP:conf/cvpr/ZhangXHL18}
-relax this assumption by proposing Deep Mutual Learning which allows for a pool
+relax this assumption by proposing Deep Mutual Learning, which enables a pool
 of networks of different architectures to learn together, provided that they
-have the same logit dimensions, and none of the models in the pool needs a
-pretraining step. The uncertainty of each model is distilled to each others
+have the same logit dimensions, and none of the models in the pool requires a
+pretraining step. The uncertainty of each model is distilled to each other,
 which creates additional knowledge.\\
 
-In all the previous methods, the quality of knowledge distillation is heavily
-impacted by the size difference between the student and the teacher.
+In all the aforementioned methodos, the efficacy of knowledge distillation, and
+consequently, the final performance of the student network, is significantly
+influenced by the disparity in size between the student and teacher networks.
+When this size discrepancy is excessive, the student network may encounter
+difficulties in adequately aligning with the teacher logits, thus preventing
+optimal knowledge distillation. In order to tackle this issue,
 \citeauthor{DBLP:conf/aaai/MirzadehFLLMG20} introduced the concept of
-\emph{Teacher Assistant}, networks of intermediary dimensions that aim at
+\emph{Teacher Assistant}: networks of intermediary dimensions that aim at
 bridging the gap between student and teacher
 \cite{DBLP:conf/aaai/MirzadehFLLMG20}. Knowledge is first distilled from the
 teacher to the teacher assistant, and then from the teacher assistant to the
-student, allowing for better performances compared to straightforward \ac{KD}.\\
+student, resulting in improved performances compared to straightforward \ac{KD}.\\
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{chapter_sota/assets/variational_info_distillation.pdf}
     \caption{Conceptual scheme of \cite{DBLP:conf/cvpr/AhnHDLD19}. The student
     network efficiently learns the main task while retaining high mutual information
-    with the teacher network. The mutual information is maximized by learning to
+    with the teacher network. The mutual information is maximised by learning to
     estimate the distribution of the activations in the teacher network, provoking
     the transfer of knowledge. Adapted from the original
     scheme found in \cite{DBLP:conf/cvpr/AhnHDLD19}}
@@ -458,20 +463,21 @@ been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced Variational
 Information Distillation, which indirectly maximises the mutual information
 between the student and the teacher. This is done by using \emph{variational
 information maximisation} \cite{barber2004algorithm} to maximise a variational
-lower bound of the mutual information, since maximising the latter directly is
-intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise, \cite{DBLP:conf/eccv/PassalisT18} proposed a
-Probabilitic Knowledge Transfer method that do not match logits or feature maps,
-but rather represents the latter as a probability distribution and minimises
-divergence between the two (see \cref{fig:sota:pkt_scheme}).\\
+lower bound of the mutual information, since directly maximising the latter is
+intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise,
+\cite{DBLP:conf/eccv/PassalisT18} proposed a Probabilistic Knowledge Transfer
+method that does not match logits or feature maps, but rather represents the
+latter as a probability distribution and minimises divergence between the two
+(see \cref{fig:sota:pkt_scheme}).\\
 
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
-    \caption{ Conceptual scheme of the
+    \caption{Conceptual scheme of the
     Probabilistic Knowledge Transfer method. Both the student and the teacher
     feature maps are modelled using probability distributions. The divergence of the
-    latters is minimised in order to transfer knowledge from the teacher to the
+    latter is minimised in order to transfer knowledge from the teacher to the
     student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
     \label{fig:sota:pkt_scheme}
 \end{figure}
