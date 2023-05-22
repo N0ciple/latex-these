@@ -46,26 +46,26 @@ in a sparser and more computationally efficient model.\\
 
 % region: depthwise separable convolutions
 
-One of the early approaches to achieving efficiency in neural network
+One of the initial strategies towards achieving efficiency in neural network
 architectures is the use of depthwise separable convolutions. This technique,
-employed in \cite{howard2017mobilenets} and \cite{DBLP:conf/icml/TanL19},
-separates the standard convolution operation into two separate steps: a
+utilised in \cite{howard2017mobilenets} and \cite{DBLP:conf/icml/TanL19},
+separates the standard convolution operation into two distinct steps: a
 depthwise convolution and a pointwise convolution (see
 \cref{fig:sota:depthwise_conv_vs_standard_conv}). By decomposing the operations
-in this manner, the computational complexity is significantly reduced while
-still retaining the ability to capture spatial and channel-wise information.
-Consider a $C_\text{in}$-channels input feature map of arbitrary width and
-height and $C_\text{out}$ convolution kernels of size $k\times k \times
-C_\text{in}$. A standard convolution algorithm will need $C_\text{in} \times
-C_\text{out} \times k \times k$ \ac{MAC} operations to produce a $1 \times 1
-\times C_\text{out}$ element of the output feature map. In contrast, a depthwise
-separable convolution algorithm will first apply a $k\times k \times 1$
-convolution kernel to the $C_\text{in}$ channels and then perform $C_\text{out}$
-pointwise convolutions with $1\times 1 \times C_\text{in}$ kernels to produce
-the same $1\times 1 \times C_\text{out}$ element. This reduces the number of parameters to
-$C_\text{in} \times (C_\text{out} + k \times k)$, essentially reducing the
-number of computations needed to produce a $1 \times 1 \times C_\text{out}$
-element by a factor of\\
+in this manner, the computational complexity is markedly reduced while still
+retaining the ability to capture spatial and channel-wise information. Consider
+an input feature map with $C_\text{in}$ channels of arbitrary width and height
+and $C_\text{out}$ convolution kernels of size $k\times k \times C_\text{in}$. A
+standard convolution algorithm will need $C_\text{in} \times C_\text{out} \times
+k \times k$ \ac{MAC} operations to produce a $1 \times 1 \times C_\text{out}$
+element of the output feature map. In contrast, a depthwise separable
+convolution algorithm will first apply a $k\times k \times 1$ convolution kernel
+to the $C_\text{in}$ channels and then perform $C_\text{out}$ pointwise
+convolutions with $1\times 1 \times C_\text{in}$ kernels to produce the same
+$1\times 1 \times C_\text{out}$ element. This effectively reduces the number of
+parameters to $C_\text{in} \times (C_\text{out} + k \times k)$, essentially
+reducing the number of computations required to produce a $1 \times 1 \times
+C_\text{out}$ element by a factor of\\
 
 $$\displaystyle\frac{C_\text{out}\times k \times k}{C_\text{out} + k \times k}.$$\\
 
@@ -80,7 +80,7 @@ $$\displaystyle\frac{C_\text{out}\times k \times k}{C_\text{out} + k \times k}.$
     \caption{Illustration schemes of the standard and depthwise separable
     convolution. The standard convolution uses $C_\text{out}$ kernels of size
     $k\times k \times C_\text{int}$. The depthwise separable convolution is
-    split into two steps: \emph{(i)}   a convolution with $C_\text{in}$ kernels
+    split into two steps: \emph{(i)} a convolution with $C_\text{in}$ kernels
     of size $k \times k$ and \emph{(ii)} a convolution with $C_\text{out}$
     kernels of size $1\times 1 \times C_\text{int}$.
     Best viewed in colours.}
