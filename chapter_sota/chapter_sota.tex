@@ -240,15 +240,15 @@ feature maps, scaling or "exciting" them by these weights.\\
 % endregion: mobilenetv3
 
 % region: transition paragraph
-The architectures we have just reviewed hinge around specific key techniques
-like depthwise separable convolutions, fire modules, channel shuffling, and
-\ac{SE} modules, among others. These architectures, while
-highly efficient, are manually crafted and necessitate a significant degree of
-human expertise, intuition, and time to develop, optimise, and fine-tune. The
-manual design of these architectures often relies on a deep understanding of the
-tasks at hand, the data they will process, and the constraints of the
-environment in which they will operate.However, the process of designing these efficient architectures can be
-automated, which is the subject of the next section.\\
+The architectures we have just reviewed revolve around specific key techniques
+such as depthwise separable convolutions, fire modules, channel shuffling, and
+\ac{SE} modules, among others. These architectures, while highly efficient, are
+manually crafted and require a significant degree of human expertise, intuition,
+and time to develop, optimise, and fine-tune. The manual design of these
+architectures often relies on a deep understanding of the tasks at hand, the
+data they will process, and the constraints of the environment in which they
+will operate. However, the process of designing these efficient architectures
+can be automated, which is the subject of the next section.\\
 
 
 \begin{figure}[htbp]
@@ -257,7 +257,7 @@ automated, which is the subject of the next section.\\
     \caption{Illustration scheme of the \acf{SE} module. The original feature
     map is \emph{squeezed} into a channel descriptor through global average
     pooling. This descriptor is then used to learn the interdependencies between
-    the channel through two fully connected layers. The output is then
+    the channels through two fully connected layers. The output is then
     multiplied layerwise with the original feature map (\emph{excitation}). Best
     viewed in colours.}
     \label{fig:sota:se_module}
