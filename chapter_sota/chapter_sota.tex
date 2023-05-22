@@ -485,37 +485,36 @@ latter as a probability distribution and minimises divergence between the two
 \section{Optimising Convolution Computations}
 \label{sec:sota:fast_convolutions}
 
-Aside from reducing the number of weight, it is also possible to reduce the
+Aside from reducing the number of weights, it is also possible to reduce the
 computational complexity of convolutions by using alternative algorithms to
 perform the convolution operation.\\
 
 The most popular ones rely on the \ac{FFT}
 \cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
-and levrage the Convolution Theorem. The Convolution Theorem states that the
+and leverage the Convolution Theorem. The Convolution Theorem states that the
 convolution of two signals in the source domain is the product of the two
 signals in the Fourier domain. This allows for a faster computation of the 2D
 convolution by using the \ac{FFT} to compute the convolution in the frequency
 domain \cite{oppenheim1997signals}.\\
 
 
-Other algorithm focuses on optimising matrix operations, such as the Strassen
-algorithm \cite{strassen1969gaussian}, used in \cite{DBLP:conf/icann/CongX14},
-is a fast method for matrix multiplication that reduces the computational
+Other algorithms focus on optimising matrix operations, such as the Strassen
+algorithm \cite{strassen1969gaussian}, used in \cite{DBLP:conf/icann/CongX14}.
+It is a fast method for matrix multiplication that reduces the computational
 complexity from the standard $\mathcal{O}(n^{3})$ to approximately
 $\mathcal{O}(n^{2.807})$ by recursively dividing the matrices of size $n$ into 4
-submatrices of size $\frac{n}{2} \times \frac{n}{2}$ and reorganizing and
-combining these multiplications to result to perform only 7 instead of 8 matrix
-multiplications. The Strassen algorithm has later been refined by
-\citeauthor{coppersmith1987matrix}, who introduced the Coppersmith-Winograd
-algorithm \cite{coppersmith1987matrix}. The latter brings down the complexity to
-$\mathcal{O}(n^{2.376})$. This algorithm is used in various works, mostly
-targeted towards a specific \ac{FPGA} architecture
-\cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
+submatrices of size $\frac{n}{2} \times \frac{n}{2}$, reorganising and combining
+these multiplications to perform only 7 instead of 8 matrix multiplications. The
+Strassen algorithm has later been refined by \citeauthor{coppersmith1987matrix},
+who introduced the Coppersmith-Winograd algorithm \cite{coppersmith1987matrix}.
+The latter brings down the complexity to $\mathcal{O}(n^{2.376})$. This
+algorithm is used in various works, mostly targeted towards a specific \ac{FPGA}
+architecture \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
 
 
-Another technique for optimizing convolutions is the use of Toeplitz matrices. A
+Another technique for optimising convolutions is the use of Toeplitz matrices. A
 Toeplitz matrix, or diagonal-constant matrix, has the unique characteristic of
-each descending diagonal from left to right being constant. $T$ is a example of
+each descending diagonal from left to right being constant. $T$ is an example of
 a Toeplitz matrix. This property is particularly useful for convolutions, as
 they can be expressed as a multiplication by a Toeplitz matrix
 \cite{gray2006toeplitz}. This algorithm has been used in
@@ -537,9 +536,9 @@ g & f & e & a \\
 \right)
 $$
 
-All the techniques presented in this section allows to speed up the computation
-of convolution operations, however, they requires relatively large matrices to
-be truly efficient. They are not widely used with the current architectures
+All the techniques presented in this section allow speeding up the computation
+of convolution operations, however, they require relatively large matrices to be
+truly efficient. They are not widely used with the current architectures
 \cite{DBLP:conf/cvpr/HeZRS16,huang2017densely,liu2018efficient} since they use
 small $3 \times 3$ kernels which would not benefit directly from these
 algorithms.\\
