@@ -122,69 +122,68 @@ computationally demanding.\\
 
 % region: shufflenet
 
-Pushing further the concept of depthwises separable convolutions,
+Pushing the concept of depthwise separable convolutions further,
 \cite{ZhangShuffleNet} introduces pointwise group convolutions and channel
 shuffle operations to enhance efficiency while maintaining accuracy. Pointwise
 group convolutions were initially introduced in
-\cite{DBLP:conf/nips/KrizhevskySH12}, although their original purpose was not
-for compression. Instead, group convolutions in
-\cite{DBLP:conf/nips/KrizhevskySH12} were used to enable distributed training
-across multiple \acp{GPU} with limited memory. However, ShuffleNet
-\cite{ZhangShuffleNet} leverages this concept for network efficiency by dividing
-the input channels into groups and performing convolutions on each group
-independently. This reduces the number of operations and computational cost
-compared to traditional convolutions. To counteract the potential loss of
-expressive power caused by the separation of channels into groups, ShuffleNet
-incorporates \emph{channel shuffle operations} as shown in
-\cref{fig:sota:shuffle_net}. This technique allows for information exchange
-between groups, effectively maintaining accuracy by ensuring that different
-groups can capture diverse features in the input.\\
+\cite{DBLP:conf/nips/KrizhevskySH12}, though their original purpose was not for
+compression. Instead, group convolutions in \cite{DBLP:conf/nips/KrizhevskySH12}
+were used to enable distributed training across multiple \acp{GPU} with limited
+memory. However, ShuffleNet \cite{ZhangShuffleNet} leverages this concept for
+network efficiency by dividing the input channels into groups and performing
+convolutions on each group independently. This approach reduces the number of
+operations and computational cost compared to traditional convolutions. To
+counteract the potential loss of expressive power caused by the separation of
+channels into groups, ShuffleNet incorporates \emph{channel shuffle operations}
+as shown in \cref{fig:sota:shuffle_net}. This technique allows for information
+exchange between groups, effectively maintaining accuracy by ensuring that
+different groups can capture diverse features in the input.\\
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.70\textwidth]{chapter_sota/assets/group_conv_and_channel_shuffling.pdf}
-    \caption{Illustration scheme of groupped convolution with channel shuffling.
+    \caption{Illustration scheme of grouped convolution with channel shuffling.
     Each filter only acts on a subset of the input tensor (here represented by a
     matching colour). The channels of the yielded tensor are shuffled to ensure
-    the subsequent groups can get information all the previous groups. Best
+    the subsequent groups can access information from all the previous groups. Best
     viewed in colours.}
     \label{fig:sota:shuffle_net}
 \end{figure}
 
-Following ShuffleNet, CondenseNet was introduced in
-\cite{huang2018condensenet}, incorporating learned group convolutions to further
-improve efficiency. Unlike the predefined group convolutions in ShuffleNet,
-CondenseNet learns which channels should be grouped together, allowing the
-network to adapt its structure for a specific task. This results in better
-utilisation of network capacity and reduces redundancy. CondenseNet levrages the
-DenseNet architecture \cite{huang2017densely} to further improve performances.
-Thanks to the densly connected architecture, features discarded in any layer may
-still be recovered in the subsequent ones.\\
+Following ShuffleNet, CondenseNet was introduced in \cite{huang2018condensenet},
+incorporating learned group convolutions to further enhance efficiency. Unlike
+the predefined group convolutions in ShuffleNet, CondenseNet learns which
+channels should be grouped together, enabling the network to adapt its structure
+for a specific task. This results in better utilisation of network capacity and
+reduces redundancy. CondenseNet leverages the DenseNet architecture
+\cite{huang2017densely} to further improve performance. Thanks to the densely
+connected architecture, features discarded in any layer can still be recovered
+in subsequent ones.\\
 
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.3\textwidth]{chapter_sota/assets/channel_split.pdf}
     \caption{Illustration scheme of the path taken by the feature maps after the
-    channel split block. Adapted from the original scheme found in \cite{MaShuffleNetV2}}
+    channel split block. Adapted from the original scheme found in \cite{MaShuffleNetV2}.}
     \label{fig:sota:channel_split}
 \end{figure}
 
 Building on the success of ShuffleNet, ShuffleNetV2 was introduced in
-\cite{MaShuffleNetV2} with a focus on improving network efficiency with the
-combination of the strided convolution and channel split. Strided convolution
-helps reduce the spatial dimensions of feature maps, which in turn reduces the
-computation cost. Channel split technique efficiently processes the input
-feature maps while maintaining the expressive power of the architecture. Channel
-Split works by dividing the input feature maps into two equal parts. One part is
-passed through the main branch of the ShuffleNet unit, while the other part goes
+\cite{MaShuffleNetV2}, focusing on enhancing network efficiency through the
+combination of strided convolution and channel split. Strided convolution helps
+reduce the spatial dimensions of feature maps, thereby reducing the computation
+cost. The Channel Split technique efficiently processes the input feature maps
+while maintaining the expressive power of the architecture. Channel Split works
+by dividing the input feature maps into two equal parts. One part is passed
+through the main branch of the ShuffleNet unit, while the other part is sent
 through the identity branch, which leaves its input unchanged. In the main
 branch, a sequence of pointwise and $3\times 3$ convolutions are performed.
 After both the main branch and the identity branch complete their respective
 operations, the two parts are concatenated along the channel dimension and the
 channels are shuffled. Finally, the output feature maps are passed to the next
 ShuffleNet unit in the network. This process is represented in
-\cref{fig:sota:channel_split}. This approach balances the computational
-efficiency and the expressive capacity of the model.\\
+\cref{fig:sota:channel_split}. This approach balances computational efficiency
+with the expressive capacity of the model.\\
 % endregion: shufflenet
 
 % region: mobilenetv2
