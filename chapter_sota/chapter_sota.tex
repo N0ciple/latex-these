@@ -98,12 +98,13 @@ diminishing the number of input channels supplied to the following conventional
 $k\times k$ convolutions and \emph{(ii)} substituting a portion of the
 resource-intensive $k\times k$ convolutions with pointwise convolutions, which
 possess $k^2$ times fewer parameters. The initial strategy is applied within the
-\emph{Squeeze Layer}, which serves to decrease the number of input channels
-delivered to the \emph{Expand Layer}, subsequently reducing the parameter count
-in the \emph{Expand Layer} kernels. The second strategy is implemented in the
-\emph{Expand Layer}, where some $3\times3$ convolutions are replaced with
-$1\times1$ variants. Although the $1\times1$ convolutions capture less spatial
-information, they are significantly less computationally demanding.\\
+\emph{Squeeze Layer} of the \emph{fire module}, which functions to decrease the
+number of input channels delivered to the \emph{Expand Layer}, subsequently
+reducing the parameter count in the \emph{Expand Layer} kernels. The second
+strategy is implemented in the \emph{Expand Layer}, where some $3\times3$
+convolutions are replaced with $1\times1$ variants. Even though the $1\times1$
+convolutions capture less spatial information, they are significantly less
+computationally demanding.\\
 
 \begin{figure}[htbp]
     \centering
