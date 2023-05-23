@@ -42,7 +42,7 @@ in a sparser and more computationally efficient model.\\
 
 % endregion: intro
 
-\section{Efficient Architectures Design}
+\section{Building Blocks for Efficient Architecture Design}
 
 % region: depthwise separable convolutions
 
@@ -265,7 +265,8 @@ can be automated, which is the subject of the next section.\\
 
 % endregion: transition paragraph
 
-\section{Neural Architecture Search}\label{sec:sota:nas} 
+\section{Automatic Architecture Design Through Neural Architecture Search}
+\label{sec:sota:nas} 
 
 \acf{NAS} is a method that automates the discovery of neural network
 architectures, potentially leading to more compact, efficient designs and
@@ -368,7 +369,7 @@ diverse strategies offer multiple paths to navigate the complex landscape of
 architecture search, each with its unique trade-offs between efficiency,
 effectiveness, and computational demands.\\
 
-\section{Knowledge Distillation}
+\section{Improved Lightweight Model Training with Knowledge Distillation}
 
 \acf{KD} is a method that aims to transfer the knowledge of a large, complex and
 accurate network referred to as the \emph{teacher} to a smaller, more efficient
@@ -482,7 +483,7 @@ latter as a probability distribution and minimises divergence between the two
     \label{fig:sota:pkt_scheme}
 \end{figure}
 
-\section{Optimising Convolution Computations}
+\section{Alternative Algorithms for Reducing Computational Complexity of Convolutions}
 \label{sec:sota:fast_convolutions}
 
 Aside from reducing the number of weights, it is also possible to reduce the
@@ -551,3 +552,5 @@ bound to the use of relatively large matrices. Current architectures
 use small $3 \times 3$ kernels, rendering the direct application of these
 acceleration techniques less beneficial. As a consequence, these techniques have
 not gained widespread adoption in contemporary deep learning architectures.
+
+\section{Weight Operations}
