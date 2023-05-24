@@ -4,21 +4,10 @@
 
 \localtableofcontents
 
-\section{Introduction}
-\section{Industrial Context}
-    \subsection{Smart Home Devices}
-    \subsection{Operaitonal Constraint}
-\section{Deep Learning overview}
-\section{Teaching Paradigm}
-\section{Architecture Design}
-    \subsection{Efficient Architecture}
-    \subsection{Neural Architecture Search}
-\section{Architecture redfinement}
-\subsection{Weight Operations}
-\subsection{Pruning}
+\section{introduction}
+% TODO: dire que l'on va faire un petite overview des réseaux de neurones
+% TODO: relier avec ce que l'on a dit avant (context netatmo)
 
-
-\section*{Introduction}
 % region: intro
 The development of neural networks and the enhancement of their performances has
 been accompanied by a significant growth of their size, particularly in the
@@ -27,7 +16,11 @@ networks has given rise to various applications, particularly embedded ones,
 whose resources are highly constrained in terms of computing power, energy
 consumption or memory footprint. Alongside the increase in the size of these
 networks, compression techniques have been devised, in order to enable the use
-of these algorithms in the said applications. This chapter focuses on these
+of these algorithms in the said applications.
+
+% TODO: adapter la suite à ce qui a été fait.
+
+This chapter focuses on these
 techniques and presents state-of-the-art neural network compression methods,
 predominantly based on reducing the number of weights. First, we will explore
 ad-hoc architectures, referred to here as \emph{Efficient Architectures}. These
@@ -55,8 +48,354 @@ in a sparser and more computationally efficient model.\\
 
 % endregion: intro
 
-\section*{Building Blocks for Efficient Architecture Design}
+\section{Deep Learning overview}
 
+Deep learning is a subfield of machine learning that focuses on the study of
+\acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
+roots in \acp{ANN} that aim to learn a data representation from unstructured
+data such as raw images, text or audio, in and end-to-end fashion. \acp{ANN}
+were initially conceptualised based on the understanding of biological neural
+networks present in the brain \cite{mcculloch1943logical,hebb2005organization}.
+\citeauthor{rosenblatt1958perceptron} proposed in
+\cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
+\emph{perceptron}, which was capable of learning a linear decision boundary. The
+perceptron model was later extended to multiple layers of neurons, giving rise
+the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A \acl{MLP}
+is a type of artificial neural network that extends the concept of a
+single-layer perceptron by including one or more hidden layers of neurons, with
+each layer fully connected to the next, allowing the model to learn and
+represent more complex, non-linear relationships in the input data. The term
+\emph{deep} in the context of \acp{DNN} refers to the staking of multiple and
+numerous layers within a neural network. A \ac{DNN} consist of layers, each
+layer is an operation that takes information from the previous layers, process
+it and then passes it through an activation function
+\cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
+introduce non linearity, and finally this output is send to the next layer.
+Among the most fundamental types of these layers are \emph{Convolutional} and
+\emph{Dense} (or fully connected) layers. \\
+
+\begin{figure}
+    \centering
+    \subfloat[Convolutional Layer\label{fig:sota:conv_layer}]{
+        \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
+        \subfloat[Dense Layer\label{fig:sota:dense_layer}]{
+        \includegraphics[width=0.49\textwidth]{chapter_sota/assets/dense_layer.pdf}}
+        \caption{Conceptual representation of a convolutional layer and a dense
+        layer. The convolutional layer (\cref{fig:sota:conv_layer}) takes a
+        multi-channel input and produces a multi-channel output. Each coefficient of
+        the output is computed by applying a convolution operation at a
+        corresponding location in the input. The dense layer
+        (\cref{fig:sota:dense_layer}) takes a vector input and produces a vector
+        output. Each connection is represented by a weight in the weight matrix.}
+    \label{fig:sota:layers}
+    \end{figure}
+
+
+Dense layers, often referred to as fully connected layers, are characterised by
+neurons that connect to every neuron in the preceding layer. This characteristic
+is central to \ac{MLP} networks, where these dense layers are stacked together.
+Convolutional layers are typically used for image analysis tasks
+\cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
+are convoluted with the input data. They are used for detecting edges, textures,
+and patterns, and are often used as feature extractor. Typical neural network
+targeted towards image processing are composed convolutional layers and thus
+named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
+their output are usually fed into a fully-connected layer for further processing
+\cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
+Conceptual representations of these layers are shown in \cref{fig:sota:layers}
+and a typical \ac{CNN} architecture is shown in \cref{fig:sota:lenet5,fig:sota:vgg16}.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.70\textwidth]{chapter_sota/assets/lenet.png}
+    \caption{Architecture of LeNet-5, a \acl{CNN} used for handwritten digit
+    recognition. Image taken from \cite{DBLP:journals/pieee/LeCunBBH98}}
+    \label{fig:sota:lenet5}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/vgg16.png}
+    \caption{Architecture of the VGG16 network introduced in
+    \cite{DBLP:journals/corr/SimonyanZ14a}. Image taken from
+    \cite{ferguson2017automatic}}
+    \label{fig:sota:vgg16}
+\end{figure}
+
+
+The process of training a neural network involves adjusting the weights of the
+network to minimize a loss function. The loss function is a measure of the error
+between the predicted output of the network and the ground truth. Since neural
+networks are differentiables, the weights can be adjusted using gradient-based
+methods. The most common method is \acf{SGD}, derived from the Robbins–Monro
+algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient of the loss
+function is computed for a random subset of the data (a \emph{batch} or
+\emph{mini-batch}), and the weights are shifted in the direction that decreases
+the loss function. This direction is computed via the backpropagation algorithm
+\cite{rumelhart1986learning} which calculates the gradient of the loss with
+respect to each weight using the chain rule. \acl{SGD} is a prevalent method for
+loss function optimisation in neural networks, however, numerous other methods also
+exist. These include momentum-based strategies \cite{sutskever2013importance}, adaptive
+learning rate approaches \cite{zeiler2012adadelta} and moment estimation
+techniques \cite{kingma2014adam}.\\
+
+
+\section{Neural Networks Size and Achitecture Evolution}
+
+% TODO: ajouter les bonnes refs
+% TODO: relecture
+% TODO: ajouter un graph de l'évolution de la taille des réseaux
+
+The evolution of neural networks is characterized by a consistent increase in
+their size and performance, alongside the introduction of new architectural
+modifications to address limitations of their predecessors (see
+\cref{fig:sota:net_sizes}). In 1998, LeNet-5 was developed for digit recognition
+\cite{DBLP:journals/pieee/LeCunBBH98}, constituting a relatively simple network
+with seven layers. Its size was significantly small compared to the contemporary
+models. With the introduction of AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in
+2012, the network size considerably grew, comprising more layers and neurons to
+handle more complex tasks like large-scale image recognition. AlexNet tackled
+the overfitting issue in LeNet-5 with the use of data augmentation and dropout
+techniques.\\
+
+
+The next advancement was the VGG networks family
+\cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
+which emphasized the importance of depth in neural networks. With up to 19
+layers, VGG expanded on AlexNet's deep architecture, but the increased depth led
+to vanishing gradient problems. In the same year, Google's Inception (or
+GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced, addressing
+this issue with its novel inception modules, which allowed the network to learn
+at varying scales and increased computational efficiency, without overly
+increasing the network size.\\
+
+%In 2015, 
+Later, the ResNet models family was proposed in \cite{DBLP:conf/cvpr/HeZRS16},
+which effectively tackled the vanishing gradient problem by introducing skip (or
+shortcut) connections, allowing gradients to backpropagate directly through
+several layers. These shortcut connections also allowed the network to grow in
+depth up to 152 layers without a significant increase in computational cost.
+However, a challenge remained with the constant need for careful design to
+manage feature-map sizes.\\
+
+In response, DenseNet was proposed.% in 2017, 
+It connects each layer to every other layer in a feed-forward fashion. By
+reinforcing the propagation of features and gradients through the network,
+DenseNet alleviated the vanishing-gradient problem and further improved upon the
+network's ability to pass on information from earlier layers to later ones.
+Thus, through these chronological advancements, neural networks not only grew in
+size but also improved in performance, becoming more efficient and capable of
+handling more complex tasks.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/network_sizes_normal.pdf}
+    \caption{Networks size comparison. The \emph{x-axis} represents the number
+    of \acp{FLOP} required to process a single image. The \emph{y-axis}
+    represents the Top-1 accuracy on the ImageNet \cite{deng2009imagenet}
+    dataset, and the size of the circles represents the number of parameters in
+    the network. Numbers are taken from \cite{pytorch_vision}}
+    \label{fig:sota:net_sizes}
+\end{figure}
+
+\section{Fast convolutions}
+\label{sec:sota:fast_convolutions}
+
+
+Neural networks, utilise two fundamental mathematical operations: convolution
+and matrix multiplication. However, performing these operations can be
+computationally demanding, particularly with large and complexe networks. This
+can lead to significant processing times, posing a challenge for real-time or
+resource-limited applications. To mitigate this, some research efforts have been
+focused on developing techniques to speed up these operations. These strategies
+range from optimizing the underlying algorithms to leveraging hardware
+acceleration, with the objective of enhancing the speed and efficiency of neural
+network computations.\\
+
+
+The most popularalgorithm accelerating convolution operations rely on the
+\ac{FFT}
+\cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
+and leverage the Convolution Theorem. The Convolution Theorem states that the
+convolution of two signals in the source domain is the product of the two
+signals in the Fourier domain. This allows for a faster computation of the 2D
+convolution by using the \ac{FFT} to compute the convolution in the frequency
+domain \cite{oppenheim1997signals}.\\
+
+
+Other algorithms focus on optimising matrix operations, such as the Strassen
+algorithm \cite{strassen1969gaussian}, used in \cite{DBLP:conf/icann/CongX14}.
+It is a fast method for matrix multiplication that reduces the computational
+complexity from the standard $\mathcal{O}(n^{3})$ to approximately
+$\mathcal{O}(n^{2.807})$ by recursively dividing the matrices of size $n$ into 4
+submatrices of size $\frac{n}{2} \times \frac{n}{2}$, reorganising and combining
+these multiplications to perform only 7 instead of 8 matrix multiplications. The
+Strassen algorithm has later been refined by \citeauthor{coppersmith1987matrix},
+who introduced the Coppersmith-Winograd algorithm \cite{coppersmith1987matrix}.
+The latter brings down the complexity to $\mathcal{O}(n^{2.376})$. This
+algorithm is used in various works, mostly targeted towards a specific \ac{FPGA}
+architecture \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
+
+
+Another technique for optimising convolutions is the use of Toeplitz matrices. A
+Toeplitz matrix, or diagonal-constant matrix, has the unique characteristic of
+each descending diagonal from left to right being constant. $T$ is an example of
+a Toeplitz matrix. This property is particularly useful for convolutions, as
+they can be expressed as a multiplication by a Toeplitz matrix
+\cite{gray2006toeplitz}. This algorithm has been used in
+\cite{liao2019compressing}, with a focus on \ac{FPGA} architectures. Note that
+the representation of a convolution as a product with a Toeplitz matrix can
+further be accelerated by using the aforementioned optimisations to the matrix
+multiplication algorithm.\\
+
+$$
+T = 
+\left(
+\begin{array}{cccc}
+a & b & c & d \\
+e & a & b & c \\
+f & e & a & b \\
+g & f & e & a \\
+\end{array}
+\right)
+$$
+
+The algorithms presented in this section offer significant acceleration in the
+computation of convolution operations. However, their optimal efficiency is
+bound to the use of relatively large matrices. Current architectures
+\cite{DBLP:conf/cvpr/HeZRS16, huang2017densely, liu2018efficient} predominantly
+use small $3 \times 3$ kernels, rendering the direct application of these
+acceleration techniques less beneficial. As a consequence, these techniques have
+not gained widespread adoption in contemporary deep learning architectures.
+
+
+
+% TODO: Paragraphe sur l'entrainement Stochastique
+
+% TODO: Paragraghe pour expliquer que l'on peut accélérer 
+
+
+
+
+\section{Teaching Paradigm}
+
+
+\acf{KD} is a method that aims to transfer the knowledge of a large, complex and
+accurate network referred to as the \emph{teacher} to a smaller, more efficient
+one called the \emph{student}. The student is trained with a combination of the
+main task loss as well as a supplementary supervision signal which is derived
+from the feature maps of the teacher network at various depths.\\
+
+Methods in this paradigm are mostly based on the seminal work of
+\citeauthor{DBLP:journals/corr/HintonVD15} \cite{DBLP:journals/corr/HintonVD15}.
+The latter seeks to train simple networks with \acl{KD} yielding better
+performances compared to those trained from scratch. \ac{KD} relies on teacher
+and student networks, where the logits of the former are used as an additional
+supervision signal for the latter. When trained separately, the student network
+can only rely on classification labels in order to learn its own data
+representation while \ac{KD} relies on the logits of the teacher network which
+provide more insight about the hidden representations.\\
+
+Inspired by \ac{KD}, \cite{DBLP:journals/corr/RomeroBKCGB14} introduced FitNet,
+a two-stage training algorithm, where an intermediate layer of the teacher is
+chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
+\citeauthor{DBLP:journals/corr/RomeroBKCGB14}
+\cite{DBLP:journals/corr/RomeroBKCGB14} to denote a feature map used as a target
+for the student network.} for an intermediate layer of the student. First, the
+student is trained up to its selected layer to mimic the hint feature map. Then,
+the whole student network is trained with standard \ac{KD} against the whole
+teacher. In the first step, a regressor is needed in order to adapt the
+dimensions of the feature map, which may differ from the teacher to the student
+networks, as illustrated in \cref{fig:sota:kd_frameworks}.
+\citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map matching
+utilised by FitNets is overly restrictive. Drawing inspiration from the
+techniques used in \cite{DBLP:journals/corr/GatysEB15a} for style transfer, they
+propose an alternative method. In the context of style transfer, the Gram matrix
+of the feature maps is employed to encapsulate the texture information of an
+image. Adapting this approach, the method presented in
+\cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across multiple layers
+feature maps. This computed Gram matrix, dubbed the Flow of Solution Procedure
+(FSP) matrix, then serves as a \emph{hint} for the student network, guiding its
+training process.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\textwidth]{chapter_sota/assets/kd_frameworks.pdf}
+    \caption{Overview of various knowledge distillation frameworks. From top to
+    bottom, left to right: Deep Mutual Learning
+    \cite{DBLP:conf/cvpr/ZhangXHL18}, FitNet
+    \cite{DBLP:journals/corr/RomeroBKCGB14}, Attention Transfer
+    \cite{DBLP:conf/iclr/ZagoruykoK17}, Teacher Assistant
+    \cite{DBLP:conf/aaai/MirzadehFLLMG20} and Knowledge Distillation
+    \cite{DBLP:journals/corr/HintonVD15}.}
+    \label{fig:sota:kd_frameworks}
+\end{figure}
+
+In practice, handling full-dimensional feature maps is cumbersome. That is why,
+in order to avoid this issue, \cite{DBLP:conf/iclr/ZagoruykoK17} use an
+attention map generated by squashing the feature maps to a 2D map allowing for a
+smaller 2D regressor to match attention map dimensions. Note that the
+aforementioned knowledge transfer methods require teacher-student pairs and
+assume that teachers are large trained models. \cite{DBLP:conf/cvpr/ZhangXHL18}
+relax this assumption by proposing Deep Mutual Learning, which enables a pool
+of networks of different architectures to learn together, provided that they
+have the same logit dimensions, and none of the models in the pool requires a
+pretraining step. The uncertainty of each model is distilled to each other,
+which creates additional knowledge.\\
+
+In all the aforementioned methodos, the efficacy of knowledge distillation, and
+consequently, the final performance of the student network, is significantly
+influenced by the disparity in size between the student and teacher networks.
+When this size discrepancy is excessive, the student network may encounter
+difficulties in adequately aligning with the teacher logits, thus preventing
+optimal knowledge distillation. In order to tackle this issue,
+\citeauthor{DBLP:conf/aaai/MirzadehFLLMG20} introduced the concept of
+\emph{Teacher Assistant}: networks of intermediary dimensions that aim at
+bridging the gap between student and teacher
+\cite{DBLP:conf/aaai/MirzadehFLLMG20}. Knowledge is first distilled from the
+teacher to the teacher assistant, and then from the teacher assistant to the
+student, resulting in improved performances compared to straightforward \ac{KD}.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/variational_info_distillation.pdf}
+    \caption{Conceptual scheme of \cite{DBLP:conf/cvpr/AhnHDLD19}. The student
+    network efficiently learns the main task while retaining high mutual information
+    with the teacher network. The mutual information is maximised by learning to
+    estimate the distribution of the activations in the teacher network, provoking
+    the transfer of knowledge. Adapted from the original
+    scheme found in \cite{DBLP:conf/cvpr/AhnHDLD19}}
+    \label{fig:sota:vid_scheme}
+\end{figure}
+
+Other approaches that do not rely on direct feature map or logit matching have
+been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced Variational
+Information Distillation, which indirectly maximises the mutual information
+between the student and the teacher. This is done by using \emph{variational
+information maximisation} \cite{barber2004algorithm} to maximise a variational
+lower bound of the mutual information, since directly maximising the latter is
+intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise,
+\cite{DBLP:conf/eccv/PassalisT18} proposed a Probabilistic Knowledge Transfer
+method that does not match logits or feature maps, but rather represents the
+latter as a probability distribution and minimises divergence between the two
+(see \cref{fig:sota:pkt_scheme}).\\
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
+    \caption{Conceptual scheme of the
+    Probabilistic Knowledge Transfer method. Both the student and the teacher
+    feature maps are modelled using probability distributions. The divergence of the
+    latter is minimised in order to transfer knowledge from the teacher to the
+    student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
+    \label{fig:sota:pkt_scheme}
+\end{figure}
+
+\section{Architecture Design}
+
+\subsection{Building Blocks for Efficient Architecture Design}
+\label{sec:sota:efficient_archi}
 % region: depthwise separable convolutions
 
 One of the initial strategies towards achieving efficiency in neural network
@@ -252,18 +591,6 @@ feature maps, scaling or "exciting" them by these weights.\\
 
 % endregion: mobilenetv3
 
-% region: transition paragraph
-The architectures we have just reviewed revolve around specific key techniques
-such as depthwise separable convolutions, fire modules, channel shuffling, and
-\ac{SE} modules, among others. These architectures, while highly efficient, are
-manually crafted and require a significant degree of human expertise, intuition,
-and time to develop, optimise, and fine-tune. The manual design of these
-architectures often relies on a deep understanding of the tasks at hand, the
-data they will process, and the constraints of the environment in which they
-will operate. However, the process of designing these efficient architectures
-can be automated, which is the subject of the next section.\\
-
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.70\textwidth]{chapter_sota/assets/SE_module.pdf}
@@ -276,9 +603,34 @@ can be automated, which is the subject of the next section.\\
     \label{fig:sota:se_module}
 \end{figure}
 
+
+% region: transition paragraph
+The architectures we have just reviewed revolve around specific key techniques
+such as depthwise separable convolutions, fire modules, channel shuffling, and
+\ac{SE} modules, among others. These architectures, while highly efficient, are
+manually crafted and require a significant degree of human expertise, intuition,
+and time to develop, optimise, and fine-tune. The manual design of these
+architectures often relies on a deep understanding of the tasks at hand, the
+data they will process, and the constraints of the environment in which they
+will operate. However, the process of designing these efficient architectures
+can be automated, which is the subject of the next section. Sizes and
+performance of networks architecture detailed in this section can be compared to
+standard architecture sizes on \cref{fig:sota:net_sizes_std_eff}.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.70\textwidth]{chapter_sota/assets/network_sizes_normal_eff.pdf}
+    \caption{\Cref{fig:sota:net_sizes} updated with the size and performance of the efficient
+    architectures detailed in \cref{sec:sota:efficient_archi}}
+    \label{fig:sota:net_sizes_std_eff}
+\end{figure}
+
+
+
+
 % endregion: transition paragraph
 
-\section*{Automatic Architecture Design Through Neural Architecture Search}
+\subsection{Automatic Architecture Design Through Neural Architecture Search}
 \label{sec:sota:nas} 
 
 \acf{NAS} is a method that automates the discovery of neural network
@@ -382,188 +734,22 @@ diverse strategies offer multiple paths to navigate the complex landscape of
 architecture search, each with its unique trade-offs between efficiency,
 effectiveness, and computational demands.\\
 
-\section*{Improved Lightweight Model Training with Knowledge Distillation}
-
-\acf{KD} is a method that aims to transfer the knowledge of a large, complex and
-accurate network referred to as the \emph{teacher} to a smaller, more efficient
-one called the \emph{student}. The student is trained with a combination of the
-main task loss as well as a supplementary supervision signal which is derived
-from the feature maps of the teacher network at various depths.\\
-
-Methods in this paradigm are mostly based on the seminal work of
-\citeauthor{DBLP:journals/corr/HintonVD15} \cite{DBLP:journals/corr/HintonVD15}.
-The latter seeks to train simple networks with \acl{KD} yielding better
-performances compared to those trained from scratch. \ac{KD} relies on teacher
-and student networks, where the logits of the former are used as an additional
-supervision signal for the latter. When trained separately, the student network
-can only rely on classification labels in order to learn its own data
-representation while \ac{KD} relies on the logits of the teacher network which
-provide more insight about the hidden representations.\\
-
-Inspired by \ac{KD}, \cite{DBLP:journals/corr/RomeroBKCGB14} introduced FitNet,
-a two-stage training algorithm, where an intermediate layer of the teacher is
-chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
-\citeauthor{DBLP:journals/corr/RomeroBKCGB14}
-\cite{DBLP:journals/corr/RomeroBKCGB14} to denote a feature map used as a target
-for the student network.} for an intermediate layer of the student. First, the
-student is trained up to its selected layer to mimic the hint feature map. Then,
-the whole student network is trained with standard \ac{KD} against the whole
-teacher. In the first step, a regressor is needed in order to adapt the
-dimensions of the feature map, which may differ from the teacher to the student
-networks, as illustrated in \cref{fig:sota:kd_frameworks}.
-\citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map matching
-utilised by FitNets is overly restrictive. Drawing inspiration from the
-techniques used in \cite{DBLP:journals/corr/GatysEB15a} for style transfer, they
-propose an alternative method. In the context of style transfer, the Gram matrix
-of the feature maps is employed to encapsulate the texture information of an
-image. Adapting this approach, the method presented in
-\cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across multiple layers
-feature maps. This computed Gram matrix, dubbed the Flow of Solution Procedure
-(FSP) matrix, then serves as a \emph{hint} for the student network, guiding its
-training process.\\
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.75\textwidth]{chapter_sota/assets/kd_frameworks.pdf}
-    \caption{Overview of various knowledge distillation frameworks. From top to
-    bottom, left to right: Deep Mutual Learning
-    \cite{DBLP:conf/cvpr/ZhangXHL18}, FitNet
-    \cite{DBLP:journals/corr/RomeroBKCGB14}, Attention Transfer
-    \cite{DBLP:conf/iclr/ZagoruykoK17}, Teacher Assistant
-    \cite{DBLP:conf/aaai/MirzadehFLLMG20} and Knowledge Distillation
-    \cite{DBLP:journals/corr/HintonVD15}.}
-    \label{fig:sota:kd_frameworks}
+    \includegraphics[width=0.70\textwidth]{chapter_sota/assets/network_sizes_normal_eff_nas.pdf}
+    \caption{\Cref{fig:sota:net_sizes_std_eff} updated with the size and
+    performance of architectures detailed in \cref{sec:sota:nas}}
+    \label{fig:sota:net_sizes_std_eff_nas}
 \end{figure}
 
-In practice, handling full-dimensional feature maps is cumbersome. That is why,
-in order to avoid this issue, \cite{DBLP:conf/iclr/ZagoruykoK17} use an
-attention map generated by squashing the feature maps to a 2D map allowing for a
-smaller 2D regressor to match attention map dimensions. Note that the
-aforementioned knowledge transfer methods require teacher-student pairs and
-assume that teachers are large trained models. \cite{DBLP:conf/cvpr/ZhangXHL18}
-relax this assumption by proposing Deep Mutual Learning, which enables a pool
-of networks of different architectures to learn together, provided that they
-have the same logit dimensions, and none of the models in the pool requires a
-pretraining step. The uncertainty of each model is distilled to each other,
-which creates additional knowledge.\\
 
-In all the aforementioned methodos, the efficacy of knowledge distillation, and
-consequently, the final performance of the student network, is significantly
-influenced by the disparity in size between the student and teacher networks.
-When this size discrepancy is excessive, the student network may encounter
-difficulties in adequately aligning with the teacher logits, thus preventing
-optimal knowledge distillation. In order to tackle this issue,
-\citeauthor{DBLP:conf/aaai/MirzadehFLLMG20} introduced the concept of
-\emph{Teacher Assistant}: networks of intermediary dimensions that aim at
-bridging the gap between student and teacher
-\cite{DBLP:conf/aaai/MirzadehFLLMG20}. Knowledge is first distilled from the
-teacher to the teacher assistant, and then from the teacher assistant to the
-student, resulting in improved performances compared to straightforward \ac{KD}.\\
+\section{Architecture redfinement}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/variational_info_distillation.pdf}
-    \caption{Conceptual scheme of \cite{DBLP:conf/cvpr/AhnHDLD19}. The student
-    network efficiently learns the main task while retaining high mutual information
-    with the teacher network. The mutual information is maximised by learning to
-    estimate the distribution of the activations in the teacher network, provoking
-    the transfer of knowledge. Adapted from the original
-    scheme found in \cite{DBLP:conf/cvpr/AhnHDLD19}}
-    \label{fig:sota:vid_scheme}
-\end{figure}
+\subsection{Weight Operations}
 
-Other approaches that do not rely on direct feature map or logit matching have
-been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced Variational
-Information Distillation, which indirectly maximises the mutual information
-between the student and the teacher. This is done by using \emph{variational
-information maximisation} \cite{barber2004algorithm} to maximise a variational
-lower bound of the mutual information, since directly maximising the latter is
-intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise,
-\cite{DBLP:conf/eccv/PassalisT18} proposed a Probabilistic Knowledge Transfer
-method that does not match logits or feature maps, but rather represents the
-latter as a probability distribution and minimises divergence between the two
-(see \cref{fig:sota:pkt_scheme}).\\
+\subsection{Pruning}
 
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
-    \caption{Conceptual scheme of the
-    Probabilistic Knowledge Transfer method. Both the student and the teacher
-    feature maps are modelled using probability distributions. The divergence of the
-    latter is minimised in order to transfer knowledge from the teacher to the
-    student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
-    \label{fig:sota:pkt_scheme}
-\end{figure}
 
-\section*{Alternative Algorithms for Reducing Computational Complexity of Convolutions}
-\label{sec:sota:fast_convolutions}
-
-Aside from reducing the number of weights, it is also possible to reduce the
-computational complexity of convolutions by using alternative algorithms to
-perform the convolution operation.\\
-
-The most popular ones rely on the \ac{FFT}
-\cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
-and leverage the Convolution Theorem. The Convolution Theorem states that the
-convolution of two signals in the source domain is the product of the two
-signals in the Fourier domain. This allows for a faster computation of the 2D
-convolution by using the \ac{FFT} to compute the convolution in the frequency
-domain \cite{oppenheim1997signals}.\\
-
-
-Other algorithms focus on optimising matrix operations, such as the Strassen
-algorithm \cite{strassen1969gaussian}, used in \cite{DBLP:conf/icann/CongX14}.
-It is a fast method for matrix multiplication that reduces the computational
-complexity from the standard $\mathcal{O}(n^{3})$ to approximately
-$\mathcal{O}(n^{2.807})$ by recursively dividing the matrices of size $n$ into 4
-submatrices of size $\frac{n}{2} \times \frac{n}{2}$, reorganising and combining
-these multiplications to perform only 7 instead of 8 matrix multiplications. The
-Strassen algorithm has later been refined by \citeauthor{coppersmith1987matrix},
-who introduced the Coppersmith-Winograd algorithm \cite{coppersmith1987matrix}.
-The latter brings down the complexity to $\mathcal{O}(n^{2.376})$. This
-algorithm is used in various works, mostly targeted towards a specific \ac{FPGA}
-architecture \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
-
-
-Another technique for optimising convolutions is the use of Toeplitz matrices. A
-Toeplitz matrix, or diagonal-constant matrix, has the unique characteristic of
-each descending diagonal from left to right being constant. $T$ is an example of
-a Toeplitz matrix. This property is particularly useful for convolutions, as
-they can be expressed as a multiplication by a Toeplitz matrix
-\cite{gray2006toeplitz}. This algorithm has been used in
-\cite{liao2019compressing}, with a focus on \ac{FPGA} architectures. Note that
-the representation of a convolution as a product with a Toeplitz matrix can
-further be accelerated by using the aforementioned optimisations to the matrix
-multiplication algorithm.\\
-
-
-$$
-T = 
-\left(
-\begin{array}{cccc}
-a & b & c & d \\
-e & a & b & c \\
-f & e & a & b \\
-g & f & e & a \\
-\end{array}
-\right)
-$$
-
-All the techniques presented in this section allow speeding up the computation
-of convolution operations, however, they require relatively large matrices to be
-truly efficient. They are not widely used with the current architectures
-\cite{DBLP:conf/cvpr/HeZRS16,huang2017densely,liu2018efficient} since they use
-small $3 \times 3$ kernels which would not benefit directly from these
-algorithms.\\
-
-
-The algorithms presented in this section offer significant acceleration in the
-computation of convolution operations. However, their optimal efficiency is
-bound to the use of relatively large matrices. Current architectures
-\cite{DBLP:conf/cvpr/HeZRS16, huang2017densely, liu2018efficient} predominantly
-use small $3 \times 3$ kernels, rendering the direct application of these
-acceleration techniques less beneficial. As a consequence, these techniques have
-not gained widespread adoption in contemporary deep learning architectures.
-
-\section*{Weight Operations}
+% ==============================================================================
