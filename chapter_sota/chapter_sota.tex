@@ -75,7 +75,7 @@ Among the most fundamental types of these layers are \emph{Convolutional} and
 \emph{Dense} (or fully connected) layers. \\
 
 \begin{figure}
-    \centering
+    \centeringç
     \subfloat[Convolutional Layer\label{fig:sota:conv_layer}]{
         \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
         \subfloat[Dense Layer\label{fig:sota:dense_layer}]{
@@ -103,7 +103,8 @@ named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
 their output are usually fed into a fully-connected layer for further processing
 \cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
 Conceptual representations of these layers are shown in \cref{fig:sota:layers}
-and a typical \ac{CNN} architecture is shown in \cref{fig:sota:lenet5,fig:sota:vgg16}.\\
+and a typical \ac{CNN} architecture is shown in
+\cref{fig:sota:lenet5,fig:sota:vgg16}.\\
 
 \begin{figure}[htbp]
     \centering
@@ -134,10 +135,11 @@ function is computed for a random subset of the data (a \emph{batch} or
 the loss function. This direction is computed via the backpropagation algorithm
 \cite{rumelhart1986learning} which calculates the gradient of the loss with
 respect to each weight using the chain rule. \acl{SGD} is a prevalent method for
-loss function optimisation in neural networks, however, numerous other methods also
-exist. These include momentum-based strategies \cite{sutskever2013importance}, adaptive
-learning rate approaches \cite{zeiler2012adadelta} and moment estimation
-techniques \cite{kingma2014adam}.\\
+loss function optimisation in neural networks, however, numerous other methods
+also exist. These include momentum-based strategies
+\cite{sutskever2013importance}, adaptive learning rate approaches
+\cite{zeiler2012adadelta} and moment estimation techniques
+\cite{kingma2014adam}.\\
 
 
 \section{Neural Networks Size and Achitecture Evolution}
@@ -497,8 +499,8 @@ different groups can capture diverse features in the input.\\
     \caption{Illustration scheme of grouped convolution with channel shuffling.
     Each filter only acts on a subset of the input tensor (here represented by a
     matching colour). The channels of the yielded tensor are shuffled to ensure
-    the subsequent groups can access information from all the previous groups. Best
-    viewed in colours.}
+    the subsequent groups can access information from all the previous groups.
+    Best viewed in colours.}
     \label{fig:sota:shuffle_net}
 \end{figure}
 
@@ -744,12 +746,108 @@ effectiveness, and computational demands.\\
 \end{figure}
 
 
-\section{Architecture redfinement}
+\section{Architecture refinement}
 
-\subsection{Weight Operations}
+% TODO: paragraphe d'introduction sur les méthodes de rafinement d'architectures
+
+\subsection{Quantisation and binarisation}
+
+% TODO: liste des choses à mettre dans weight operations
+
+Quantisation is the process where a broad range of input values (generally
+continuous) are converted into a smaller, specific set of output values, which
+often consists of a limited number of elements. Historically, the training of
+neural networks has largely relied on the use of \ac{FP32}. FP32 has been the
+default choice due to its wide support across various hardware platforms and
+software libraries, which has made it a practical and convenient choice for the
+majority of machine learning tasks \cite{sze2017efficient}. However, using
+\acl{FP32} is not always necessary, and it possible to quantise a neural network
+to use lower precision values, while maitaining compelling performances. \\
+
+Quantising a neural network has been proposed as early as the 1990s
+\cite{balzer1991weight,fiesler1990weight}. This later regain traction as
+\citeauthor{37631} levraged Single Input Multiple Data instructions (SIMD) of
+x86 CPU to speedup the fixed-point 8-bit operations \cite{37631}.
+\citeauthor{gupta2015deep} used uniform quantisation with fixed-point 16-bit
+with stochastic rounding to train neural networks. Quantisation has also been
+applied together with K-means clustering \cite{steinhaus1956division}.
+\cite{DBLP:journals/corr/HanMD15} uses K-means clustering to iteratively compute
+a lookup table or \emph{code book} for the weights. This code book is later
+further compressed using Huffman coding \cite{huffman1952method}. Note that this
+method is mostly useful for storage, but for training or inference, the weights
+need to be decompressed and their original value fetch in the code book before
+being used.\\
+
+Logarithmic quantisation provide compelling alternatives to uniform
+quantisation. On the one hand, logarithmic quantisation enable to quantise
+weights with a larger dynamic range compared to uniform or linear quantisation.
+On the other hand, multiplication can be conventiently represented as an
+inexpensive bit shift operation if operands are properly represented in the
+logarithmic base. This is particularly beneficial for \ac{FPGA} implementations
+\cite{alemdar2017ternary}. To levrage this potential speedup,
+\cite{DBLP:journals/corr/LinCMB15} forced the weight representation to be a
+power of two. \cite{DBLP:conf/iclr/ZhouYGXC17} improved this technique by
+applying it iteratively.\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.40\textwidth,trim=5cm 9cm 5cm 9cm, clip]{chapter_sota/assets/binarised_kernels.pdf}
+    \caption{Example of binarised kernels and activations in a convolutional
+    layer. The kernels are taken from the first layer of a \ac{CNN} trained on CIFAR-10.
+    Image taken from \cite{DBLP:conf/nips/HubaraCSEB16}.}
+    \label{fig:sota:binarised_kernels}
+\end{figure}
+
+A more extreme version of the quantisation has been proposed in
+\cite{courbariaux2015binaryconnect}, where the weight values are either $-1$ or
+$+1$. The concept of minimising the bit-width of weights to a bare minimum is
+called \emph{binarisation}. This has been further developed in
+\cite{DBLP:conf/nips/HubaraCSEB16}, where the authors proposed a method to
+binarise both weights and activations (see example of binarised kernels in
+\cref{fig:sota:binarised_kernels}). DoReFa-Net \cite{zhou2016dorefa} build upon
+the success of binarised neural network and introduced the stochastic 8-bit
+quantisation of the gradients during the backward pass to accelerate both
+training and inference.\\
+
+Quantisation methods that quantise weights or activations after the training are
+called \ac{PTQ} methods. Quantising an already existing network is a widely used
+technique in the most famous deep learning framework
+\cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they quantise the weight after
+the training, \ac{PTQ} methods often introduce an irreversible information loss
+and  a performance drop that need to be compensated for
+\cite{DBLP:journals/ijon/LiangGWSZ21}. To solve for this issue, several works
+proposed proposed to take into account the quantisation effect during the
+training. These methods are called \ac{QAT} methods. BinaryConnect
+\cite{courbariaux2015binaryconnect} use a variant of Bayesian inferencec called
+Expectation Back Probagation (EBP)
+\cite{DBLP:journals/corr/ChengSML15,DBLP:conf/nips/SoudryHM14}. Another
+binarisation method, uses \acl{STE} \cite{DBLP:journals/corr/BengioLC13} to
+bypass the binarisation function in the backward pass
+\cite{DBLP:conf/nips/HubaraCSEB16}. \cite{DBLP:conf/cvpr/JacobKCZTHAK18} also
+uses \ac{STE} together with \emph{fake quantisation} nodes for 8-bit
+quantisation (see \cref{fig:sota:fake_quant}). The fake quantisation nodes are
+injected inside the computaion graph and simulates the effect of quantisation in
+the forward pass.
+
+\begin{figure}[htbp]
+\centering
+\subfloat[Fake quantisation inference\label{fig:sota:fake_quant_inference}]{%
+    \includegraphics[height=6cm]{chapter_sota/assets/fake_quant_inference.pdf}}
+\subfloat[fake quantisation training\label{fig:sota:fake_quant_training}]{%
+    \includegraphics[height=6cm]{chapter_sota/assets/fake_quant_training.pdf}}
+\caption{Fake quantisation nodes (\emph{fake quant.}) are included in the
+computation graph of \cref{fig:sota:fake_quant_training}, whereas
+\cref{fig:sota:fake_quant_inference} represent the computaion graph used during
+inference. During the inference, weights are stored in \texttt{uint8} format,
+whereas the bias are not, because their computational overhead is
+negligible.\cite{DBLP:conf/cvpr/JacobKCZTHAK18}. Both illustrations are adapted
+from \cite{DBLP:conf/cvpr/JacobKCZTHAK18}.}
+\label{fig:sota:fake_quant}
+\end{figure}
 
 \subsection{Pruning}
+\label{sec:sota:pruning}
 
-
+% TODO: segmentation pruning structuré et non structuré
 
 % ==============================================================================
