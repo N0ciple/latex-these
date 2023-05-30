@@ -4,8 +4,7 @@
 
 \localtableofcontents
 
-\section{introduction}
-% TODO: dire que l'on va faire un petite overview des réseaux de neurones
+\section{Introduction}
 % TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
@@ -16,35 +15,33 @@ networks has given rise to various applications, particularly embedded ones,
 whose resources are highly constrained in terms of computing power, energy
 consumption or memory footprint. Alongside the increase in the size of these
 networks, compression techniques have been devised, in order to enable the use
-of these algorithms in the said applications.
+of these algorithms in embedded applications or resource-contrained
+environments.\\
 
-% TODO: adapter la suite à ce qui a été fait.
-
-This chapter focuses on these
-techniques and presents state-of-the-art neural network compression methods,
-predominantly based on reducing the number of weights. First, we will explore
-ad-hoc architectures, referred to here as \emph{Efficient Architectures}. These
-networks are lightweight networks that revolve around a core technique to reduce
-their size while preserving performance as much as possible. Following this, we
-will discuss \ac{NAS}, a method that automates the discovery of optimal network
-architectures tailored to specific tasks or constraints, potentially leading to
-more compact and efficient designs. Thereafter, we will examine fast convolution
-techniques, which aim to accelerate the computation of convolutions in neural
-networks, thereby reducing both the runtime and computational resources
-required. Subsequently, we will delve into \ac{KD}, a process by which the
-knowledge of a larger, more complex network (denoted the \emph{teacher}) is
-transferred to a smaller, more efficient network (denoted the \emph{student}),
-enabling the latter to achieve comparable performance with a reduced footprint.
-Afterwards, we will address weight operations techniques, including methods such
-as low-rank factorisation and other linear algebra techniques, which aim to
-reduce the complexity and size of the networks by capitalising on inherent
-redundancies and structures in the weight matrices. Lastly, we will consider
-Neural Network Pruning, a set of techniques that involve the removal of
-redundant or insignificant connections and weights from the network, resulting
-in a sparser and more computationally efficient model.\\
-
-% TODO: reorganiser le paragraphe précédent qui introduit les sections dont on
-% va parler. Il faut être sûr que ça correspond aux sections qui suivent.
+This chapter focuses on these techniques and presents state-of-the-art neural
+network compression methods, predominantly based on various modifications of
+weights. First, we will do a brief overview of deep learning and their
+evolution. Following this, we will examine fast convolution techniques, which
+aim to accelerate the computation of convolutions in neural networks, thereby
+reducing both the runtime and computational resources required. Thereafter, we
+will delve into \ac{KD}, a process by which the knowledge of a larger, more
+complex network (denoted the \emph{teacher}) is transferred to a smaller, more
+efficient network (denoted the \emph{student}), enabling the latter to achieve
+comparable performance with a reduced footprint. Subsequently, we will explore
+architecture design methods that aims at producing more efficient and effective
+networks. We will start with ad-hoc architectures, referred to here as
+\emph{Efficient Architectures}. These networks are lightweight networks that
+revolve around a core technique to reduce their size while preserving
+performance as much as possible. Following this, we will discuss \ac{NAS}, a
+method that automates the discovery of optimal network architectures tailored to
+specific tasks or constraints, potentially leading to more compact and efficient
+designs. Afterwards, we will focus on \emph{quantisation} and
+\emph{binarisation} techniques, which aim to lower the numerical precision of
+the weights and activations of the network in order to speed up the computation
+and reduce the memory footprint. Lastly, we will consider neural network
+pruning, a set of techniques that involve the removal of redundant or
+insignificant connections and weights from the network, resulting in a sparser
+and more computationally efficient model.\\
 
 % endregion: intro
 
@@ -74,7 +71,7 @@ introduce non linearity, and finally this output is send to the next layer.
 Among the most fundamental types of these layers are \emph{Convolutional} and
 \emph{Dense} (or fully connected) layers. \\
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \subfloat[Convolutional Layer\label{fig:sota:conv_layer}]{
         \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
@@ -144,10 +141,6 @@ also exist. These include momentum-based strategies
 
 \section{Neural Networks Size and Achitecture Evolution}
 
-% TODO: ajouter les bonnes refs
-% TODO: relecture
-% TODO: ajouter un graph de l'évolution de la taille des réseaux
-
 The evolution of neural networks is characterized by a consistent increase in
 their size and performance, alongside the introduction of new architectural
 modifications to address limitations of their predecessors (see
@@ -180,7 +173,7 @@ depth up to 152 layers without a significant increase in computational cost.
 However, a challenge remained with the constant need for careful design to
 manage feature-map sizes.\\
 
-In response, DenseNet was proposed.% in 2017, 
+In response, DenseNet \cite{huang2017densely} was proposed.% in 2017, 
 It connects each layer to every other layer in a feed-forward fashion. By
 reinforcing the propagation of features and gradients through the network,
 DenseNet alleviated the vanishing-gradient problem and further improved upon the
@@ -200,7 +193,7 @@ handling more complex tasks.
     \label{fig:sota:net_sizes}
 \end{figure}
 
-\section{Fast convolutions}
+\section{Accelerating Computations in Neural Networks}
 \label{sec:sota:fast_convolutions}
 
 
@@ -215,7 +208,7 @@ acceleration, with the objective of enhancing the speed and efficiency of neural
 network computations.\\
 
 
-The most popularalgorithm accelerating convolution operations rely on the
+The most popular algorithms for accelerating convolution operations rely on the
 \ac{FFT}
 \cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
 and leverage the Convolution Theorem. The Convolution Theorem states that the
@@ -239,44 +232,54 @@ algorithm is used in various works, mostly targeted towards a specific \ac{FPGA}
 architecture \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
 
 
-Another technique for optimising convolutions is the use of Toeplitz matrices. A
-Toeplitz matrix, or diagonal-constant matrix, has the unique characteristic of
-each descending diagonal from left to right being constant. $T$ is an example of
-a Toeplitz matrix. This property is particularly useful for convolutions, as
-they can be expressed as a multiplication by a Toeplitz matrix
-\cite{gray2006toeplitz}. This algorithm has been used in
-\cite{liao2019compressing}, with a focus on \ac{FPGA} architectures. Note that
-the representation of a convolution as a product with a Toeplitz matrix can
-further be accelerated by using the aforementioned optimisations to the matrix
-multiplication algorithm.\\
+Using particular matrix structure also speed up the standard operations used in
+a neural network. Fully connected layers can  effectively be accelerated by
+forcing the use of particular matrix structure.
+\citeauthor{DBLP:conf/iccv/ChengYFKCC15} devised a method where dense layers
+standard operation is replaced by a circulant projection
+\cite{DBLP:conf/iccv/ChengYFKCC15}. The circulant matrix can be stored in a
+memory efficient way and can be furthuer speed up with \ac{FFT}. $C$ is an
+example of a circulant matrix. Likewise, convolutional operations can be
+accelerated thanks to Toeplitz matrices. A Toeplitz matrix, or diagonal-constant
+matrix, has the unique characteristic of each descending diagonal from left to
+right being constant. $T$ is an example of a Toeplitz matrix. This property is
+particularly useful for convolutions, as they can be expressed as a
+multiplication by a Toeplitz matrix \cite{gray2006toeplitz}. This algorithm has
+been used in \cite{liao2019compressing}, with a focus on \ac{FPGA}
+architectures. Note that the representation of a convolution as a product with a
+Toeplitz matrix can further be accelerated by using the aforementioned
+optimisations to the matrix multiplication algorithm.\\
 
-$$
+\[
 T = 
-\left(
-\begin{array}{cccc}
+\begin{pmatrix}
 a & b & c & d \\
 e & a & b & c \\
 f & e & a & b \\
 g & f & e & a \\
-\end{array}
-\right)
-$$
+\end{pmatrix},
+\quad
+C = 
+\begin{pmatrix}
+    a & b & c & d \\
+    d & a & b & c \\
+    c & d & a & b \\
+    b & c & d & a
+\end{pmatrix}
+\]\\
+
+
 
 The algorithms presented in this section offer significant acceleration in the
-computation of convolution operations. However, their optimal efficiency is
-bound to the use of relatively large matrices. Current architectures
-\cite{DBLP:conf/cvpr/HeZRS16, huang2017densely, liu2018efficient} predominantly
-use small $3 \times 3$ kernels, rendering the direct application of these
-acceleration techniques less beneficial. As a consequence, these techniques have
-not gained widespread adoption in contemporary deep learning architectures.
-
-
-
-% TODO: Paragraphe sur l'entrainement Stochastique
-
-% TODO: Paragraghe pour expliquer que l'on peut accélérer 
-
-
+computation of convolution operations. In particular, the Coppersmith-Winograd
+algorithm is used in various deep learning frameworks
+\cite{DBLP:journals/corr/AbadiABBCCCDDDG16,DBLP:conf/nips/PaszkeGMLBCKLGA19} or
+neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest
+algorithm is automatically selected based on the tensor sizes and the hardware.
+However, depending on the operand size, the execution speed can be bound to the
+hardware and more precisely the memory thourghput and data access time rather
+than the computation time.
+\cite{DBLP:journals/pc/WhaleyPD01,DBLP:journals/cca/DrevetIS10}
 
 
 \section{Teaching Paradigm}
@@ -339,24 +342,34 @@ attention map generated by squashing the feature maps to a 2D map allowing for a
 smaller 2D regressor to match attention map dimensions. Note that the
 aforementioned knowledge transfer methods require teacher-student pairs and
 assume that teachers are large trained models. \cite{DBLP:conf/cvpr/ZhangXHL18}
-relax this assumption by proposing Deep Mutual Learning, which enables a pool
+relax this assumption by proposing \emph{Deep Mutual Learning}, which enables a pool
 of networks of different architectures to learn together, provided that they
 have the same logit dimensions, and none of the models in the pool requires a
 pretraining step. The uncertainty of each model is distilled to each other,
 which creates additional knowledge.\\
 
-In all the aforementioned methodos, the efficacy of knowledge distillation, and
+In all the aforementioned methods, the efficacy of knowledge distillation, and
 consequently, the final performance of the student network, is significantly
 influenced by the disparity in size between the student and teacher networks.
-When this size discrepancy is excessive, the student network may encounter
-difficulties in adequately aligning with the teacher logits, thus preventing
-optimal knowledge distillation. In order to tackle this issue,
+This size discrepancy, when excessive, may cause the student network to
+encounter difficulties in aligning with the teacher logits, thus preventing
+optimal knowledge distillation. To tackle this issue,
 \citeauthor{DBLP:conf/aaai/MirzadehFLLMG20} introduced the concept of
-\emph{Teacher Assistant}: networks of intermediary dimensions that aim at
-bridging the gap between student and teacher
-\cite{DBLP:conf/aaai/MirzadehFLLMG20}. Knowledge is first distilled from the
-teacher to the teacher assistant, and then from the teacher assistant to the
-student, resulting in improved performances compared to straightforward \ac{KD}.\\
+\emph{Teacher Assistant}: networks of intermediary dimensions aiming at bridging
+the size gap between student and teacher \cite{DBLP:conf/aaai/MirzadehFLLMG20}.
+The \ac{TA} approach proposes to ensure effective knowledge transfer
+through a stepwise transfer of knowledge, starting from the teacher to the
+Teaching Assistant, and finally to the student. This technique allows each model
+to learn from a slightly simpler model than itself. Empirical evidence shows
+that the \ac{TA} approach tends to outperform traditional one-step
+distillation in various experiments and across different network architectures,
+resulting in improved performances. However, it is important to note that it
+does introduce additional computational overhead due to the necessity of
+additional training steps for the \ac{TA}, and careful selection of
+the size and number of \acp{TA}. These considerations underscore that
+while the \ac{TA} strategy is effective in managing the size disparity
+problem, it also adds complexity to the distillation process.\\
+
 
 \begin{figure}[htbp]
     \centering
@@ -371,13 +384,13 @@ student, resulting in improved performances compared to straightforward \ac{KD}.
 \end{figure}
 
 Other approaches that do not rely on direct feature map or logit matching have
-been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced Variational
-Information Distillation, which indirectly maximises the mutual information
+been proposed. \cite{DBLP:conf/cvpr/AhnHDLD19} introduced \emph{Variational
+Information Distillation}, which indirectly maximises the mutual information
 between the student and the teacher. This is done by using \emph{variational
 information maximisation} \cite{barber2004algorithm} to maximise a variational
 lower bound of the mutual information, since directly maximising the latter is
 intractable in practice (see \cref{fig:sota:vid_scheme}). Likewise,
-\cite{DBLP:conf/eccv/PassalisT18} proposed a Probabilistic Knowledge Transfer
+\cite{DBLP:conf/eccv/PassalisT18} proposed a \emph{Probabilistic Knowledge Transfer}
 method that does not match logits or feature maps, but rather represents the
 latter as a probability distribution and minimises divergence between the two
 (see \cref{fig:sota:pkt_scheme}).\\
@@ -514,7 +527,7 @@ reduces redundancy. CondenseNet leverages the DenseNet architecture
 connected architecture, features discarded in any layer can still be recovered
 in subsequent ones.\\
 
-\begin{figure}[!h]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=0.3\textwidth]{chapter_sota/assets/channel_split.pdf}
     \caption{Illustration scheme of the path taken by the feature maps after the
@@ -560,7 +573,7 @@ maps can be embedded in a lower-dimensional manifold. To do this, it is
 necessary to use linear transformations without an activation function, which
 could potentially destroy information.\\
 
-\begin{figure}
+\begin{figure}[htbp]
     \centering
     \subfloat[Standard Residual Block\label{fig:sota:residual_block}]{%
         \includegraphics[width=0.49\textwidth]{chapter_sota/assets/mobilenet_v2_residual.png}}
@@ -746,13 +759,11 @@ effectiveness, and computational demands.\\
 \end{figure}
 
 
-\section{Architecture refinement}
+\section{Refining and Optimising and Existing Neural Network}
 
 % TODO: paragraphe d'introduction sur les méthodes de rafinement d'architectures
 
 \subsection{Quantisation and binarisation}
-
-% TODO: liste des choses à mettre dans weight operations
 
 Quantisation is the process where a broad range of input values (generally
 continuous) are converted into a smaller, specific set of output values, which
