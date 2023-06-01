@@ -16,7 +16,7 @@
   weight reparametrization. Our method incorporates a budget loss that drives
   sparsity toward the targeted pruning rate during training. The weight
   reparametrization acts as a mask that soft-prunes the smallest weights, while
-  the budget loss serves as a surrogate $L_0$ norm that regulates the network
+  the budget loss serves as a surrogate $\ell_0$ norm that regulates the network
   budget. As a result, our approach achieves a much smaller performance drop
   with respect to the unpruned network compared to other pruning methods. We
   demonstrate experimentally the effectiveness of our method across various
@@ -193,7 +193,7 @@ fine-tuning step to compensate for the loss of accuracy introduced by pruning.
 quantisation and Huffman coding, achieving a compression ratio of up to 49x for
 a VGG16 network. Other methods do not rely on weight magnitude, such as
 \cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic gates as a
-surrogate L0 norm and penalises non-zero weights during training. Variational
+surrogate $\ell_0$ norm and penalises non-zero weights during training. Variational
 Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a multiplicative gaussian
 noise as an alternative to binary dropout
 \cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
@@ -273,15 +273,15 @@ updating the parameters $\theta$ of the network, thanks to the backpropagation
 algorithm \cite{rumelhart1985learning,rumelhart1986learning} and gradient
 descent methods.\\
 
-When used as a loss function, the $L_0$ norm is perfectly suited for introducing
+When used as a loss function, the $\ell_0$ norm is perfectly suited for introducing
 sparsity in a network by, on the one hand, acting as a sparsity-inducing
 regulariser for the weights ($\theta$), and on the other hand, by indicating the number of
 non-zero weights in the network, which is useful for computing the weight
 budget. \\
 
 We aim to propose an end-to-end method that fits into the backpropagation
-framework. Therefore, adding a $L_0$ regulariser and a $L_0$ based weight budget
-is not possible since $L_0$ norm is not differentiable. Thus, we propose our
+framework. Therefore, adding a $\ell_0$ regulariser and a $\ell_0$ based weight budget
+is not possible since $\ell_0$ norm is not differentiable. Thus, we propose our
 differentiable reparametrisation, which seeks to define a novel weight
 expression related to magnitude pruning
 \cite{DBLP:conf/nips/CunDS89,DBLP:conf/nips/HanPTD15}. This expression
@@ -358,7 +358,7 @@ temperature parameter (see \cref{eqn:chap1:h_star_expression}). Here, $\odot$
 represents the Hadamar product. It means that it is element-wise, and every
 single weight has its own reparametrisation. This reparametrisation function
 enforces the prior that smallest weights should be removed from the network and
-act as a surrogate $L_0$ norm for the budget loss (see
+act as a surrogate $\ell_0$ norm for the budget loss (see
 \cref{sec:chap1:budget_loss}). In order to achieve this objective, $h_t$ should
 exhibit four properties: \\
 
@@ -557,10 +557,10 @@ leading to\\
 
 Ideally, the budget of a neural network could be evaluated as the number of
 multiply-add operations, often referred to as \acp{FLOP}, needed for a forward
-pass or through the $L_0$ norm of its weights. However, neither are known to
+pass or through the $\ell_0$ norm of its weights. However, neither are known to
 be differentiable and, therefore, cannot be used in a gradient-based
 optimisation. In order to circumvent these limitations, we use our weight
-reparametrisation as a surrogate measure of $L_0$, and we define the cost
+reparametrisation as a surrogate measure of $\ell_0$, and we define the cost
 function as \\
 
 \begin{equation}
