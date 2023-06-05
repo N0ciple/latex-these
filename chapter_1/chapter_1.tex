@@ -66,7 +66,7 @@ network. Then, with the emergence of Convolutional Neural Networks (CNNs), the
 complexity of neural network architectures for image recognition significantly
 increased. \acp{CNN} use convolutional layers to automatically and adaptively
 learn spatial hierarchies of features from input images. This adaptivity allows
-\acp{CNN} to effectively learn and classify images with high accuracy.This
+\acp{CNN} to effectively learn and classify images with high accuracy. This
 enhancement in accuracy, however, is accompanied by a rise in complexity and,
 notably, a higher number of parameters. Noteworthy \ac{CNN} architectures
 typically encompass millions of parameters. For instance, AlexNet (2012)
@@ -151,8 +151,8 @@ et al. \cite{anwar2017structured} proposed a pruning technique on various levels
 \cite{DBLP:conf/iclr/0022KDSG17} proposed a pruning method at a larger (filter)
 level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a streamlined
 approach that aims at pruning the most useless channels in the layers preceding
-\ac{batch norm} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity with $\ell_1$
-penalisation of the \ac{batch norm} scaling factors, each one associated with a
+\ac{BN} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity with $\ell_1$
+penalisation of the \ac{BN} scaling factors, each one associated with a
 channel. Then channels are removed based on the relative importance of their
 associated scaling factor up to a predefined sparsity ratio. More recent works
 proposed an automatic policy for pruning, such as \ac{amc}
