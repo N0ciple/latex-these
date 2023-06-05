@@ -1,10 +1,9 @@
 \chapter{Deep Neural Network Compression}
 \label{chap:sota}
 
-
 \localtableofcontents
 
-\section{Introduction}
+\section{Introduction}\label{sec:sota:intro}
 % TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
@@ -20,32 +19,37 @@ environments.\\
 
 This chapter focuses on these techniques and presents state-of-the-art neural
 network compression methods, predominantly based on various modifications of
-weights. First, we will do a brief overview of deep learning and their
-evolution. Following this, we will examine fast convolution techniques, which
+weights. This chapter is organised as follows: \cref{sec:sota:dl_overview} does
+a brief overview of deep learning and neural networks evolution. Following this,
+\cref{sec:sota:fast_convolutions} examines fast convolution techniques, which
 aim to accelerate the computation of convolutions in neural networks, thereby
-reducing both the runtime and computational resources required. Thereafter, we
-will delve into \ac{KD}, a process by which the knowledge of a larger, more
-complex network (denoted the \emph{teacher}) is transferred to a smaller, more
-efficient network (denoted the \emph{student}), enabling the latter to achieve
-comparable performance with a reduced footprint. Subsequently, we will explore
-architecture design methods that aims at producing more efficient and effective
-networks. We will start with ad-hoc architectures, referred to here as
-\emph{Efficient Architectures}. These networks are lightweight networks that
+reducing both the runtime and computational resources required. Thereafter,
+\cref{sec:sota:teaching_paradigm} delves into \ac{KD}, a process by which the
+knowledge of a larger, more complex network (denoted the \emph{teacher}) is
+transferred to a smaller, more efficient network (denoted the \emph{student}),
+enabling the latter to achieve comparable performance with a reduced footprint.
+Subsequently, \cref{sec:sota:archi_design} explores architecture design methods
+that aims at producing more efficient and effective networks.
+\Cref{sec:sota:efficient_archi} details ad-hoc architectures, referred to here
+as \emph{Efficient Architectures}. These networks are lightweight networks that
 revolve around a core technique to reduce their size while preserving
-performance as much as possible. Following this, we will discuss \ac{NAS}, a
-method that automates the discovery of optimal network architectures tailored to
-specific tasks or constraints, potentially leading to more compact and efficient
-designs. Afterwards, we will focus on \emph{quantisation} and
+performance as much as possible. Following this, \cref{sec:sota:nas} discusses
+\ac{NAS}, a method that automates the discovery of optimal network architectures
+tailored to specific tasks or constraints, potentially leading to more compact
+and efficient designs. Afterwards, \cref{sec:sota:refining_existing} presents
+two cathegories of techniques that harness an existing neural network and refine
+its architecture to produce a more compact and efficient model. First,
+\cref{sec:sota:quantisation} focus on \emph{quantisation} and
 \emph{binarisation} techniques, which aim to lower the numerical precision of
 the weights and activations of the network in order to speed up the computation
-and reduce the memory footprint. Lastly, we will consider neural network
-pruning, a set of techniques that involve the removal of redundant or
-insignificant connections and weights from the network, resulting in a sparser
-and more computationally efficient model.\\
+and reduce the memory footprint. Lastly, \cref{sec:sota:pruning} considers
+neural network pruning, a set of techniques that involve the removal of
+redundant or insignificant connections and weights from the network, resulting
+in a sparser and more computationally efficient model.\\
 
 % endregion: intro
 
-\section{Deep Learning overview}
+\section{Deep Learning overview}\label{sec:sota:dl_overview}
 
 Deep learning is a subfield of machine learning that focuses on the study of
 \acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
@@ -139,7 +143,7 @@ also exist. These include momentum-based strategies
 \cite{kingma2014adam}.\\
 
 
-\section{Neural Networks Size and Achitecture Evolution}
+\section{Neural Networks Size and Achitecture Evolution}\label{sec:sota:nn_evolution}
 
 The evolution of neural networks is characterized by a consistent increase in
 their size and performance, alongside the introduction of new architectural
@@ -193,8 +197,7 @@ handling more complex tasks.
     \label{fig:sota:net_sizes}
 \end{figure}
 
-\section{Accelerating Computations in Neural Networks}
-\label{sec:sota:fast_convolutions}
+\section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
 
 
 Neural networks, utilise two fundamental mathematical operations: convolution
@@ -282,7 +285,7 @@ than the computation time.
 \cite{DBLP:journals/pc/WhaleyPD01,DBLP:journals/cca/DrevetIS10}
 
 
-\section{Teaching Paradigm}
+\section{Teaching Paradigm}\label{sec:sota:teaching_paradigm}
 
 
 \acf{KD} is a method that aims to transfer the knowledge of a large, complex and
@@ -407,10 +410,9 @@ latter as a probability distribution and minimises divergence between the two
     \label{fig:sota:pkt_scheme}
 \end{figure}
 
-\section{Architecture Design}
+\section{Architecture Design}\label{sec:sota:archi_design}
 
-\subsection{Building Blocks for Efficient Architecture Design}
-\label{sec:sota:efficient_archi}
+\subsection{Building Blocks for Efficient Architecture Design}\label{sec:sota:efficient_archi}
 % region: depthwise separable convolutions
 
 One of the initial strategies towards achieving efficiency in neural network
@@ -645,8 +647,7 @@ standard architecture sizes on \cref{fig:sota:net_sizes_std_eff}.\\
 
 % endregion: transition paragraph
 
-\subsection{Automatic Architecture Design Through Neural Architecture Search}
-\label{sec:sota:nas} 
+\subsection{Automatic Architecture Design Through Neural Architecture Search}\label{sec:sota:nas} 
 
 \acf{NAS} is a method that automates the discovery of neural network
 architectures, potentially leading to more compact, efficient designs and
@@ -691,7 +692,7 @@ search space could be as broad as all possible configurations of a certain
 network type or as specific as various arrangements of a predefined set of
 layers or blocks. For instance, \cite{DBLP:conf/iclr/ZophL17} define their
 search space as a set of repeatable sub-structures composed of basic layers
-(convolution layers, fully connected layers, \ac{batch norm} layers, etc...)
+(convolution layers, fully connected layers, \ac{BN} layers, etc...)
 often called \emph{cells} that are stacked to form the final architecture, while
 \cite{DBLP:conf/iclr/XieZLL19} design their search space based on the
 connectivity patterns between network blocks. \cite{DBLP:conf/iclr/LiuSY19}
@@ -759,11 +760,11 @@ effectiveness, and computational demands.\\
 \end{figure}
 
 
-\section{Refining and Optimising and Existing Neural Network}
+\section{Refining and Optimising and Existing Neural Network}\label{sec:sota:refining_existing}
 
 % TODO: paragraphe d'introduction sur les méthodes de rafinement d'architectures
 
-\subsection{Quantisation and binarisation}
+\subsection{Quantisation and binarisation}\label{sec:sota:quantisation}
 
 Quantisation is the process where a broad range of input values (generally
 continuous) are converted into a smaller, specific set of output values, which
@@ -773,7 +774,10 @@ default choice due to its wide support across various hardware platforms and
 software libraries, which has made it a practical and convenient choice for the
 majority of machine learning tasks \cite{sze2017efficient}. However, using
 \acl{FP32} is not always necessary, and it possible to quantise a neural network
-to use lower precision values, while maitaining compelling performances. \\
+to use lower precision values, while maitaining compelling performances.
+Quantising a neural network can result in a reduced memory footprint as well as
+faster computation if the latter are implemented to levrage the speicificity of
+the quantisation or paired with appropriate hardware.\\
 
 Quantising a neural network has been proposed as early as the 1990s
 \cite{balzer1991weight,fiesler1990weight}. This later regain traction as
@@ -800,6 +804,9 @@ logarithmic base. This is particularly beneficial for \ac{FPGA} implementations
 power of two. \cite{DBLP:conf/iclr/ZhouYGXC17} improved this technique by
 applying it iteratively.\\
 
+% TODO: ajouter des méthodes de quantisation non uniforme qui ne sont pas basé
+% sur les puissances de 2.
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=0.40\textwidth,trim=5cm 9cm 5cm 9cm, clip]{chapter_sota/assets/binarised_kernels.pdf}
@@ -812,25 +819,26 @@ applying it iteratively.\\
 A more extreme version of the quantisation has been proposed in
 \cite{courbariaux2015binaryconnect}, where the weight values are either $-1$ or
 $+1$. The concept of minimising the bit-width of weights to a bare minimum is
-called \emph{binarisation}. This has been further developed in
-\cite{DBLP:conf/nips/HubaraCSEB16}, where the authors proposed a method to
-binarise both weights and activations (see example of binarised kernels in
-\cref{fig:sota:binarised_kernels}). DoReFa-Net \cite{zhou2016dorefa} build upon
-the success of binarised neural network and introduced the stochastic 8-bit
-quantisation of the gradients during the backward pass to accelerate both
-training and inference.\\
+called \emph{binarisation}. This allows for a dramatic simplification of the
+computation in the neural network, and the expense of a drop in performances.
+Binarisation has been further developed in \cite{DBLP:conf/nips/HubaraCSEB16},
+where the authors proposed a method to binarise both weights and activations
+(see example of binarised kernels in \cref{fig:sota:binarised_kernels}).
+DoReFa-Net \cite{zhou2016dorefa} build upon the success of binarised neural
+network and introduced the stochastic 8-bit quantisation of the gradients during
+the backward pass to accelerate both training and inference.\\
 
 Quantisation methods that quantise weights or activations after the training are
 called \ac{PTQ} methods. Quantising an already existing network is a widely used
 technique in the most famous deep learning framework
 \cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they quantise the weight after
-the training, \ac{PTQ} methods often introduce an irreversible information loss
-and  a performance drop that need to be compensated for
-\cite{DBLP:journals/ijon/LiangGWSZ21}. To solve for this issue, several works
-proposed proposed to take into account the quantisation effect during the
-training. These methods are called \ac{QAT} methods. BinaryConnect
-\cite{courbariaux2015binaryconnect} use a variant of Bayesian inferencec called
-Expectation Back Probagation (EBP)
+the training, \ac{PTQ} methods are fast and easy to apply. However, they often
+introduce an irreversible information loss and  a performance drop that need to
+be compensated for \cite{DBLP:journals/ijon/LiangGWSZ21}. To solve for this
+issue, several works proposed proposed to take into account the quantisation
+effect during the training. These methods are called \ac{QAT} methods.
+BinaryConnect \cite{courbariaux2015binaryconnect} use a variant of Bayesian
+inferencec called Expectation Back Probagation (EBP)
 \cite{DBLP:journals/corr/ChengSML15,DBLP:conf/nips/SoudryHM14}. Another
 binarisation method, uses \acl{STE} \cite{DBLP:journals/corr/BengioLC13} to
 bypass the binarisation function in the backward pass
@@ -838,7 +846,23 @@ bypass the binarisation function in the backward pass
 uses \ac{STE} together with \emph{fake quantisation} nodes for 8-bit
 quantisation (see \cref{fig:sota:fake_quant}). The fake quantisation nodes are
 injected inside the computaion graph and simulates the effect of quantisation in
-the forward pass.
+the forward pass.\\
+
+Quantisation and binarisation are solutions to compress and accelerate neural
+networks. The potential of these techniques is vast, as they offer significant
+reductions in memory usage and enhanced computational speed when implemented
+correctly and paired with suitable hardware. However, these benefits are not
+without their drawbacks. On the downside, such techniques introduce a certain
+degree of error which can result in a performance drop, especially if not
+properly managed during the training process. This information loss is
+particularly notable in the case of \acl{PTQ} methods, which necessitate
+additional efforts to mitigate these performance impacts. To address this,
+\ac{QAT} methods have been developed, which incorporate the effects of
+quantisation during the training phase itself. The more extreme approach,
+binarisation, further accentuates the advantages and disadvantages observed in
+quantisation. While it offers extreme compression of neural networks, this often
+comes at the cost of significant accuracy loss.\\
+
 
 \begin{figure}[htbp]
 \centering
@@ -856,9 +880,302 @@ from \cite{DBLP:conf/cvpr/JacobKCZTHAK18}.}
 \label{fig:sota:fake_quant}
 \end{figure}
 
-\subsection{Pruning}
-\label{sec:sota:pruning}
+\subsection{Pruning}\label{sec:sota:pruning}
 
-% TODO: segmentation pruning structuré et non structuré
+Lightweight neural networks can be obtained from a larger network through
+pruning. Pruning is the process of removing weights or connections, identified
+as redundant or unnecessary, while limiting to a minimum the impact on the
+performance of the network. The identification of the latter, often referred to
+as determining the \emph{saliency} of weights, has been a hot spot in the
+pruning literature \cite{li2023model,cheng2017survey,liang2021pruning}. Pruning
+a neural network removes weights and consequently reduces the theoretical
+computational complexity of the network as well as its memory footprint.  The
+amount of weight removed during pruning is ofen denoted as the \emph{pruning
+rate}, which is commonly defined as the fraction of the number of weights
+removed from the original network over the total quantity of weights initially
+present in it. Arguably, the first pruning method, introduced in 1989, was based
+on biased weight decay \cite{hanson1988comparing}. In the following years,
+\citeauthor{DBLP:conf/nips/CunDS89} proposed a pruning method entitled Optimal
+Brain Damage that used the Taylor expansion of the loss hessian matrix to
+identify the weight whose removal would have the least impact on the loss. This
+method, and in particular the computation of the hessian matrix were refined in
+Optimal Brain Surgeon
+\cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
+As neural networks have become larger and more computationally intensive (see
+\cref{sec:sota:nn_evolution,fig:sota:net_sizes}), pruning has been receiving
+increased attention as a method to compress the latter. Pruning methods can be
+classified into two categories: \emph{structured} and \emph{unstructured}
+pruning methods.\\
+
+
+\begin{figure}
+\centering
+\subfloat[Structured pruning\label{fig:sota:structured_pruning}]{%
+    \includegraphics[width=0.6\textwidth]{chapter_sota/assets/structured_pruning.pdf}}
+    \hspace{0.09\textwidth}
+\subfloat[Unstructured pruning\label{fig:sota:unstructured_pruning}]{%
+    \includegraphics[width=0.3\textwidth]{chapter_sota/assets/unstructured_pruning.pdf}}
+\caption{Conceptual illustrations of structured and unstructured pruning.}
+\label{fig:sota:pruning}
+\end{figure}
+
+Structured pruning involves the removal of entire structural components of the
+network, such as rows, columns, channels, filters, layers or even whole
+subnetworks (note that pruning a channel in layer $n+1$ is implies pruning a
+filter in layer $n$, and vice-versa). This type of pruning results in
+regular\footnote{regular in this context means that all weight tensors are dense
+and that the acceleration of computations does not rely on sparse computing
+enhancement.} network structures that are easier to exploit on typical hardware
+and do not necessitate a specific sparse computing library or hardware, making
+it an attractive approach for practical deployment. To some extent, structured
+pruning can be seen as a subcategory of \acl{NAS} (\cref{sec:sota:nas}), where
+the search space would be the structure of the network to be pruned. Structured
+pruning leads to reduced computation complexity as well as significant memory
+footprint reduction, however, it also presents unique challenges. The impact of
+removing structural components can be much greater than eliminating individual
+weights, hence, structured pruning often requires more careful consideration of
+the trade-off between the model performance and complexity reduction. Since
+structured pruning operates on a coarser scale, it typically results in lower
+pruning rates compared to unstructured pruning.\\
+
+
+One of the main categories of structured pruning for \ac{CNN} is
+weight-dependent pruning. This strategy assesses the importance of filters based
+on their respective weights. The Pruning Filter for Efficient ConvNets method
+\cite{DBLP:conf/iclr/0022KDSG17} focuses on the filter norms as their saliency
+indicator. Filters with smaller $\ell_1$ norms, which result in weak
+activations, are assumed to contribute less to the final classification
+decision, hence they become the prime candidates for pruning.  The Filter
+Pruning via Geometric Median method \cite{DBLP:conf/cvpr/HeLWHY19} calculates
+the geometric median of a set of filters and prunes those filters that are
+nearest to this geometric median, rather than the ones condisered less important
+by \cite{DBLP:conf/iclr/0022KDSG17}. The filters close to the geometric median
+are considered by \citeauthor{DBLP:conf/cvpr/HeLWHY19} to be redundant with
+other filters in the same layers. \citeauthor{DBLP:conf/cvpr/WangLW21} used
+another approach to determine redundancy in \cite{DBLP:conf/cvpr/WangLW21}: The
+filters are organized into a graph based on their proximity in the space in
+which they are defined. A redundancy metric is computed for each graph and the
+least important filters are pruned in the graph with the highest redundancy (as
+per the authors, any other method for filter importance evaluation can be used
+\cite{DBLP:conf/iclr/0022KDSG17,DBLP:journals/access/PolyakW15,DBLP:conf/iclr/MolchanovTKAK17}).
+This process is iteratively applied until the targeted pruning rate is reached.
+These weight-dependent strategies tend to be straightforward and usually demand
+lower computational costs compared to other methods
+\cite{DBLP:journals/corr/abs-2303-00566}. They provide an intuitive
+understanding of how different filters contribute to the overall network
+performance based on their weight characteristics. \\
+
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{chapter_sota/assets/thinet.pdf}
+    \caption{Illustration Scheme of ThiNet. The dotter filters and corresponding
+    channels are the ones to be pruned. Once they are removed, the pruned network
+    is fine-tuned. Image taken from \cite{DBLP:conf/iccv/LuoWL17}}
+    \label{fig:sota:thinet}
+\end{figure}
+
+Another prominent category of structured pruning is activation-based pruning,
+where \emph{activation} denotes the result yielded by a layer for given input
+data. This method takes advantage of activation maps (also called feature maps)
+for filter pruning. Removing a channel in a feature map is equivalent to
+removing the filter that computed this channel.
+\citeauthor{DBLP:conf/iccv/HeZS17} proposed a method to prune filters based on a
+LASSO regression selection while minimising the least square reconstruction
+error or the feature map \cite{DBLP:conf/iccv/HeZS17}.
+\citeauthor{DBLP:journals/corr/HuPTT16} capitalised on the abundance of zeros in
+feature maps that follow the \ac{ReLU} activation function. They introduced the
+method called Average Percentage of Zero (APoZ) that identifies channels in the
+feature map with a high count of null outputs. These channels, which contribute
+minimally to the final outcome, can hence be pruned. While the aforementioned
+methods consider only the feature map of the layer to be pruned, techniques like
+ThiNet \cite{DBLP:conf/iccv/LuoWL17} and Approximated Oracle Filter Pruning
+\cite{DBLP:conf/icml/DingDGHY19} exploit the relationships between layers to
+guide pruning. They take into consideration the effect a filter removal in one
+layer has on the next, allowing for more contextual pruning decisions. More
+globally, approaches such as Neuron Importance Score Propagation
+\cite{DBLP:conf/cvpr/Yu00LMHGLD18} and Discrimination-aware Channel Pruning
+\cite{DBLP:conf/nips/ZhuangTZLGWHZ18} consider the holistic effect of removing a
+filter. They aim to understand and quantify the total impact on network
+performance when a specific filter is removed, accounting for cascading effects
+across all layers.\\
+
+Other methods learn structured sparse networks by introducing various sparsity
+regularizers. Some methods focus on \acl{BN} parameters, employing methods like
+Gated Batch Normalisation \cite{DBLP:conf/nips/YouYYM019} and Network Slimming
+\cite{DBLP:conf/iccv/LiuLSHYZ17}. These methods aim to push certain BN
+parameters towards zero, effectively disabling corresponding channels and
+inducing sparsity. Network Slimming applies a $\ell_1$ regularisation on the
+scaling factors $\gamma$ of the \ac{BN} \cite{DBLP:conf/iccv/LiuLSHYZ17},
+whereas \cite{DBLP:conf/nips/YouYYM019} adds the $\ell_1$ regularisation on
+scalar factors associated with feature map channels.
+\citeauthor{DBLP:conf/icml/KangH20} use \ac{BN} parameters to craft a mask that
+prunes channels whose output is likely to be nul once evaluated by the \ac{ReLU}
+\cite{DBLP:conf/icml/KangH20}. \\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth,trim=0 0.4cm 0 0, clip]{chapter_sota/assets/operation_aware.pdf}
+    \caption{Comparison of the method described in \cite{DBLP:conf/icml/KangH20}
+    (right) and standard channel pruning (left). The differentiable mask allows
+    for a soft pruning that can be reverted during the training. Image taken
+    from \cite{DBLP:conf/icml/KangH20}}
+    \label{fig:sota:operation_aware}
+\end{figure}
+
+
+The Taylor Expansion is a tool that can be used to approximate the change in the
+loss function due to pruning. Early unstructured pruning methods, Optimal Brain
+Damage \cite{DBLP:conf/nips/CunDS89} and Optimal Brain Surgeon
+\cite{DBLP:conf/icnn/HassibiSW93} used Taylor expansion of the hessian matrix to
+remove weights with the least impact on the loss function. More recently,
+\citeauthor{DBLP:conf/iclr/MolchanovTKAK17} used first-order Taylor expansion of
+the loss function to compute the importance score and prune the feature maps
+\cite{DBLP:conf/iclr/MolchanovTKAK17}. This was later refined in
+\cite{DBLP:conf/cvpr/MolchanovMTFK19} where the authors computed the importance
+score on the weight to lower memory consumption.\\
+
+Variational Bayesian methods provide a way to tackle the computationally
+intensive process of inferring posterior probability distributions in large data
+sets, by approximating the posterior distribution with a variational
+distribution \cite{fox2012tutorial}. Specific methods like Variational Pruning
+\cite{DBLP:conf/cvpr/ZhaoNZZZT19} and Recursive Bayesian Pruning
+\cite{DBLP:conf/iccv/Zhou0W019} use this approach to create more effective and
+stable pruning mechanisms for neural networks. Variational Pruning, models
+channel importance as random variables, utilizing the centrality property of the
+Gaussian distribution to induce sparsity \cite{DBLP:conf/cvpr/ZhaoNZZZT19},
+while \cite{DBLP:conf/iccv/Zhou0W019} targets the posterior of redundancy,
+assuming inter-layer dependency among channels.\\
+
+
+Dynamic pruning is a another approach that prunes neural networks during both
+the training and inference stages, which facilitates in maintaining the model
+representation capability and offers superior resource-accuracy trade-offs. In
+the training phase, Dynamic Network Surgery \cite{DBLP:conf/nips/GuoYC16}
+introduces the concept of dynamic pruning through an unstructured approach. This
+method applies a binary mask indicating the importance of weights and updates it
+alternately with all the weights, allowing incorrectly pruned parameters an
+opportunity to revive. Soft Filter Pruning \cite{DBLP:conf/ijcai/HeKDFY18}
+implements a structured version of dynamic pruning. Instead of employing a fixed
+mask throughout the training, which could limit the optimization space, SFP
+dynamically generates masks based on the $\ell_2$ norm of filters at every
+epoch. The dynamic nature of SFP allows soft-pruned filters to be updated in the
+next epoch, with new masks being formed based on the updated weights. Focusing
+on the inference stage, \citeauthor{DBLP:conf/nips/LinRLZ17} introduced Runtime
+Neural Pruning \cite{DBLP:conf/nips/LinRLZ17} which employs a unique framework
+consisting of a \ac{CNN} backbone and an recurent neural network as a decision
+network. This approach enables the model to adapt to the properties of different
+input images by dynamically adjusting its complexity. For easier tasks or
+simpler images, the network can become sparser, saving computational resources.
+Deep Reinforcement Learning pruning \cite{DBLP:conf/nips/ChenCP20} learns both
+the static and dynamic importance of channels. The static importance refers to
+the channel's relevance for the entire dataset, while the dynamic importance is
+tied to a specific input. DRLP applies reinforcement learning to generate a
+unified pruning decision based on these two aspects of channel importance. More
+recently, \citeauthor{DBLP:conf/cvpr/ElkerdawyE0R22} introduced Fire Together
+Wire Together \cite{DBLP:conf/cvpr/ElkerdawyE0R22}. It another approach to
+dynamic pruning that treats it as a self-supervised binary classification
+problem. It employs a prediction head to create learnable binary masks and uses
+a ground truth mask to guide the learning after each convolutional layer. By
+ranking the norm of input activations, the framework creates ground truth
+pruning decisions that facilitate self-supervised learning. \\
+
+As previously discussed, structured purning removes indivisible groups of
+weights and therefore yields regular networks architecture that can be
+implementend in standard deep learning frameworks in a straightforward way.
+Despite its practicality, structured pruning enforces a strong topological prior
+by pruning entire groups of weights of the original network, which consequently
+leads to a lower sparsity rate compared to its counterpart, unstructured
+pruning. Unstructured pruning, provides a more flexible approach by removing
+individual weights from the original network structure. This process not only
+offers greater adaptability compared to structured pruning, but also results in
+higher pruning rates.\\
+
+In the early stages, unstructured pruning methodologies identified weights that
+could be eliminated based on their influence on the Hessian of the loss function
+\cite{DBLP:conf/nips/CunDS89,DBLP:conf/icnn/HassibiSW93,DBLP:conf/nips/HassibiSW93}.
+A simpler and more tracktable strategy for larger networks was later introduced
+by \citeauthor{DBLP:conf/nips/HanPTD15}, suggesting a straightforward
+heuristic: the pruning of weights with the smallest magnitude
+\cite{DBLP:conf/nips/HanPTD15}, also referred to as \emph{magnitude
+pruning}. This technique presented in \cite{DBLP:conf/nips/HanPTD15} envisaged
+an iterative method wherein a portion of the smallest magnitude weights are
+removed, followed by the retraining of the network to compensate for reduction
+in accuracy. This cycle is reiterated until the preferred level of sparsity is
+attained. Furthermore, magnitude pruning has been used together with
+quantisation and compression techniques to minimise the storage footprint of a
+network \cite{DBLP:journals/corr/HanMD15}. Magnitude pruning has also been used
+in energy-efficient \ac{CNN} design, as detailed in
+\cite{DBLP:conf/cvpr/YangCS17}. In this research, the energy consumption of each
+layer is evaluated, and the layers with the highest energy expenditure are
+pruned using unstructured magnitude pruning. This layer is then fine-tuned to
+retain the network's accuracy. This process is repeated iteratively until a
+noticeable drop in accuracy is observed. Dynamic Network Surgery
+\cite{DBLP:conf/nips/GuoYC16} puts forward a derivative of magnitude pruning. A
+mask, whose value is updated during training, is computed for each weight. This
+mask is used to stochastically prune a weight or splice it. The saliency of the
+weights is ascertained based on the magnitude of the associated mask.\\
+
+ More recently, the unstructured pruning research focuses on the discovery of
+ small sub-networks inside the original network. In other words, to identify a
+ subset of weight that can perform, under certain conditions or assumptions, as
+ well as the original network. Most notably, the Lottery Ticket Hypothesis
+ \cite{DBLP:conf/iclr/FrankleC19} states that within a large, randomly
+ initialized neural network, there exist sub-networks or \emph{Lottery Tickets}
+ that are capable of training effectively when isolated from the rest of the
+ weights. These smaller networks, found by pruning insignificant weights from
+ the larger network, are observed to train faster and achieve comparable or even
+ superior performance to the original network. The \emph{lottery ticket} is
+ found by training the original network up to convergence, then pruned with
+ magnitude pruning and finally, the remaining weights are reinitialized to their
+ original values: the one they had before the training even strated. The
+ resulting sub-network is the \emph{lottery ticket}. This research sparked a
+ lot of interest and various works: \cite{DBLP:conf/nips/ZhouLLY19} proposed an
+ analysis of the phenomenon, results of \cite{DBLP:conf/iclr/FrankleC19} have
+ been extended to larger networks \cite{DBLP:journals/corr/abs-1903-01611}, the
+ necessity of training the original network to convergence has been challenged
+ in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket}
+ (or in other words the efficient subnetwork) has been theoretically proven in
+ \cite{DBLP:conf/icml/MalachYSS20} and the requirements of the theoretical size
+ of the original network has been later refined in
+ \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.\\
+
+
+\section{Conclusion}
+
+
+
+The evolution of neural networks, along with the growing demand for their
+deployment in resource-constrained environments, has underlined the need for
+neural network compression techniques. This chapter has examined the
+state-of-the-art methodologies for reducing the computational demands and memory
+footprints of deep neural networks, thereby facilitating their usage in a
+variety of application domains.\\
+
+First, we explored the historical progression and the major architectures of
+deep neural networks, illustrating the connection between their complexity and
+performance. We then investigated techniques for accelerating computations
+within neural networks, emphasising the role of fast convolution techniques in
+reducing both runtime and computational resources. Our focus then shifted to
+\acl{KD}, a paradigm that allows the transfer of knowledge from a large, complex
+network to a smaller, more efficient one. The core idea is to teach a student
+network to mimic the behaviour of a teacher network, thus achieving comparable
+performance with a reduced footprint. Next, we delved into efficient
+architecture design methods, including bespoke architectures designed to
+minimise size while maintaining performance, and \acl{NAS} strategies for
+automating the discovery of optimal architectures. Lastly, we addressed the
+strategies for refining existing neural networks, considering both quantisation
+and binarisation techniques that lower the numerical precision of weights and
+activations, as well as pruning techniques that remove redundant or
+insignificant weights and connections, resulting in a sparser, more
+computationally efficient model. In conclusion, these techniques provide a
+multi-faceted approach to neural network compression, with each offering unique
+advantages and trade-offs.\\
+
+The next chapters will present approaches to neural network compression based on
+pruning. The \cref{chap:chapter1} details our first contribution that consists
+in a method to simultaneously train and prune neural networks while matching a
+budget. This method allows to remove the need for the finetuning step present in
+most methods based on magnitude pruning.
 
 % ==============================================================================
