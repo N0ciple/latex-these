@@ -760,11 +760,38 @@ effectiveness, and computational demands.\\
 \end{figure}
 
 
-\section{Refining and Optimising and Existing Neural Network}\label{sec:sota:refining_existing}
+\section{Refining and Optimising and Existing Neural Network}\label{sec:sota:refining_existing} 
 
-% TODO: paragraphe d'introduction sur les méthodes de rafinement d'architectures
+While the prior sections have primarily focused on constructing new, efficient
+network architectures and mechanisms for automatic architecture discovery, this
+part of the chapter transitions towards refining and optimising existing neural
+networks. The methods discussed in this section, namely \emph{quantisation},
+\emph{binarisation} and \emph{pruning}, are specifically geared towards
+leveraging and enhancing already existing architectures or trained models.
+Instead of developing a new architecture, these techniques seek to make an
+existing architecture more efficient by modifying its weights and connections.\\
 
-\subsection{Quantisation and binarisation}\label{sec:sota:quantisation}
+Section \cref{sec:sota:quantisation} delves into the methodologies of
+quantisation and binarisation. These methods endeavour to reduce the numerical
+precision of weights and activations in a network, without a significant
+compromise in overall performance. This process can significantly speed up
+computations and decrease memory usage, contributing to the increased efficiency
+of a pre-existing network, especially in environments with limited hardware or
+memory resources.\\
+
+Subsequently, section \cref{sec:sota:pruning} examines the application of
+pruning techniques. Pruning refers to the elimination of redundant or
+insignificant weights and connections in a network, leading to a sparser and
+more effective architecture. This fine-tuning of an existing network can further
+enhance efficiency by reducing computational resources needed with a minimal or
+controlled impact on the performance.\\
+
+Through these methods, this section aims to demonstrate how the effectiveness of
+existing neural networks can be optimised, thereby offering another viable path
+towards generating more efficient models without creating new architectures from
+scratch.\\
+
+\subsection{Quantisation and Binarisation}\label{sec:sota:quantisation}
 
 Quantisation is the process where a broad range of input values (generally
 continuous) are converted into a smaller, specific set of output values, which
