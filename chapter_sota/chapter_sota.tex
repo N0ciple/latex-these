@@ -7,7 +7,7 @@
 % TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
-The development of neural networks and the enhancement of their performances has
+The development of neural networks and the enhancement of their performance have
 been accompanied by a significant growth of their size, particularly in the
 number of weights constituting them. In parallel, the evolution of these
 networks has given rise to various applications
@@ -16,7 +16,7 @@ particularly embedded ones\cite{kim2020review,kuutti2020survey}, whose resources
 are highly constrained in terms of computing power, energy consumption or memory
 footprint. Alongside the increase in the size of these networks, compression
 techniques have been devised, in order to enable the use of these algorithms in
-embedded applications or resource-contrained environments.\\
+embedded applications or resource-constrained environments.\\
 
 This chapter focuses on these techniques and presents state-of-the-art neural
 network compression methods, predominantly based on various modifications of
@@ -73,12 +73,12 @@ single-layer perceptron by including one or more hidden layers of neurons, with
 each layer fully connected to the next, allowing the model to learn and
 represent more complex, non-linear relationships in the input data. The term
 \emph{deep} in the context of \acp{DNN} refers to the staking of multiple and
-numerous layers within a neural network. A \ac{DNN} consist of layers, each
-layer is an operation that takes information from the previous layers, process
+numerous layers within a neural network. A \ac{DNN} consists of layers, each
+layer is an operation that takes information from the previous layers, processes
 it and then passes it through an activation function
 \cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
-introduce non linearity. Finally, this output is send to the next layer.
-Among the most fundamental types of these layers are \emph{Convolutional} and
+introduce non linearity. Finally, this output is sent to the next layer. Among
+the most fundamental types of these layers are \emph{Convolutional} and
 \emph{Dense} (or fully connected) layers. \\
 
 \begin{figure}[htbp]
@@ -104,10 +104,11 @@ is central to \ac{MLP} networks, where these dense layers are stacked together.
 Convolutional layers are typically used for image analysis tasks
 \cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
 are convoluted with the input data. They are used for detecting edges, textures,
-and patterns, and are often used as feature extractor. Typical neural network
-targeted towards image processing are composed convolutional layers and thus
-named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
-their output are usually fed into a fully-connected layer for further processing
+and patterns, and are often used as feature extractor. Typical neural networks
+targeted towards image processing are composed of convolutional layers and thus
+named \aclp{CNN}. In a such architecture, convolutional layers are
+stacked and their output are usually fed into a fully-connected layer for
+further processing
 \cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
 Conceptual representations of these layers are shown in \cref{fig:sota:layers}
 and a typical \ac{CNN} architecture is shown in
@@ -132,9 +133,9 @@ and a typical \ac{CNN} architecture is shown in
 
 
 The process of training a neural network involves adjusting the weights of the
-network to minimize a loss function. The loss function is a measure of the error
+network to minimise a loss function. The loss function is a measure of the error
 between the predicted output of the network and the ground truth. Since neural
-networks are differentiables, the weights can be adjusted using gradient-based
+networks are differentiable, the weights can be adjusted using gradient-based
 methods. The most common method is \acf{SGD}, derived from the Robbins–Monro
 algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient of the loss
 function is computed for a random subset of the data (a \emph{batch} or
@@ -142,7 +143,7 @@ function is computed for a random subset of the data (a \emph{batch} or
 the loss function. This direction is computed via the backpropagation algorithm
 \cite{rumelhart1986learning} which calculates the gradient of the loss with
 respect to each weight using the chain rule. \acl{SGD} is a prevalent method for
-loss function optimisation in neural networks, however, numerous other methods
+loss function optimisation in neural networks; however, numerous other methods
 also exist. These include momentum-based strategies
 \cite{sutskever2013importance}, adaptive learning rate approaches
 \cite{zeiler2012adadelta} and moment estimation techniques
