@@ -7,10 +7,9 @@
 % TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
-The development of neural networks and the enhancement of their performance have
-been accompanied by a significant growth of their size, particularly in the
-number of weights constituting them. In parallel, the evolution of these
-networks has given rise to various applications
+Neural network development and performance enhancement have led to significant
+size growth, particularly in the number of weights constituting them. In
+parallel, the evolution of these networks has given rise to various applications
 \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:conf/emnlp/BudzianowskiV19,silver2018general,jumper2021highly},
 particularly embedded ones\cite{kim2020review,kuutti2020survey}, whose resources
 are highly constrained in terms of computing power, energy consumption or memory
@@ -56,10 +55,10 @@ model.\\
 
 Deep learning is a subfield of machine learning that focuses on the study of
 \acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
-roots in \acp{ANN} that aim to learn a data representation from unstructured
+roots in \acp{ANN} which aim to learn a data representation from unstructured
 data such as raw images \cite{DBLP:conf/nips/KrizhevskySH12}, text
 \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
-\cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in and end-to-end fashion.
+\cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
 \acp{ANN} were initially conceptualised based on the understanding of biological
 neural networks present in the brain
 \cite{mcculloch1943logical,hebb2005organization}.
@@ -67,15 +66,15 @@ neural networks present in the brain
 \cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
 \emph{perceptron}, which was capable of learning a linear decision boundary. The
 perceptron model was later extended to multiple layers of neurons, giving rise
-the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A \acl{MLP}
-is a type of artificial neural network that extends the concept of a
+to the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
+\acl{MLP} is a type of artificial neural network that extends the concept of a
 single-layer perceptron by including one or more hidden layers of neurons, with
-each layer fully connected to the next, allowing the model to learn and
-represent more complex, non-linear relationships in the input data. The term
-\emph{deep} in the context of \acp{DNN} refers to the staking of multiple and
-numerous layers within a neural network. A \ac{DNN} consists of layers, each
-layer is an operation that takes information from the previous layers, processes
-it and then passes it through an activation function
+each layer being fully connected to the next, allowing the model to learn and
+represent more complex, non-linear relationships in the input data. In the
+context of \acp{DNN}, the term \emph{deep} denotes the stacking of many layers
+within a neural network. A \ac{DNN} consists of layers, each layer is an
+operation that takes information from the previous layers, processes it and then
+passes it on through an activation function
 \cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
 introduce non linearity. Finally, this output is sent to the next layer. Among
 the most fundamental types of these layers are \emph{Convolutional} and
@@ -103,14 +102,13 @@ neurons that connect to every neuron in the preceding layer. This characteristic
 is central to \ac{MLP} networks, where these dense layers are stacked together.
 Convolutional layers are typically used for image analysis tasks
 \cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
-are convoluted with the input data. They are used for detecting edges, textures,
-and patterns, and are often used as feature extractor. Typical neural networks
+convolve with the input data. They are used for detecting edges, textures, and
+patterns, and are often used as feature extractors. Typical neural networks
 targeted towards image processing are composed of convolutional layers and thus
-named \aclp{CNN}. In a such architecture, convolutional layers are
-stacked and their output are usually fed into a fully-connected layer for
-further processing
+named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
+their output are usually fed into a fully-connected layer for further processing
 \cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
-Conceptual representations of these layers are shown in \cref{fig:sota:layers}
+Conceptual representations of these layers are shown in \cref{fig:sota:layers},
 and a typical \ac{CNN} architecture is shown in
 \cref{fig:sota:lenet5,fig:sota:vgg16}.\\
 
@@ -133,18 +131,18 @@ and a typical \ac{CNN} architecture is shown in
 
 
 The process of training a neural network involves adjusting the weights of the
-network to minimise a loss function. The loss function is a measure of the error
+network to minimise a loss function. The loss function measures the error
 between the predicted output of the network and the ground truth. Since neural
 networks are differentiable, the weights can be adjusted using gradient-based
-methods. The most common method is \acf{SGD}, derived from the Robbins–Monro
-algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient of the loss
-function is computed for a random subset of the data (a \emph{batch} or
-\emph{mini-batch}), and the weights are shifted in the direction that decreases
-the loss function. This direction is computed via the backpropagation algorithm
-\cite{rumelhart1986learning} which calculates the gradient of the loss with
-respect to each weight using the chain rule. \acl{SGD} is a prevalent method for
-loss function optimisation in neural networks; however, numerous other methods
-also exist. These include momentum-based strategies
+methods. The most prevalent method is \acf{SGD}, a derivative of the
+Robbins–Monro algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient
+of the loss function is computed for a random subset of the data (a \emph{batch}
+or \emph{mini-batch}), and the weights are shifted in the direction that
+decreases the loss function. This direction is computed via the backpropagation
+algorithm \cite{rumelhart1986learning} which calculates the gradient of the loss
+with respect to each weight using the chain rule. \acl{SGD} is a widely used
+method for loss function optimisation in neural networks; however, numerous
+other methods also exist. These include momentum-based strategies
 \cite{sutskever2013importance}, adaptive learning rate approaches
 \cite{zeiler2012adadelta} and moment estimation techniques
 \cite{kingma2014adam}.\\
@@ -156,23 +154,23 @@ their size and performance, alongside the introduction of new architectural
 modifications to address limitations of their predecessors (see
 \cref{fig:sota:net_sizes}). In 1998, LeNet-5 was developed for digit recognition
 \cite{DBLP:journals/pieee/LeCunBBH98}, constituting a relatively simple network
-with seven layers. Its size is significantly small compared to the contemporary
-models (see \cref{fig:sota:net_sizes}). With the introduction of AlexNet
-\cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size considerably
-grew, comprising more layers and neurons to handle more complex tasks like
-large-scale image recognition. AlexNet tackled the overfitting issue in LeNet-5
-with the use of data augmentation and dropout techniques.\\
+with seven layers. Its size is significantly smaller compared to the
+contemporary models (see \cref{fig:sota:net_sizes}). With the introduction of
+AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
+considerably grew, comprising more layers and neurons to handle more complex
+tasks, like large-scale image recognition. AlexNet tackled the overfitting issue
+in LeNet-5 with the use of data augmentation and dropout techniques.\\
 
 
 The next advancement was the VGG networks family
 \cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
 which emphasized the importance of depth in neural networks. With up to 19
-layers, VGG expanded on AlexNet's deep architecture, but the increased depth led
-to vanishing gradient problems. In the same year, Google's Inception (or
-GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced, addressing
-this issue with its novel inception modules, which allowed the network to learn
-at varying scales and increased computational efficiency, without overly
-increasing the network size.\\
+layers, VGG expanded on AlexNet's deep architecture. However, the increased
+depth led to vanishing gradient problems. In the same year, Google's Inception
+(or GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced,
+addressing this issue with its novel inception modules, which allowed the
+network to learn at varying scales and increased computational efficiency,
+without overly increasing the network size.\\
 
 \begin{figure}[htbp]
     \centering
@@ -193,11 +191,11 @@ manage feature-map sizes.\\
 In response, DenseNet \cite{huang2017densely} was proposed. It connects each
 layer to every other layer in a feed-forward fashion. By reinforcing the
 propagation of features and gradients through the network, DenseNet alleviated
-the vanishing-gradient problem and further improved the network ability
-to pass on information from earlier layers to later ones. Thus, through these
+the vanishing-gradient problem and further improved the network ability to pass
+on information from earlier layers to later ones. Thus, through these
 chronological advancements, neural networks not only grew in size but also
-improved in performance, becoming more efficient and capable of handling more
-complex tasks.
+improved in performance, thereby becoming more efficient and capable of handling
+more complex tasks.
 
 \begin{figure}[htbp]
     \centering
@@ -213,13 +211,13 @@ complex tasks.
 \section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
 
 
-Neural networks, utilise two fundamental mathematical operations: convolution
-and matrix multiplication. However, performing these operations can be
-computationally demanding, particularly with large and complexe networks. This
+Neural networks utilise two fundamental mathematical operations: convolution and
+matrix multiplication. However, performing these operations can be
+computationally demanding, particularly with large and complex networks. This
 can lead to significant processing times, posing a challenge for real-time or
-resource-limited applications. To mitigate this issue, some research efforts have been
-focusing on developing techniques to speed up these operations. These strategies
-range from optimizing the underlying algorithms to leveraging hardware
+resource-limited applications. To mitigate this issue, some research efforts
+have focused on developing techniques to speed up these operations. These
+strategies encompass optimizing the underlying algorithms to leveraging hardware
 acceleration, with the objective of enhancing the speed and efficiency of neural
 network computations.\\
 
@@ -229,7 +227,7 @@ The most popular algorithms for accelerating convolution operations rely on the
 \cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
 and leverage the Convolution Theorem. The Convolution Theorem states that the
 convolution of two signals in the source domain is the product of the two
-signals in the Fourier domain. This allows for a faster computation of the 2D
+signals in the Fourier domain. This allows for faster computation of the 2D
 convolution by using the \ac{FFT} to compute the convolution in the frequency
 domain \cite{oppenheim1997signals}.\\
 
@@ -249,7 +247,7 @@ algorithm is used in various works, mostly targeted towards a specific \ac{FPGA}
 
 
 Using particular matrix structure also speed up the standard operations used in
-a neural network. Fully connected layers can  effectively be accelerated by
+a neural network. Fully connected layers can be effectively accelerated by
 forcing the use of specific matrix structures. For instance,
 \citeauthor{DBLP:conf/iccv/ChengYFKCC15} devised a method where dense layers
 standard operation is replaced by a circulant projection
@@ -261,10 +259,10 @@ matrix, has the unique characteristic of each descending diagonal from left to
 right being constant. $T$ is an example of a Toeplitz matrix. This property is
 particularly useful for convolutions, as they can be expressed as a
 multiplication by a Toeplitz matrix \cite{gray2006toeplitz}. This algorithm has
-been used in \cite{liao2019compressing}, with a focus on \ac{FPGA}
-architectures. Note that the representation of a convolution as a product with a
-Toeplitz matrix can further be accelerated by using the aforementioned
-optimisations to the matrix multiplication algorithm.\\
+been used in \cite{liao2019compressing}, focusing on \ac{FPGA} architectures.
+Note that the representation of a convolution as a product with a Toeplitz
+matrix can further be accelerated by using the aforementioned optimisations to
+the matrix multiplication algorithm.\\
 
 \[
 C = 
@@ -293,10 +291,9 @@ algorithm is used in various deep learning frameworks
 neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest
 algorithm is automatically selected based on the tensor sizes and the hardware.
 However, depending on the operand size, the execution speed can be bound to the
-hardware and more precisely the memory thourghput and data access time rather
-than the computation time.
+hardware and more specifically, to the memory throughput and data access time,
+rather than the computation time.
 \cite{DBLP:journals/pc/WhaleyPD01,DBLP:journals/cca/DrevetIS10}
-
 
 \section{Teaching Paradigm}\label{sec:sota:teaching_paradigm}
 
@@ -304,7 +301,7 @@ than the computation time.
 \acf{KD} is a method that aims to transfer the knowledge of a large, complex and
 accurate network, referred to as the \emph{teacher}, to a smaller and more
 efficient one called the \emph{student}. The student is trained with a
-combination of the main task loss as well Fas a supplementary supervision signal
+combination of the main task loss as well as a supplementary supervision signal
 which is derived from the feature maps of the teacher network at various
 depths.\\
 
@@ -494,10 +491,10 @@ $$\displaystyle\frac{C_\text{out}\times k \times k}{C_\text{out} + k \times k}.$
     \includegraphics[width=0.70\textwidth]{chapter_sota/assets/depthwise_sep_conv_scheme.pdf}}
     \caption{Illustration schemes of the standard and depthwise separable
     convolution. The standard convolution uses $C_\text{out}$ kernels of size
-    $k\times k \times C_\text{int}$. The depthwise separable convolution is
+    $k\times k \times C_\text{in}$. The depthwise separable convolution is
     split into two steps: \emph{(i)} a convolution with $C_\text{in}$ kernels
     of size $k \times k$ and \emph{(ii)} a convolution with $C_\text{out}$
-    kernels of size $1\times 1 \times C_\text{int}$.
+    kernels of size $1\times 1 \times C_\text{in}$.
     Best viewed in colours.}
 \label{fig:sota:depthwise_conv_vs_standard_conv}
 \end{figure}
@@ -525,11 +522,11 @@ computationally demanding.\\
     \centering
     \includegraphics[width=0.70\textwidth]{chapter_sota/assets/fire_module.pdf}
     \caption{Illustration scheme of the fire module. The fire module is composed
-    is composed of a \emph{squeeze layer} (pointwise convolution designed to
-    reduce the number of channels fed to the following layer) and an
-    \emph{expand layer} (convolution with mixed $1\times1$ and $3\times3$
-    kernels. The $1\times1$ kernels replace some of the $3\times3$ kernels,
-    being less computationally intensive.). Best viewed in colours.}
+    of a \emph{squeeze layer} (pointwise convolution designed to reduce the
+    number of channels fed to the following layer) and an \emph{expand layer}
+    (convolution with mixed $1\times1$ and $3\times3$ kernels. The $1\times1$
+    kernels replace some of the $3\times3$ kernels, being less computationally
+    intensive.). Best viewed in colours.}
     \label{fig:sota:fire_module}
 \end{figure}
 
@@ -715,7 +712,7 @@ set \cite{DBLP:journals/corr/abs-2301-08727,elsken2019neural}.\\
 
 The performance and efficiency of \ac{NAS} are fundamentally determined by two
 key aspects: the \emph{search space} and the \emph{search strategy}. The search
-space, as the term suggests, defines the set of all possible architectures that
+space, as the name implies, defines the set of all possible architectures that
 can be discovered by the \ac{NAS} algorithm. It could be as broad as all
 possible configurations of a certain type of network, such as \acp{CNN}, or as
 narrow as different arrangements of a specific set of layers
@@ -848,33 +845,33 @@ neural networks has largely relied on the use of \ac{FP32}. FP32 has been the
 default choice due to its wide support across various hardware platforms and
 software libraries, which has made it a practical and convenient choice for the
 majority of machine learning tasks \cite{sze2017efficient}. However, using
-\acl{FP32} is not always necessary, and it possible to quantise a neural network
-to use lower precision values, while maitaining compelling performances.
-Quantising a neural network can result in a reduced memory footprint as well as
-faster computation if the latter are implemented to levrage the speicificity of
-the quantisation or paired with appropriate hardware.\\
+\acl{FP32} is not always necessary, and it is possible to quantise a neural
+network to use lower precision values, while maintaining compelling
+performances. Quantising a neural network can result in a reduced memory
+footprint as well as faster computation if the latter is implemented to leverage
+the specificity of the quantisation or paired with appropriate hardware.\\
 
 Quantising a neural network has been proposed as early as the 1990s
 \cite{balzer1991weight,fiesler1990weight}. This later regain traction as
-\citeauthor{37631} levraged Single Input Multiple Data instructions (SIMD) of
+\citeauthor{37631} leveraged Single Input Multiple Data instructions (SIMD) of
 x86 \ac{CPU} to speedup the fixed-point 8-bit operations \cite{37631}.
 \citeauthor{gupta2015deep} used uniform quantisation with fixed-point 16-bit
-with stochastic rounding to train neural networks. Quantisation has also been
-applied together with K-means clustering \cite{steinhaus1956division}.
-\cite{DBLP:journals/corr/HanMD15} uses K-means clustering to iteratively compute
-a lookup table or \emph{code book} for the weights. This code book is later
-further compressed using Huffman coding \cite{huffman1952method}. Note that this
-method is mostly useful for storage, but for training or inference, the weights
-need to be decompressed and their original value fetch in the code book before
-being used.\\
+representation and stochastic rounding to train neural networks. Quantisation
+has also been applied together with K-means clustering
+\cite{steinhaus1956division}. \cite{DBLP:journals/corr/HanMD15} uses K-means
+clustering to iteratively compute a lookup table or \emph{code book} for the
+weights. This code book is later further compressed using Huffman coding
+\cite{huffman1952method}. Note that this method is mostly useful for storage,
+but for training or inference, the weights need to be decompressed and their
+original value fetch in the code book before being used.\\
 
-Logarithmic quantisation provide compelling alternatives to uniform
+Logarithmic quantisation provides compelling alternatives to uniform
 quantisation. On the one hand, logarithmic quantisation enable to quantise
 weights with a larger dynamic range compared to uniform or linear quantisation.
-On the other hand, multiplication can be conventiently represented as an
+On the other hand, multiplication can be conveniently represented as an
 inexpensive bit shift operation if operands are properly represented in the
 logarithmic base. This is particularly beneficial for \ac{FPGA} implementations
-\cite{alemdar2017ternary}. To levrage this potential speedup,
+\cite{alemdar2017ternary}. To leverage this potential speedup,
 \cite{DBLP:journals/corr/LinCMB15} forced the weight representation to be a
 power of two. \cite{DBLP:conf/iclr/ZhouYGXC17} improved this technique by
 applying it iteratively.\\
@@ -898,7 +895,7 @@ called \emph{binarisation}. This allows for a dramatic simplification of the
 computation in the neural network, and the expense of a drop in performances.
 Binarisation has been further developed in \cite{DBLP:conf/nips/HubaraCSEB16},
 where the authors proposed a method to binarise both weights and activations
-(see example of binarised kernels in \cref{fig:sota:binarised_kernels}).
+(see examples of binarised kernels in \cref{fig:sota:binarised_kernels}).
 DoReFa-Net \cite{zhou2016dorefa} build upon the success of binarised neural
 network and introduced the stochastic 8-bit quantisation of the gradients during
 the backward pass to accelerate both training and inference.\\
@@ -906,7 +903,7 @@ the backward pass to accelerate both training and inference.\\
 Quantisation methods that quantise weights or activations after the training are
 called \ac{PTQ} methods. Quantising an already existing network is a widely used
 technique in the most famous deep learning framework
-\cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they quantise the weight after
+\cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they quantise the weights after
 the training, \ac{PTQ} methods are fast and easy to apply. However, they often
 introduce an irreversible information loss and  a performance drop that need to
 be compensated for \cite{DBLP:journals/ijon/LiangGWSZ21}. To solve for this
@@ -965,7 +962,7 @@ as determining the \emph{saliency} of weights, has been a hot spot in the
 pruning literature \cite{li2023model,cheng2017survey,liang2021pruning}. Pruning
 a neural network removes weights and consequently reduces the theoretical
 computational complexity of the network as well as its memory footprint.  The
-fraction of weight removed during pruning is ofen denoted as the \emph{pruning
+fraction of weight removed during pruning is often denoted as the \emph{pruning
 rate}, which is commonly defined as the fraction of the number of weights
 removed from the original network over the total quantity of weights initially
 present in it. Arguably, the first pruning method, introduced in 1989, was based
@@ -996,7 +993,7 @@ pruning methods.\\
 
 Structured pruning involves the removal of entire structural components of the
 network, such as rows, columns, channels, filters, layers or even whole
-subnetworks (note that pruning a channel in layer $n+1$ is implies pruning a
+subnetworks (note that pruning a channel in layer $n+1$ implies pruning a
 filter in layer $n$, and vice-versa). This type of pruning results in
 regular\footnote{regular in this context means that all weight tensors are dense
 and that the acceleration of computations does not rely on sparse computing
@@ -1023,7 +1020,7 @@ activations, are assumed to contribute less to the final classification
 decision, hence they become the prime candidates for pruning.  The Filter
 Pruning via Geometric Median method \cite{DBLP:conf/cvpr/HeLWHY19} calculates
 the geometric median of a set of filters and prunes those filters that are
-nearest to this geometric median, rather than the ones condisered less important
+nearest to this geometric median, rather than the ones considered less important
 by \cite{DBLP:conf/iclr/0022KDSG17}. The filters close to the geometric median
 are considered by \citeauthor{DBLP:conf/cvpr/HeLWHY19} to be redundant with
 other filters in the same layers. \citeauthor{DBLP:conf/cvpr/WangLW21} used
@@ -1060,7 +1057,7 @@ LASSO regression selection while minimising the least square reconstruction
 error or the feature map \cite{DBLP:conf/iccv/HeZS17}.
 \citeauthor{DBLP:journals/corr/HuPTT16} capitalised on the abundance of zeros in
 feature maps that follow the \ac{ReLU} activation function. They introduced the
-method called Average Percentage of Zero (APoZ) that identifies channels in the
+method called Average Percentage of Zeros (APoZ) that identifies channels in the
 feature map with a high count of null outputs. These channels, which contribute
 minimally to the final outcome, can hence be pruned. While the aforementioned
 methods consider only the feature map of the layer to be pruned, techniques like
@@ -1085,7 +1082,7 @@ scaling factors $\gamma$ of the \ac{BN} \cite{DBLP:conf/iccv/LiuLSHYZ17},
 whereas \cite{DBLP:conf/nips/YouYYM019} adds the $\ell_1$ regularisation on
 scalar factors associated with feature map channels.
 \citeauthor{DBLP:conf/icml/KangH20} use \ac{BN} parameters to craft a mask that
-prunes channels whose output is likely to be nul once evaluated by the \ac{ReLU}
+prunes channels whose output is likely to be null once evaluated by the \ac{ReLU}
 \cite{DBLP:conf/icml/KangH20}. \\
 
 \begin{figure}[htbp]
@@ -1123,21 +1120,21 @@ while \cite{DBLP:conf/iccv/Zhou0W019} targets the posterior of redundancy,
 assuming inter-layer dependency among channels.\\
 
 
-Dynamic pruning is a another approach that prunes neural networks during both
-the training and inference stages, which facilitates in maintaining the model
-representation capability and offers superior resource-accuracy trade-offs. In
-the training phase, Dynamic Network Surgery \cite{DBLP:conf/nips/GuoYC16}
-introduces the concept of dynamic pruning through an unstructured approach. This
-method applies a binary mask indicating the importance of weights and updates it
-alternately with all the weights, allowing incorrectly pruned parameters an
-opportunity to revive. Soft Filter Pruning \cite{DBLP:conf/ijcai/HeKDFY18}
-implements a structured version of dynamic pruning. Instead of employing a fixed
-mask throughout the training, which could limit the optimization space, Soft
-Filter Pruning dynamically generates masks based on the $\ell_2$ norm of filters
-at every epoch. The dynamic nature of Soft Filter Pruning allows soft-pruned
-filters to be updated in the next epoch, with new masks being formed based on
-the updated weights. Focusing on the inference stage,
-\citeauthor{DBLP:conf/nips/LinRLZ17} introduced Runtime Neural Pruning
+Dynamic pruning represents a different approach, pruning neural networks during
+both the training and inference stages, which facilitates in maintaining the
+model representation capability and offers superior resource-accuracy
+trade-offs. In the training phase, Dynamic Network Surgery
+\cite{DBLP:conf/nips/GuoYC16} introduces the concept of dynamic pruning through
+an unstructured approach. This method applies a binary mask indicating the
+importance of weights and updates it alternately with all the weights, allowing
+incorrectly pruned parameters an opportunity to revive. Soft Filter Pruning
+\cite{DBLP:conf/ijcai/HeKDFY18} implements a structured version of dynamic
+pruning. Instead of employing a fixed mask throughout the training, which could
+limit the optimization space, Soft Filter Pruning dynamically generates masks
+based on the $\ell_2$ norm of filters at every epoch. The dynamic nature of Soft
+Filter Pruning allows soft-pruned filters to be updated in the next epoch, with
+new masks being formed based on the updated weights. Focusing on the inference
+stage, \citeauthor{DBLP:conf/nips/LinRLZ17} introduced Runtime Neural Pruning
 \cite{DBLP:conf/nips/LinRLZ17} which employs a unique framework consisting of a
 \ac{CNN} backbone and an recurent neural network as a decision network. This
 approach enables the model to adapt to the properties of different input images
@@ -1148,19 +1145,19 @@ dynamic importance of channels. The static importance refers to the channel's
 relevance for the entire dataset, while the dynamic importance is tied to a
 specific input. DRLP applies reinforcement learning to generate a unified
 pruning decision based on these two aspects of channel importance. More
-recently, \citeauthor{DBLP:conf/cvpr/ElkerdawyE0R22} introduced Fire Together
-Wire Together \cite{DBLP:conf/cvpr/ElkerdawyE0R22}. It another approach to
-dynamic pruning that treats it as a self-supervised binary classification
-problem. It employs a prediction head to create learnable binary masks and uses
-a ground truth mask to guide the learning after each convolutional layer. By
-ranking the norm of input activations, the framework creates ground truth
-pruning decisions that facilitate self-supervised learning. \\
+recently, \citeauthor{DBLP:conf/cvpr/ElkerdawyE0R22} recently introduced Fire
+Together Wire Together, another dynamic pruning method that treats pruning as a
+self-supervised binary classification problem. It employs a prediction head to
+create learnable binary masks and uses a ground truth mask to guide the learning
+after each convolutional layer. By ranking the norm of input activations, the
+framework creates ground truth pruning decisions that facilitate self-supervised
+learning. \\
 
-As previously discussed, structured purning removes indivisible groups of
-weights and therefore yields regular networks architecture that can be
-implementend in standard deep learning frameworks in a straightforward way.
+As previously discussed, structured pruning removes indivisible groups of
+weights and therefore yields regular network architectures that can be
+implemented in standard deep learning frameworks in a straightforward way.
 Despite its practicality, structured pruning enforces a strong topological prior
-by pruning entire groups of weights of the original network, which consequently
+by pruning entire groups of weights from the original network, which consequently
 leads to a lower sparsity rate compared to its counterpart, unstructured
 pruning. Unstructured pruning, provides a more flexible approach by removing
 individual weights from the original network structure. This process not only
@@ -1170,7 +1167,7 @@ higher pruning rates.\\
 In the early stages, unstructured pruning methodologies identified weights that
 could be eliminated based on their influence on the Hessian of the loss function
 \cite{DBLP:conf/nips/CunDS89,DBLP:conf/icnn/HassibiSW93,DBLP:conf/nips/HassibiSW93}.
-A simpler and more tracktable strategy for larger networks was later introduced
+A simpler and more tractable strategy for larger networks was later introduced
 by \citeauthor{DBLP:conf/nips/HanPTD15}, suggesting a straightforward heuristic:
 the pruning of weights with the smallest magnitude (\emph{i.e.} absolute value)
 \cite{DBLP:conf/nips/HanPTD15}, also referred to as \emph{magnitude pruning}.
@@ -1204,17 +1201,17 @@ weights is ascertained based on the magnitude of the associated mask.\\
  achieve comparable or even superior performance to the original network. The
  \emph{lottery ticket} is found by training the original network up to
  convergence, then pruned with magnitude pruning and finally, the remaining
- weights are reinitialized to their original values: the one they had before the
- training even strated. The resulting sub-network is the \emph{lottery ticket}.
- This research sparked a lot of interest and various works:
- \cite{DBLP:conf/nips/ZhouLLY19} proposed an analysis of the phenomenon, results
- of \cite{DBLP:conf/iclr/FrankleC19} have been extended to larger networks in
- \cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training the
- original network to convergence to find the Lottery Tickets has been challenged
- in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket}
- (or in other words the efficient subnetwork) has been theoretically proven in
- \cite{DBLP:conf/icml/MalachYSS20} and the requirements of the theoretical size
- of the original network has been later refined in
+ weights are reinitialized to their original values, it is to say the value they
+ had before the training even started. The resulting sub-network is the
+ \emph{lottery ticket}. This research sparked significant interest and various
+ works: \cite{DBLP:conf/nips/ZhouLLY19} proposed an analysis of the phenomenon,
+ results of \cite{DBLP:conf/iclr/FrankleC19} have been extended to larger
+ networks in \cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training
+ the original network to convergence to find the Lottery Tickets has been
+ challenged in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the
+ \emph{lottery ticket} (or in other words the efficient subnetwork) has been
+ theoretically proven in \cite{DBLP:conf/icml/MalachYSS20} and the requirements
+ of the theoretical size of the original network has been later refined in
  \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.\\
 
 
