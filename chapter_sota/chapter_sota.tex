@@ -425,6 +425,38 @@ latter as a probability distribution and minimises divergence between the two
 
 \section{Architecture Design}\label{sec:sota:archi_design}
 
+The architectural design of neural networks, while contributing significantly to
+their performance, often inflates their computational and memory requirements.
+This increased complexity, although beneficial for the final performance, could
+limit the deployment of these networks in resource-constrained environments.
+Thus, formulating effective and efficient neural network architectures is of
+significant importance. The design of neural networks is a problem that not only
+involves designing suitable building blocks but also determining their
+organization and interconnections. This section scrutinizes these aspects by
+focusing on handmade and automatic efficient architecture design.\\
+
+\cref{sec:sota:efficient_archi} introduces building blocks to build efficient
+architectures. These building blocks have been meticulously engineered to strike
+a balance between computational efficiency and performance. Properly
+incorporating these blocks can result in architectures better suited to their
+operating environments, enhancing efficiency without sacrificing the desired
+level of performance.\\
+
+Thereafter, \cref{sec:sota:nas} delves into the field of \ac{NAS}. The primary
+aim of \ac{NAS} is to design, in an automatic fashion, network architectures
+that demonstrate a high level of efficiency and performance for given tasks. By
+doing so, it eliminates the need for manual design and the associated
+trial-and-error approaches. Although \ac{NAS} was not initially targeted at
+generating lightweight architectures, the principles and methods described in
+this section can be adapted to do so. \\
+
+This section explores techniques aimed at the creation of efficient and
+effective neural networks through the careful selection and assembly of
+optimised building blocks. The organization of these components plays an
+important role in network compression and optimization, highlighting that high
+performance can be also be reached with designs that are less demanding of
+resources.\\
+
 \subsection{Building Blocks for Efficient Architecture Design}\label{sec:sota:efficient_archi}
 % region: depthwise separable convolutions
 
@@ -786,7 +818,7 @@ leveraging and enhancing already existing architectures or trained models.
 Instead of developing a new architecture, these techniques seek to make an
 existing architecture more efficient by modifying its weights and connections.\\
 
-Section \cref{sec:sota:quantisation} delves into the methodologies of
+\Cref{sec:sota:quantisation} delves into the methodologies of
 quantisation and binarisation. These methods endeavour to reduce the numerical
 precision of weights and activations in a network, without a significant
 compromise in overall performance. This process can significantly speed up
@@ -794,7 +826,7 @@ computations and decrease memory usage, contributing to the increased efficiency
 of a pre-existing network, especially in environments with limited hardware or
 memory resources.\\
 
-Subsequently, section \cref{sec:sota:pruning} examines the application of
+Subsequently, \cref{sec:sota:pruning} examines the application of
 pruning techniques. Pruning refers to the elimination of redundant or
 insignificant weights and connections in a network, leading to a sparser and
 more effective architecture. Pruning an existing network can further enhance
