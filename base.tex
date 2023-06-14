@@ -1,6 +1,9 @@
 \documentclass{report}
 
 %====================== PACKAGES ======================
+
+% region: packages
+
 %\usepackage{extsize}
 \usepackage[english]{babel}
 \usepackage[utf8x]{inputenc}
@@ -28,7 +31,12 @@
 %Pour les galerie d'images
 \usepackage{subfig}
 
+% endregion: packages
+
 %====================== PACKAGES PERSO ======================
+
+% region: packages perso
+
 \usepackage{lmodern} % autre police d'écriture qui supporte le scaling
 \usepackage[noabbrev]{cleveref} % références croisées [noabbrev] pour éviter les abréviations
 \usepackage{acro} % acronymes (voir ici : https://tex.stackexchange.com/questions/492175/how-to-generate-list-of-abbreviations-in-latex)
@@ -49,6 +57,10 @@
 \usepackage[square,numbers]{natbib} % pour citer les auteurs directement [DEUX REFS] (1):https://tex.stackexchange.com/questions/69379/how-do-i-cite-author-in-latex (2) https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib
 \usepackage[left,modulo]{lineno} % pour numéroter les lignes
 \usepackage{etoolbox} % for the \patchcmd command
+% \usepackage{xr} % Pour pouvoir référencer les chapitres entre eux (voir ici: https://tex.stackexchange.com/questions/14364/cross-referencing-between-different-files)
+% endregion: packages perso
+
+
 %====================== COMMANDES PERSO ======================
 \newcommand\myfunc[5]{%
   \begingroup
@@ -146,11 +158,16 @@
 \setcounter{page}{0}
 \newpage
 
+% \input{./chapter_intro/chapter_into.tex}
+
 \linenumbers
-\input{chapter_sota/chapter_sota.tex}
+
+% \input{./chapter_context/chapter_context.tex}
+\input{./chapter_sota/chapter_sota.tex}
 \input{./chapter_1/chapter_1.tex}
 \input{./chapter_2/chapter_2.tex}
 
+\input{./appendix/appendix.tex}
 \newpage
 
 %récupérer les citation avec "/footnotemark"
