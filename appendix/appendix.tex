@@ -34,13 +34,73 @@ quadratically with $m$. Therefore, for a 2D convolution, the computational
 complexity can roughly be estimated as $(m-k+1)^2$ times the number of
 parameters in the convolution kernel.\\
 
-\section{Annihiliation of the Mixing Coefficient \texorpdfstring{$\lambda$}{lambda}}
+\section{Scheduling of the Mixing Coefficient \texorpdfstring{$\lambda$}{lambda}}
 \label{sec:appendix:annihilation}
+
+This section presents the test accuracy of a Conv4 network trained on CIFAR10
+with the method introduced in \cref{sec:chap1:weight_reparam} when scheduling is
+applied on the mixing coefficient $\lambda$. Two trends are tested for
+$\lambda$: increasing and decreasing. Given a $\lambda_\text{max}$, a maximum
+number of epochs $e_\text{max}$, the current epoch $e$, and a shape parameter
+$p$, the decreasing scheduling is defined as follows:\\
+$$
+\lambda_e = \lambda_\text{max} \times \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p}
+$$\\
+and the increasing scheduling is defined as follows:\\
+$$\\
+\lambda_e = \lambda_\text{max} \times \left( 1- \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p} \right)
+$$\\
+Examples of the evolution of $\lambda$ for different values of $p$ are shown in
+\cref{fig:appendix:annihiliation_inc_dec} and the related performances in
+\cref{sec:appendix:annihiliation_table}.\\
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{lllc}
+        \toprule
+         \textbf{pruning rate} (\%) & \textbf{$\lambda$ Trend} & $p$ & \textbf{Test Accuracy} (\%)\\
+        \midrule
+         \multirow{6}{*}{90} & \multirow{3}{*}{incr.} & 0.6 & 85.46 $\pm$ 0.18 \\
+          & & 1 & 85.43 $\pm$ 0.46 \\
+          & & $\frac{1}{0.6}$ & 84.96 $\pm$ 0.53 \\
+          \cline{2-4}
+          & \multirow{3}{*}{decr.} & 0.6 & 85.36 $\pm$ 0.59 \\
+          & & 1 & 85.55 $\pm$ 0.47 \\
+          & & $\frac{1}{0.6}$ & 85.50 $\pm$ 0.29 \\
+          \midrule
+          \multirow{6}{*}{95} & \multirow{3}{*}{incr.} & 0.6 & 84.00 $\pm$ 0.85 \\
+          & & 1 & 79.28 $\pm$ 0.96 \\
+          & & $\frac{1}{0.6}$ & 66.43 $\pm$ 05.13 \\
+          \cline{2-4}
+          & \multirow{3}{*}{decr.} & 0.6 & 83.53 $\pm$ 0.65 \\
+          & & 1 & 83.42 $\pm$ 0.50 \\
+          & & $\frac{1}{0.6}$ & 84.07 $\pm$ 0.92 \\
+          \midrule
+          \multirow{6}{*}{99} & \multirow{3}{*}{incr.} & 0.6 & 14.27 $\pm$ 3.21 \\
+          & & 1 & 11.05 $\pm$ 01.26 \\
+          & & $\frac{1}{0.6}$ & 10.33 $\pm$ 0.43 \\
+          \cline{2-4}
+          & \multirow{3}{*}{decr.} & 0.6 & 34.36 $\pm$ 33.40 \\
+          & & 1 & 52.51 $\pm$ 29.65 \\
+          & & $\frac{1}{0.6}$ & 45.37 $\pm$ 32.32 \\
+        \bottomrule
+    \end{tabular}
+    \caption{Conv4 test accuracy on CIFAR10, with $\lambda=50$, for increasing
+    (\emph{incr.}) and decreasing (\emph{decr.}) scheduling for various pruning
+    rates and values of the parameter $p$. The networks have been trained for
+    300 epochs.}
+    \label{sec:appendix:annihiliation_table}
+\end{table}
+
 
 \begin{figure}[!h]
 \centering
-\subfloat[increasing\label{fig:appendix:annihilation_increasing}]{
+\subfloat[Increasing scheduling\label{fig:appendix:annihilation_increasing}]{
     \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_max.pdf}}
-\subfloat[decreasing\label{fig:appendix:annihilation_decreasing}]{
+    \subfloat[Decreasing
+    scheduling\label{fig:appendix:annihilation_decreasing}]{
     \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_min.pdf}}
+    \caption{Evolution of the mixing coefficient $\lambda$ for different values
+    of $p$ and for increasing and decreasing scheduling. Best viewed in color.}
+\label{fig:appendix:annihiliation_inc_dec}
 \end{figure}
