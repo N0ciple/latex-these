@@ -11,21 +11,21 @@ one part, highly dependent on the input size, and for the other part, higher
 than the number of parameters.\\
 
 Without loss of generality, consider a 2D square matrix $M$ of size $m \times
-m$, and a 2D convolution kernel $K$ of size $k \times k$, with $k<m$. The output
+    m$, and a 2D convolution kernel $K$ of size $k \times k$, with $k<m$. The output
 of the spatial convolution of $M$ by $K$ is denoted $O$. The matrix $O$ is of
 size $(m-k+1) \times (m-k+1)$. Each one of the $(m-k+1)^2$ elements of $O$
 necessitates $k^2$ multiplications and $k^2-1$ additions. For the sake of
 simplicity, we will consider $k^2$ \acfp{MAC} operations per element of $O$. The
 total number of \acp{MAC} needed to compute $O$, denoted $\mu$, is therefore:\\
 $$
-\mu = (m-k+1)^2 \times k^2
+    \mu = (m-k+1)^2 \times k^2
 $$\\
 
 Considering that there are $k^2$ elements in $K$, the ratio between the number
 of \acp{MAC} and the number of parameters is:
 
 $$
-\frac{\mu}{k^2} = (m-k+1)^2
+    \frac{\mu}{k^2} = (m-k+1)^2
 $$\\
 
 
@@ -44,11 +44,11 @@ $\lambda$: increasing and decreasing. Given a $\lambda_\text{max}$, a maximum
 number of epochs $e_\text{max}$, the current epoch $e$, and a shape parameter
 $p$, the decreasing scheduling is defined as follows:\\
 $$
-\lambda_e = \lambda_\text{max} \times \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p}
+    \lambda_e = \lambda_\text{max} \times \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p}
 $$\\
 and the increasing scheduling is defined as follows:\\
 $$\\
-\lambda_e = \lambda_\text{max} \times \left( 1- \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p} \right)
+    \lambda_e = \lambda_\text{max} \times \left( 1- \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p} \right)
 $$\\
 Examples of the evolution of $\lambda$ for different values of $p$ are shown in
 \cref{fig:appendix:annihiliation_inc_dec} and the related performances in
@@ -58,49 +58,52 @@ Examples of the evolution of $\lambda$ for different values of $p$ are shown in
     \centering
     \begin{tabular}{lllc}
         \toprule
-         \textbf{pruning rate} (\%) & \textbf{$\lambda$ Trend} & $p$ & \textbf{Test Accuracy} (\%)\\
+        \textbf{pruning rate} (\%) & \textbf{$\lambda$ Trend} & $p$             & \textbf{Test Accuracy} (\%) \\
         \midrule
-         \multirow{6}{*}{90} & \multirow{3}{*}{incr.} & 0.6 & 85.46 $\pm$ 0.18 \\
-          & & 1 & 85.43 $\pm$ 0.46 \\
-          & & $\frac{1}{0.6}$ & 84.96 $\pm$ 0.53 \\
-          \cline{2-4}
-          & \multirow{3}{*}{decr.} & 0.6 & 85.36 $\pm$ 0.59 \\
-          & & 1 & 85.55 $\pm$ 0.47 \\
-          & & $\frac{1}{0.6}$ & 85.50 $\pm$ 0.29 \\
-          \midrule
-          \multirow{6}{*}{95} & \multirow{3}{*}{incr.} & 0.6 & 84.00 $\pm$ 0.85 \\
-          & & 1 & 79.28 $\pm$ 0.96 \\
-          & & $\frac{1}{0.6}$ & 66.43 $\pm$ 05.13 \\
-          \cline{2-4}
-          & \multirow{3}{*}{decr.} & 0.6 & 83.53 $\pm$ 0.65 \\
-          & & 1 & 83.42 $\pm$ 0.50 \\
-          & & $\frac{1}{0.6}$ & 84.07 $\pm$ 0.92 \\
-          \midrule
-          \multirow{6}{*}{99} & \multirow{3}{*}{incr.} & 0.6 & 14.27 $\pm$ 3.21 \\
-          & & 1 & 11.05 $\pm$ 01.26 \\
-          & & $\frac{1}{0.6}$ & 10.33 $\pm$ 0.43 \\
-          \cline{2-4}
-          & \multirow{3}{*}{decr.} & 0.6 & 34.36 $\pm$ 33.40 \\
-          & & 1 & 52.51 $\pm$ 29.65 \\
-          & & $\frac{1}{0.6}$ & 45.37 $\pm$ 32.32 \\
+        \multirow{6}{*}{90}        & \multirow{3}{*}{incr.}   & 0.6             & 85.46 $\pm$ 0.18            \\
+                                   &                          & 1               & 85.43 $\pm$ 0.46            \\
+                                   &                          & $\frac{1}{0.6}$ & 84.96 $\pm$ 0.53            \\
+        \cline{2-4}
+                                   & \multirow{3}{*}{decr.}   & 0.6             & 85.36 $\pm$ 0.59            \\
+                                   &                          & 1               & 85.55 $\pm$ 0.47            \\
+                                   &                          & $\frac{1}{0.6}$ & 85.50 $\pm$ 0.29            \\
+        \midrule
+        \multirow{6}{*}{95}        & \multirow{3}{*}{incr.}   & 0.6             & 84.00 $\pm$ 0.85            \\
+                                   &                          & 1               & 79.28 $\pm$ 0.96            \\
+                                   &                          & $\frac{1}{0.6}$ & 66.43 $\pm$ 05.13           \\
+        \cline{2-4}
+                                   & \multirow{3}{*}{decr.}   & 0.6             & 83.53 $\pm$ 0.65            \\
+                                   &                          & 1               & 83.42 $\pm$ 0.50            \\
+                                   &                          & $\frac{1}{0.6}$ & 84.07 $\pm$ 0.92            \\
+        \midrule
+        \multirow{6}{*}{99}        & \multirow{3}{*}{incr.}   & 0.6             & 14.27 $\pm$ 3.21            \\
+                                   &                          & 1               & 11.05 $\pm$ 01.26           \\
+                                   &                          & $\frac{1}{0.6}$ & 10.33 $\pm$ 0.43            \\
+        \cline{2-4}
+                                   & \multirow{3}{*}{decr.}   & 0.6             & 34.36 $\pm$ 33.40           \\
+                                   &                          & 1               & 52.51 $\pm$ 29.65           \\
+                                   &                          & $\frac{1}{0.6}$ & 45.37 $\pm$ 32.32           \\
         \bottomrule
     \end{tabular}
     \caption{Conv4 test accuracy on CIFAR10, with $\lambda=50$, for increasing
-    (\emph{incr.}) and decreasing (\emph{decr.}) scheduling for various pruning
-    rates and values of the parameter $p$. The networks have been trained for
-    300 epochs.}
+        (\emph{incr.}) and decreasing (\emph{decr.}) scheduling for various pruning
+        rates and values of the parameter $p$. The networks have been trained for
+        300 epochs.}
     \label{sec:appendix:annihiliation_table}
 \end{table}
 
 
 \begin{figure}[!h]
-\centering
-\subfloat[Increasing scheduling\label{fig:appendix:annihilation_increasing}]{
-    \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_max.pdf}}
+    \centering
+    \subfloat[Increasing scheduling\label{fig:appendix:annihilation_increasing}]{
+        \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_max.pdf}}
     \subfloat[Decreasing
-    scheduling\label{fig:appendix:annihilation_decreasing}]{
-    \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_min.pdf}}
+        scheduling\label{fig:appendix:annihilation_decreasing}]{
+        \includegraphics[width=0.49\textwidth]{appendix/assets/annihiling_lambda_min.pdf}}
     \caption{Evolution of the mixing coefficient $\lambda$ for different values
-    of $p$ and for increasing and decreasing scheduling. Best viewed in color.}
-\label{fig:appendix:annihiliation_inc_dec}
+        of $p$ and for increasing and decreasing scheduling. Best viewed in color.}
+    \label{fig:appendix:annihiliation_inc_dec}
 \end{figure}
+
+\section{Xavier Initialization with Dynamic Weight Rescale}
+\label{sec:appendix:xavier_init}
