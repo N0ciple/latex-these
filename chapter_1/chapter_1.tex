@@ -365,7 +365,7 @@ includes a prior on its saliency. An apparent weight $\mathbf{\hat w}_\ell$ of
 $\hat{f}$ is derived from a \emph{latent weight} $\mathbf{w}_\ell$ by applying the
 following reparametrisation:
 \begin{equation}
-  \label{eqn:reparam}
+  \label{eqn:chap1:reparam}
   \mathbf{\hat w}_\ell = \mathbf{w}_\ell  \odot h_t(\mathbf{w}_\ell),
 \end{equation}
 \noindent with $h_t$ being the reparametrisation function and $t$ its
@@ -653,7 +653,7 @@ the initialisation is already pruned to match the targeted budget, the
   \caption{Our training procedure}
   \label{alg:chap1:training_pruning}
   \begin{algorithmic}
-    \REQUIRE Dataset $\mathcal{D} \in \mathcal{X} \times \mathcal{Y}$, network $f$,
+    \REQUIRE Dataset $\mathcal{D} \subset \mathcal{X} \times \mathcal{Y}$, network $f$,
     weights $\theta$, number of epochs $E$, mixing coefficient $\lambda$, learning
     rate $\eta$, pruning rate $p$
     \FOR{$t = 1$ to $E$}
