@@ -44,11 +44,11 @@ $\lambda$: increasing and decreasing. Given a $\lambda_\text{max}$, a maximum
 number of epochs $e_\text{max}$, the current epoch $e$, and a shape parameter
 $p$, the decreasing scheduling is defined as follows:\\
 $$
-    \lambda_e = \lambda_\text{max} \times \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p}
+    \lambda_e = \lambda_\text{max}  \sqrt[p~]{1 - \displaystyle\left(\frac{e}{e_\text{max}}\right)^p}
 $$\\
 and the increasing scheduling is defined as follows:\\
 $$\\
-    \lambda_e = \lambda_\text{max} \times \left( 1- \left(1 - \left(\frac{e}{e_\text{max}}\right)^p\right)^\frac{1}{p} \right)
+    \lambda_e = \lambda_\text{max} \left( 1- \sqrt[p~]{ 1 - \left(\frac{e}{e_\text{max}}\right)^p} \right)
 $$\\
 Examples of the evolution of $\lambda$ for different values of $p$ are shown in
 \cref{fig:appendix:annihiliation_inc_dec} and the related performances in
@@ -105,5 +105,40 @@ Examples of the evolution of $\lambda$ for different values of $p$ are shown in
     \label{fig:appendix:annihiliation_inc_dec}
 \end{figure}
 
-\section{Xavier Initialization with Dynamic Weight Rescale}
+\section{Xavier and Kaiming Initialisations}
 \label{sec:appendix:xavier_init}
+Glorot and Kaiming initializations are strategies for initializing the weights
+of neural networks. They are designed to help mitigate the issues of vanishing
+and exploding gradients, which can occur during the training of deep neural
+networks.\\
+
+Glorot Initialization, also known as Xavier Initialization, suggests that the
+initial weights of the network should be drawn from a distribution with zero
+mean and a specific variance. The variance is dependent on the number of input
+and output neurons in the weight tensor. Kaiming initialisation is a
+modification of Glorot initialisation that is tailored for neural networks with
+ReLU activations. It is designed to take into account the fact that ReLU
+activations nullify half of the input values. These two types of initialisation
+can be used with either a normal or uniform distribution. They impact the
+standard deviation (and consequently the variance) of the underlying
+distribution. The standard deviation for Glorot normal initialisation is
+computed as follows:\\
+
+\begin{equation}
+    \sigma = \sqrt{\frac{2}{n_\text{in} + n_\text{out}}}
+\end{equation}\\
+
+where $n_\text{in}$ and $n_\text{out}$ are the number of input and output
+neurons in the weight tensor. The standard deviation for Kaiming normal
+initialisation is computed as follows:\\
+
+\begin{equation}
+    \sigma = \frac{1}{\sqrt{n_\text{in}}}
+\end{equation}
+
+where $n_\text{in}$ is the number of input neurons in the weight tensor.\\
+
+It is important to note that, when using the Pytorch framework, this standard
+deviation is adapted depending on the type of non-linearities used in the
+network. For instance, using \ac{ReLU} activation functions require multiplying
+the standard deviation by $\sqrt{2}$ \cite{pytorch_init}.\\
