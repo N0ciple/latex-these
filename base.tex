@@ -29,7 +29,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
 %Pour les galerie d'images
-\usepackage{subfig}
+% \usepackage{subfig}
 
 % endregion: packages
 
@@ -42,7 +42,7 @@
 \usepackage{acro} % acronymes (voir ici : https://tex.stackexchange.com/questions/492175/how-to-generate-list-of-abbreviations-in-latex)
 \usepackage{mathrsfs}  % pour les polices mathématiques ex: \mathscr{X}
 \usepackage{dsfont,amsfonts} % pour les polices mathématiques ex: \mathds{X}
-\usepackage{subfig} % pour les sous figures
+% \usepackage{subfig} % pour les sous figures
 \usepackage{lipsum} % pour générer du texte aléatoire
 \usepackage{booktabs} % pour les tableaux
 \usepackage{multirow} % pour les tableaux
@@ -57,6 +57,7 @@
 \usepackage[square,numbers]{natbib} % pour citer les auteurs directement [DEUX REFS] (1):https://tex.stackexchange.com/questions/69379/how-do-i-cite-author-in-latex (2) https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib
 \usepackage[left,modulo]{lineno} % pour numéroter les lignes
 \usepackage{etoolbox} % for the \patchcmd command
+\usepackage{subcaption}% pour avoir des sous tables et les sous figures (remplace subfig)
 % \usepackage{xr} % Pour pouvoir référencer les chapitres entre eux (voir ici: https://tex.stackexchange.com/questions/14364/cross-referencing-between-different-files)
 % endregion: packages perso
 
@@ -158,11 +159,10 @@
 \setcounter{page}{0}
 \newpage
 
-% \input{./chapter_intro/chapter_into.tex}
 
 \linenumbers
 
-% \input{./chapter_context/chapter_context.tex}
+\input{./chapter_intro/chapter_into.tex}
 \input{./chapter_sota/chapter_sota.tex}
 \input{./chapter_1/chapter_1.tex}
 \input{./chapter_2/chapter_2.tex}
