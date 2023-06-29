@@ -22,7 +22,7 @@
   drop, induced by pruning, with respect to the unpruned network compared to
   other pruning methods. We demonstrate experimentally the effectiveness of our
   method across various pruning rates, datasets, and architectures, including
-  Conv4, VGG16, ResNet20 on CIFAR10 and CIFAR100, and ResNet18 on the more
+  Conv4, VGG16, ResNet20 on CIFAR-10 and CIFAR-100, and ResNet18 on the more
   challenging TinyImageNet dataset.\\
   \indent We also evaluate the effectiveness and relevance of our method in a
   comparative experimental analysis using different settings. Furthermore, we
@@ -241,7 +241,7 @@ of a network, denoted a \textit{surrogate network}, defined as the Hadamard
 product of a weight tensor and an implicit mask. The latter makes it possible to
 implement unstructured pruning constrained with a budget loss that precisely
 controls the number of non-zero weight connections in the resulting network.
-Experiments conducted on the CIFAR10, CIFAR100 and the TinyImageNet
+Experiments conducted on the CIFAR-10, CIFAR-100 and the TinyImageNet
 classification tasks, using standard primary architectures (namely Conv4, VGG16,
 ResNet20 and ResNet18), show the ability of our method to train effective
 surrogate pruned networks without any fine-tuning.
@@ -710,71 +710,18 @@ In this section, we will study the effectiveness of our method for compressing
 \aclp{CNN} image classification models, as well as its impact on accuracy. To
 that extent, we will review the impact of both our reparametrisation and our
 budget loss. To that extent, we use three reference databases in the field of
-computer vision: CIFAR10 \cite{CIFARdataset}, CIFAR100 \cite{CIFARdataset}, and
+computer vision: CIFAR-10 \cite{CIFARdataset}, CIFAR-100 \cite{CIFARdataset}, and
 TinyImageNet \cite{TinyImageNet}. We will evaluate the impact of our method on
 several neural network architectures: VGG16
 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4 \cite{DBLP:conf/iclr/FrankleC19},
 ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. \\
-
-The CIFAR10 and CIFAR100 datasets both contain 60 000 colour images of size
-32x32 pixels, split into 10 and 100 classes, respectively. The TinyImageNet
-dataset is a shrunk version of the ImageNet dataset
-\cite{DBLP:journals/ijcv/RussakovskyDSKS15}, and contains 100 000 images of size
-64x64 pixels, split into 200 classes. Each dataset is divided into two folds: a
-training set and a test set. In addition to these two folds, we also use a
-validation set to tune the hyperparameters of our method before applying it on
-the test set. The validation dataset is obtained by selecting 10\% of the
-training set. \Cref{tab:chap1:datasets} summaries the composition of the three
-datasets.\\
-
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{lcccc}
-    \toprule
-    \textbf{Dataset}    & \textbf{Number of images} & \textbf{Number of classes} &
-    \textbf{Image size} & \textbf{Size of test set}                                               \\
-    \hline
-    CIFAR10             & 60,000                    & 10                         & 32x32 & 10,000 \\
-    CIFAR100            & 60,000                    & 100                        & 32x32 & 10,000 \\
-    TinyImageNet        & 100,000                   & 200                        & 64x64 & 10,000 \\
-    \bottomrule
-  \end{tabular}
-  \caption{The number of images, of classes, image size and size of the test set for the three datasets used.}
-  \label{tab:chap1:datasets}
-\end{table}
-
-In combination with these datasets, we use four different neural networks. Conv4
-is a reasonably small convolutional neural network which is a
-shrunk-down version of the VGG16 architecture. VGG16 is a \acl{CNN}
-of larger size and depth, which is a popular choice for image classification. We
-used a slightly modified version of VGG16 that is better suited to CIFAR10. We
-do not use dropout, but we use batch normalisation, and the fully connected
-section has only one layer. ResNet18 is a residual neural network that
-introduces skip connections in its architectural design. ResNet20 is a modified
-version of the ResNet18 architecture to make it suited for CIFAR10 and CIFAR100
-datasets. \Cref{tab:chap1:networks_size} summarises the size of the different
-models. In our experiments, we use ResNet18 exclusively for TinyImageNet and the
-other networks for CIFAR10 and CIFAR100.\\
-
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{lcccc}
-    \cline{2-5}
-                         & \textbf{Conv4} & \textbf{VGG16} & \textbf{ResNet20} & \textbf{ResNet18} \\ \hline
-    Number of Parameters & 2,425,930      & 14,728,266     & 269,034           & 11,685,608        \\ \hline
-  \end{tabular}
-  \caption{ number of parameters for the four used neural network architectures.}
-  \label{tab:chap1:networks_size}
-\end{table}
 
 % endregion: introduction of the experiments
 
 \subsection{Performances}
 \label{sec:chap1:performances}
 % region: performances
-Performances of our method are evaluated on CIFAR10 and CIFAR100 with Conv4,
+Performances of our method are evaluated on CIFAR-10 and CIFAR-100 with Conv4,
 VGG16 and ResNet20. On TinyImageNet, we evaluate our method on ResNet18. We
 compare our method against magnitude pruning \cite{DBLP:conf/nips/HanPTD15}. The
 key differences between our method and magnitude pruning are the following:
@@ -819,12 +766,12 @@ for each method, depending on the pruning rate (\emph{x-axis}).\\
 
 Overall, our method performs consistently better than magnitude pruning without
 fine-tuning (\emph{MP w/o FT}) and, for almost all pruning rates, better than
-magnitude pruning with fine-tuning (\emph{MP w/ FT}) on the CIFAR10 and CIFAR100
+magnitude pruning with fine-tuning (\emph{MP w/ FT}) on the CIFAR-10 and CIFAR-100
 datasets. In particular, our method significantly outperforms magnitude pruning
 in both setups (with and without fine-tuning) for Conv4 networks (cf.
 \cref{fig:chap1:reparam_vs_mpft_conv4_cifar10}). For the VGG16 network, we
 observe the same trend, although the difference is less significant. For
-ResNet20, magnitude pruning slightly overtakes our method on CIFAR100 for
+ResNet20, magnitude pruning slightly overtakes our method on CIFAR-100 for
 high pruning rates (more than 90\%).
 \Cref{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs,fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs,fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs,fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs,fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs,fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}
 show that our method requires an equivalent number of epochs compared to
@@ -844,20 +791,20 @@ the effective pruning step.\\
 % region: perfs_figures
 \begin{figure}
   \centering
-  \subfloat[Conv4 - CIFAR10]{
+  \subfloat[Conv4 - CIFAR-10]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar10.pdf}
     \label{fig:chap1:reparam_vs_mpft_conv4_cifar10}}
-  \subfloat[Conv4 - CIFAR100]{
+  \subfloat[Conv4 - CIFAR-100]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar100.pdf}
     \label{fig:chap1:reparam_vs_mpft_conv4_cifar100}}
   \\
-  \subfloat[Conv4 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs}]{
+  \subfloat[Conv4 - CIFAR-10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar10.pdf}}
-  \subfloat[Conv4 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs}]{
+  \subfloat[Conv4 - CIFAR-100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_conv4_cifar100_epochs}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_Conv4_cifar100.pdf}}
   \caption{ Performances comparison of our method {\em(Ours)} against
   magnitude pruning without {\em(MP w/o FT)} and with fine-tuning {\em(MP w/ FT)} with a Conv4 network on
-  CIFAR10 and CIFAR100 datasets, for different pruning rates.
+  CIFAR-10 and CIFAR-100 datasets, for different pruning rates.
   \Cref{fig:chap1:reparam_vs_mpft_conv4_cifar10} and
   \cref{fig:chap1:reparam_vs_mpft_conv4_cifar100} show the testing accuracy of
   the model and \cref{fig:chap1:reparam_vs_mpft_conv4_cifar10_epochs} and
@@ -868,22 +815,22 @@ the effective pruning step.\\
 
 \begin{figure}
   \centering
-  \subfloat[VGG16 - CIFAR10]{
+  \subfloat[VGG16 - CIFAR-10]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar10.pdf}
     \label{fig:chap1:reparam_vs_mpft_vgg16_cifar10}}
-  \subfloat[VGG16 - CIFAR100]{
+  \subfloat[VGG16 - CIFAR-100]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableVGG16_cifar100.pdf}
     \label{fig:chap1:reparam_vs_mpft_vgg16_cifar100}}
   \\
-  \subfloat[VGG16 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs}]{
+  \subfloat[VGG16 - CIFAR-10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar10.pdf}}
-  \subfloat[VGG16 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs}]{
+  \subfloat[VGG16 - CIFAR-100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_vgg16_cifar100_epochs}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableVGG16_cifar100.pdf}}
 
 
   \caption{ Performances comparison of our method \em{(Ours)} against
     magnitude pruning with fine-tuning \em{(MP+FT)} with a VGG16 network on
-    CIFAR10 and CIFAR100 datasets, for different pruning rates.
+    CIFAR-10 and CIFAR-100 datasets, for different pruning rates.
     \Cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10} and
     \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar100} show the testing accuracy of
     the model and \cref{fig:chap1:reparam_vs_mpft_vgg16_cifar10_epochs} and
@@ -894,18 +841,18 @@ the effective pruning step.\\
 
 \begin{figure}
   \centering
-  \subfloat[ResNet20 - CIFAR10\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10}]{
+  \subfloat[ResNet20 - CIFAR-10\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar10.pdf}}
-  \subfloat[ResNet20 - CIFAR100\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100}]{
+  \subfloat[ResNet20 - CIFAR-100\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_PrunableResNet20_cifar100.pdf}}
   \\
-  \subfloat[ResNet20 - CIFAR10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs}  ]{
+  \subfloat[ResNet20 - CIFAR-10 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar10_epochs}  ]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar10.pdf}}
-  \subfloat[ResNet20 - CIFAR100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}]{
+  \subfloat[ResNet20 - CIFAR-100 (Number of Epochs)\label{fig:chap1:reparam_vs_mpft_resnet20_cifar100_epochs}]{
     \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_training_time_PrunableResNet20_cifar100.pdf}}
   \caption{ Performances comparison of our method \em{(Ours)} against
     magnitude pruning with fine-tuning \em{(MP+FT)} with a ResNet20 network on
-    CIFAR10 and CIFAR100 datasets, for different pruning rates.
+    CIFAR-10 and CIFAR-100 datasets, for different pruning rates.
     \Cref{fig:chap1:reparam_vs_mpft_resnet20_cifar10} and
     \cref{fig:chap1:reparam_vs_mpft_resnet20_cifar100} show the
     testing accuracy of the model and
@@ -971,14 +918,14 @@ improve performance (see \cref{sec:appendix:annihilation}).
 \begin{figure}
   \centering
   \subfloat[Pruning 90\% of the weights\label{fig:chap1:lambda_impact_pruning_90}]{
-    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_90_C4_CIFAR10.pdf}}
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_90_C4_CIFAR-10.pdf}}
   \subfloat[Pruning 95\% of the weights\label{fig:chap1:lambda_impact_pruning_95}]{
-    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_95_C4_CIFAR10.pdf}}
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_95_C4_CIFAR-10.pdf}}
   \\
   \subfloat[Pruning 99\% of the weights\label{fig:chap1:lambda_impact_pruning_99}]{
-    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR10.pdf}}
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/lambda_impact_pr_99_C4_CIFAR-10.pdf}}
   \caption{ Impact of the parameter $\lambda$ on the achieved final
-    budget for a Conv4 network on CIFAR10 dataset, for various pruning rates. A
+    budget for a Conv4 network on CIFAR-10 dataset, for various pruning rates. A
     too-small value of $\lambda$ does not make the actual budget match the desired
     budget. The actual budget is either too small
     (\cref{fig:chap1:lambda_impact_pruning_90}) or too high
@@ -1017,7 +964,7 @@ improve performance (see \cref{sec:appendix:annihilation}).
     \end{tabular}
   \end{center}
   \caption{
-    Impact of the parameter $\lambda$ on the achieved budget and the post-pruning test accuracy of the model for a Conv4 network on the CIFAR10 dataset
+    Impact of the parameter $\lambda$ on the achieved budget and the post-pruning test accuracy of the model for a Conv4 network on the CIFAR-10 dataset
     for various pruning rates. Although a high value of $\lambda$ ensures
     the targeted budget is reached, it also leads to a lower test accuracy when
     the pruning rate increases.}
@@ -1052,11 +999,11 @@ specific global loss is expressed as:
 \end{equation}
 
 Where $||~.~||_1$ represents the $\ell_1$. Values of $N$ for most of the used
-architectures are reported in \cref{tab:chap1:networks_size}.\\
+architectures are reported in \cref{tab:intro:networks_size}.\\
 
 In both variants, the reparametrisation is kept in order to isolate the impact
 of the budget loss. We evaluated the performance of our approach and the two
-variants on the CIFAR10 and CIFAR100 datasets using Conv4, VGG16, and ResNet20
+variants on the CIFAR-10 and CIFAR-100 datasets using Conv4, VGG16, and ResNet20
 networks. The results are presented in
 \cref{fig:chap1:no_budget_conv4,fig:chap1:no_budget_resnet20,fig:chap1:no_budget_vgg16}.
 In the figures mentioned above, the variant without the budget loss is denoted
@@ -1109,9 +1056,9 @@ scenarios.\\
 % region: no budget
 \begin{figure}
   \centering
-  \subfloat[Conv4 CIFAR10\label{fig:chap1:no_budget_conv4_cifar10}]{
+  \subfloat[Conv4 CIFAR-10\label{fig:chap1:no_budget_conv4_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_Conv4.pdf}}
-  \subfloat[Conv4 CIFAR100\label{fig:chap1:no_budget_conv4_cifar100}]{
+  \subfloat[Conv4 CIFAR-100\label{fig:chap1:no_budget_conv4_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_Conv4.pdf}}
   \caption{ Comparison of our method and its variant without the budget loss.
     The experimental results are denoted \emph{$\ell_1$ reg.}, wherein the budget
@@ -1121,7 +1068,7 @@ scenarios.\\
     is equivalent to $\lambda = 0$). On the other hand, \emph{w/ budget}
     corresponds to our method, with the same setup as described in
     \cref{sec:chap1:performances}. Results are presented for a Conv4 network,
-    trained on CIFAR10 (\cref{fig:chap1:no_budget_conv4_cifar10}) and CIFAR100
+    trained on CIFAR-10 (\cref{fig:chap1:no_budget_conv4_cifar10}) and CIFAR-100
     (\cref{fig:chap1:no_budget_conv4_cifar100}). Best viewed in colours.}
   \label{fig:chap1:no_budget_conv4}
 \end{figure}
@@ -1130,9 +1077,9 @@ scenarios.\\
 
 \begin{figure}
   \centering
-  \subfloat[ResNet20 CIFAR10\label{fig:chap1:no_budget_resnet20_cifar10}]{
+  \subfloat[ResNet20 CIFAR-10\label{fig:chap1:no_budget_resnet20_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableResNet20.pdf}}
-  \subfloat[ResNet20 CIFAR100\label{fig:chap1:no_budget_resnet20_cifar100}]{
+  \subfloat[ResNet20 CIFAR-100\label{fig:chap1:no_budget_resnet20_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableResNet20.pdf}}
   \caption{ Comparison of our method and its variant without the budget loss.
     The experimental results are denoted \emph{$\ell_1$ reg.}, wherein the budget
@@ -1142,8 +1089,8 @@ scenarios.\\
     is equivalent to $\lambda = 0$). On the other hand, \emph{w/ budget}
     corresponds to our method, with the same setup as described in
     \cref{sec:chap1:performances}. Results are presented for a ResNet20 network,
-    trained on CIFAR10 (\cref{fig:chap1:no_budget_resnet20_cifar10}) and
-    CIFAR100 (\cref{fig:chap1:no_budget_resnet20_cifar100}). Best viewed in
+    trained on CIFAR-10 (\cref{fig:chap1:no_budget_resnet20_cifar10}) and
+    CIFAR-100 (\cref{fig:chap1:no_budget_resnet20_cifar100}). Best viewed in
     colours.}
   \label{fig:chap1:no_budget_resnet20}
 \end{figure}
@@ -1152,9 +1099,9 @@ scenarios.\\
 
 \begin{figure}
   \centering
-  \subfloat[VGG16 CIFAR10\label{fig:chap1:no_budget_vgg16_cifar10}]{
+  \subfloat[VGG16 CIFAR-10\label{fig:chap1:no_budget_vgg16_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar10_PrunableVGG16.pdf}}
-  \subfloat[VGG16 CIFAR100\label{fig:chap1:no_budget_vgg16_cifar100}]{
+  \subfloat[VGG16 CIFAR-100\label{fig:chap1:no_budget_vgg16_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/ours_vs_no_lambda_vs_l1_only_cifar100_PrunableVGG16.pdf}}
   \caption{ Comparison of our method and its variant without the budget loss.
     The experimental results are denoted \emph{$\ell_1$ reg.}, wherein the budget
@@ -1164,7 +1111,7 @@ scenarios.\\
     is equivalent to $\lambda = 0$). On the other hand, \emph{w/ budget}
     corresponds to our method, with the same setup as described in
     \cref{sec:chap1:performances}. Results are presented for a VGG16 network,
-    trained on CIFAR10 (\cref{fig:chap1:no_budget_vgg16_cifar10}) and CIFAR100
+    trained on CIFAR-10 (\cref{fig:chap1:no_budget_vgg16_cifar10}) and CIFAR-100
     (\cref{fig:chap1:no_budget_vgg16_cifar100}). Best viewed in colours.}
   \label{fig:chap1:no_budget_vgg16}
 \end{figure}
@@ -1193,7 +1140,7 @@ weight $\mathbf{w}$ and not the reparametrised weights $\mathbf{\hat{w}}$.\\
 
 
 We evaluate the performance of our method and the \emph{budget only} variant on
-Conv4, ResNet20, and VGG16 networks using CIFAR10 and CIFAR100 datasets (see
+Conv4, ResNet20, and VGG16 networks using CIFAR-10 and CIFAR-100 datasets (see
 \Cref{fig:chap1:budget_only_conv4,fig:chap1:budget_only_resnet20,fig:chap1:budget_only_vgg16}).
 Both the proposed approach and \emph{budget only} variant are trained with the
 same hyperparameters. For the \textit{budget only} variant,  we perform
@@ -1232,7 +1179,7 @@ sparsity.\\
     \textbf{Dataset}          & \textbf{Network}          & \textbf{Pruning Rate} (\%) &
     \textbf{Achieved Budget} (\%)                                                                         \\
     \midrule
-    \multirow{9}{*}{CIFAR10}  & \multirow{3}{*}{Conv4}    & 90                         & 9.99 $\pm$ 0.00  \\
+    \multirow{9}{*}{CIFAR-10}  & \multirow{3}{*}{Conv4}    & 90                         & 9.99 $\pm$ 0.00  \\
                               &                           & 95                         & 4.97 $\pm$ 0.01  \\
                               &                           & 99                         & 0.98 $\pm$ 0.00  \\
     \cline{2-4}
@@ -1245,7 +1192,7 @@ sparsity.\\
                               &                           & 95                         & 5.00 $\pm$ 0.00  \\
                               &                           & 99                         & 1.00 $\pm$ 0.00  \\
     \midrule
-    \multirow{9}{*}{CIFAR100} & \multirow{3}{*}{Conv4}    & 90                         & 9.94 $\pm$ 0.02  \\
+    \multirow{9}{*}{CIFAR-100} & \multirow{3}{*}{Conv4}    & 90                         & 9.94 $\pm$ 0.02  \\
                               &                           & 95                         & 4.91 $\pm$ 0.02  \\
                               &                           & 99                         & 0.98 $\pm$ 0.00  \\
     \cline{2-4}
@@ -1284,12 +1231,12 @@ function in synergy.
 
 \begin{figure}
   \centering
-  \subfloat[Conv4 CIFAR10\label{fig:chap1:budget_only_conv4_cifar10}]{
+  \subfloat[Conv4 CIFAR-10\label{fig:chap1:budget_only_conv4_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
-  \subfloat[Conv4 CIFAR100\label{fig:chap1:budget_only_conv4_cifar100}]{
+  \subfloat[Conv4 CIFAR-100\label{fig:chap1:budget_only_conv4_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_Conv4.pdf}}
   \caption{Comparison of our method and its variant without the
-    reparametrization on Conv4, evaluated on CIFAR10 and CIFAR100. Our method
+    reparametrization on Conv4, evaluated on CIFAR-10 and CIFAR-100. Our method
     (\emph{budget + reparam}) has similar performance to the \emph{budget only}
     variant before pruning, whereas our method, is already pruned. Once pruned,
     the \emph{budget only} variant is significantly impaired.}
@@ -1298,13 +1245,13 @@ function in synergy.
 
 \begin{figure}
   \centering
-  \subfloat[ResNet20 CIFAR10\label{fig:chap1:budget_only_resnet20_cifar10}]{
+  \subfloat[ResNet20 CIFAR-10\label{fig:chap1:budget_only_resnet20_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableResNet20.pdf}}
-  \subfloat[ResNet20 CIFAR100\label{fig:chap1:budget_only_resnet20_cifar100}]{
+  \subfloat[ResNet20 CIFAR-100\label{fig:chap1:budget_only_resnet20_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableResNet20.pdf}}
   \caption{Comparison of our method and its variant without the
-    reparametrization on ResNet20, evaluated on CIFAR10 and CIFAR100. Due to the
-    small size of the network (see \cref{tab:chap1:networks_size}), the pruned
+    reparametrization on ResNet20, evaluated on CIFAR-10 and CIFAR-100. Due to the
+    small size of the network (see \cref{tab:intro:networks_size}), the pruned
     version of our method (\emph{budget + reparam}) and the \emph{budget only}
     variant cannot keep up with the unpruned version. Nevertheless, if considering
     the pruned versions, our method scores better, thanks to the addition of the
@@ -1314,12 +1261,12 @@ function in synergy.
 
 \begin{figure}
   \centering
-  \subfloat[VGG16 CIFAR10\label{fig:chap1:budget_only_vgg6_cifar10}]{
+  \subfloat[VGG16 CIFAR-10\label{fig:chap1:budget_only_vgg6_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar10_PrunableVGG16.pdf}}
-  \subfloat[VGG16 CIFAR100\label{fig:chap1:budget_only_vgg6_cifar100}]{
+  \subfloat[VGG16 CIFAR-100\label{fig:chap1:budget_only_vgg6_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableVGG16.pdf}}
   \caption{Comparison of our method and its variant without the
-    reparametrizationn VGG16, evaluated on CIFAR10 and CIFAR100. Our method
+    reparametrizationn VGG16, evaluated on CIFAR-10 and CIFAR-100. Our method
     (\emph{budget + reparam}) has similar performance to the \emph{budget only}
     variant before pruning, whereas our method, is already pruned. Once pruned,
     the \emph{budget only} variant is significantly impaired.}
@@ -1342,7 +1289,7 @@ trained in a standard way, then pruned and finally fine-tuned with two methods:
 Our method and standard fine-tuning \cite{DBLP:conf/nips/HanPTD15}. Put simply,
 this section describes a process where the initial weights of the network are
 not randomly initialised, but are trained and pruned weights. This setup is
-evaluated on Conv4, ResNet20 and VGG16 for both CIFAR10 and CIFAR100. The
+evaluated on Conv4, ResNet20 and VGG16 for both CIFAR-10 and CIFAR-100. The
 results are shown in
 \cref{fig:chap1:finetuning_impact_conv4,fig:chap1:finetuning_impact_resnet20,fig:chap1:finetuning_impact_vgg6}.
 First, a network is trained for 150 epochs on the main classification task. Then
@@ -1395,12 +1342,12 @@ standard fine-tuning approaches.\\
 
 \begin{figure}
   \centering
-  \subfloat[Conv4 CIFAR10\label{fig:chap1:finetuning_impact_conv4_cifar10}]{
+  \subfloat[Conv4 CIFAR-10\label{fig:chap1:finetuning_impact_conv4_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_Conv4.pdf}}
-  \subfloat[Conv4 CIFAR100\label{fig:chap1:finetuning_impact_conv4_cifar100}]{
+  \subfloat[Conv4 CIFAR-100\label{fig:chap1:finetuning_impact_conv4_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_Conv4.pdf}}
   \caption{ Fine-tuning of a Conv4 network pruned by magnitude pruning (\emph{MP
-      w/o FT}) on the CIFAR10 and CIFAR100 datasets for various pruning rates.
+      w/o FT}) on the CIFAR-10 and CIFAR-100 datasets for various pruning rates.
     Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning with our
     method (\emph{pruned+FT (w/ our method)}). Our method, described in
     \cref{sec:chap1:overview}, is shown for comparison purposes (\emph{Ours}). On
@@ -1413,13 +1360,13 @@ standard fine-tuning approaches.\\
 
 \begin{figure}
   \centering
-  \subfloat[ResNet20 CIFAR10\label{fig:chap1:finetuning_impact_resnet20_cifar10}]{
+  \subfloat[ResNet20 CIFAR-10\label{fig:chap1:finetuning_impact_resnet20_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableResNet20.pdf}}
   \subfloat[ResNet20
-    CIFAR100\label{fig:chap1:finetuning_impact_resnet20_cifar100}]{
+    CIFAR-100\label{fig:chap1:finetuning_impact_resnet20_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableResNet20.pdf}}
   \caption{ Fine-tuning of a ResNet20 network pruned by magnitude pruning
-    (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various pruning
+    (\emph{MP w/o FT}) on the CIFAR-10 and CIFAR-100 datasets with various pruning
     rates. Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning
     with our method (\emph{pruned+FT (w/ our method)}). Our method, described in
     \cref{sec:chap1:overview}, is shown for comparison purposes (\emph{Ours}). On
@@ -1431,12 +1378,12 @@ standard fine-tuning approaches.\\
 
 \begin{figure}
   \centering
-  \subfloat[VGG16 CIFAR10\label{fig:chap1:finetuning_impact_vgg16_cifar10}]{
+  \subfloat[VGG16 CIFAR-10\label{fig:chap1:finetuning_impact_vgg16_cifar10}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar10_PrunableVGG16.pdf}}
-  \subfloat[VGG16 CIFAR100\label{fig:chap1:finetuning_impact_vgg16_cifar100}]{
+  \subfloat[VGG16 CIFAR-100\label{fig:chap1:finetuning_impact_vgg16_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/finetuning_cifar100_PrunableVGG16.pdf}}
   \caption{ Fine-tuning of a ResNet20 network pruned by magnitude pruning
-    (\emph{MP w/o FT}) on the CIFAR10 and CIFAR100 datasets with various pruning
+    (\emph{MP w/o FT}) on the CIFAR-10 and CIFAR-100 datasets with various pruning
     rates. Conventional (\emph{MP w/ FT}) fine-tuning is compared to fine-tuning
     with our method (\emph{pruned+FT (w/ our method)}). Our method, described in
     \cref{sec:chap1:overview}, is shown for comparison purposes (\emph{Ours}). On
@@ -1449,19 +1396,19 @@ standard fine-tuning approaches.\\
 
 \begin{figure}
   \centering
-  \subfloat[Conv4 - CIFAR10\label{fig:chap1:init_no_pruning_C4_C10}]{
+  \subfloat[Conv4 - CIFAR-10\label{fig:chap1:init_no_pruning_C4_C10}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar10_Conv4.pdf}}
-  \subfloat[Conv4 - CIFAR100\label{fig:chap1:init_no_pruning_C4_C100}]{
+  \subfloat[Conv4 - CIFAR-100\label{fig:chap1:init_no_pruning_C4_C100}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar100_Conv4.pdf}}\\
 
-  \subfloat[ResNet20 - CIFAR10\label{fig:chap1:init_no_pruning_R20_C10}]{
+  \subfloat[ResNet20 - CIFAR-10\label{fig:chap1:init_no_pruning_R20_C10}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar10_PrunableResNet20.pdf}}
-  \subfloat[ResNet20 - CIFAR100\label{fig:chap1:init_no_pruning_R20_C100}]{
+  \subfloat[ResNet20 - CIFAR-100\label{fig:chap1:init_no_pruning_R20_C100}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar100_PrunableResNet20.pdf}}\\
 
-  \subfloat[VGG16 - CIFAR10\label{fig:chap1:init_no_pruning_VGG16_C10}]{
+  \subfloat[VGG16 - CIFAR-10\label{fig:chap1:init_no_pruning_VGG16_C10}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar10_PrunableVGG16.pdf}}
-  \subfloat[VGG16 - CIFAR100\label{fig:chap1:init_no_pruning_VGG16_C100}]{
+  \subfloat[VGG16 - CIFAR-100\label{fig:chap1:init_no_pruning_VGG16_C100}]{
     \includegraphics[width=0.4\textwidth]{chapter_1/assets/finetuning_init_not_pruned_cifar100_PrunableVGG16.pdf}}
   \caption{ Comparison of fine-tuning a network whose initialisation has been
     trained from scratch (denoted \emph{unpruned initialisation}) or trained from

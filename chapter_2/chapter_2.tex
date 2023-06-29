@@ -733,16 +733,6 @@ pruning rate after the training and supports the effectiveness of our
 thresholding pruning strategy method.
 
 
-\begin{table}[htbp]
-  \centering\begin{tabular}{lccc}
-    \cmidrule[\heavyrulewidth]{2-4}
-                         & \textbf{Conv2} & \textbf{Conv4} & \textbf{Conv6} \\ \toprule
-    Number of Parameters & 4,301,642      & 2,425,930      & 2,262,602      \\ \bottomrule
-  \end{tabular}
-  \caption{Number of parameters for the Conv2, Conv4 and Conv6 architectures, when used with the CIFAR-10 dataset}
-  \label{tab:chap2:conv_num_params}
-\end{table}
-
 \subsection{Experimental Setup}
 \label{sec:chap2:experimental_setup}
 
@@ -752,16 +742,7 @@ which are described in \cref{sec:chap1:experiments}. Unless stated otherwise, on
 each table we report the test accuracy, given in percentages (plus or minus the
 standard deviation), evaluated on the test set of the said datasets. Values are
 obtained by averaging 5 independent runs. The architectures considered are
-Conv2, Conv4, Conv6, VGG16, ResNet-20, and ResNet-18. Conv2 and Conv6 are
-modified versions of the Conv4 architecture, featuring 2 and 6 convolutional
-layers, respectively, instead of the original 4 convolutional layers. The other
-networks mentioned are described in \cref{sec:chap1:experiments}. The number of
-parameters for these architectures is provided in
-\cref{tab:chap2:conv_num_params}. Although the Conv2, Conv4 and Conv6 networks
-introduced by \citeauthor{DBLP:conf/iclr/FrankleC19} in
-\cite{DBLP:conf/iclr/FrankleC19} are not widely featured in existing literature,
-we chose to employ them due to their use in the methods we benchmark against.\\
-
+Conv2, Conv4, Conv6, VGG16, ResNet-20, and ResNet-18.\\
 
 In order to demonstrate the efficacy of our method in a standard image
 classification scenario, we compare our approach with state-of-the-art methods,
@@ -891,7 +872,7 @@ Conv\{2,4,6\} networks. Nevertheless, the number of sampled topologies is only
 equal to the product of the number of batches and the number of epochs during
 which the network is trained. \Cref{tab:chap2:topologies_exploration} presents
 the details of 2 setups: ResNet-18 trained on TinyImageNet and Conv4 trained on
-CIFAR10. It shows that the fraction of explored topologies by our \ac{ASLP}
+CIFAR-10. It shows that the fraction of explored topologies by our \ac{ASLP}
 method, is considerably higher for the Conv4 network than for the ResNet-18 one
 in the given configurations. The number of explored topologies might be
 sufficient to sweep the search space for Conv\{2,4,6\} networks and find a
@@ -904,7 +885,7 @@ network.\\
     \begin{tabular}{lcc}
       \cmidrule[\heavyrulewidth]{2-3}
                                                          & \textbf{Conv4 \&
-        CIFAR10}
+        CIFAR-10}
                                                          &
       \textbf{ ResNet-18 \& TinyImageNet}
       \\
@@ -926,7 +907,7 @@ network.\\
       \bottomrule
     \end{tabular}
   } \caption {Comparison of the number of explored topologies for the Conv4 and
-    ResNet-18 networks with CIFAR10 and TinyImageNet, respectively. Since a new
+    ResNet-18 networks with CIFAR-10 and TinyImageNet, respectively. Since a new
     topology is sampled for every battch, the number of explored topologies
     ($E$) is computed as the product of the number of batches and the number of
     epochs during which the network is trained (here $10^3$). The number of
@@ -945,11 +926,11 @@ However, this hypothesis warrants further clarification. Indeed, the VGG16
 network has more parameters than the ResNet-18 (see
 \cref{tab:chap1:networks_size}), nevertheles, in our experiments, \ac{ASLP}
 achieves superior results compared to other methods on the VGG16 architecture.
-We suggest the following explanation: First, the CIFAR10 and CIFAR100 datasets
+We suggest the following explanation: First, the CIFAR-10 and CIFAR-100 datasets
 are simpler datasets with less classes, compared to TinyImageNet. And then,
 although the VGG16 has more parameters, it has fewer weights in its fully
 connected layers since the datasets it is evaluated on have fewer classes.
-Indeed, a VGG16 network tailored for CIFAR100 has 51,200 parameters in its last
+Indeed, a VGG16 network tailored for CIFAR-100 has 51,200 parameters in its last
 fully connected layer, whereas a ResNet-18 network designed for TinyImageNet has
 102,400. Thus, the search space for the fully connected part of the VGG network
 is significantly smaller than on the ResNet-18 network. Therefore, because of
@@ -1033,7 +1014,7 @@ overall performance and accuracy in predicting outcomes.\\
     \label{tab:chap2:perf-tables:without-augmentation}
   \end{subtable}
   \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and Supermask
-    \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR10}
+    \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR-10}
     using various configurations. We use the configurations tested by the
     authors in their articles. Performances are presented with
     (\cref{tab:chap2:perf-tables:with-augmentation}) and without
@@ -1082,7 +1063,7 @@ overall performance and accuracy in predicting outcomes.\\
 %     \end{tabular}
 %   }
 %   \caption{\textbf{OLD TABLE} Comparison of ASLP performance against Edge-Popup and Supermask
-%     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR10
+%     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR-10
 %     using various configurations. We use the configurations tested by the author
 %     of the aforementioned articles. Performance measures reported are accuracy and
 %     are presented with and without data augmentation, weight rescaling (WR), and
@@ -1163,7 +1144,7 @@ overall performance and accuracy in predicting outcomes.\\
   \end{subtable}
 
   \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and Supermask
-    \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR100}
+    \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR-100}
     using various configurations. We use the configurations tested by the
     authors in their articles. Performances are presented with
     (\cref{tab:chap2:perf-tables:with-augmentation}) and without
@@ -1210,7 +1191,7 @@ overall performance and accuracy in predicting outcomes.\\
 %       \bottomrule
 %     \end{tabular}
 %   } \caption{\textbf{OLD TABLE} Comparison of ASLP performance against Edge-Popup and Supermask
-%     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR100
+%     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR-100
 %     using various configurations. We use the configurations tested by the author
 %     of the aforementioned articles. Performance measures reported are accuracy and
 %     are presented with and without data augmentation, weight rescaling (WR), and
