@@ -59,53 +59,85 @@
 \section{Introduction and Related Work}
 % region: introduction
 
+In this chapter we tackle the challenge of extracting lightweight and effective
+subnetworks from large, untrained neural networks. The goal is to obtain
+subnetworks that have both a smaller number of parameters compared to the
+original network and compelling performances. In contrary to
+\cref{chap:chapter1} where the focus was on soft pruning weight based on their
+value, while training, the method presented in this chapter relies on training
+latent masks that represents a parametrisation of the probabilities for the
+weights to be selected on not in a sampled set of weights. Unlike the method
+described in \cref{chap:chapter1}, the method introduced in this chapter is, on
+the one hand, stochastic, and on the other hand, is decorrelating the pruning
+criterion from the weight value.\\
+
+This method boast several advantages over the method presented in the previous
+chapter: First, as we just mentioned, the pruning criterion is decorrelated from
+the value of the weight, offering more flexibility. Indeed, two weights with the
+same value can have different probabilities of being selected. Second, this
+method does not train the weights, but selects the best subset of them to
+minimise the loss. Consequently, this method is perfectly suited for application
+where training the weight might not be possible and activating or deactivating a
+weight is the only option. Finally, from a global standpoint, this method is
+provides a new path to neural network training that does not rely on weight
+training.\\
+
 \subsection{Related Work}
 
-Deep neural networks are increasingly used in solving various image processing
-tasks, especially in the domain of visual category recognition. While these
-models have shown significant success, their extensive computational
-requirements, memory footprint, and energy consumption are notable limitations.
-In light of the emergence of intelligent embedded systems with restricted
-computational resources and limited energy, there is a growing need to develop
-these models with lightweight architectures that prioritise efficiency while
-maintaining high accuracy. The aim is to make these models both lightweight and
-effective, which presents a significant challenge for researchers in the
-field.\\
+% Deep neural networks are increasingly used in solving various image processing
+% tasks, especially in the domain of visual category recognition. While these
+% models have shown significant success, their extensive computational
+% requirements, memory footprint, and energy consumption are notable limitations.
+% In light of the emergence of intelligent embedded systems with restricted
+% computational resources and limited energy, there is a growing need to develop
+% these models with lightweight architectures that prioritise efficiency while
+% maintaining high accuracy. The aim is to make these models both lightweight and
+% effective, which presents a significant challenge for researchers in the
+% % field.\\
 
-\subsubsection{Designing Lightweight Neural Networks}
+% \subsubsection{Designing Lightweight Neural Networks}
 
-Creating small and efficient neural network architectures from scratch is a
-viable approach in designing lightweight networks. Despite being smaller than
-typical state-of-the-art architectures, these networks are still able to achieve
-good performances. SqueezeNet \cite{DBLP:journals/corr/IandolaMAHDK16} is an
-example of such a network, which achieves comparable performance to AlexNet on
-ImageNet but with only fifty times fewer parameters. MobileNet
-\cite{howard2017mobilenets} and MobileNetV2 \cite{DongMobileNetV2} are also
-popular examples of lightweight networks that use depthwise separable
-convolution. ShuffleNet \cite{ZhangShuffleNet} and ShuffleNetV2
-\cite{MaShuffleNetV2} are other approaches that rely on the grouped convolution
-concept and channel shuffling. CondenseNet \cite{huang2018condensenet} leverages
-DenseNet-like \cite{huang2017densely} connections together with grouped
-convolution to pick the most useful features from previous layer maps.\\
+% Creating small and efficient neural network architectures from scratch is a
+% viable approach in designing lightweight networks. Despite being smaller than
+% typical state-of-the-art architectures, these networks are still able to achieve
+% good performances. SqueezeNet \cite{DBLP:journals/corr/IandolaMAHDK16} is an
+% example of such a network, which achieves comparable performance to AlexNet on
+% ImageNet but with only fifty times fewer parameters. MobileNet
+% \cite{howard2017mobilenets} and MobileNetV2 \cite{DongMobileNetV2} are also
+% popular examples of lightweight networks that use depthwise separable
+% convolution. ShuffleNet \cite{ZhangShuffleNet} and ShuffleNetV2
+% \cite{MaShuffleNetV2} are other approaches that rely on the grouped convolution
+% concept and channel shuffling. CondenseNet \cite{huang2018condensenet} leverages
+% DenseNet-like \cite{huang2017densely} connections together with grouped
+% convolution to pick the most useful features from previous layer maps.\\
 
-Designing efficient lightweight neural networks requires substantial effort from
-human experts. These networks are designed from scratch, with a focus on
-reducing the number of parameters and computational complexity while maintaining
-high accuracy. The design process involves careful consideration of network
-architecture, layer types, hyperparameters, and optimization techniques. The
-development of such networks, therefore, requires a significant amount of time
-and expertise.\\
+% Designing efficient lightweight neural networks requires substantial effort from
+% human experts. These networks are designed from scratch, with a focus on
+% reducing the number of parameters and computational complexity while maintaining
+% high accuracy. The design process involves careful consideration of network
+% architecture, layer types, hyperparameters, and optimization techniques. The
+% development of such networks, therefore, requires a significant amount of time
+% and expertise.\\
 
-\subsubsection{Extracting Effective Subnetwork}
-Another way of obtaining lightweight neural networks is to reduce the size of an
-already existing large neural network, through pruning. As discussed in
-\cref{chap:chapter1}, pruning methods, either structured or unstructured, are
-particularly successful at simplifying large neural networks, and seek to remove
-connections with the least perceptible impact on classification accuracy.
-Structured pruning consists in {\it jointly} removing groups of weights, entire
-channels or subnetworks \cite{DBLP:conf/iclr/0022KDSG17,
-DBLP:conf/iccv/LiuLSHYZ17}, whereas unstructured pruning aims at removing
-weights {\it individually}
+\noindent\textbf{Pruning at initialisation.} In general, extracting an efficient
+subnetwork is still an open problem and is computationally demanding as this
+amounts to full training of large networks (until convergence) prior to their
+pruning. Existing alternatives approach this problem using early pruning
+\cite{DBLP:conf/iclr/LeeAT19,
+DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}, but still require to train
+the weights. In contrast to these works, our proposed solution in this chapter
+identifies effective subnetworks by training only their topology and without any
+weight tuning.\\
+
+\noindent\textbf{Lottery Ticket.} A way of obtaining lightweight neural networks is to
+reduce the size of an already existing large neural network, through pruning. As
+discussed in \cref{chap:chapter1,chap:sota}, pruning methods, either structured
+or unstructured, are particularly successful at simplifying large neural
+networks, and seek to remove connections with the least perceptible impact on
+classification accuracy. Structured pruning consists in {\it jointly} removing
+groups of weights, entire channels or subnetworks
+\cite{DBLP:conf/iclr/0022KDSG17, DBLP:conf/iccv/LiuLSHYZ17}, whereas
+unstructured pruning aims at removing weights {\it individually}
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}.  Unstructured pruning
 has witnessed a recent surge in interest in the wake of the \ac{LTH}
 \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
@@ -117,7 +149,10 @@ large network. To identify these \acp{LT}, the large network is trained until
 convergence, followed by pruning the smallest weights based on their magnitude.
 The remaining weights are then rewound to their original value, that is, the
 value they had before the training of the large network began. This resulting
-subnetwork is known as a \textit{Lottery Ticket}. Another study
+subnetwork is known as a \textit{Lottery Ticket}. 
+
+
+Another study
 \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and concludes that
 only the topology of these subnetworks is actually important in order to reach
 comparable performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
@@ -129,14 +164,7 @@ momentum and demonstrated instead of using an Adam optimiser
 \cite{kingma2014adam} with low learning rate as in
 \cite{DBLP:conf/iclr/FrankleC19}. \\
 
-In general, extracting an efficient subnetwork is still an open problem and is
-computationally demanding as this amounts to full training of large networks
-(until convergence) prior to their pruning. Existing alternatives approach this
-problem using early pruning \cite{DBLP:conf/iclr/LeeAT19,
-  DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}, but still require to train
-the weights. In contrast to these works, our proposed solution in this chapter
-identifies effective subnetworks by training only their topology and without any
-weight tuning.\\
+
 
 At first, it seems counterintuitive that there exists a subnetwork in a large
 network, that can achieve compelling performances without any weight training.
@@ -233,7 +261,7 @@ obtained by freezing and zeroing out  a subset of weights in $\theta$, and this
 is achieved in practice by multiplying $\bm{w}_\ell$ by a binary mask
 $\bm{m}_\ell \in \{ 0,1 \}^{\text{dim}(\bm{w}_\ell)}$. The binary entries of
 $\bm{m}_\ell$ are set depending on whether the underlying layer connections are
-kept or removed, so \Cref{eqn:chap2:layer_eq} becomes\\
+kept or removed, so \cref{eqn:chap2:layer_eq} becomes\\
 
 \begin{equation}
   \label{eqn:chap2:pruned_layer_eq}
@@ -256,7 +284,7 @@ reparametrisation of the mask.\\
 
 \noindent\textbf{\acl{STE}.} Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
 consider a Bernoulli parametrisation of $\{\bm{m}_\ell\}_\ell$ in order to
-sample masks in \Cref{eqn:chap2:pruned_layer_eq}. Since sampling is not a
+sample masks in \cref{eqn:chap2:pruned_layer_eq}. Since sampling is not a
 differentiable operation, they rely on the \ac{STE}. It is a technique developed
 in \cite{DBLP:journals/corr/BengioLC13} that enables the training of neural
 networks with discrete activations, such as binary or quantised activations. The
@@ -344,7 +372,7 @@ with $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
 underlying connection. Since there are only two mutually exclusive outcomes,
 $\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or
 not) in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
-Considering \Cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
+Considering \cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
 is defined as\\
 
 \begin{equation}
@@ -670,12 +698,12 @@ sampling topologies from a large, untrained network and learns the probability
 of selecting each weight. Probabilities are determined using \acl{SGD} in
 conjunction with a standard loss function, specifically cross-entropy loss for
 image classification tasks. The training procedure for our method is detailed in
-\Cref{alg:chap2:ASLP}. Unless stated otherwise, this procedure is implemented in
+\cref{alg:chap2:ASLP}. Unless stated otherwise, this procedure is implemented in
 \cref{sec:chap2:experiments}.\\
 
 The core differences between our approach and standard pruning pipelines are
-illustrated in \Cref{fig:chap2:our-pipeline,fig:chap2:standard-pipeline}. As
-highlighted in \Cref{fig:chap2:our-pipeline}, our method focuses exclusively on
+illustrated in \cref{fig:chap2:our-pipeline,fig:chap2:standard-pipeline}. As
+highlighted in \cref{fig:chap2:our-pipeline}, our method focuses exclusively on
 topology selection without weight training, whereas conventional pruning
 pipelines rely on weight training and subsequent fine-tuning.\\
 
