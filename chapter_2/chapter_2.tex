@@ -29,16 +29,16 @@
   best performances, without the need to search for and enforce a fixed pruning
   rate.\\
 
-  The ASLP method, which integrates the \ac{STGS} sampling technique and the
+  The \ac{ASLP} method, which integrates the \ac{STGS} sampling technique and the
   \ac{SR} mechanism, is evaluated through experiments on CIFAR-10, CIFAR-100,
-  and TinyImageNet datasets. In most cases, ASLP outperforms other
+  and TinyImageNet datasets. In most cases, \ac{ASLP} outperforms other
   state-of-the-art methods and consistently surpasses them for various network
   architectures. Further experiments show that the sparsity of the networks
   extracted with \ac{ASLP} can be increased with minimal impact on the
   performance. They also demonstrate the robustness of the method to extreme
   learning rate values and the effectiveness of the \ac{SR} mechanism.\\
 
-  This chapter presents work that has resulted in the publication of the
+  \noindent This chapter presents work that has resulted in the publication of the
   following conference article:
   \bibentry{DBLP:conf/icip/DupontASL22}
   \begin{itemize}
@@ -46,6 +46,12 @@
           Lebois. Extracting effective subnetworks with Gumbel-Softmax. In \textit{2022
             IEEE International Conference on Image Processing, ICIP 2022, Bordeaux,
             France, 16-19 October 2022,} pages 931–935. IEEE, 2022.
+  \end{itemize}
+
+  \noindent Our code for the \ac{ASLP} method, as well as the reimplementation
+  of the comparative methods used in this chapter, is publicly available at:
+  \begin{itemize}
+    \item \url{https://github.com/N0ciple/ASLP}
   \end{itemize}
 
 \end{abstract}
@@ -588,7 +594,7 @@ With \ac{SR}, the $\ell$-th layer network output becomes \\
 
 \noindent where $s_\ell$ refers to the rescaling factor  of the $\ell$-th layer
 (see also algorithm~\ref{alg:chap2:ASLP}). Smart Rescale increases the
-flexibility of subnetwork selection and adaptation compared to DWR (which is
+flexibility of subnetwork selection and adaptation compared to \ac{DWR} (which is
 bound to the pruning rate). Moreover, scaling factors obtained with SR vary
 smoothly --- and this makes training more stable with \ac{SGD} --- compared to
 the ones obtained with \ac{DWR} which are again inversly proprotional to the
@@ -718,7 +724,7 @@ pipelines rely on weight training and subsequent fine-tuning.\\
 \section{Experiments}
 \label{sec:chap2:experiments}
 
-In this section, we  evaluate the efficacy of our proposed method, and we
+In this section, we  evaluate the efficacy of our proposed method and we
 investigate the influence of various parameters and configurations.
 \Cref{sec:chap2:experimental_setup} details the experimental setups,
 \cref{sec:chap2:performances} presents the performances of our method against
@@ -736,13 +742,15 @@ thresholding pruning strategy method.
 \subsection{Experimental Setup}
 \label{sec:chap2:experimental_setup}
 
-To accomplish this, we employ the same networks and datasets previously
-introduced in \cref{chap:chapter1}, namely, CIFAR-10, CIFAR-100 and TinyImageNet
-which are described in \cref{sec:chap1:experiments}. Unless stated otherwise, on
-each table we report the test accuracy, given in percentages (plus or minus the
-standard deviation), evaluated on the test set of the said datasets. Values are
-obtained by averaging 5 independent runs. The architectures considered are
-Conv2, Conv4, Conv6, VGG16, ResNet-20, and ResNet-18.\\
+Our experiments were conducted on the CIFAR-10, CIFAR-100 and TinyImageNet
+datasets which are described in \cref{sec:intro:datasets}. Unless stated
+otherwise, on each table we report the test accuracy evaluated on the test set
+of the said datasets. This accuracy is given in percentages with the standard
+deviation. The latter is given numerically in tables or represented by the
+shaded area arround curves for figures. Values are obtained by averaging 5
+independent runs for each data point. The architectures considered are Conv2,
+Conv4, Conv6, VGG16, ResNet-20 and ResNet-18, which are presented in
+\cref{sec:intro:architectures}\\
 
 In order to demonstrate the efficacy of our method in a standard image
 classification scenario, we compare our approach with state-of-the-art methods,
@@ -760,14 +768,14 @@ of \ac{SC} weight distribution
 \cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20} and data
 augmentation.\\
 
-\noindent\textbf{Weight Rescaling (WR).} Each method discussed in this section
+\noindent\textbf{Weight Rescaling.} Each method discussed in this section
 incorporates its own weight rescaling technique: \acf{DWR} for
 \cite{DBLP:conf/nips/ZhouLLY19}, \acf{SKD} for
-\cite{DBLP:conf/cvpr/RamanujanWKFR20}, and \acf{SR} for \ac{ASLP} (Ours). All of
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} and \acf{SR} for \ac{ASLP} (Ours). All of
 these techniques are denoted as \ac{WR} in this section. The three of them have
 been detailed in \cref{sec:chap2:smart-rescale}\\
 
-\noindent\textbf{Signed Constant Distribution (SC).} The signed constant
+\noindent\textbf{Signed Constant Distribution.} The signed constant
 distribution was introduced by \cite{DBLP:conf/nips/ZhouLLY19}. Weights sampled
 from this distribution can take only two values: $-\sigma$ and $\sigma$, where
 $\sigma$ represents the standard deviation of the weight tensor upon
@@ -786,12 +794,12 @@ classification and is generally applied even if not explicitly mentioned by the
 authors (for example \citeauthor{DBLP:conf/cvpr/RamanujanWKFR20} used data
 augmentation in their code \cite{hidden-networks} altough it is not mentioned in
 the original article \cite{DBLP:conf/cvpr/RamanujanWKFR20}). Consequently, we
-consider two configurations: with (w/) and without (w/o) data augmentation. The
-data augmentation we apply has been observed in various state-of-the-art
+consider two configurations: with and without data augmentation. The data
+augmentation we apply has been observed in various state-of-the-art
 implementations
 \cite{hidden-networks,openlth_dataaugmentation,rethinking_dataaugmentatino} and
 is the following: first, images are padded with zeroes, next, a random crop of
-the original size is extracted from the enlarged image. Lastly, a random
+the original size is extracted from the padded image. Lastly, a random
 horizontal flip is performed. An example of this data augmentation pipeline is
 displayed in \cref{fig:chap2:data_augmentation_pipeline}.\\
 
@@ -823,9 +831,9 @@ changes to the network structure or the values of the weights.\\
 \subsection{Performances}
 \label{sec:chap2:performances}
 
-Overall, the analysis of our ASLP method results, presented in
+Overall, the analysis of our \ac{ASLP} method results, presented in
 \cref{tab:chap2:con_performances_comparison_cifar10,tab:chap2:con_performances_comparison_cifar100,tab:chap2:r20_VGG16_performances_comparison,tab:chap2:tinyimagenet_performances_comparison},
-shows that ASLP outperforms both Edge Popup and Supermask methods on CIFAR-10
+shows that \ac{ASLP} outperforms both Edge Popup and Supermask methods on CIFAR-10
 and CIFAR-100 datasets, a trend consistent across all tested networks, including
 Conv2, Conv4, Conv6, VGG16, and ResNet20. Notably, our \textit{thresholding}
 pruning strategy demonstrated superior performance compared to Supermask
@@ -845,10 +853,10 @@ that contribute minimally to the network overall performance. The inclusion of
 such potentially unuseful weights could dilute the efficiency of the pruned
 network.\\
 
-Remarkably, for larger networks such as VGG16 and ResNet-20, our ASLP method
+Remarkably, for larger networks such as VGG16 and ResNet-20, our \ac{ASLP} method
 employing the \textit{thresholding} strategy also consistently surpasses all
 other methods (see \cref{tab:chap2:r20_VGG16_performances_comparison}).
-Nevertheless, a ResNet-18 trained on TinyImagenet with ASLP it outperformed by
+Nevertheless, a ResNet-18 trained on TinyImagenet with \ac{ASLP} it outperformed by
 its counterpart trained with Edge-popup (see
 \cref{tab:chap2:tinyimagenet_performances_comparison}).\\
 
@@ -865,7 +873,7 @@ prevent an exponential increase in computational cost.\\
 
 Secondly, the ResNet-18 network is among the largest networks we examined,
 having roughly 3 times the parameter count of a Conv4 network (refer to
-\cref{tab:chap1:networks_size}). As a result, there are numerous possible weight
+\cref{tab:intro:networks_size}). As a result, there are numerous possible weight
 combinations and subnetworks. Viewing \ac{ASLP} as a Neural Architecture Search
 method, the search space for ResNet-18 is considerably larger than for the
 Conv\{2,4,6\} networks. Nevertheless, the number of sampled topologies is only
@@ -924,7 +932,7 @@ network.\\
 
 However, this hypothesis warrants further clarification. Indeed, the VGG16
 network has more parameters than the ResNet-18 (see
-\cref{tab:chap1:networks_size}), nevertheles, in our experiments, \ac{ASLP}
+\cref{tab:intro:networks_size}), nevertheles, in our experiments, \ac{ASLP}
 achieves superior results compared to other methods on the VGG16 architecture.
 We suggest the following explanation: First, the CIFAR-10 and CIFAR-100 datasets
 are simpler datasets with less classes, compared to TinyImageNet. And then,
@@ -958,20 +966,20 @@ overall performance and accuracy in predicting outcomes.\\
                                                            &                                                  & $\varnothing$             & \textbf{SC}               & \textbf{WR}               & \textbf{WR+SC}            \\
         \toprule
         % Conv 2 results
-        \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{75.70 $\pm$ 0.30} & \textbf{75.81 $\pm$ 0.69} & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} \\
-                                                           & ASLP (averaging)                                 & 75.42 $\pm$ 0.25          & 75.50 $\pm$ 0.56          & 76.05 $\pm$ 0.44          & 76.44 $\pm$ 0.19          \\
+        \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{75.70 $\pm$ 0.30} & \textbf{75.81 $\pm$ 0.69} & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} \\
+                                                           & \ac{ASLP} (averaging)                                 & 75.42 $\pm$ 0.25          & 75.50 $\pm$ 0.56          & 76.05 $\pm$ 0.44          & 76.44 $\pm$ 0.19          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 74.18 $\pm$ 0.76          & 75.19 $\pm$ 0.56          & 74.51 $\pm$ 0.31          & 75.45 $\pm$ 0.44          \\
         \midrule
         % Conv 4 results
-        \multirow{4}{*}{\textbf{Conv4}}                    & ASLP (thresholding)                              & \textbf{83.03 $\pm$ 0.31} & \textbf{83.73 $\pm$ 0.46} & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} \\
-                                                           & ASLP (averaging)                                 & 82.29 $\pm$ 0.25          & 83.22 $\pm$ 0.56          & 82.79 $\pm$ 0.30          & 83.46 $\pm$ 0.49          \\
+        \multirow{4}{*}{\textbf{Conv4}}                    & \ac{ASLP} (thresholding)                              & \textbf{83.03 $\pm$ 0.31} & \textbf{83.73 $\pm$ 0.46} & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} \\
+                                                           & \ac{ASLP} (averaging)                                 & 82.29 $\pm$ 0.25          & 83.22 $\pm$ 0.56          & 82.79 $\pm$ 0.30          & 83.46 $\pm$ 0.49          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 82.38 $\pm$ 0.29          & 83.61 $\pm$ 0.38          & 81.71 $\pm$ 0.59          & 83.55 $\pm$ 0.32          \\
         \midrule
         % Conv 6 results
-        \multirow{4}{*}{\textbf{Conv6}}                    & ASLP (thresholding)                              & \textbf{84.98 $\pm$ 0.33} & \textbf{86.49 $\pm$ 0.36} & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} \\
-                                                           & ASLP (averaging)                                 & 84.24 $\pm$ 0.28          & 85.67 $\pm$ 0.34          & 84.51 $\pm$ 0.35          & 85.49 $\pm$ 0.38          \\
+        \multirow{4}{*}{\textbf{Conv6}}                    & \ac{ASLP} (thresholding)                              & \textbf{84.98 $\pm$ 0.33} & \textbf{86.49 $\pm$ 0.36} & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} \\
+                                                           & \ac{ASLP} (averaging)                                 & 84.24 $\pm$ 0.28          & 85.67 $\pm$ 0.34          & 84.51 $\pm$ 0.35          & 85.49 $\pm$ 0.38          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 84.67 $\pm$ 0.35          & 85.87 $\pm$ 0.13          & 84.37 $\pm$ 0.58          & 85.84 $\pm$ 0.51          \\
         \bottomrule
@@ -991,20 +999,20 @@ overall performance and accuracy in predicting outcomes.\\
                                                            &                                                  & $\varnothing$             & \textbf{SC}                & \textbf{WR}               & \textbf{WR+SC}            \\
         \toprule
         % Conv 2 results
-        \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{68.24 $\pm$ 0.14} & \textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
-                                                           & ASLP (averaging)                                 & 68.09 $\pm$ 0.35          & 67.69 $\pm$ 0.52           & 65.79 $\pm$ 0.65          & 65.35 $\pm$ 0.83          \\
+        \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{68.24 $\pm$ 0.14} & \textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
+                                                           & \ac{ASLP} (averaging)                                 & 68.09 $\pm$ 0.35          & 67.69 $\pm$ 0.52           & 65.79 $\pm$ 0.65          & 65.35 $\pm$ 0.83          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 67.12 $\pm$ 0.25          & 66.34 $\pm$ 0.41           & 56.71 $\pm$ 2.99          & 56.26 $\pm$ 1.64          \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                          & -                         & -                         \\
         \midrule
         % Conv 4 results
-        \multirow{4}{*}{\textbf{Conv4}}                    & ASLP (thresholding)                              & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37}  & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
-                                                           & ASLP (averaging)                                 & 70.88 $\pm$ 0.47          & 68.77 $\pm$ 1.42           & 71.82 $\pm$ 0.53          & 71.09 $\pm$ 0.69          \\
+        \multirow{4}{*}{\textbf{Conv4}}                    & \ac{ASLP} (thresholding)                              & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37}  & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
+                                                           & \ac{ASLP} (averaging)                                 & 70.88 $\pm$ 0.47          & 68.77 $\pm$ 1.42           & 71.82 $\pm$ 0.53          & 71.09 $\pm$ 0.69          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 68.09 $\pm$ 0.84          & 67.48 $\pm$ 0.52           & 58.13 $\pm$ 2.39          & 53.84 $\pm$ 5.00          \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                          & -                         & -                         \\
         \midrule
         % Conv 6 results
-        \multirow{4}{*}{\textbf{Conv6}}                    & ASLP (thresholding)                              & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46}  & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
-                                                           & ASLP (averaging)                                 & 72.62 $\pm$ 0.57          & 69.53 $\pm$ 1.68           & 75.24 $\pm$ 0.69          & 74.50 $\pm$ 0.96          \\
+        \multirow{4}{*}{\textbf{Conv6}}                    & \ac{ASLP} (thresholding)                              & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46}  & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
+                                                           & \ac{ASLP} (averaging)                                 & 72.62 $\pm$ 0.57          & 69.53 $\pm$ 1.68           & 75.24 $\pm$ 0.69          & 74.50 $\pm$ 0.96          \\
                                                            & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 70.71 $\pm$ 0.98          & 69.16 $\pm$ 1.92           & 44.77 $\pm$ 17.02         & 36.59 $\pm$ 15.32         \\
                                                            & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                          & -                         & -                         \\
         \bottomrule
@@ -1013,7 +1021,7 @@ overall performance and accuracy in predicting outcomes.\\
     \caption{Without data augmentation.}
     \label{tab:chap2:perf-tables:without-augmentation}
   \end{subtable}
-  \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and Supermask
+  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and Supermask
     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR-10}
     using various configurations. We use the configurations tested by the
     authors in their articles. Performances are presented with
@@ -1041,28 +1049,28 @@ overall performance and accuracy in predicting outcomes.\\
 %       \toprule
 
 %       % Conv 2 results
-%       \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{75.70 $\pm$ 0.30}                         & \textbf{75.81 $\pm$ 0.69}                     & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} & \textbf{68.24 $\pm$ 0.14} & \textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
-%                                                          & ASLP (averaging)                                 & 75.42 $\pm$ 0.25                                  & 75.50 $\pm$ 0.56                              & 76.05 $\pm$ 0.44          & 76.44 $\pm$ 0.19          & 68.09 $\pm$ 0.35          & 67.69 $\pm$ 0.52           & 65.79 $\pm$ 0.65          & 65.35 $\pm$ 0.83          \\
+%       \multirow{12}{*}{} \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{75.70 $\pm$ 0.30}                         & \textbf{75.81 $\pm$ 0.69}                     & \textbf{76.48 $\pm$ 0.68} & \textbf{76.92 $\pm$ 0.24} & \textbf{68.24 $\pm$ 0.14} & \textbf{ 68.11 $\pm$ 0.64} & \textbf{66.84 $\pm$ 0.46} & \textbf{66.05 $\pm$ 0.93} \\
+%                                                          & \ac{ASLP} (averaging)                                 & 75.42 $\pm$ 0.25                                  & 75.50 $\pm$ 0.56                              & 76.05 $\pm$ 0.44          & 76.44 $\pm$ 0.19          & 68.09 $\pm$ 0.35          & 67.69 $\pm$ 0.52           & 65.79 $\pm$ 0.65          & 65.35 $\pm$ 0.83          \\
 %                                                          & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 67.12 $\pm$ 0.25          & 66.34 $\pm$ 0.41           & 56.71 $\pm$ 2.99          & 56.26 $\pm$ 1.64          \\
 %                                                          & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 74.18 $\pm$ 0.76                                  & 75.19 $\pm$ 0.56                              & 74.51 $\pm$ 0.31          & 75.45 $\pm$ 0.44          & -                         & -                          & -                         & -                         \\
 %       \midrule
 
 %       % Conv 4 results
-%       \multirow{4}{*}{\textbf{Conv4}}                    & ASLP (thresholding)                              & \textbf{83.03 $\pm$ 0.31}                         & \textbf{83.73 $\pm$ 0.46}                     & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37}  & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
-%                                                          & ASLP (averaging)                                 & 82.29 $\pm$ 0.25                                  & 83.22 $\pm$ 0.56                              & 82.79 $\pm$ 0.30          & 83.46 $\pm$ 0.49          & 70.88 $\pm$ 0.47          & 68.77 $\pm$ 1.42           & 71.82 $\pm$ 0.53          & 71.09 $\pm$ 0.69          \\
+%       \multirow{4}{*}{\textbf{Conv4}}                    & \ac{ASLP} (thresholding)                              & \textbf{83.03 $\pm$ 0.31}                         & \textbf{83.73 $\pm$ 0.46}                     & \textbf{83.59 $\pm$ 0.29} & \textbf{84.06 $\pm$ 0.31} & \textbf{71.64 $\pm$ 0.36} & \textbf{69.74 $\pm$ 1.37}  & \textbf{72.85 $\pm$ 0.48} & \textbf{72.08 $\pm$ 0.62} \\
+%                                                          & \ac{ASLP} (averaging)                                 & 82.29 $\pm$ 0.25                                  & 83.22 $\pm$ 0.56                              & 82.79 $\pm$ 0.30          & 83.46 $\pm$ 0.49          & 70.88 $\pm$ 0.47          & 68.77 $\pm$ 1.42           & 71.82 $\pm$ 0.53          & 71.09 $\pm$ 0.69          \\
 %                                                          & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 68.09 $\pm$ 0.84          & 67.48 $\pm$ 0.52           & 58.13 $\pm$ 2.39          & 53.84 $\pm$ 5.00          \\
 %                                                          & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 82.38 $\pm$ 0.29                                  & 83.61 $\pm$ 0.38                              & 81.71 $\pm$ 0.59          & 83.55 $\pm$ 0.32          & -                         & -                          & -                         & -                         \\
 %       \midrule
 
 %       % Conv 6 results
-%       \multirow{4}{*}{\textbf{Conv6}}                    & ASLP (thresholding)                              & \textbf{84.98 $\pm$ 0.33}                         & \textbf{86.49 $\pm$ 0.36}                     & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46}  & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
-%                                                          & ASLP (averaging)                                 & 84.24 $\pm$ 0.28                                  & 85.67 $\pm$ 0.34                              & 84.51 $\pm$ 0.35          & 85.49 $\pm$ 0.38          & 72.62 $\pm$ 0.57          & 69.53 $\pm$ 1.68           & 75.24 $\pm$ 0.69          & 74.50 $\pm$ 0.96          \\
+%       \multirow{4}{*}{\textbf{Conv6}}                    & \ac{ASLP} (thresholding)                              & \textbf{84.98 $\pm$ 0.33}                         & \textbf{86.49 $\pm$ 0.36}                     & \textbf{85.32 $\pm$ 0.27} & \textbf{86.21 $\pm$ 0.34} & \textbf{73.32 $\pm$ 0.42} & \textbf{69.83 $\pm$ 1.46}  & \textbf{76.20 $\pm$ 0.91} & \textbf{75.30 $\pm$ 0.89} \\
+%                                                          & \ac{ASLP} (averaging)                                 & 84.24 $\pm$ 0.28                                  & 85.67 $\pm$ 0.34                              & 84.51 $\pm$ 0.35          & 85.49 $\pm$ 0.38          & 72.62 $\pm$ 0.57          & 69.53 $\pm$ 1.68           & 75.24 $\pm$ 0.69          & 74.50 $\pm$ 0.96          \\
 %                                                          & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 70.71 $\pm$ 0.98          & 69.16 $\pm$ 1.92           & 44.77 $\pm$ 17.02         & 36.59 $\pm$ 15.32         \\
 %                                                          & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 84.67 $\pm$ 0.35                                  & 85.87 $\pm$ 0.13                              & 84.37 $\pm$ 0.58          & 85.84 $\pm$ 0.51          & -                         & -                          & -                         & -                         \\
 %       \bottomrule
 %     \end{tabular}
 %   }
-%   \caption{\textbf{OLD TABLE} Comparison of ASLP performance against Edge-Popup and Supermask
+%   \caption{\textbf{OLD TABLE} Comparison of \ac{ASLP} performance against Edge-Popup and Supermask
 %     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR-10
 %     using various configurations. We use the configurations tested by the author
 %     of the aforementioned articles. Performance measures reported are accuracy and
@@ -1087,20 +1095,20 @@ overall performance and accuracy in predicting outcomes.\\
                                         &                                                  & $\varnothing$             & \textbf{SC}               & \textbf{WR}               & \textbf{WR+SC}            \\
         \toprule
         \multirow{12}{*}{}
-        \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75          & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} \\
-                                        & ASLP (averaging)                                 & 38.49 $\pm$ 0.61          & 38.18 $\pm$ 0.81          & 41.12 $\pm$ 0.66          & 41.17 $\pm$ 0.54          \\
+        \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{38.64 $\pm$ 0.92} & 38.31 $\pm$ 0.75          & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} \\
+                                        & \ac{ASLP} (averaging)                                 & 38.49 $\pm$ 0.61          & 38.18 $\pm$ 0.81          & 41.12 $\pm$ 0.66          & 41.17 $\pm$ 0.54          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 38.47 $\pm$ 0.46          & \textbf{39.83 $\pm$ 0.46} & 38.57 $\pm$ 0.59          & 39.87 $\pm$ 0.78          \\
         \midrule
 
-        \multirow{4}{*}{\textbf{Conv4}} & ASLP (thresholding)                              & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77          & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} \\
-                                        & ASLP (averaging)                                 & 47.18 $\pm$ 1.17          & 48.78 $\pm$ 0.79          & 49.39 $\pm$ 0.30          & 50.17 $\pm$ 0.50          \\
+        \multirow{4}{*}{\textbf{Conv4}} & \ac{ASLP} (thresholding)                              & \textbf{47.78 $\pm$ 1.18} & 49.33 $\pm$ 0.77          & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} \\
+                                        & \ac{ASLP} (averaging)                                 & 47.18 $\pm$ 1.17          & 48.78 $\pm$ 0.79          & 49.39 $\pm$ 0.30          & 50.17 $\pm$ 0.50          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 47.75 $\pm$ 0.63          & \textbf{50.16 $\pm$ 0.47} & 48.20 $\pm$ 0.72          & 50.02 $\pm$ 0.65          \\
         \midrule
 
-        \multirow{4}{*}{\textbf{Conv6}} & ASLP (thresholding)                              & 51.09 $\pm$ 0.92          & 53.00 $\pm$ 0.52          & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50          \\
-                                        & ASLP (averaging)                                 & 50.22 $\pm$ 1.09          & 51.72 $\pm$ 0.73          & 50.56 $\pm$ 0.33          & 51.59 $\pm$ 0.24          \\
+        \multirow{4}{*}{\textbf{Conv6}} & \ac{ASLP} (thresholding)                              & 51.09 $\pm$ 0.92          & 53.00 $\pm$ 0.52          & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50          \\
+                                        & \ac{ASLP} (averaging)                                 & 50.22 $\pm$ 1.09          & 51.72 $\pm$ 0.73          & 50.56 $\pm$ 0.33          & 51.59 $\pm$ 0.24          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                         & -                         & -                         & -                         \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39} & \textbf{53.48 $\pm$ 0.51} & 51.06 $\pm$ 1.11          & \textbf{54.01 $\pm$ 0.35} \\
         \bottomrule
@@ -1119,21 +1127,21 @@ overall performance and accuracy in predicting outcomes.\\
                                         &                                                  & $\varnothing$             & \textbf{SC}               & \textbf{WR}               & \textbf{WR+SC}            \\
         \toprule
         \multirow{12}{*}{}
-        \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23          & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
-                                        & ASLP (averaging)                                 & 38.40 $\pm$ 0.81          & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39          & 41.42 $\pm$ 0.55          \\
+        \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23          & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
+                                        & \ac{ASLP} (averaging)                                 & 38.40 $\pm$ 0.81          & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39          & 41.42 $\pm$ 0.55          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 38.09 $\pm$ 1.03          & 37.28 $\pm$ 0.47          & 26.03 $\pm$ 2.23          & 23.49 $\pm$ 1.36          \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                         & -                         & -                         \\
         \midrule
 
-        \multirow{4}{*}{\textbf{Conv4}} & ASLP (thresholding)                              & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
-                                        & ASLP (averaging)                                 & 46.89 $\pm$ 0.52          & 48.74 $\pm$ 0.47          & 49.55 $\pm$ 0.57          & 50.23 $\pm$ 0.87          \\
+        \multirow{4}{*}{\textbf{Conv4}} & \ac{ASLP} (thresholding)                              & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
+                                        & \ac{ASLP} (averaging)                                 & 46.89 $\pm$ 0.52          & 48.74 $\pm$ 0.47          & 49.55 $\pm$ 0.57          & 50.23 $\pm$ 0.87          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 45.84 $\pm$ 1.01          & 47.72 $\pm$ 0.75          & 27.70 $\pm$ 2.41          & 27.53 $\pm$ 5.20          \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                         & -                         & -                         \\
 
         \midrule
 
-        \multirow{4}{*}{\textbf{Conv6}} & ASLP (thresholding)                              & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
-                                        & ASLP (averaging)                                 & 50.47 $\pm$ 0.42          & 52.00 $\pm$ 0.27          & 50.38 $\pm$ 0.33          & 51.82 $\pm$ 0.34          \\
+        \multirow{4}{*}{\textbf{Conv6}} & \ac{ASLP} (thresholding)                              & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
+                                        & \ac{ASLP} (averaging)                                 & 50.47 $\pm$ 0.42          & 52.00 $\pm$ 0.27          & 50.38 $\pm$ 0.33          & 51.82 $\pm$ 0.34          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 49.19 $\pm$ 0.75          & 50.66 $\pm$ 0.47          & 2.54 $\pm$ 1.63           & 9.21 $\pm$ 5.50           \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & -                         & -                         & -                         & -                         \\
 
@@ -1143,7 +1151,7 @@ overall performance and accuracy in predicting outcomes.\\
     \caption{Without data augmentation}
   \end{subtable}
 
-  \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and Supermask
+  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and Supermask
     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR-100}
     using various configurations. We use the configurations tested by the
     authors in their articles. Performances are presented with
@@ -1156,7 +1164,7 @@ overall performance and accuracy in predicting outcomes.\\
     which yeilds the best test accuracy for Conv\{2,4,6\}, as reported in
     \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP
     outperforms the other methods, with the exception of the \ac{SC} setup for
-    Conv2 and Conv4. However, for Conv6, ASLP performance is superior when data
+    Conv2 and Conv4. However, for Conv6, \ac{ASLP} performance is superior when data
     augmentation is disabled, while Edge-popup achieves better results with data
     augmentation enabled (except for the \ac{WR} setup).}
   \label{tab:chap2:con_performances_comparison_cifar100}
@@ -1172,25 +1180,25 @@ overall performance and accuracy in predicting outcomes.\\
 %                                       &                                                  & $\varnothing$                                     & \textbf{SC}                                   & \textbf{WR}               & \textbf{WR+SC}            & $\varnothing$             & \textbf{SC}               & \textbf{WR}               & \textbf{WR+SC}            \\
 %       \toprule
 %       \multirow{12}{*}{}
-%       \multirow{4}{*}{\textbf{Conv2}} & ASLP (thresholding)                              & \textbf{38.64 $\pm$ 0.92}                         & 38.31 $\pm$ 0.75                              & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23          & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
-%                                       & ASLP (averaging)                                 & 38.49 $\pm$ 0.61                                  & 38.18 $\pm$ 0.81                              & 41.12 $\pm$ 0.66          & 41.17 $\pm$ 0.54          & 38.40 $\pm$ 0.81          & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39          & 41.42 $\pm$ 0.55          \\
+%       \multirow{4}{*}{\textbf{Conv2}} & \ac{ASLP} (thresholding)                              & \textbf{38.64 $\pm$ 0.92}                         & 38.31 $\pm$ 0.75                              & \textbf{41.81 $\pm$ 0.84} & \textbf{42.06 $\pm$ 0.76} & \textbf{38.72 $\pm$ 0.59} & 38.64 $\pm$ 1.23          & \textbf{42.42 $\pm$ 0.30} & \textbf{41.95 $\pm$ 0.68} \\
+%                                       & \ac{ASLP} (averaging)                                 & 38.49 $\pm$ 0.61                                  & 38.18 $\pm$ 0.81                              & 41.12 $\pm$ 0.66          & 41.17 $\pm$ 0.54          & 38.40 $\pm$ 0.81          & \textbf{38.71 $\pm$ 1.05} & 41.66 $\pm$ 0.39          & 41.42 $\pm$ 0.55          \\
 %                                       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 38.09 $\pm$ 1.03          & 37.28 $\pm$ 0.47          & 26.03 $\pm$ 2.23          & 23.49 $\pm$ 1.36          \\
 %                                       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 38.47 $\pm$ 0.46                                  & \textbf{39.83 $\pm$ 0.46}                     & 38.57 $\pm$ 0.59          & 39.87 $\pm$ 0.78          & -                         & -                         & -                         & -                         \\
 %       \midrule
 
-%       \multirow{4}{*}{\textbf{Conv4}} & ASLP (thresholding)                              & \textbf{47.78 $\pm$ 1.18}                         & 49.33 $\pm$ 0.77                              & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
-%                                       & ASLP (averaging)                                 & 47.18 $\pm$ 1.17                                  & 48.78 $\pm$ 0.79                              & 49.39 $\pm$ 0.30          & 50.17 $\pm$ 0.50          & 46.89 $\pm$ 0.52          & 48.74 $\pm$ 0.47          & 49.55 $\pm$ 0.57          & 50.23 $\pm$ 0.87          \\
+%       \multirow{4}{*}{\textbf{Conv4}} & \ac{ASLP} (thresholding)                              & \textbf{47.78 $\pm$ 1.18}                         & 49.33 $\pm$ 0.77                              & \textbf{50.33 $\pm$ 0.39} & \textbf{51.49 $\pm$ 0.43} & \textbf{47.56 $\pm$ 0.36} & \textbf{49.30 $\pm$ 0.54} & \textbf{50.39 $\pm$ 0.58} & \textbf{51.16 $\pm$ 0.94} \\
+%                                       & \ac{ASLP} (averaging)                                 & 47.18 $\pm$ 1.17                                  & 48.78 $\pm$ 0.79                              & 49.39 $\pm$ 0.30          & 50.17 $\pm$ 0.50          & 46.89 $\pm$ 0.52          & 48.74 $\pm$ 0.47          & 49.55 $\pm$ 0.57          & 50.23 $\pm$ 0.87          \\
 %                                       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 45.84 $\pm$ 1.01          & 47.72 $\pm$ 0.75          & 27.70 $\pm$ 2.41          & 27.53 $\pm$ 5.20          \\
 %                                       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 47.75 $\pm$ 0.63                                  & \textbf{50.16 $\pm$ 0.47}                     & 48.20 $\pm$ 0.72          & 50.02 $\pm$ 0.65          & -                         & -                         & -                         & -                         \\
 %       \midrule
 
-%       \multirow{4}{*}{\textbf{Conv6}} & ASLP (thresholding)                              & 51.09 $\pm$ 0.92                                  & 53.00 $\pm$ 0.52                              & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50          & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
-%                                       & ASLP (averaging)                                 & 50.22 $\pm$ 1.09                                  & 51.72 $\pm$ 0.73                              & 50.56 $\pm$ 0.33          & 51.59 $\pm$ 0.24          & 50.47 $\pm$ 0.42          & 52.00 $\pm$ 0.27          & 50.38 $\pm$ 0.33          & 51.82 $\pm$ 0.34          \\
+%       \multirow{4}{*}{\textbf{Conv6}} & \ac{ASLP} (thresholding)                              & 51.09 $\pm$ 0.92                                  & 53.00 $\pm$ 0.52                              & \textbf{51.70 $\pm$ 0.48} & 52.85 $\pm$ 0.50          & \textbf{51.43 $\pm$ 0.41} & \textbf{53.10 $\pm$ 0.27} & \textbf{51.52 $\pm$ 0.35} & \textbf{53.22 $\pm$ 0.54} \\
+%                                       & \ac{ASLP} (averaging)                                 & 50.22 $\pm$ 1.09                                  & 51.72 $\pm$ 0.73                              & 50.56 $\pm$ 0.33          & 51.59 $\pm$ 0.24          & 50.47 $\pm$ 0.42          & 52.00 $\pm$ 0.27          & 50.38 $\pm$ 0.33          & 51.82 $\pm$ 0.34          \\
 %                                       & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & -                                                 & -                                             & -                         & -                         & 49.19 $\pm$ 0.75          & 50.66 $\pm$ 0.47          & 2.54 $\pm$ 1.63           & 9.21 $\pm$ 5.50           \\
 %                                       & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{51.13 $\pm$ 0.39}                         & \textbf{53.48 $\pm$ 0.51}                     & 51.06 $\pm$ 1.11          & \textbf{54.01 $\pm$ 0.35} & -                         & -                         & -                         & -                         \\
 %       \bottomrule
 %     \end{tabular}
-%   } \caption{\textbf{OLD TABLE} Comparison of ASLP performance against Edge-Popup and Supermask
+%   } \caption{\textbf{OLD TABLE} Comparison of \ac{ASLP} performance against Edge-Popup and Supermask
 %     \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on CIFAR-100
 %     using various configurations. We use the configurations tested by the author
 %     of the aforementioned articles. Performance measures reported are accuracy and
@@ -1198,7 +1206,7 @@ overall performance and accuracy in predicting outcomes.\\
 %     the signed constant weight distribution (SC). We report performances for both
 %     \textit{thresholding} and \textit{averaging} setups for our method. For edge-popup, we use
 %     the best $k$ value for Conv\{2,4,6\} reported in
-%     \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, ASLP outperforms
+%     \cite{DBLP:conf/cvpr/RamanujanWKFR20}. For smaller networks, \ac{ASLP} outperforms
 %     the other methods, with the exception of the SC setup for Conv2 and Conv4.
 %     However, for Conv6, ASLP's performance is superior when data augmentation is
 %     disabled, while edge-popup achieves better results with data augmentation
@@ -1213,23 +1221,23 @@ overall performance and accuracy in predicting outcomes.\\
                                                           &                                                  & \multicolumn{2}{c}{\textbf{Dataset}}                             \\
                                                           &                                                  & \textbf{CIFAR-10}                    & \textbf{CIFAR-100}        \\
     \toprule
-    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet-20}} & ASLP (thresholding)                              & \textbf{ 81.08 $\pm$ 0.50}           & \textbf{44.63 $\pm$ 0.91} \\
-                                                          & ASLP (averaging)                                 & 78.85 $\pm$ 0.41                     & 42.91 $\pm$ 1.14          \\
+    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet-20}} & \ac{ASLP} (thresholding)                              & \textbf{ 81.08 $\pm$ 0.50}           & \textbf{44.63 $\pm$ 0.91} \\
+                                                          & \ac{ASLP} (averaging)                                 & 78.85 $\pm$ 0.41                     & 42.91 $\pm$ 1.14          \\
                                                           & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 69.83 $\pm$ 1.20                     & 30.60 $\pm$ 0.91          \\
                                                           & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 75.09 $\pm$ 1.41                     & 22.47 $\pm$ 1.37          \\
     \midrule
-    \multirow{4}{*}{\textbf{VGG16}}                       & ASLP (thresholding)                              & \textbf{24.93 $\pm$ 0.69}            & \textbf{8.66 $\pm$ 0.33}  \\
-                                                          & ASLP (averaging)                                 & 24.93 $\pm$ 0.77                     & 8.58 $\pm$ 0.32           \\
+    \multirow{4}{*}{\textbf{VGG16}}                       & \ac{ASLP} (thresholding)                              & \textbf{24.93 $\pm$ 0.69}            & \textbf{8.66 $\pm$ 0.33}  \\
+                                                          & \ac{ASLP} (averaging)                                 & 24.93 $\pm$ 0.77                     & 8.58 $\pm$ 0.32           \\
                                                           & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 25.07 $\pm$ 0.34                     & 7.97 $\pm$ 0.35           \\
                                                           & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 23.05 $\pm$ 0.84                     & 6.65 $\pm$ 0.38           \\
     \bottomrule
   \end{tabular}
-  \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and
+  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and
     Supermask \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on
     both \textbf{CIFAR-10} and \textbf{CIFAR-100} datasets using VGG16 and
     ResNet-20 architectures. The results showcase the scenario with data
     augmentation, \acf{WR} and \acf{SC} weight distribution. Across all datasets
-    and network architectures, ASLP surpasses the comparative methods in its
+    and network architectures, \ac{ASLP} surpasses the comparative methods in its
     \textit{thresholding} configuration, detailed in
     \cref{sec:chap2:freezing_topology}.}
   \label{tab:chap2:r20_VGG16_performances_comparison}
@@ -1241,14 +1249,14 @@ overall performance and accuracy in predicting outcomes.\\
     \cmidrule[\heavyrulewidth]{3-3}
                                         &                                                  & \textbf{TinyImageNet}     \\
     \toprule
-    \multirow{4}{*}{\textbf{ResNet-18}} & ASLP  (thresholding)                             & 33.56 $\pm$ 1.18          \\
-                                        & ASLP (averaging)                                 & 34.16 $\pm$ 0.26          \\
+    \multirow{4}{*}{\textbf{ResNet-18}} & \ac{ASLP}  (thresholding)                             & 33.56 $\pm$ 1.18          \\
+                                        & \ac{ASLP} (averaging)                                 & 34.16 $\pm$ 0.26          \\
                                         & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 34.83 $\pm$ 0.46          \\
                                         & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & \textbf{38.00 $\pm$ 0.26} \\
     \bottomrule
   \end{tabular}
 
-  \caption{Comparison of ASLP \textbf{test accuracy} against Edge-Popup and
+  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and
     Supermask \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on
     \textbf{TinyImageNet} datasets using ResNet-18 architecture. The results
     showcase the scenario with data augmentation, \acf{WR} and \acf{SC} weight
@@ -1276,7 +1284,7 @@ overall performance and accuracy in predicting outcomes.\\
     \textbf{ResNet-18} & \multicolumn{2}{c}{52.73 $\pm$ 0.28}\\
     \bottomrule
     \end{tabular}
-  \caption{Comparison of the ASLP method observed \textbf{pruning rates} across
+  \caption{Comparison of the \ac{ASLP} method observed \textbf{pruning rates} across
     various neural network architectures and datasets (CIFAR-10 and CIFAR-100)
     after applying the \emph{thresholding} procedure, detailed in
     \cref{sec:chap2:freezing_topology}. The results are presented as mean
@@ -1303,7 +1311,7 @@ overall performance and accuracy in predicting outcomes.\\
 %     \textbf{ResNet-18} & \multicolumn{2}{c}{47.27 $\pm$ 0.28}                           \\
 %     \bottomrule
 %   \end{tabular}
-%   \caption{\textbf{OLD TABLE}Comparison of the ASLP method \textbf{sparsity levels} across various
+%   \caption{\textbf{OLD TABLE}Comparison of the \ac{ASLP} method \textbf{sparsity levels} across various
 %     neural network architectures and datasets (CIFAR-10 and CIFAR-100) after
 %     applying the \emph{thresholding} procedure, detailed in
 %     \cref{sec:chap2:freezing_topology}. The results are presented as mean
@@ -1355,7 +1363,7 @@ using \ac{SR} compared to \ac{DWR} on a Conv4 network.\\
   \subfloat[CIFAR-100\label{fig:chap2:rescale_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_2/assets/sr_impact_on_epochs_cifar100.pdf}}
   \caption{Impact of \acf{SR} on the number of epochs required to reach
-    convergence for Conv\{2,3,4\} on CIFAR-10 and CIFAR-100.}
+    convergence for Conv\{2,4,6\} on CIFAR-10 and CIFAR-100.}
   \label{fig:chap2:rescale_impact}
 \end{figure}
 
@@ -1422,7 +1430,7 @@ performance.\\
   \subfloat[ResNet-20\label{fig:chap2:lr_resnet20}]{
     \includegraphics[width=0.33\linewidth]{chapter_2/assets/impact_of_lr_PrunableResNet20.pdf}}
   \caption{Evolution of the test accuracy for Conv4, VGG16 and ResNet-20 trained
-    with ASLP (with data augmentation, \ac{WR} and \ac{SC}) on CIFAR-10 for various learning
+    with \ac{ASLP} (with data augmentation, \ac{WR} and \ac{SC}) on CIFAR-10 for various learning
     rates. A learning rate of 50 yields the optimal balance between performance
     and training speed.}
   \label{fig:chap2:lr_impact}
@@ -1480,9 +1488,9 @@ need for a costly grid search, in contrary to the Edge-popup method
     \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar10.pdf}}
     \subfloat[cifar100\label{fig:chap2:sparsity_cifar100}]{
     \includegraphics[width=0.49\textwidth]{chapter_2/assets/impact_of_pr_cifar100.pdf}}
-    \caption{Comparative analysis of ASLP performance for CIFAR-10 and CIFAR-100
+    \caption{Comparative analysis of \ac{ASLP} performance for CIFAR-10 and CIFAR-100
     datasets using various network architectures (Conv\{2,4,6\}, ResNet-20, and
-    VGG16) at different pruning rates. ASLP performances are evaluated with
+    VGG16) at different pruning rates. \ac{ASLP} performances are evaluated with
     \ac{WR}, \ac{SC} and data augmentation. Results demonstrate that
     Conv\{2,4,6\} networks maintain strong performance even at higher pruning
     rates and indicate that the pruning rate achieved by thresholding is
@@ -1502,7 +1510,7 @@ selection method that uses \acl{GS} sampling and a new mask parametrisation to
 optimize the subnetwork topology while mitigating numerical instabilities.
 Additionally, we presented the \acl{SR} technique to accelerate training and
 improve the accuracy of the resulting subnetworks. Our experimental results show
-that ASLP outperforms state-of-the-art methods, such as Edge-popup
+that \ac{ASLP} outperforms state-of-the-art methods, such as Edge-popup
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
 \cite{DBLP:conf/nips/ZhouLLY19}, on the CIFAR-10 and CIFAR-100 datasets across
 various network architectures. Our proposed \textit{thresholding} pruning
