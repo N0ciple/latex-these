@@ -1,3 +1,18 @@
+% acronym style
+
+\definecolor{mycolor}{HTML}{363687} % define your color using a hex code
+
+\let\oldac\ac
+\let\oldacp\acp
+\let\oldacf\acf
+
+\renewcommand*{\acp}[1]{\textcolor{mycolor}{\oldacp{#1}}}
+\renewcommand*{\ac}[1]{\textcolor{mycolor}{\oldac{#1}}}
+\renewcommand*{\acf}[1]{\textcolor{mycolor}{\oldacf{#1}}}
+
+
+% acronyms
+
 \DeclareAcronym{BN}{
     short=BN,
     long=Batch Normalisation,
