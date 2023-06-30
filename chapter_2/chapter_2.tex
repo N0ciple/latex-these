@@ -93,7 +93,7 @@ training.\\
 % these models with lightweight architectures that prioritise efficiency while
 % maintaining high accuracy. The aim is to make these models both lightweight and
 % effective, which presents a significant challenge for researchers in the
-% % field.\\
+% field.\\
 
 % \subsubsection{Designing Lightweight Neural Networks}
 
@@ -122,25 +122,84 @@ training.\\
 \noindent\textbf{Pruning at initialisation.} In general, extracting an efficient
 subnetwork is still an open problem and is computationally demanding as this
 amounts to full training of large networks (until convergence) prior to their
-pruning. Existing alternatives approach this problem using early pruning
-\cite{DBLP:conf/iclr/LeeAT19,
-DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}, but still require to train
-the weights. In contrast to these works, our proposed solution in this chapter
-identifies effective subnetworks by training only their topology and without any
-weight tuning.\\
+pruning. Existing alternatives approach this problem by pruning the network
+weights before training \cite{DBLP:conf/iclr/LeeAT19,DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}.\\
 
-\noindent\textbf{Lottery Ticket.} A way of obtaining lightweight neural networks is to
-reduce the size of an already existing large neural network, through pruning. As
-discussed in \cref{chap:chapter1,chap:sota}, pruning methods, either structured
-or unstructured, are particularly successful at simplifying large neural
-networks, and seek to remove connections with the least perceptible impact on
-classification accuracy. Structured pruning consists in {\it jointly} removing
-groups of weights, entire channels or subnetworks
+Single-Shot Network Pruning (SNIP) was introduced by
+\citeauthor{DBLP:conf/iclr/LeeAT19} in \cite{DBLP:conf/iclr/LeeAT19}. The
+authors devise a new criterion to determine the importance of a connection even
+before the start of training. The criterion, called \emph{connection
+sensitivity}, is based on the influence of a connection on the loss function.
+The more a connection can change the loss function output, the more important it
+is considered to be. Considering a connection $j$, the authours define its
+sensitivity as:
+\begin{equation}
+  \label{eq:snip}
+  s_j=\displaystyle\frac{|g_j(\bf{w};\mathcal{D})|}{\displaystyle\sum_{k=1}^m |g_{k}(\bf{w};\mathcal{D})|}
+\end{equation}
+
+\noindent where $m$ is the number of connections in the network and
+$g_j(\bf{w};\mathcal{D})$ is the gradient of the loss function with respect to
+an auxilarry variable denoted $c_j$ by the authors that represents the presence
+($c_j=1$) or absence ($c_j=0$) of the connection $j$ in the network. The
+connections are then sorted by their connection sensitivity score and the
+top-$k$ connection are kept to match a given pruning rate.\\
+
+GraSP (Gradient Signal Preservation) \cite{DBLP:conf/iclr/WangZG20} is a
+refinement of SNIP that takes into account the \emph{gradient flow}. the authors
+seeks to preserve the latter in order to allow large gradients in the subsequent
+network training. The scores of the weights is defined in a vectorised way as
+:
+\begin{equation}
+  \label{eqn:chap2:grasp_score}
+  \bf{S}(-\bf{\theta}) = -\bf{\theta} \odot \bf{H} \bf{g}
+\end{equation}
+
+\noindent where $\odot$ is the Hadamard product, $\bf{\theta}$ is the vector of
+weights, $\bf{H}$ is the Hessian matrix of the loss function with respect to the
+weights and $\bf{g}$ is the gradient of the loss function with respect to the
+weights. Considering how the score is defined in \cref{eqn:chap2:grasp_score},
+pruning is achieved by removing the top-$k$ weights that reduces the gradient
+flow to match a given pruning rate.\\
+
+Whereas both SNIP and GraSP require at a single a mini-batch to compute their
+respective scrores, SynFlow \cite{DBLP:conf/nips/TanakaKYG20} is a data-free
+pruning method that seeks to preserve \emph{synaptic flow} in the network in
+order to prevent \emph{layer-collapse}. The latter is defined by the authors as
+the complete pruning of a layer, which effectively renders the network
+untrainable. For a given layer $l$, the synaptic flow score of the weights
+$\theta_\ell$ of the layer is defined as :
+
+\begin{equation}
+  \label{eqn:chap2:synflow_score}
+  \mathcal{S}_\text{SF}(\theta_\ell) = \displaystyle\frac{\partial ~ \left(\mathbb{1}^T \left( \displaystyle\prod_{\ell=1}^{L} | \theta_\ell | \right) \mathbb{1}\right)}{\partial ~ \theta_\ell} \odot \theta_\ell
+\end{equation}
+
+\noindent where $L$ is the total number of layers in the network and
+$\mathbb{1}$ is the all ones vector. SynFlow does not necessitate any data to
+compute the scores. The latter are computed and updated iteratively for 100
+iterations, regardless of the targeted dataset. Since it prevent layer-collapse,
+networks pruning with SynFlow can reach higher pruning rates than with SNIP or
+GraSP.\\
+
+These methods allows to prune a network at initialisation, but still require to
+train the weights. In contrast to these works, our proposed solution in this
+chapter identifies effective subnetworks by training only their topology and
+without any weight tuning.\\
+
+\noindent\textbf{Lottery Ticket.} A way of obtaining lightweight neural networks
+is to reduce the size of an already existing large neural network, through
+pruning. As discussed in \cref{chap:chapter1,chap:sota}, pruning methods, either
+structured or unstructured, are particularly successful at simplifying large
+neural networks, and seek to remove connections with the least perceptible
+impact on classification accuracy. Structured pruning consists in {\it jointly}
+removing groups of weights, entire channels or subnetworks
 \cite{DBLP:conf/iclr/0022KDSG17, DBLP:conf/iccv/LiuLSHYZ17}, whereas
 unstructured pruning aims at removing weights {\it individually}
-\cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}.  Unstructured pruning
-has witnessed a recent surge in interest in the wake of the \ac{LTH}
-\cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
+\cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}.\\
+
+Unstructured pruning has witnessed a recent surge in interest in the wake of the
+\ac{LTH} \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
 \cite{DBLP:conf/iclr/FrankleC19} demonstrates that large pre-trained networks
 encompass lightweight subnetworks, referred to as \textit{\acp{LT}}, which can
 achieve comparable performance to the original large networks in a similar
@@ -149,13 +208,36 @@ large network. To identify these \acp{LT}, the large network is trained until
 convergence, followed by pruning the smallest weights based on their magnitude.
 The remaining weights are then rewound to their original value, that is, the
 value they had before the training of the large network began. This resulting
-subnetwork is known as a \textit{Lottery Ticket}. 
+subnetwork is known as a \textit{Lottery Ticket}.
+\citeauthor{DBLP:conf/iclr/FrankleC19} also levraged \emph{iterative magnitude
+pruning} to identify \acp{LT}, where the pruning rate is gradually increased
+during training until it reaches the desired pruning rate
+\cite{DBLP:conf/iclr/FrankleC19}.\\
+
+Rewinding the weights to their original values does not allow to find \ac{LT}
+for larger architectures, as noted by
+\cite{DBLP:conf/iclr/LiuSZHD19,DBLP:journals/corr/abs-1902-09574}.
+\citeauthor{DBLP:conf/iclr/FrankleC19} proposed a weaker version of the \ac{LTH}
+where the weight values are not reset to their original values, but instead to
+an early stage of the training corresponding to the network reaching a stable
+state, described in \cite{DBLP:conf/icml/FrankleD0C20}.\\
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{chapter_2/assets/LT_schemes.pdf}
+  \caption{Conceptual illustration of the different processes to obtain a
+  \acl{LT}: reinitialising the weights to their original values with one-shot
+  magnitude pruning (\emph{LT with original values}), reinitialising the weights
+  to their early stage values with one-shot magnitude pruning (\emph{LT with
+  early stage values}) and iterative magnitude pruning (\emph{LT with iterative
+  magnitude pruning}). Best viewed in colour.}
+  \label{fig:chap2:lt_schemes}
+\end{figure}
 
 
-Another study
-\cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and concludes that
-only the topology of these subnetworks is actually important in order to reach
-comparable performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
+Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and
+concludes that only the topology of these subnetworks is actually important in
+order to reach comparable performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
 \cite{DBLP:conf/iclr/LiuSZHD19} point out that the weights of the \acp{LT} are
 not important and can be randomly initialised, provided that the optimisation
 procedure is carefully designed. In particular,
@@ -166,35 +248,36 @@ momentum and demonstrated instead of using an Adam optimiser
 
 
 
-At first, it seems counterintuitive that there exists a subnetwork in a large
-network, that can achieve compelling performances without any weight training.
-This has been first conjectured in \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the
-Strong \acl{LTH}. A theoretical analysis provided evidence that such subnetworks
-do exist. \cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of
-width $d$ and depth $l$ can be approximated by pruning a randomly initialised
-one that is a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on
-the network width has later been improved by \cite{DBLP:conf/nips/OrseauHR20}
-to $O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution.
-This upper bound has eventually been refined to $O(d\log(dl))$ by
+\noindent\textbf{Proof of existence.} At first, it seems counterintuitive that
+there exists a subnetwork in a large network, that can achieve compelling
+performances without any weight training. This has been first conjectured in
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \acl{LTH}. A  few
+theoretical analyses provide evidence that such subnetworks do exist.
+\cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of width $d$
+and depth $l$ can be approximated by pruning a randomly initialised one that is
+a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
+width has later been improved by \cite{DBLP:conf/nips/OrseauHR20} to
+$O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
+upper bound has eventually been refined to $O(d\log(dl))$ by
 \cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of distributions, including
 the uniform one which is widely used for weight initialisation
 \cite{DBLP:conf/iccv/HeZRS15}.\\
 
-Although their existence has been established, no constructive proof has been
-provided in order to identify the lightweight and efficient from-scratch
-subnetworks. In this context, Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
-proposed the first attempt to extract efficient subnetworks using stochastic
-mask training. A probability of selecting each weight is defined (as the sigmoid
-of a mask) and trained using the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}.
-During training, weights are frozen and only the masks are allowed to vary.
-However, the major drawback of this method resides in the vanishing gradient
-issue of the sigmoid which makes mask training numerically challenging.
-Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another
-alternative, based on binarised saliency indicators learned with \ac{STE}, which
-selects the most prominent weights in the resulting subnetworks. Nevertheless,
-since this method enforces the pruning rate \textit{a priori}, finding the
-pruning rate giving the highest performances has to be made through a cumbersome
-and time-consuming binary or grid search. \\
+\noindent\textbf{Subnetwork topology extraction.} Although their existence has
+been established, no constructive proof has been provided in order to identify
+the lightweight and efficient from-scratch subnetworks. In this context, Zhou et
+al. \cite{DBLP:conf/nips/ZhouLLY19} proposed the first attempt to extract
+efficient subnetworks using stochastic mask training. A probability of selecting
+each weight is defined (as the sigmoid of a mask) and trained using the \ac{STE}
+\cite{DBLP:journals/corr/BengioLC13}. During training, weights are frozen and
+only the masks are allowed to vary. However, the major drawback of this method
+resides in the vanishing gradient issue of the sigmoid which makes mask training
+numerically challenging. Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20}
+proposed another alternative, based on binarised saliency indicators learned
+with \ac{STE}, which selects the most prominent weights in the resulting
+subnetworks. Nevertheless, since this method enforces the pruning rate \textit{a
+priori}, finding the pruning rate giving the highest performances has to be made
+through a cumbersome and time-consuming binary or grid search. \\
 
 \subsection{Contributions}
 \label{sec:chap2:intro_contributions}
