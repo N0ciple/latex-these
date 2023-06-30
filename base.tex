@@ -59,6 +59,9 @@
 \usepackage{etoolbox} % for the \patchcmd command
 \usepackage{subcaption}% pour avoir des sous tables et les sous figures (remplace subfig)
 \usepackage{xcolor} % to use colors, specially for acronyms 
+\usepackage{sectsty} % pour le style des sections (voir ici : https://tex.stackexchange.com/questions/311487/how-to-change-the-title-abstract-and-headings-font-to-sans-serif)
+\usepackage{bbold} % pour les 1 avec 2 barres
+
 % endregion: packages perso
 
 
@@ -89,18 +92,14 @@
 
 % Réglage propres au document PDF
 
-% \hypersetup{							% Information sur le document
-% pdfauthor = {Premier Auteur,
-% 			Deuxième Auteur,
-% 			Troisième Auteur,
-%     		Quatrième Auteur},			% Auteurs
-% pdftitle = {Nom du Projet -
-% 			Sujet du Projet},			% Titre du document
+\hypersetup{							% Information sur le document
+pdfauthor = {Robin Dupont},			% Auteurs
+pdftitle = { Thesis Manuscript of Robin Dupont},			% Titre du document
 % pdfsubject = {Mémoire de Projet},		% Sujet
 % pdfkeywords = {Tag1, Tag2, Tag3, ...},	% Mots-clefs
-% pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
-% %pdfcreator = {MikTeX},% Logiciel qui a crée le document
-% %pdfproducer = {}} % Société avec produit le logiciel
+pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
+%pdfcreator = {MikTeX},% Logiciel qui a crée le document
+%pdfproducer = {}} % Société avec produit le logiciel
 
 
 %====================== SECTION PERSO ====================== 
@@ -109,6 +108,7 @@
 \hyphenation{re-para-me-tri-za-tion}
 \hyphenation{re-para-me-tri-sa-tion}
 
+% ################  A CHANGER POUR REVUE ?
 \linespread{1} % régler l'espacement entre les lignes
 
 \renewcommand\linenumberfont{\normalfont\large} % régler la taille des numéros de ligne
@@ -116,11 +116,12 @@
 %======================== DEBUT DU DOCUMENT ========================
 
 \begin{document}
+
+% TODO: adapter pour le confort de lecture
 \fontsize{14}{16}\selectfont
 
-
-%régler l'espacement entre les lignes
-\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+% style des sections : fonte sans serifs
+\allsectionsfont{\sffamily}
 
 %page de garde
 %\input{./title.tex}
@@ -159,8 +160,8 @@
 \setcounter{page}{0}
 \newpage
 
-
-\linenumbers
+% ################  A CHANGER POUR REVUE ?
+% \linenumbers
 
 \input{./chapter_intro/chapter_into.tex}
 \input{./chapter_sota/chapter_sota.tex}
