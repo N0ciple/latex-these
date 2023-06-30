@@ -59,30 +59,30 @@
 \section{Introduction and Related Work}
 % region: introduction
 
-In this chapter we tackle the challenge of extracting lightweight and effective
+In this chapter, we tackle the challenge of extracting lightweight and effective
 subnetworks from large, untrained neural networks. The goal is to obtain
 subnetworks that have both a smaller number of parameters compared to the
-original network and compelling performances. In contrary to
-\cref{chap:chapter1} where the focus was on soft pruning weight based on their
-value, while training, the method presented in this chapter relies on training
-latent masks that represents a parametrisation of the probabilities for the
-weights to be selected on not in a sampled set of weights. Unlike the method
-described in \cref{chap:chapter1}, the method introduced in this chapter is, on
-the one hand, stochastic, and on the other hand, is decorrelating the pruning
-criterion from the weight value.\\
+original network and compelling performances. Contrary to \cref{chap:chapter1}
+where the focus was on soft pruning weight based on their value while training,
+the method presented in this chapter relies on training latent masks that
+represent a parametrisation of the probabilities for the weights to be selected
+on not in a sampled set of weights. Unlike the method described in
+\cref{chap:chapter1}, the method introduced in this chapter is, on the one hand,
+stochastic, and on the other hand, decorrelating the pruning criterion from the
+weight value.\\
 
-This method boast several advantages over the method presented in the previous
+This method boasts several advantages over the method presented in the previous
 chapter: First, as we just mentioned, the pruning criterion is decorrelated from
 the value of the weight, offering more flexibility. Indeed, two weights with the
 same value can have different probabilities of being selected. Second, this
-method does not train the weights, but selects the best subset of them to
-minimise the loss. Consequently, this method is perfectly suited for application
-where training the weight might not be possible and activating or deactivating a
-weight is the only option. Finally, from a global standpoint, this method is
-provides a new path to neural network training that does not rely on weight
-training.\\
+method does not train the weights but selects the best subset of them to
+minimise the loss. Consequently, this method is perfectly suited for
+applications where training the weight might not be possible and activating or
+deactivating a weight is the only option. Finally, from a global standpoint,
+this method provides a new path to neural network training that does not rely on
+weight training.\\
 
-\subsection{Related Work}
+\subsection{Related Work}\label{sec:chap2:related_work}
 
 % Deep neural networks are increasingly used in solving various image processing
 % tasks, especially in the domain of visual category recognition. While these
@@ -131,7 +131,7 @@ authors devise a new criterion to determine the importance of a connection even
 before the start of training. The criterion, called \emph{connection
 sensitivity}, is based on the influence of a connection on the loss function.
 The more a connection can change the loss function output, the more important it
-is considered to be. Considering a connection $j$, the authours define its
+is considered to be. Considering a connection $j$, the authors define its
 sensitivity as:
 \begin{equation}
   \label{eq:snip}
@@ -146,10 +146,9 @@ connections are then sorted by their connection sensitivity score and the
 top-$k$ connection are kept to match a given pruning rate.\\
 
 GraSP (Gradient Signal Preservation) \cite{DBLP:conf/iclr/WangZG20} is a
-refinement of SNIP that takes into account the \emph{gradient flow}. the authors
-seeks to preserve the latter in order to allow large gradients in the subsequent
-network training. The scores of the weights is defined in a vectorised way as
-:
+refinement of SNIP that takes into account the \emph{gradient flow}. The authors
+seek to preserve the latter in order to allow large gradients in the subsequent
+network training. The scores of the weights are defined in a vectorised way as :
 \begin{equation}
   \label{eqn:chap2:grasp_score}
   \bf{S}(-\bf{\theta}) = -\bf{\theta} \odot \bf{H} \bf{g}
@@ -162,8 +161,8 @@ weights. Considering how the score is defined in \cref{eqn:chap2:grasp_score},
 pruning is achieved by removing the top-$k$ weights that reduces the gradient
 flow to match a given pruning rate.\\
 
-Whereas both SNIP and GraSP require at a single a mini-batch to compute their
-respective scrores, SynFlow \cite{DBLP:conf/nips/TanakaKYG20} is a data-free
+Both SNIP and GraSP require a single a mini-batch to compute their respective
+scrores, whereas SynFlow \cite{DBLP:conf/nips/TanakaKYG20} is a data-free
 pruning method that seeks to preserve \emph{synaptic flow} in the network in
 order to prevent \emph{layer-collapse}. The latter is defined by the authors as
 the complete pruning of a layer, which effectively renders the network
@@ -178,12 +177,12 @@ $\theta_\ell$ of the layer is defined as :
 \noindent where $L$ is the total number of layers in the network and
 $\mathbb{1}$ is the all ones vector. SynFlow does not necessitate any data to
 compute the scores. The latter are computed and updated iteratively for 100
-iterations, regardless of the targeted dataset. Since it prevent layer-collapse,
+iterations, regardless of the targeted dataset. Since it prevents layer-collapse,
 networks pruning with SynFlow can reach higher pruning rates than with SNIP or
 GraSP.\\
 
-These methods allows to prune a network at initialisation, but still require to
-train the weights. In contrast to these works, our proposed solution in this
+These methods allow to prune a network at initialisation, but still require
+training the weights. In contrast to these works, our proposed solution in this
 chapter identifies effective subnetworks by training only their topology and
 without any weight tuning.\\
 
@@ -209,7 +208,7 @@ convergence, followed by pruning the smallest weights based on their magnitude.
 The remaining weights are then rewound to their original value, that is, the
 value they had before the training of the large network began. This resulting
 subnetwork is known as a \textit{Lottery Ticket}.
-\citeauthor{DBLP:conf/iclr/FrankleC19} also levraged \emph{iterative magnitude
+\citeauthor{DBLP:conf/iclr/FrankleC19} also leveraged \emph{iterative magnitude
 pruning} to identify \acp{LT}, where the pruning rate is gradually increased
 during training until it reaches the desired pruning rate
 \cite{DBLP:conf/iclr/FrankleC19}.\\
@@ -234,7 +233,6 @@ state, described in \cite{DBLP:conf/icml/FrankleD0C20}.\\
   \label{fig:chap2:lt_schemes}
 \end{figure}
 
-
 Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and
 concludes that only the topology of these subnetworks is actually important in
 order to reach comparable performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
@@ -248,7 +246,7 @@ momentum and demonstrated instead of using an Adam optimiser
 
 
 
-\noindent\textbf{Proof of existence.} At first, it seems counterintuitive that
+\noindent\textbf{Proof of effective subnetworks existence.} At first, it seems counterintuitive that
 there exists a subnetwork in a large network, that can achieve compelling
 performances without any weight training. This has been first conjectured in
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \acl{LTH}. A  few
@@ -263,21 +261,61 @@ upper bound has eventually been refined to $O(d\log(dl))$ by
 the uniform one which is widely used for weight initialisation
 \cite{DBLP:conf/iccv/HeZRS15}.\\
 
-\noindent\textbf{Subnetwork topology extraction.} Although their existence has
-been established, no constructive proof has been provided in order to identify
-the lightweight and efficient from-scratch subnetworks. In this context, Zhou et
-al. \cite{DBLP:conf/nips/ZhouLLY19} proposed the first attempt to extract
-efficient subnetworks using stochastic mask training. A probability of selecting
-each weight is defined (as the sigmoid of a mask) and trained using the \ac{STE}
-\cite{DBLP:journals/corr/BengioLC13}. During training, weights are frozen and
-only the masks are allowed to vary. However, the major drawback of this method
-resides in the vanishing gradient issue of the sigmoid which makes mask training
-numerically challenging. Ramanujan et al. \cite{DBLP:conf/cvpr/RamanujanWKFR20}
-proposed another alternative, based on binarised saliency indicators learned
-with \ac{STE}, which selects the most prominent weights in the resulting
-subnetworks. Nevertheless, since this method enforces the pruning rate \textit{a
-priori}, finding the pruning rate giving the highest performances has to be made
-through a cumbersome and time-consuming binary or grid search. \\
+\noindent\textbf{Subnetwork topology extraction.} Although the existence of
+effective subnetworks with untrained weights has been established, no
+constructive proof has been provided in order to identify the lightweight and
+efficient from-scratch subnetworks. In this context, several methods proposed
+heuristics to extract them from a large untrained network
+\cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.\\
+
+Supermark is a method introduced by \citeauthor{DBLP:conf/nips/ZhouLLY19} in
+\cite{DBLP:conf/nips/ZhouLLY19} which is the first attempt to extract efficient
+subnetworks from a large untrained network using stochastic mask training. The
+weights of the network are stochastically sampled following a Bernoulli
+distribution parametrised by a latent variable $m$. To that extent, weights are
+reparametrised as follows:
+\begin{equation}
+  w' = w_i \odot \text{Bern}(\sigma(m))
+\end{equation}
+where $w'$ is the \emph{effective weight} used in the network, $w_i$ is the
+original frozen weight, $\odot$ denotes the element-wise product and $\sigma$
+the sigmoid function. At each iteration, a random variable is sampled from the
+Bernoulli distribution parametrised by $m$, that either select or prunes the
+corresponding weight. The sampling being nondifferentiable, it is not possible
+to train directly $m$ with \ac{SGD}. Instead, the authors proposed to use the
+\ac{STE} \cite{DBLP:journals/corr/BengioLC13}, a technique that approximates the
+gradient in the backward pass with a continuous surrogate function of the
+forward pass non-differentiable function. \citeauthor{DBLP:conf/nips/ZhouLLY19}
+also introduced a weight rescaling mechanism, called \ac{DWR}, to mitigate the
+weight statistics disrupting due to pruning \cite{DBLP:conf/iccv/HeZRS15}. More
+details are given in
+\cref{sec:chap2:stochastic-sampling,sec:chap2:smart-rescale}.\\
+
+
+During training, weights are frozen and only the masks are allowed to vary.
+However, the major drawback of this method resides in the vanishing gradient
+issue of the sigmoid which makes mask training numerically challenging.
+\citeauthor{DBLP:conf/cvpr/RamanujanWKFR20}
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another alternative, entitled
+Edge-popup, based on binarised saliency indicators learned with \ac{STE}, which
+selects the most prominent weights in the resulting subnetworks. Each weight
+$w_{ij}$ is associated with a latent saliency indicator $s_{ij}.$ During the
+forward pass, the weights associated with the top-$k$ saliency indicators are
+selected and the others are pruned. Similarly to Supermask, binarised saliency
+indicatord are not differentiable, therefore, the latter is made with \ac{STE}.
+The authors consider the following expression for the weights in the backward
+pass:
+\begin{equation}
+  w'_{ij} = s_{ij} w_{ij}
+\end{equation}
+Edge-popup enforces the pruning rate \textit{a priori}, thereby determining the
+value of $k$. This value if the same for all the layer, imposing a constant
+pruning rate throughout all the layers of the network, which is suboptimal.
+Indeed, the optimal pruning rate is layer-dependent and varies from one layer to
+another. Moreover, finding the pruning rate giving the highest performances has
+to be made through a cumbersome and time-consuming grid search. Like Supermask,
+Edge-popup also includes a weight rescaling mechanism subsequently detailed in
+\cref{sec:chap2:smart-rescale}.\\
 
 \subsection{Contributions}
 \label{sec:chap2:intro_contributions}
@@ -310,8 +348,6 @@ our contributions and our key findings. As we will demonstrate, our new approach
 overcomes several of the challenges associated with previous techniques,
 offering a more efficient and effective way to identify and train
 high-performance subnetworks without weight training.
-
-% TODO: Completer "chapter organisation"
 
 
 \section{Extracting Effective Subnetworks with Gumbel-Softmax}\label{sec:chap2:method}
@@ -841,13 +877,13 @@ investigate the influence of various parameters and configurations.
 \cref{sec:chap2:performances} presents the performances of our method against
 other state-of-the-art methods, namely Edge-popup
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
-\cite{DBLP:conf/nips/ZhouLLY19}. \Cref{sec:chap2:validation_weight_rescaling}
-validates our weight-rescaling strategy,  \cref{sec:chap2:impact_learning_rate}
-studies the impact of the learning rate on the performance of our method, and
-validates our choice of learning rate. Finally,
-\cref{sec:chap2:increasing_sparsity} investigates the impact of imposing a fixed
-pruning rate after the training and supports the effectiveness of our
-thresholding pruning strategy method.
+\cite{DBLP:conf/nips/ZhouLLY19}, both detailed in \cref{sec:chap2:related_work}.
+\Cref{sec:chap2:validation_weight_rescaling} validates our weight-rescaling
+strategy,  \cref{sec:chap2:impact_learning_rate} studies the impact of the
+learning rate on the performance of our method, and validates our choice of
+learning rate. Finally, \cref{sec:chap2:increasing_sparsity} investigates the
+impact of imposing a fixed pruning rate after the training and supports the
+effectiveness of our thresholding pruning strategy method.
 
 
 \subsection{Experimental Setup}
