@@ -56,7 +56,7 @@
 
 \end{abstract}
 
-\section{Introduction and Related Work}
+\section{Introduction}
 % region: introduction
 
 In this chapter, we tackle the challenge of extracting lightweight and effective
@@ -64,9 +64,9 @@ subnetworks from large, untrained neural networks. The goal is to obtain
 subnetworks that have both a smaller number of parameters compared to the
 original network and compelling performances. Contrary to \cref{chap:chapter1}
 where the focus was on soft pruning weight based on their value while training,
-the method presented in this chapter relies on training latent masks that
+the method presented in this chapter relies on training latent masks. The latter
 represent a parametrisation of the probabilities for the weights to be selected
-on not in a sampled set of weights. Unlike the method described in
+on not in a sampled topology. Unlike the method described in
 \cref{chap:chapter1}, the method introduced in this chapter is, on the one hand,
 stochastic, and on the other hand, decorrelating the pruning criterion from the
 weight value.\\
@@ -166,7 +166,7 @@ scrores, whereas SynFlow \cite{DBLP:conf/nips/TanakaKYG20} is a data-free
 pruning method that seeks to preserve \emph{synaptic flow} in the network in
 order to prevent \emph{layer-collapse}. The latter is defined by the authors as
 the complete pruning of a layer, which effectively renders the network
-untrainable. For a given layer $l$, the synaptic flow score of the weights
+untrainable. For a given layer $\ell$, the synaptic flow score of the weights
 $\theta_\ell$ of the layer is defined as :
 
 \begin{equation}
@@ -219,7 +219,10 @@ for larger architectures, as noted by
 \citeauthor{DBLP:conf/iclr/FrankleC19} proposed a weaker version of the \ac{LTH}
 where the weight values are not reset to their original values, but instead to
 an early stage of the training corresponding to the network reaching a stable
-state, described in \cite{DBLP:conf/icml/FrankleD0C20}.\\
+state, described in \cite{DBLP:conf/icml/FrankleD0C20}.
+\Cref{fig:chap2:lt_schemes} provides conceptual illustrations of the different
+existing methods devised by \citeauthor{DBLP:conf/iclr/FrankleC19} to find a
+\ac{LT}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -235,15 +238,20 @@ state, described in \cite{DBLP:conf/icml/FrankleD0C20}.\\
 
 Another study \cite{DBLP:conf/iclr/LiuSZHD19} pushes that finding further and
 concludes that only the topology of these subnetworks is actually important in
-order to reach comparable performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
+order to reach compelling performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
 \cite{DBLP:conf/iclr/LiuSZHD19} point out that the weights of the \acp{LT} are
 not important and can be randomly initialised, provided that the optimisation
 procedure is carefully designed. In particular,
 \citeauthor{DBLP:conf/iclr/LiuSZHD19} used a common \ac{SGD} optimiser with
-momentum and demonstrated instead of using an Adam optimiser
-\cite{kingma2014adam} with low learning rate as in
-\cite{DBLP:conf/iclr/FrankleC19}. \\
+momentum instead of using an Adam optimiser \cite{kingma2014adam} with low
+learning rate as in \cite{DBLP:conf/iclr/FrankleC19}. \\
 
+The aforementioned works
+\cite{DBLP:conf/iclr/FrankleC19,DBLP:conf/icml/FrankleD0C20,DBLP:conf/iclr/LiuSZHD19}
+focus on finding a \acl{LT} that still needs to be trained in order to reach a
+satisfying level of performance. In contrast, our proposed method extracts a
+subnetworks that already achieves compelling performances without any weight
+training.\\ 
 
 
 \noindent\textbf{Proof of effective subnetworks existence.} At first, it seems counterintuitive that
@@ -280,7 +288,7 @@ reparametrised as follows:
 where $w'$ is the \emph{effective weight} used in the network, $w_i$ is the
 original frozen weight, $\odot$ denotes the element-wise product and $\sigma$
 the sigmoid function. At each iteration, a random variable is sampled from the
-Bernoulli distribution parametrised by $m$, that either select or prunes the
+Bernoulli distribution parametrised by $m$, that either selects or prunes the
 corresponding weight. The sampling being nondifferentiable, it is not possible
 to train directly $m$ with \ac{SGD}. Instead, the authors proposed to use the
 \ac{STE} \cite{DBLP:journals/corr/BengioLC13}, a technique that approximates the
@@ -309,7 +317,7 @@ pass:
   w'_{ij} = s_{ij} w_{ij}
 \end{equation}
 Edge-popup enforces the pruning rate \textit{a priori}, thereby determining the
-value of $k$. This value if the same for all the layer, imposing a constant
+value of $k$. This value is the same for all the layers, imposing a constant
 pruning rate throughout all the layers of the network, which is suboptimal.
 Indeed, the optimal pruning rate is layer-dependent and varies from one layer to
 another. Moreover, finding the pruning rate giving the highest performances has
@@ -326,7 +334,7 @@ time-consuming nature of finding the optimal pruning rate, we introduce in this
 chapter a new stochastic subnetwork selection method based on \ac{GS}. The
 latter allows sampling subnetworks whose weights are the most relevant for
 classification. The proposed contribution also relies on a new mask
-parametrisation, dubbed as \ac{ASLP}, that allows better conditioning of the
+parametrisation, entitled \acf{ASLP}, that allows better conditioning of the
 gradient and thereby mitigates numerical instability during mask optimisation.
 Besides, when combining \ac{ASLP} with a learned weight rescaling mechanism,
 training is accelerated and the accuracy of the resulting subnetworks improves
@@ -394,15 +402,15 @@ weight reparametrisation (see \cref{eqn:chap1:reparam,sec:chap1:overview}).
 Consequently, the masks $\bm{m}_\ell$ values are only determined by the weights
 values and not the topology of the network. In this chapter, we propose another
 approach to obtain the masks $\bm{m}_\ell$ that is not bound to the weights
-values. In \cref{eqn:chap2:pruned_layer_eq}, the masks $\{\bm{m}_\ell\}_\ell$
+values. In \cref{eqn:chap2:pruned_layer_eq}, the masks $\bm{m}_\ell$
 are stochastic and sampled from a Bernoulli distribution. However, sampling is
 not a differentiable operation, therefore, optimising directly
-$\{{\bm{m}_\ell}\}_\ell$ is not possible. To overcome this issue, while still
+${\bm{m}_\ell}$ is not possible. To overcome this issue, while still
 relying on \ac{SGD}, the \acf{STE} technique is applied together with a
 reparametrisation of the mask.\\
 
 \noindent\textbf{\acl{STE}.} Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
-consider a Bernoulli parametrisation of $\{\bm{m}_\ell\}_\ell$ in order to
+consider a Bernoulli parametrisation of $\bm{m}_\ell$ in order to
 sample masks in \cref{eqn:chap2:pruned_layer_eq}. Since sampling is not a
 differentiable operation, they rely on the \ac{STE}. It is a technique developed
 in \cite{DBLP:journals/corr/BengioLC13} that enables the training of neural
@@ -415,8 +423,8 @@ worth noting that \ac{STE} is an heuristic that does not provide the correct
 gradient, but it is effective in practice \cite{DBLP:journals/corr/BengioLC13}.\\
 
 In order to apply \ac{STE} to the problem of Bernoulli stochastic mask
-sampling, the definition of $\{\bm{m}_\ell\}_\ell$ is based on another
-  {\it latent} parametrisation $\{\bm{\hat{m}}_\ell\}_\ell$, detailed
+sampling, the definition of $\bm{m}_\ell$ is based on another
+  {\it latent} parametrisation $\bm{\hat{m}}_\ell$, detailed
 subsequently, and obtained by applying a sigmoid function $\sigma(.)$ to
 $\bm{\hat{m}}_\ell$. This allows optimizing $\bm{\hat{m}}_\ell$  using gradient
 descent by considering the following surrogate of
@@ -690,12 +698,12 @@ rescaled by multiplying them with the inverse of the observed pruning rate. A
 drawback of \ac{DWR} is that it demands the storage of sampled masks and the
 calculation of the observed pruning rate at each training step for every layer
 in the network. This makes the procedure computationally demanding. Furthermore,
-the method flexibility and adaptability are limited due to the rescaling being
-tied to the pruning rate. There is no guarantee that the inverse of the observed
-pruning rate is the optimal factor to prevent changes to the weight distribution
-statistics. The performance boost attributable to \ac{DWR}, as noted by
-\citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the increase of the
-standard deviation of the Xavier (or Glorot) initialisation
+the flexibility and adaptability of the method are limited due to the rescaling
+being tied to the pruning rate. There is no guarantee that the inverse of the
+observed pruning rate is the optimal factor to prevent changes to the weight
+distribution statistics. The performance boost attributable to \ac{DWR}, as
+noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the increase of
+the standard deviation of the Xavier (or Glorot) initialisation
 \cite{glorot2011deep} that the author used. Indeed, within the context of this
 chapter, the Kaiming initialisation \cite{DBLP:conf/cvpr/HeZRS16}, has a larger
 standard deviation and achieves superior results
@@ -730,9 +738,7 @@ Furthermore, \ac{SR} improves accuracy as it adjusts the weights to maintain the
 statistical distribution of the original network weights, preserving the
 representative power of the network. Hence, rather than forcing the weights to
 follow an arbitrary distribution or scale, they are guided by the data-driven
-\ac{SR} method which results in better performance and reduced training time.\
-
-
+\ac{SR} method which results in better performance and reduced training time.
 With \ac{SR}, the $\ell$-th layer network output becomes \\
 
 \begin{equation}
@@ -741,12 +747,12 @@ With \ac{SR}, the $\ell$-th layer network output becomes \\
 
 \noindent where $s_\ell$ refers to the rescaling factor  of the $\ell$-th layer
 (see also algorithm~\ref{alg:chap2:ASLP}). Smart Rescale increases the
-flexibility of subnetwork selection and adaptation compared to \ac{DWR} (which is
-bound to the pruning rate). Moreover, scaling factors obtained with SR vary
-smoothly --- and this makes training more stable with \ac{SGD} --- compared to
-the ones obtained with \ac{DWR} which are again inversly proprotional to the
-observed pruning rates, and changes of the latter are more abrupt due to
-stochastic mask sampling. \\
+flexibility of subnetwork selection and adaptation compared to \ac{DWR} (which
+is bound to the pruning rate). Moreover, scaling factors obtained with \ac{SR}
+vary smoothly, consequently making the training more stable with \ac{SGD}
+compared to the ones obtained with \ac{DWR} which are again inversely
+proportional to the observed pruning rates, and changes of the latter are more
+abrupt due to stochastic mask sampling. \\
 
 % endregion: smart rescaling
 
@@ -1487,8 +1493,14 @@ without \ac{SR} using data augmentation in both cases. The total number of
 epochs is set to 1,000 and an early stopping policy, described in
 \cref{sec:chap2:experiments}, is applied. The point of convergence is defined as
 the moment when the early stopping policy halts the training process. Again, the
-training process is stopped if there is no improvement of the validation
-accuracy over the last 60 epochs.\\
+training process is stopped if there is no improvement in the validation
+accuracy over the last 60 epochs. The reason for the enhanced performance and
+reduced training time when using \ac{SR} can be attributed to its flexibility.
+Unlike \ac{DWR} and \ac{SC}, which impose a pruning-bound scaling factor,
+\ac{SR} provides a more flexible approach, permitting an adaptation of weight
+distributions for each layer individually. The layer-wise adaptation allows for
+limiting the exhaustive search of topology (and thereby reducing the training
+time) by enabling a slight adjustment of the weight distribution.
 
 Besides improving performances and reducing the number of epochs prior to
 convergence, \ac{SR} is also an efficient alternative to \acf{DWR}
@@ -1514,7 +1526,7 @@ using \ac{SR} compared to \ac{DWR} on a Conv4 network.\\
   \label{fig:chap2:rescale_impact}
 \end{figure}
 
-\subsection{Effect of Learning Rate on Training Performances}
+\subsection{Effect of the Learning Rate on Training Performances}
 \label{sec:chap2:impact_learning_rate}
 
 The learning rate is an essential hyperparameter for training neural networks as
