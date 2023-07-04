@@ -124,17 +124,17 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 \allsectionsfont{\sffamily}
 
 %page de garde
-%\input{./title.tex}
+\input{./title_page/title_page.tex}
 
 %page blanche
 %\newpage
-~
+
 %ne pas numéroter cette page
 %\thispagestyle{empty}
 %\newpage
 
 %\input{./abstract.tex}
-
+\maketitle
 % ----- Tables des matières, figures et tableaux  + acronymes ------
 \tableofcontents
 \listoffigures
@@ -161,12 +161,12 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 \newpage
 
 % ################  A CHANGER POUR REVUE ?
-% \linenumbers
+\linenumbers
 
 \input{./chapter_intro/chapter_into.tex}
 \input{./chapter_sota/chapter_sota.tex}
-\input{./chapter_1/chapter_1.tex}
-\input{./chapter_2/chapter_2.tex}
+% \input{./chapter_1/chapter_1.tex}
+% \input{./chapter_2/chapter_2.tex}
 
 \input{./appendix/appendix.tex}
 \newpage
