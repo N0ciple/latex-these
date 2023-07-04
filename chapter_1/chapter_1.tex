@@ -44,72 +44,94 @@
 
 \end{abstract}
 
-\section{Introduction and Related Work}
+\section{Introduction}
+
+This chapter addresses the challenge of pruning large neural networks without
+degrading their performance. Most pruning methods degrade the performance of the
+neural network due to the pruning step that removes weights from the network,
+therefore, a costly fine-tuning step is required to recover the lost
+performance. The method we introduce in this chapter circumvents this issue and
+yields lightweight pruned networks with minimal performance degradation. This is
+achieved through a combination of weight reparametrisation that encompass a
+surrogate $\ell_0$ norm and a budget loss that drives the sparsity toward the
+predefined pruning rate.
+
+
+
+\section{Related Work}
+%TODO: modifier la partie travaux liés pour mettre en avant les méthodes de pruning
+
 % region
-Neural networks have disrupted the field of machine learning, leading to
-breakthroughs in various areas such as image and speech recognition
-\cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
-natural language processing
-\cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
-as well as exotic domains like game playing
-\cite{silver2016mastering,silver2018general} or molecule folding
-\cite{jumper2021highly}. However, the size of neural networks has steadily
-increased in recent years, thanks to the availability of powerful \acp{GPU}. The
-latter makes possible the training of larger and more complex models. As the
-complexity and scale of neural networks have expanded, there has been a
-corresponding increase in the computational and memory demands necessary for
-their effective training and deployment. Origins of neural network architectures
-are rooted in the Rosenblatt Perceptron \cite{rosenblatt1958perceptron}, which
-is a single-layer feedforward network consisting of only one neuron. Over time,
-neural network architectures became more complex and included multiple layers,
-known as \ac{MLP} or fully connected network. Then, with the emergence of
-\acp{CNN}, the complexity of neural network architectures for image recognition
-significantly increased. \acp{CNN} use convolutional layers to automatically and
-adaptively learn spatial hierarchies of features from input images. This
-adaptivity allows \acp{CNN} to effectively learn and classify images with high
-accuracy. This enhancement in accuracy, however, is accompanied by a rise in
-complexity and, notably, a higher number of parameters. Noteworthy \ac{CNN}
-architectures typically encompass millions of parameters. For instance, AlexNet
-(2012) comprises 60 million parameters \cite{DBLP:conf/nips/KrizhevskySH12}, VGG
-networks (2014) is composed of 132 to 143 million parameters
-\cite{DBLP:journals/corr/SimonyanZ14a}, Inception (2014) incorporates 27 million
-parameters in its third version \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} and
-ResNet networks (2015) span from 11 to 60 million parameters
-\cite{DBLP:conf/cvpr/HeZRS16}.\\
+% Neural networks have disrupted the field of machine learning, leading to
+% breakthroughs in various areas such as image and speech recognition
+% \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
+% natural language processing
+% \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
+% as well as exotic domains like game playing
+% \cite{silver2016mastering,silver2018general} or molecule folding
+% \cite{jumper2021highly}. However, the size of neural networks has steadily
+% increased in recent years, thanks to the availability of powerful \acp{GPU}. The
+% latter makes possible the training of larger and more complex models. As the
+% complexity and scale of neural networks have expanded, there has been a
+% corresponding increase in the computational and memory demands necessary for
+% their effective training and deployment. Origins of neural network architectures
+% are rooted in the Rosenblatt Perceptron \cite{rosenblatt1958perceptron}, which
+% is a single-layer feedforward network consisting of only one neuron. Over time,
+% neural network architectures became more complex and included multiple layers,
+% known as \ac{MLP} or fully connected network. Then, with the emergence of
+% \acp{CNN}, the complexity of neural network architectures for image recognition
+% significantly increased. \acp{CNN} use convolutional layers to automatically and
+% adaptively learn spatial hierarchies of features from input images. This
+% adaptivity allows \acp{CNN} to effectively learn and classify images with high
+% accuracy. This enhancement in accuracy, however, is accompanied by a rise in
+% complexity and, notably, a higher number of parameters. Noteworthy \ac{CNN}
+% architectures typically encompass millions of parameters. For instance, AlexNet
+% (2012) comprises 60 million parameters \cite{DBLP:conf/nips/KrizhevskySH12}, VGG
+% networks (2014) is composed of 132 to 143 million parameters
+% \cite{DBLP:journals/corr/SimonyanZ14a}, Inception (2014) incorporates 27 million
+% parameters in its third version \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} and
+% ResNet networks (2015) span from 11 to 60 million parameters
+% \cite{DBLP:conf/cvpr/HeZRS16}.\\
 
-The demand for neural networks in embedded applications has been rapidly
-increasing in recent years, driven in part by the widespread use of mobile
-devices. As these devices have become more advanced and ubiquitous, there has
-been a growing need for intelligent applications capable of executing intricate
-tasks in various contexts on the said devices. Such complex tasks include object
-detection in self-driving cars
-\cite{howard2017mobilenets,DBLP:conf/icml/TanL19,DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15,kuutti2020survey},
-image and speech recognition in mobile devices
-\cite{kim2020review,mcgraw2016personalized}, and text-to-speech models in smart
-speakers \cite{arik2017deep,ren2019fastspeech}. These applications require
-real-time processing and low power consumption, which are impossible with large
-neural networks. Pruning techniques can reduce the size of neural networks,
-making them more suitable for deployment on embedded devices while still
-maintaining or improving their performance. Methods such as structured
-\cite{DBLP:conf/iclr/0022KDSG17,DBLP:conf/iccv/LiuLSHYZ17} and unstructured
-weight pruning
-\cite{DBLP:conf/nips/CunDS89,DBLP:conf/iclr/FrankleC19,DBLP:conf/nips/HanPTD15}
-can reduce the number of parameters and \acp{FLOP}, consequently reducing the
-network size, memory and power consumption.\\
+% The demand for neural networks in embedded applications has been rapidly
+% increasing in recent years, driven in part by the widespread use of mobile
+% devices. As these devices have become more advanced and ubiquitous, there has
+% been a growing need for intelligent applications capable of executing intricate
+% tasks in various contexts on the said devices. Such complex tasks include object
+% detection in self-driving cars
+% \cite{howard2017mobilenets,DBLP:conf/icml/TanL19,DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15,kuutti2020survey},
+% image and speech recognition in mobile devices
+% \cite{kim2020review,mcgraw2016personalized}, and text-to-speech models in smart
+% speakers \cite{arik2017deep,ren2019fastspeech}. These applications require
+% real-time processing and low power consumption, which are impossible with large
+% neural networks. Pruning techniques can reduce the size of neural networks,
+% making them more suitable for deployment on embedded devices while still
+% maintaining or improving their performance. Methods such as structured
+% \cite{DBLP:conf/iclr/0022KDSG17,DBLP:conf/iccv/LiuLSHYZ17} and unstructured
+% weight pruning
+% \cite{DBLP:conf/nips/CunDS89,DBLP:conf/iclr/FrankleC19,DBLP:conf/nips/HanPTD15}
+% can reduce the number of parameters and \acp{FLOP}, consequently reducing the
+% network size, memory and power consumption.\\
 
-Pruning is an excellent way to obtain lightweight neural networks because it
-reduces the number of parameters in a pre-trained network without the need to
-design a new architecture. Instead of starting from scratch, pruning techniques
-can be applied to existing architectures, which have been trained and tested on
-large-scale datasets. Pruning aims to reduce the number of network parameters by
-removing redundant or unnecessary weights from a given network which we will
-refer to as the \textit{original network}. It then yields a sparsified and
-lightweight version of the latter, hereafter referred to as the \textit{pruned
-  network}. Pruning methods can be split into two major categories: \textit{(i)}
-unstructured weight pruning, where individual weights of the network are removed
-based on their importance, and \textit{(ii)} structured pruning, where entire
-columns, rows, channels, filters or even entire parts, such as skip connections
-of a residual network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \\
+
+Pruning is an excellent way to obtain lightweight neural
+networks because it reduces the number of parameters in a pre-trained network
+without the need to design a new architecture. Instead of starting from scratch,
+pruning techniques can be applied to existing architectures, which have been
+trained and tested on large-scale datasets. Pruning aims to reduce the number of
+network parameters by removing redundant or unnecessary weights from a given
+network which we will refer to as the \textit{original network}. It then yields
+a sparsified and lightweight version of the latter, hereafter referred to as the
+\textit{pruned network}. Pruning methods can be split into two major categories:
+\textit{(i)} unstructured weight pruning, where individual weights of the
+network are removed based on their importance, and \textit{(ii)} structured
+pruning, where entire columns, rows, channels, filters or even entire parts,
+such as skip connections of a residual network \cite{DBLP:conf/cvpr/HeZRS16},
+are removed. \\
+
+% TODO: relire les sections et voir ce que l'on met dans travaux liés. On peut
+% envisager de mettre une section pruning, pruning non structuré, mangitude
+% pruning, et peut-être pruning avec budget ou reparamétrisation.
 
 
 Early pruning methods for shallow networks were proposed in the late 1980s.
@@ -138,25 +160,25 @@ values are below a certain threshold are removed; and finally, the remaining wei
 are fine-tuned. \\
 
 
-Following this work \cite{DBLP:conf/nips/HanPTD15}, research efforts stirred
-toward structured pruning which consists in removing groups of weights. The
-structure of a group can be a simple row or column in a filter, a channel of a
-filter, the filter itself or even entire parts. Structured pruning aims to
-reshape the network by removing unnecessary and computationally expensive
-parts, rather than simply sparsifying weight tensors. This approach focuses
-on eliminating parts of the network that have minimal impact on the performance
-for the given task. Since the remaining weight tensors are not sparse, speedups
-can be achieved with conventional libraries and hardware. In this context, Anwar
-et al. \cite{anwar2017structured} proposed a pruning technique on various levels
-(channels, kernels and intra-kernel levels), while Li et al.
-\cite{DBLP:conf/iclr/0022KDSG17} proposed a pruning method at a larger (filter)
-level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a streamlined
-approach that aims at pruning the most useless channels in the layers preceding
-\ac{BN} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity with $\ell_1$
-penalisation of the \ac{BN} scaling factors, each one associated with a
-channel. Then channels are removed based on the relative importance of their
-associated scaling factor up to a predefined sparsity ratio. More recent works
-proposed an automatic policy for pruning, such as \ac{amc}
+\noindent\textbf{Structured Pruning.} Following this work \cite{DBLP:conf/nips/HanPTD15},
+research efforts stirred toward structured pruning which consists in removing
+groups of weights. The structure of a group can be a simple row or column in a
+filter, a channel of a filter, the filter itself or even entire parts.
+Structured pruning aims to reshape the network by removing unnecessary and
+computationally expensive parts, rather than simply sparsifying weight tensors.
+This approach focuses on eliminating parts of the network that have minimal
+impact on the performance for the given task. Since the remaining weight tensors
+are not sparse, speedups can be achieved with conventional libraries and
+hardware. In this context, Anwar et al. \cite{anwar2017structured} proposed a
+pruning technique on various levels (channels, kernels and intra-kernel levels),
+while Li et al. \cite{DBLP:conf/iclr/0022KDSG17} proposed a pruning method at a
+larger (filter) level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a
+streamlined approach that aims at pruning the most useless channels in the
+layers preceding \ac{BN} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity
+with $\ell_1$ penalisation of the \ac{BN} scaling factors, each one associated
+with a channel. Then channels are removed based on the relative importance of
+their associated scaling factor up to a predefined sparsity ratio. More recent
+works proposed an automatic policy for pruning, such as \ac{amc}
 \cite{DBLP:conf/eccv/HeLLWLH18}, which relies on reinforcement learning with two
 interacting agents; the first one iterates over the layers of the architecture
 and defines a targeted sparsity, and the second agent implements the targeted
@@ -179,23 +201,23 @@ after pruning and without fine-tuning. \\
 
 
 
-Although convenient to implement in practice, structured pruning imposes a
-strong topological prior by removing whole chunks of the original network and
-achieves a lower sparsity rate compared to unstructured pruning. On the other
-hand, unstructured weight pruning focuses on removing independent weights from
-the global structure. As a result, this method is much more flexible and leads
-to high sparsity rates and compression ratios. Han et al.
-\cite{DBLP:conf/nips/HanPTD15} introduced a simple yet effective three-step
-algorithm for unstructured weight pruning: a first standard training step to
-identify the most important connections, a magnitude pruning step to remove
-weights with the smallest magnitude (\emph{i.e.}, absolute value) and a final
-fine-tuning step to compensate for the loss of accuracy introduced by pruning.
-\cite{DBLP:journals/corr/HanMD15} used the same technique in combination with
-quantisation and Huffman coding, achieving a compression ratio of up to 49x for
-a VGG16 network. Other methods do not rely on weight magnitude, such as
-\cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic gates as a
-surrogate $\ell_0$ norm and penalises non-zero weights during training.
-Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
+\noindent\textbf{Unstructured Pruning.} Although convenient to implement in practice,
+structured pruning imposes a strong topological prior by removing whole chunks
+of the original network and achieves a lower sparsity rate compared to
+unstructured pruning. On the other hand, unstructured weight pruning focuses on
+removing independent weights from the global structure. As a result, this method
+is much more flexible and leads to high sparsity rates and compression ratios.
+Han et al. \cite{DBLP:conf/nips/HanPTD15} introduced a simple yet effective
+three-step algorithm for unstructured weight pruning: a first standard training
+step to identify the most important connections, a magnitude pruning step to
+remove weights with the smallest magnitude (\emph{i.e.}, absolute value) and a
+final fine-tuning step to compensate for the loss of accuracy introduced by
+pruning. \cite{DBLP:journals/corr/HanMD15} used the same technique in
+combination with quantisation and Huffman coding, achieving a compression ratio
+of up to 49x for a VGG16 network. Other methods do not rely on weight magnitude,
+such as \cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic
+gates as a surrogate $\ell_0$ norm and penalises non-zero weights during
+training. Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
 multiplicative gaussian noise as an alternative to binary dropout
 \cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
 an unbound dropout rate. Magnitude pruning regained significant attention after
@@ -231,6 +253,7 @@ of weights pruned is enforced after the initial training, meaning that the final
 target size or weight budget is never considered in the optimisation procedure.
 Hence the need for a fine-tuning step. \\
 
+\section{Contributions}
 
 In order to address the aforementioned issues, namely the need for a costly
 fine-tuning step and the lack of consideration for the final budget, we
@@ -246,6 +269,8 @@ classification tasks, using standard primary architectures (namely Conv4, VGG16,
 ResNet20 and ResNet18), show the ability of our method to train effective
 surrogate pruned networks without any fine-tuning.
 
+%TODO: The rest of this chapter is organised as follows...
+
 % endregion
 
 \section{Pruning with Weight Reparametrisation and Budget Loss}\label{sec:chap1:pruning}
@@ -255,15 +280,18 @@ $f$ of two variables: $\theta$ and $X$. Function $f$ embodies the network
 topology, which is essentially a computation graph, whose edges values are
 determined by $\theta$. More specifically, $\theta$ represents the collection of
 weights of the network, with $\theta = \{\mathbf{w}_1, \mathbf{w}_2, \ldots,
-  \mathbf{w}_L\}$ and $L$ denoting the number of layers. Each element
+\mathbf{w}_L\}$ and $L$ denoting the number of layers. Each element
 $\mathbf{w}_\ell$ of $\theta$ is a multi-dimensional weight tensor encompassing
-$\nu_\ell$ elements, associated with layer $\ell$. The parameter $X$ of $f$
-represents the input given to the network. Each input $X$ is associated with a
-label $y$, also called ground truth. Each pair $(X,y)$ is an element of a
-dataset $\mathcal{D}$, with $\mathcal{D} \subset \mathcal{X} \times
-  \mathcal{Y}$. In the latter formulation of $\mathcal{D}$,  $\mathcal{X}$ is the
-set of the input data, and $\mathcal{Y}$ is the set of the possible labels. This
-functional conception of a neural network can be formally written as:
+$\nu_\ell$ elements, associated with layer $\ell$. Following the notation
+introduced in \cref{sec:intro:datasets}, the parameter $X$ of $f$ represents the
+input given to the network. Each input $X$ is associated with a label $y$, also
+called ground truth. This functional conception of a neural network can be
+formally written as:
+
+%Each pair $(X,y)$ is an element of a
+% dataset $\mathcal{D}$, with $\mathcal{D} \subset \mathcal{X} \times
+%   \mathcal{Y}$. In the latter formulation of $\mathcal{D}$,  $\mathcal{X}$ is the
+% set of the input data, and $\mathcal{Y}$ is the set of the possible labels. 
 
 \begin{equation}
   % \centering
@@ -702,53 +730,57 @@ be compensated for with fine-tuning. \\
 
 % endregion: overview
 
-\section{Experiments}
-\label{sec:chap1:experiments}
+\section{Experiments}\label{sec:chap1:experiments}
+
 % region : experiments
 % region: introduction of the experiments
 In this section, we will study the effectiveness of our method for compressing
 \aclp{CNN} image classification models, as well as its impact on accuracy. To
 that extent, we will review the impact of both our reparametrisation and our
 budget loss. To that extent, we use three reference databases in the field of
-computer vision: CIFAR-10 \cite{CIFARdataset}, CIFAR-100 \cite{CIFARdataset}, and
-TinyImageNet \cite{TinyImageNet}. We will evaluate the impact of our method on
-several neural network architectures: VGG16
-\cite{DBLP:journals/corr/SimonyanZ14a}, Conv4 \cite{DBLP:conf/iclr/FrankleC19},
-ResNet18, and ResNet20 \cite{DBLP:conf/cvpr/HeZRS16}. \\
+computer vision: CIFAR-10 \cite{CIFARdataset}, CIFAR-100 \cite{CIFARdataset},
+and TinyImageNet \cite{TinyImageNet}, presentend in \cref{sec:intro:datasets}.
+We will evaluate the impact of our method on several neural network
+architectures: VGG16 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4
+\cite{DBLP:conf/iclr/FrankleC19}, ResNet18, and ResNet20
+\cite{DBLP:conf/cvpr/HeZRS16}, introduced in \cref{sec:intro:architectures}.\\
 
 % endregion: introduction of the experiments
 
-\subsection{Performances}
-\label{sec:chap1:performances}
-% region: performances
+\subsection{Experimental Setup}\label{sec:chap1:experimental_setup}
+
 Performances of our method are evaluated on CIFAR-10 and CIFAR-100 with Conv4,
 VGG16 and ResNet20. On TinyImageNet, we evaluate our method on ResNet18. We
 compare our method against magnitude pruning \cite{DBLP:conf/nips/HanPTD15}. The
 key differences between our method and magnitude pruning are the following:
 $(i)$ our method uses a budget loss to encourage sparsity, which takes into
-account the final pruning rate from the beginning of the training process,
+account the final pruning rate from the beginning of the training process and
 $(ii)$ our method does not require fine-tuning after pruning. Because of the
 latter, we compare our method against magnitude pruning with and without
 fine-tuning. Both methods share the following setup: networks are trained during
-300 epochs with an initial learning rate of 0.1. A {\em Reduce On Plateau}
+300 epochs with an initial learning rate of $0.1$. A \emph{Reduce On Plateau}
 policy is applied to the learning rate: if the validation accuracy is not
 improving for 10 epochs in a row, then the learning rate is decreased by a
-factor of 0.3. A weight decay is applied on the weights with a penalisation
+factor of $0.3$. A weight decay is applied on the weights with a penalisation
 factor of $5\times10^{−5}$. This value is lower than the more conventional value
-of $1\times10^{-4}$, because we want some weights to be able to drift away from the
-origin, and therefore, escape from the pit of $h_t$. An Early Stopping policy was
-used to stop the training prematurely if no improvement in the test accuracy is
-observed in 60 epochs. To keep the comparison fair, for magnitude pruning, the
-300 epochs are split into two phases: the first 150 epochs are dedicated to the
-training of the network, and the last 150 epochs are used for fine-tuning the
-pruned network. In the fine-tuning phase, the learning rate is divided by 100
-for better convergence. \\
+of $1\times10^{-4}$, because we want some weights to be able to drift away from
+the origin, and therefore, escape from the pit of $h_t$. An Early Stopping
+policy was used to stop the training prematurely if no improvement in the test
+accuracy is observed in 60 epochs. To keep the comparison fair, for magnitude
+pruning, the 300 epochs are split into two phases: the first 150 epochs are
+dedicated to the training of the network, and the last 150 epochs are used for
+fine-tuning the pruned network. In the fine-tuning phase, the learning rate is
+divided by 100 for better convergence. \\
+
+
+\subsection{Performances}\label{sec:chap1:performances}
+% region: performances
 
 Results are reported on
 \cref{fig:chap1:reparam_vs_mpft_conv4,fig:chap1:reparam_vs_mpft_resnet20,fig:chap1:reparam_vs_mpft_vgg16}.
 In these figures, our method (denoted \emph{Ours}) is compared to magnitude
 pruning with and without fine-tuning (denoted \emph{MP w/ FT} and \emph{MP w/o
-  FT}, respectively). All three methods are evaluated on the test fold of the
+  FT}, respectively). All three methods are evaluated on the test set of the
 dataset once the network has been pruned up to the pruning rate indicated on the
 \emph{x-axis}. The test accuracy is reported on the \emph{y-axis} as a float
 between 0 and 1 (0 being all images wrongly classified and 1 being all images
@@ -975,7 +1007,7 @@ improve performance (see \cref{sec:appendix:annihilation}).
 
 % endregion: lambda value
 
-\subsection{Impact of the Budget Loss}
+\subsection{Validation of the Budget Loss}
 \label{sec:chap1:impact_of_budget_loss}
 
 % region: budget impact
@@ -1120,7 +1152,7 @@ scenarios.\\
 
 % endregion: budget impact
 
-\subsection{Impact of the Reparametrisation}
+\subsection{Validation of the Reparametrisation}
 \label{sec:chap1:impact_of_reparametrisation}
 
 % region: reparam impact
@@ -1277,15 +1309,21 @@ function in synergy.
 
 % endregion: reparam impact
 
-\subsection{Tuned Initialisation}
-\label{sec:chap1:impact_of_fine_tuning}
+\subsection{Tuned Initialisation}\label{sec:chap1:impact_of_fine_tuning}
 
 % region : finetuning 
 
-Although the method presented in this chapter was designed to circumvent the
-need for fine-tuning, it can be used to fine-tune a network trained
-conventionally. In this section, we compare the performances of a network
-trained in a standard way, then pruned and finally fine-tuned with two methods:
+% Although the method presented in this chapter was designed to circumvent the
+% need for fine-tuning, it can be used to fine-tune a network trained
+% conventionally. 
+
+In the previous sections, weights were initialised with the standard Kaiming
+initialisation scheme \cite{DBLP:conf/iccv/HeZRS15} (see
+\cref{sec:appendix:xavier_init}). In this section we study the effects of
+initialising the weights of the network with the weights of a trained and pruned
+network, thereby evaluating the our method as a fine-tuning method for trained
+initialisations. We compare the performances of a network trained in a standard
+way, then pruned with magnitude pruning and finally fine-tuned with two methods:
 Our method and standard fine-tuning \cite{DBLP:conf/nips/HanPTD15}. Put simply,
 this section describes a process where the initial weights of the network are
 not randomly initialised, but are trained and pruned weights. This setup is
@@ -1314,17 +1352,18 @@ remaining unpruned weights cannot dwindle to zero, hence preserving all of them
 during the fine-tuning process. By contrast, in the absence of budget loss, the
 remaining weight values are not restricted, allowing them more freedom to vary
 and therefore waste network capacity with weights of small magnitude. The
-phenomenon is highlighted by the following experimental results displayed in
-\cref{fig:chap1:finetuning_with_init_not_pruned}. This experiment involves a
-comparison between two initial setups: one that is only fine-tuned and another
-that is both fine-tuned and pruned. The outcomes demonstrate that initialising a
-network with both fine-tuned and pruned weights yields significantly superior
-results. Moreover, the networks produced by fine-tuning with our method are much
-more consistent from one run to another. This is illustrated by the standard
-deviation being so small that the colored area around the solid line is barely
-visible on the graphs. This is not the case for the conventional fine-tuning
-where performances vary greatly from one run to another. This is especially
-visible on \cref{fig:chap1:finetuning_impact_conv4_cifar10}.\\
+phenomenon is highlighted by the following additional experimental results
+displayed in \cref{fig:chap1:finetuning_with_init_not_pruned}. This experiment
+involves a comparison between two initial setups: one where initial weights only
+fine-tuned and another that where they are both fine-tuned and pruned. The
+outcomes demonstrate that initialising a network with both fine-tuned and pruned
+weights yields significantly superior results. Moreover, the networks produced
+by fine-tuning with our method are much more consistent from one run to another.
+This is illustrated by the standard deviation being so small that the colored
+area around the solid line is barely visible on the graphs. This is not the case
+for the conventional fine-tuning where performances vary greatly from one run to
+another. This is especially visible on
+\cref{fig:chap1:finetuning_impact_conv4_cifar10}.\\
 
 Although the method proposed in this chapter was not initially intended for
 fine-tuning networks, it demonstrates superior performance compared to
@@ -1423,7 +1462,6 @@ standard fine-tuning approaches.\\
 
 % endregion: finetuning
 
-% endregion: experiments
 
 \section{Conclusion}
 \label{sec:chap1:conclusion}

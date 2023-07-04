@@ -12,10 +12,10 @@
   recognition. These lightweight networks are increasingly important for
   intelligent embedded systems with limited computational resources and energy
   availability. Pruning techniques are popular in designing lightweight
-  networks, but they require the training of weights. Those weights are pruned
-  according to a criterion or associated saliency indicators that are trained
-  together with the weights.
-
+  networks, but they require weight training, pruning and fine-tuning. These
+  weights are pruned based on criteria or saliency indicators that are learned
+  alongside the weights.
+  
   This chapter introduces approaches that extract effective subnetworks by
   pruning large untrained networks, without weight training. A new method, named
   \acf{ASLP}, is proposed to extract effective subnetworks from a large,
@@ -1530,7 +1530,7 @@ using \ac{SR} compared to \ac{DWR} on a Conv4 network.\\
 \label{sec:chap2:impact_learning_rate}
 
 The learning rate is an essential hyperparameter for training neural networks as
-it controls the magnitude of the network's parameter updates. When training
+it controls the magnitude of the network parameter updates. When training
 networks with our \ac{ASLP} method introduced in this chapter, we set the
 learning rate to 50. This value is significantly higher than the learning rates
 typically used for training neural networks. For instance, the learning rates to
