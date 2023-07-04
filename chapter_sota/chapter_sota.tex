@@ -6,47 +6,51 @@
 % TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
-Neural network development and performance enhancement have led to significant
-size growth, particularly in the number of weights constituting them. In
-parallel, the evolution of these networks has given rise to various applications
+The fast development of neural networks has led, on the one hand, to the
+enhancement of their performance, but also, on the other hand, to a significant
+size growth and increase in their parameter count. The rapid evolution and
+adoption of these networks has given rise to various applications
 \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:conf/emnlp/BudzianowskiV19,silver2018general,jumper2021highly},
 particularly embedded ones\cite{kim2020review,kuutti2020survey}, whose resources
 are highly constrained in terms of computing power, energy consumption or memory
 footprint. Alongside the increase in the size of these networks, compression
-techniques have been devised, in order to enable the use of these algorithms in
-embedded applications or resource-constrained environments.\\
+techniques
+\cite{DBLP:conf/nips/CunDS89,DBLP:journals/corr/HanMD15,DBLP:conf/nips/HanPTD15}
+have been devised, in order to enable the use of these algorithms in embedded
+applications or resource-constrained environments.\\
 
-This chapter focuses on these techniques and presents state-of-the-art neural
-network compression methods, predominantly based on various modifications of
-weights. This chapter is organised as follows: \cref{sec:sota:dl_overview} does
-a brief overview of deep learning and neural networks evolution.
-\Cref{sec:sota:nn_evolution} underscores the increase in size of the most
-popular architectures. Following this, \cref{sec:sota:fast_convolutions}
-examines fast convolution techniques, which aim to accelerate the computation of
-convolutions in neural networks, thereby reducing both the runtime and
-computational resources required. Thereafter, \cref{sec:sota:teaching_paradigm}
-delves into \ac{KD}, a process by which the knowledge of a larger, more complex
-network (denoted the \emph{teacher}) is transferred to a smaller, more efficient
-network (denoted the \emph{student}), enabling the latter to achieve comparable
-performance with a reduced footprint. Subsequently, \cref{sec:sota:archi_design}
-explores architecture design methods that aims at producing more efficient and
-effective networks. \Cref{sec:sota:efficient_archi} details ad-hoc
-architectures, referred to here as \emph{Efficient Architectures}. These
-architectures are lightweight networks that revolve around a core technique to reduce
-their size while preserving performance as much as possible. Following this,
-\cref{sec:sota:nas} discusses \ac{NAS}, a method that automates the discovery of
-optimal network architectures tailored to specific tasks or constraints,
-potentially leading to more compact and efficient designs. Afterwards,
-\cref{sec:sota:refining_existing} presents two categories of techniques that
-harness an existing neural network and refine its architecture to produce a more
-compact and efficient model. First, \cref{sec:sota:quantisation} focus on
-\emph{quantisation} and \emph{binarisation} techniques, which aim to lower the
-numerical precision of the weights and activations of the network in order to
-speed up the computation and reduce the memory footprint. Lastly,
-\cref{sec:sota:pruning} considers neural network pruning, a set of techniques
-that involve the removal of redundant or insignificant connections and weights
-from the network, resulting in a sparser and more computationally efficient
-model.\\
+This chapter focuses on state-of-the-art neural network compression methods,
+predominantly based on various operations applied to the weights of an already
+existing large neural network. This chapter is organised as follows:
+% TODO: changer les sections quand on aura déplacé les parties dans l'intro
+\cref{sec:sota:dl_overview} provides a brief overview of deep learning and
+neural network evolution. \Cref{sec:sota:nn_evolution} underscores the increase
+in size of the most popular architectures. Following this line,
+\cref{sec:sota:fast_convolutions} examines fast convolution techniques, which
+aim to accelerate the computation of convolutions in neural networks, thereby
+reducing both the runtime and computational resources required. Thereafter,
+\cref{sec:sota:teaching_paradigm} delves into \ac{KD}, a process by which the
+knowledge of a larger, more complex network (referred to as the \emph{teacher})
+is transferred to a smaller and more efficient network (called the
+\emph{student}), enabling the latter to achieve comparable performance with a
+reduced footprint. Subsequently, \cref{sec:sota:archi_design} explores
+architecture design methods that aim at producing more efficient and effective
+networks. \Cref{sec:sota:efficient_archi} details ad-hoc architectures, referred
+to here as \emph{Efficient Architectures}. These architectures are lightweight
+networks that revolve around a core technique to reduce their size while
+preserving performance as much as possible. Hence, \cref{sec:sota:nas} discusses
+\ac{NAS}, a method that automates the discovery of optimal network architectures
+tailored to specific tasks or constraints, potentially leading to more compact
+and efficient designs. Afterwards, \cref{sec:sota:refining_existing} presents
+two categories of techniques that harness an existing neural network and refine
+its architecture to produce a more compact and efficient model. First,
+\cref{sec:sota:quantisation} focuses on \emph{quantisation} and
+\emph{binarisation} techniques, which aim to lower the numerical precision of
+weights and activations of networks in order to speed up their computation and
+reduce their memory footprint. Lastly, \cref{sec:sota:pruning} considers neural
+network pruning, a set of techniques that remove redundant or insignificant
+connections and weights from networks, resulting in a sparser and more
+computationally efficient models.\\
 
 % endregion: intro
 
