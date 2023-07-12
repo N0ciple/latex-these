@@ -8,7 +8,7 @@
 
 \renewcommand*{\acp}[1]{\textcolor{mycolor}{\oldacp{#1}}}
 \renewcommand*{\ac}[1]{\textcolor{mycolor}{\oldac{#1}}}
-\renewcommand*{\acf}[1]{\textcolor{mycolor}{\oldacf{#1}}}
+\renewcommand*{\acf}[1]{\acl{#1} (\textcolor{mycolor}{\oldac{#1}})}
 
 
 % acronyms
@@ -27,6 +27,12 @@
 \DeclareAcronym{GPU}{
     short=GPU,
     long=Graphics Processing Unit,
+    long-plural=s,
+}
+
+\DeclareAcronym{TPU}{
+    short=TPU,
+    long=Tensor Processing Unit,
     long-plural=s,
 }
 
@@ -162,7 +168,7 @@
 
 \DeclareAcronym{MLP}{
     short=MLP,
-    long=Multi-Layer Perceptron,
+    long=Multilayer Perceptron,
     long-plural=s,
 }
 
@@ -190,4 +196,10 @@
 \DeclareAcronym{SKD}{
     short=SKD,
     long=Scaled Kaiming distribution
+}
+
+\DeclareAcronym{DAG}{
+    short=DAG,
+    long=Directed Acyclic Graph,
+    long-plural=s,
 }
