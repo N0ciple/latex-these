@@ -2,13 +2,27 @@
 
 \definecolor{mycolor}{HTML}{363687} % define your color using a hex code
 
-\let\oldac\ac
-\let\oldacp\acp
-\let\oldacf\acf
 
-\renewcommand*{\acp}[1]{\textcolor{mycolor}{\oldacp{#1}}}
-\renewcommand*{\ac}[1]{\textcolor{mycolor}{\oldac{#1}}}
-\renewcommand*{\acf}[1]{\acl{#1} (\textcolor{mycolor}{\oldac{#1}})}
+\acsetup{
+    make-links = true,
+}
+
+\RenewAcroTemplate{long-short}{%
+  \acroiffirstTF{%
+    \acrowrite{long}%
+    \acspace(%
+    \acroifT{foreign}{\acrowrite{foreign}, }%
+    \textcolor{mycolor}{\acrowrite{short}}% <-- Change is here
+    \acroifT{alt}{ \acrotranslate{or} \acrowrite{alt}}%
+    \acrogroupcite
+    )%
+  }%
+  {\acrowrite{short}}%
+}
+
+\RenewAcroTemplate{short}{%
+\textcolor{mycolor}{\acrowrite{short}}%
+}
 
 
 % acronyms
