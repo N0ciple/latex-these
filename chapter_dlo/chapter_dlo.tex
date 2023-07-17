@@ -102,12 +102,20 @@ conceptrual representation of the perceptrion is displayed in
 
 \noindent where $x_i$ is the $i$th input, $w_i$ is the weight associated with
 the $i$th input,$n$ is the number of inputs, $b$ is the bias, $g$ is the
-activation function, and $\hat{y}$ is the perceptron's output. The activation
-function is typically a nonlinear function, such as the sigmoid function or the
-hyperbolic tangent function. Due to its shallow architecture, the perceptron
-cannot learn complex decision boundaries. Nevertheless, it is possible to stack
-several perceptrons to learn nonlinear decision boundaries, leading to a
-\acl{MLP}.\\
+activation function, and $\hat{y}$ is the perceptron's output. This formulation
+can also be written in vector form as in \cref{eqn:dlo:perceptron_vector}: \\
+
+\begin{equation}
+  \label{eqn:dlo:perceptron_vector}
+  \hat{y} = g(\mathbf{w}^T \mathbf{x} + b)
+\end{equation}\\
+
+\noindent where $\mathbf{x}$ is the vector of inputs and $\mathbf{w}$ is the
+vector of weights. The activation function is typically a nonlinear function,
+such as the sigmoid function or the hyperbolic tangent function. Due to its
+shallow architecture, the perceptron cannot learn complex decision boundaries.
+Nevertheless, it is possible to stack several perceptrons to learn nonlinear
+decision boundaries, leading to a \acl{MLP}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -130,7 +138,16 @@ representing weights are materialised by lines. The \ac{MLP} is the simplest
 type of feedforward \ac{ANN}. Feedforward refers to the fact that the
 connections between neurons in the \ac{MLP} form a \acf{DAG}, where the outputs
 of the neurons from one layer are passed to the next, with no backward
-connections.\\
+connections or feedback. Using the same notations as in
+\cref{eqn:dlo:perceptron_vector}, the vector form of the \ac{MLP} displayed in
+\cref{fig:dlo:mlp} can be written as in \cref{eqn:dlo:mlp}, where the subscript
+of activation functions $g_i$, weight matrices $\mathbf{w}_i$ and bias vectors
+$\mathbf{b}_i$ denotes their belonging to the $i$th layer.\\
+
+\begin{equation}
+  \label{eqn:dlo:mlp}
+  \hat{\mathbf{y}} = g_2(\mathbf{w}_2^T \cdot  g_1(\mathbf{w}_2^T \cdot \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2)
+\end{equation}\\
 
 Each layer of the \ac{MLP} being fully connected to the next one, it enables the
 \ac{MLP} to handle problems that the perceptron cannot solve, such as problems
@@ -138,38 +155,294 @@ requiring nonlinear decision boundaries. Furthermore,
 \citeauthor{cybenko1989approximation} proved in \cite{cybenko1989approximation}
 that an \ac{MLP} can approximate continuous functions on compact subsets of
 $\mathbb{R}^n$. This result is known as the \emph{Universal Approximation
-Theorem}, also known as \emph{Cybenko Theorem}. Before the emergence of Deep
-Learning, \acp{MLP} have been applied to various domains, including voice
-recognition, image recognition, and machine translation
-\cite{wasserman1988neural}.
+Theorem}. Before the emergence of Deep Learning, \acp{MLP} have been applied to
+various domains, including voice recognition, image recognition, and machine
+translation \cite{wasserman1988neural}.
 
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/mlp_scheme.pdf}
-  \caption{\ac{MLP} scheme}
+  \caption{Conceptual scheme of a \ac{MLP} with one hidden layer. Each circle
+  represent a neuron and each line a connection associated to a weight.}
   \label{fig:dlo:mlp}
 \end{figure}
 
-\section{Training}\label{sec:dlo:training}
+\section{Neural Network Training}\label{sec:dlo:training}
 
 % TODO: introduction de la section entrainement des réseaux de neurones
 
+- L'entrainement est fait en utilisant la backpropagation et l'optimisation des poids 
+- La backpropagation sert uniquemet à calculer le gradient
+- L'optimisation des poids est faite en utilisant ce gradient par un autre
+algorithme comme la SGD 
+- Expliquer rapidement la backpropagation comme une extension de la chain rule
+
 \subsection{Functional definition}
-% TODO: reprendre la partie sur la définition fonctionnelle de l'entrainement du
-% chapitre 1
-\subsection{Loss function and regularisation}
 
-% TODO: partie sur le risque empirique et la fonction de classification dans le
-% cadre du computer vision
+Neural networks can be defined as a mapping function from an input space
+$\mathcal{X}$ to an ouput space $\mathcal{Y}$. This mapping function $f$ is
+parametrised by a set of parameters $\theta$, often called \emph{weights}. The
+training of a neural network consists in tuning the parameters $\theta$ so that,
+given an input $X_i$, the mapping function $f$ output, denoted $\hat{y}_i$, is
+as close as possible to the associated true output $y_i$. This training is done
+iteratively by using example pairs $(X, y) \in \mathcal{X} \times \mathcal{Y}$,
+where $X\in\mathcal{X}$ is the input and $y\in\mathcal{Y}$ is the output. In the
+context of image classification, $X$ is an image and $y$ is a label that
+indicates the class of the associated image. A functional representation of a
+neural network is given in \cref{eqn:dlo:nn_functional_definition}, where $f$ is
+the neural network, $\theta$ is the set of parameters of the network,
+$X\in\mathcal{X}$ is the input given to the neural network and $\hat{y}$ is the
+output.\\
 
-\subsection{Optimisation through backpropagation}
+\begin{equation}
+  \label{eqn:dlo:nn_functional_definition}
+  % \centering
+  \begingroup
+  \setlength\arraycolsep{0pt}
+  f \colon\begin{array}[t]{c >{{}}c<{{}} l}
+    \mathcal{X} & \to     & \mathcal{Y} \\
+    X                     & \mapsto & f(X, \theta) = \hat{y}
+  \end{array}
+  \endgroup
+\end{equation}\\
+
+
+Considering image classification,  the output $\hat{y}$ is a probability vector
+where the largest coefficient is the one whose index corresponds to the
+predicted class of the input image, often called a label. This vector is
+generally converted into a one-hot vector, where the only non-zero coefficient is
+at the index of the predicted class. The true label $y$, referred to as the
+ground truth is either the class index and $y\in\llbracket0;n-1\rrbracket$,
+where $n$ is the number of classes considered. The ground truth can also be
+converted in a one-hot vector.\\
+
+% In the case of image classification, the input $X$ given to the neural network
+% is an image, and the output $\hat{y}$ is a probability vector where the largest
+% coefficient is the one whose index corresponds to the predicted class of the
+% input image. $y_i$, often referred to as the ground truth is a one-hot vector
+% where the only non-zero coefficient is at the index corresponding to the true
+% class of the input image.\\
+
+% A neural network is a function that maps an input $X$ to an output $y$ through
+% a series of transformations. The functional definition of a neural network is
+% given in \cref{eqn:dlo:nn_functional_definition}, where $f$ is the neural
+% network, $\theta$ is the set of parameters of the network, and $y$ is the
+% output.\\
+
+
+\subsection{Loss Function and Regularisation}
+Training a neural network aims at finding the optimal parameters $\theta$ that
+maximises a performance, quantified by the metric $P$, often based on the
+discrepancy between the predicted output $\hat{y}$ and the true output $y$.
+However, optimising directly the metric $P$ might be intractable. To solve for
+this issue, we define a differentiable cost function and minimise the latter as
+a proxy for optimising $P$. Considering $\delta$ as the empirical distribution
+of the training data, the cost function $\mathcal{J}(\theta)$, also denoted the
+\emph{empirical risk} is defined as:
+
+\begin{equation}
+  \label{eqn:dlo:cost_function}
+  \mathcal{J}(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right]
+\end{equation}\\
+
+\noindent where $\mathcal{L}$ is the loss function. Note that the true data
+distribution is not known, and thus, the empirical distribution $\delta$ is used
+instead. The minimisation of the empirical risk alone is not sufficient. Indeed,
+the neural network could learn to perfectly predict the output of the training
+set, but fail to generalise to unseen data. This phenomenon is called
+\emph{overfitting}. To prevent overfitting, we add a regularisation term to the
+empirical risk. The regularisation term, denoted $\mathcal{R}$ is a function of
+the parameters $\theta$ of the neural network which penalises the complexity of
+the model, and thus prevents overfitting. To account for regularisation, the
+cost function in \cref{eqn:dlo:cost_function} is updated to:
+
+\begin{equation}
+  \label{eqn:dlo:regularised_cost_fn}
+  \mathcal{J}_r(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) + \mathcal{R}(\theta) \right]
+\end{equation}\\
+
+\noindent\textbf{Loss function.} In
+\cref{eqn:dlo:cost_function,eqn:dlo:regularised_cost_fn}, the loss function
+$\mathcal{L}$ is a measure of the discrepancy between the ground truth $y$ and
+the predicted output. Contrary to the metric $P$ which might be
+non-differentiable, the loss function is differentiable so that its minimisation
+can be achieved using gradient-based methods, subsequently detailed in
+\cref{sec:dlo:backpropagation}. The choice of the loss function depends on the
+task at hand. For classification tasks (not only images), the loss function is
+often the \emph{cross-entropy} loss. For a binary classification problem, the
+ground truth is a binary variable $y\in \{0,1\}$ and the predicted output is a
+scalar $f(X,\theta)=\hat{y}\in[0,1]$. The binary cross-entropy loss is defined
+as follows:\\
+
+\begin{equation}
+  \label{eqn:dlo:binary_cross_entropy_loss}
+  \mathcal{L}(\hat{y}, y) = - y \log(\hat{y}) - (1-y) \log(1-\hat{y})
+\end{equation}\\
+
+\noindent The binary cross-entropy loss defined in
+\cref{eqn:dlo:binary_cross_entropy_loss} can be extended to problems with more
+than two classes. For a classification problem with $c$ classes, the ground
+truth is a one-hot vector $\mathbf{y}\in \{0,1\}^c$ and the output is a
+$c$-dimensional vector $f(X,\theta)=\hat{\mathbf{y}}\in\mathds{R}^c$. The
+multi-class cross-entropy loss is defined as follows:
+
+\begin{equation}
+  \label{eqn:dlo:multiclass_cross_entropy_loss}
+  \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \displaystyle\frac{\exp(\hat{y}_i)}{\displaystyle\sum_{j=1}^c \exp(\hat{y}_j)} \right)
+\end{equation}\\
+
+\noindent In the above equation, $\hat{\mathbf{y}}$ is the unormalised raw
+output vector of the neural network and $\phi$ is the softmax function, whose
+expression is given in \cref{eqn:dlo:softmax}. The softmax function is used to
+convert the raw output vector of real numbers into a probability distribution.
+Note that some models output directly a probability distribution, in which case
+the softmax is not needed.\\
+
+\begin{equation}
+  \label{eqn:dlo:softmax}
+  \phi(\mathbf{z})_j = \frac{\exp(z_j)}{\displaystyle\sum_{k=1}^{\text{dim}(\mathbf{z})} \exp(z_k)}
+\end{equation}\\
+
+\noindent \textbf{Regularisation.} The regularisation term $\mathcal{R}$ is a
+differentiable function of the weights $\theta$. It acts as a control mechanism
+to avoid overfitting by preventing the weights of the neural network from
+becoming too large, which can lead to overly complex models that overfit the
+training data. This is typically achieved by adding a penalty proportional to
+the magnitude of the weights, thereby keeping them small.\\
+
+Common types of regularisation include $\ell_1$ and $\ell_2$ regularisation,
+whose expressions are shown in \cref{eqn:dlo:reg_l1,eqn:dlo:reg_l2}
+respectively. $\ell_1$ regularisation \cite{tibshirani1996regression}, adds a
+penalty equal to the absolute value of the magnitude of the weights. On the
+other hand, $\ell_2$ regularisation \cite{hoerl1970ridge}, adds a penalty
+equivalent to the square of the magnitude of the weights. Both methods aim to
+reduce the magnitude of the weights, but $\ell_1$ regularisation is more
+targeted towards feature selection, effectively pushing some weights to $0$,
+whereas $\ell_2$ restrains globally their magnitude.\\
+
+The regularisation term $\mathcal{R}$ is added to the cost function with a
+regularisation coefficient, usually denoted as $\lambda$, which is a
+hyperparameter that balances the trade-off between fitting the training data
+(minimising the loss $\mathcal{L}$) and limiting the complexity of the model
+(minimising $\mathcal{R}$).
+
+\begin{equation}
+  \label{eqn:dlo:reg_l1}
+  \mathcal{R}_{\ell_1}(\theta) = \lambda \sum_{i=1}^{\text{dim}(\theta)} \left| \theta_i \right|
+\end{equation}\\
+
+\begin{equation}
+  \label{eqn:dlo:reg_l2}
+  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda \| \theta \|_2}{2} 
+\end{equation}\\
+
+\subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
+
 % TODO: expliquer le backpropagation avec la chain rule et les gradients, puis
 % rapidement stochastique gradient descent and momentum et autres optimiseurs
 
+As mentioned before, the training of a neural network involves finding the
+optimal set of parameters $\theta$ that minimises a cost function
+$\mathcal{J}(\theta)$. This process of optimisation is typically carried out
+using gradient-based methods which rely on the iterative adjustment of the
+parameters in the opposite direction of the gradient of the cost function. The
+gradient of a function provides the direction of steepest ascent at a given
+point \cite{boyd2004convex}. Thus, by moving the parameters in the opposite
+direction of the gradient, we seek to descend to a local minimum of the
+function.\\
+
+\noindent \textbf{Backpropagation.} One critical step in the optimisation
+process is the computation of the gradient of the cost function with respect to
+the parameters, $\nabla \mathcal{J}(\theta)$. These gradients are computed with
+the \emph{backpropagation} algorithm \cite{rumelhart1986learning} which is an
+application of the \emph{chain rule} (see \cref{eqn:dlo:chain_rule}) to
+efficiently compute these gradients. It involves a forward pass through the
+network to compute the outputs and thus the loss, and a backward pass to
+calculate the gradients. During the backward pass, the partial derivative of the
+cost with respect to each parameter is computed, starting from the output layer
+and going back to the input layer. The previously computed derivatives from the
+subsequent layers are used to compute the ones of the earlier layers,  
+making the backpropagation algorithm computationally efficient.\\
+
+% Chain rule latex equation
+\begin{equation}
+  \label{eqn:dlo:chain_rule}
+  \frac{\partial z}{\partial x} = \frac{\partial z}{\partial y} \frac{\partial y}{\partial x}
+\end{equation}\\
+
+\noindent \textbf{\acl{SGD}.} Once the gradients are calculated, they are
+used to update the parameters. The most prevalent for parameter updates is
+\acf{SGD}, a derivative of the Robbins–Monro algorithm
+\cite{robbins1951stochastic}. In \ac{SGD}, the gradient of the loss function is
+computed for a random subset of the data (a \emph{batch} or \emph{mini-batch}),
+and the weights are shifted in the direction that decreases the loss function.
+This is achieved by subtracting the gradient of the cost function with respect
+to that parameter multiplied by a learning rate $\eta$:\\
+
+\begin{equation}
+\label{eqn:dlo:sgd_update}
+\theta_i^{(t+1)} = \theta_i^{(t)} - \eta \frac{\partial \mathcal{J}(\theta)}{\partial \theta_i}
+\end{equation}\\
+
+\noindent where $\theta_i^{(t)}$ is the $i$th parameter at iteration $t$. The
+\ac{SGD} algorithm is detailed in \cref{alg:dlo:sgd}. The use of mini-batches in
+\ac{SGD} leads to a trade-off between computational efficiency and estimation
+accuracy. Indeed, the gradient is estimated using a subset of the entire
+training set, which is, on the one hand, less accurate than using the whole
+dataset, but on the other hand, less computationally intensive. The size of the
+minibatch, which is another hyperparameter of the model, determines this
+trade-off and should also be chosen depending on the computational and memory
+resources available. Note that the size of modern datasets, subsequently
+detailed in \cref{sec:dlo:datasets}, makes it intractable to evaluate the
+gradients on the whole dataset in one step.\\
+
+\begin{algorithm}
+  \caption{Stochastic Gradient Descent Algorithm}
+  \label{alg:dlo:sgd}
+  \begin{algorithmic}
+    \REQUIRE {Learning rate $\eta$, minibatch size $m$,Initial parameters
+    $\theta^{(0)}$, $n>m$ training pairs $(X,y)\in
+    \mathcal{X}\times\mathcal{Y}$, Loss function $\mathcal{J}$}
+    \WHILE {Stopping criterion not met}
+    \STATE {Sample minibatch of size $m$ from training set}
+    \STATE {Compute gradient estimate on minibatch: $\hat{g} \gets \nabla \mathcal{J}(\theta)$}
+    \STATE {Update parameters: $\theta^{(t+1)} \gets \theta^{(t)} - \eta \hat{g}$}
+    \ENDWHILE
+    \RETURN {Optimal parameters $\theta$}
+  \end{algorithmic}
+\end{algorithm}
+
+
+\noindent \textbf{Learning Rate.} The learning rate is a hyperparameter that
+determines the step size during each iteration while moving toward a minimum of
+a loss function. Setting the learning rate too high can cause the learning
+process to converge too quickly or overshoot while setting it too low can make
+the learning process slow to converge, as shown in
+\cref{fig:dlo:gradient_descent}.\\
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/gradient_descent.pdf}
+  \caption{Illustration of the effect of the learning rate on the convergence of
+    the gradient descent. The gradient descent have beed applied iteratively for
+    20 epochs. On the one hand, a too-high learning (1.01) rate causes the
+    gradient descent to overshoot the minimum of the loss function. On the other
+    hand, a too-low learning rate (0.01) causes the gradient descent to converge
+    slowly.}
+  \label{fig:dlo:gradient_descent}
+\end{figure}
+
+\noindent \textbf{Alternative methods.} To further enhance the performance of
+\ac{SGD}, various modifications and extensions have been proposed, such as
+\ac{SGD} with momentum \cite{sutskever2013importance}, RMSProp
+\cite{hinton2012neural}, or Adam \cite{kingma2014adam} for instance. These
+methods aim to adjust the learning rate dynamically or dampen the oscillations
+in the gradient descent to achieve faster and more stable convergence.
+
 \section{Convolutional Neural Networks for Computer Vision}\label{sec:dlo:cnn}
 \subsection{Building Blocks}
-\subsection{Architectures}
+\subsection{Architectures}\label{sec:dlo:architectures}
 
 \section{Datasets}\label{sec:dlo:datasets}
 
@@ -326,7 +599,7 @@ set, we repurpose the original validation set to serve as the test set. This is
 a common strategy employed by other implementations
 \cite{hanyuanxu2018tinyimagenet,nbdt,alvinwan2020nbdt}.\\
 
-\subsection{Architectures}\label{sec:intro:architectures}
+% \section{Architectures}\label{sec:intro:architectures}
 
 % Tiré du chapitre 2
 Conv2 and Conv6 are modified versions of the Conv4 architecture, featuring 2 and
