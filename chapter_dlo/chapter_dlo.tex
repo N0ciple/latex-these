@@ -170,13 +170,12 @@ translation \cite{wasserman1988neural}.
 
 \section{Neural Network Training}\label{sec:dlo:training}
 
-% TODO: introduction de la section entrainement des réseaux de neurones
-
-- L'entrainement est fait en utilisant la backpropagation et l'optimisation des poids 
-- La backpropagation sert uniquemet à calculer le gradient
-- L'optimisation des poids est faite en utilisant ce gradient par un autre
-algorithme comme la SGD 
-- Expliquer rapidement la backpropagation comme une extension de la chain rule
+Neural Network Training revolves around the optimisation of a mapping function
+which learns to predict outcomes based on input data by adjusting its internal
+parameters, also refered to as weights. It involves iteratively tuning these
+weights so that the discrepancy between the model's predicted output and the
+actual output is minimised. The tuning of the weiths rely on gradient-based
+methods %TODO: finir ce paragraphe.
 
 \subsection{Functional definition}
 
@@ -391,7 +390,7 @@ to that parameter multiplied by a learning rate $\eta$:\\
 accuracy. Indeed, the gradient is estimated using a subset of the entire
 training set, which is, on the one hand, less accurate than using the whole
 dataset, but on the other hand, less computationally intensive. The size of the
-minibatch, which is another hyperparameter of the model, determines this
+minibatch, which is a hyperparameter of the training algorithm, determines this
 trade-off and should also be chosen depending on the computational and memory
 resources available. Note that the size of modern datasets, subsequently
 detailed in \cref{sec:dlo:datasets}, makes it intractable to evaluate the
@@ -433,15 +432,207 @@ the learning process slow to converge, as shown in
   \label{fig:dlo:gradient_descent}
 \end{figure}
 
-\noindent \textbf{Alternative methods.} To further enhance the performance of
-\ac{SGD}, various modifications and extensions have been proposed, such as
-\ac{SGD} with momentum \cite{sutskever2013importance}, RMSProp
-\cite{hinton2012neural}, or Adam \cite{kingma2014adam} for instance. These
-methods aim to adjust the learning rate dynamically or dampen the oscillations
-in the gradient descent to achieve faster and more stable convergence.
+\noindent \textbf{Alternative methods.} To enhance the performance of \ac{SGD},
+various modifications and extensions have been proposed, such as \ac{SGD} with
+momentum \cite{sutskever2013importance}, RMSProp \cite{hinton2012neural}, or
+Adam \cite{kingma2014adam}. These methods aim to adjust the learning rate
+dynamically or dampen the oscillations in the gradient descent to achieve faster
+and more stable convergence.\\
+
+For instance, \ac{SGD} with momentum \cite{sutskever2013importance} uses a
+momentum term $\gamma$ to dampen the oscillations in the gradient descent. It
+allows smoothing the variations of the descent direction and thus, preventing
+the optimisation to get stuck in small local minimums. The momentum term is a
+moving average of the gradients, here denoted $v$, and it is used to update the
+parameters as shown in \cref{eqn:dlo:sgd_momentum_update}. In this equation, the
+momentum term $\gamma \in [0,1]$ is a hyperparameter that is typically set close
+to 1, $0.9$ being a common value.\\
+
+\begin{equation}
+  \label{eqn:dlo:sgd_momentum_update}
+  \begin{split}
+    v_{t+1} &= \gamma v_t + \eta \nabla \mathcal{J}(\theta) \\
+    \theta_{t+1} &= \theta_t - v_{t+1}
+  \end{split}
+\end{equation}\\
 
 \section{Convolutional Neural Networks for Computer Vision}\label{sec:dlo:cnn}
+
+%TODO: intro de cette partie
+
 \subsection{Building Blocks}
+
+%TODO: intro de cette partie
+
+\noindent\textbf{Convolutional layer.} Convolutional layers are one of the core
+building blocks of \acp{CNN}. Each convolution layer performs a series of
+spatial convolutions on the input data using a set of learnable filters or
+kernels. These filters are designed to extract low-level features such as edges,
+corners, and textures in the early layers, while they learn high-level features
+like object parts or even whole objects in the deeper layers. In contrary to
+manual feature engineering, the features learned by convolutional layers are
+learned in a \emph{end-to-end} fashion. The convolution operation is defined in
+\cref{eqn:dlo:convolution} :\\
+
+\begin{equation}
+  \label{eqn:dlo:convolution}
+  (x * k)(i,j) = \sum_{m} \sum_{n} x(i -m, j -n) \cdot k(m, n)
+\end{equation}\\
+
+\noindent where, $x$ is the input, $k$ is the kernel, $(i,j)$ are the spatial
+coordinates in the output feature map and $m$ and $n$ represents the spatial
+coordinates of the kernel $k$. Note that some Deep Learning frameworks
+implements \emph{cross-correlation} instead of convolution. In the former, the
+kernel is not spatially flipped leading to the cross-corelation not being
+commutative \cite{goodfellow2016deep}. The convolutional layer kernels are
+typically smaller than the input along width and height dimensions (they are
+generaly $3\times 3$ \cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much
+channels as the input. During the forward pass, each kernel is spatially
+convolved channel-wise with the input and their outputs are summed along the
+channel dimension to yield a single scalar for each kernel position on the
+input.\\
+
+
+\noindent \textbf{Activation function.} Activation function are often applied to
+the output feature map of a convolutional or fully connected layer. This
+function introduces non-linearity into the model, allowing it to learn more
+complex patterns \cite{long2015fully}. A common activation function used in
+\acp{CNN} is the \ac{ReLU} function, represented as $f(x)=\max(0,x)$, although
+other functions like the sigmoid $f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x}
+-e^{-x})/(e^{x}+e^{-x})$ functions have been used. The \ac{ReLU} is prefered
+over the latter for its computational efficiency and its ability to mitigate the
+vanishing or exploding gradients problem
+\cite{hochreiter2001gradient,glorot2010understanding}.\\
+
+\noindent \textbf{Pooling.} Pooling is often employed after convolutional layers
+in a \ac{CNN} and aims at progressively reducing the spatial size of the input
+representation, thus reducing the number of parameters and computations in the
+network. This also helps control overfitting, and increase the receptive field
+of the subsequent layers. The pooling operation is performed independently on
+each input channel, so the depth dimension remains unchanged. The two most
+common types of pooling are \emph{max pooling} and \emph{average pooling}. with
+the former, the maximum value in each window (often of size $2\times 2$) is
+selected, while the latter computes the average value of the window. Given an
+input matrix $\mathbf{x}$ and a pooling function $p$, the output matrix $
+\mathbf{y} $ for a certain spatial location $(i, j)$ is defined as follows:\\
+
+\begin{equation}
+  \label{eqn:dlo:pooling}
+  y_{ij} = p \left( \mathbf{x}(i⋅s:i⋅s+f,j⋅s:j⋅s+f) \right)
+\end{equation}\\
+
+\noindent where $s$ is the stride or step size, $f$ is the spatial extent of the
+filter, or window size and $\mathbf{x}(m:n)$ denotes a slice of the vector or
+matrix $\mathbf{x}$ starting at index $m$ and ending at index $n$. Note that
+pooling have no learnable parameters. They only downsample the input based on a
+fixed function.\\
+
+
+\noindent \textbf{Batch Normalisation.} \ac{BN} is a technique introduced in
+\cite{DBLP:conf/icml/IoffeS15} to combat the issue of internal covariate shift
+in deep neural networks, thereby accelerating training and improving
+generalization. Covariate shift refers to the change in the input distribution
+to a learning system, which can lead to slow convergence and make the network
+harder to train. \ac{BN} normalises the input layer by adjusting and scaling the
+activations. For each mini-batch, it computes the mean and variance of the
+activations and performs normalization. The transformation is defined as
+follows:\\
+
+\begin{equation}
+  \label{eqn:dlo:batchnorm}
+  \hat{x}_{i} = \frac{x_{i} - \mu_{B}}{\sqrt{\sigma_{B}^{2} + \varepsilon}}
+\end{equation}\\
+
+\noindent where $x_{i}$ is the input, $\mu_{B}$ is the mini-batch mean,
+$\sigma_{B}^{2}$ is the mini-batch variance, and $\varepsilon$ is a small
+constant for numerical stability. After normalization, the method allows the
+network to learn an affine transformation for each activation, permitting the
+network to control the mean and standard deviation of the input distribution,
+formalised in \cref{eqn:dlo:batchnorm}.\\
+
+\begin{equation}
+  \label{eqn:dlo:batchnorm_affine}
+  y_{i} = \gamma \hat{x}_{i} + \beta
+\end{equation}\\
+
+\noindent where, $\gamma$ and $\beta$ are the learnable parameters of the affine
+transformation. \ac{BN} has the advantage of making the network less sensitive
+to the initial weights, allowing higher learning rates, and reducing the need
+for Dropout, among other regularisers. However, its effectiveness decreases in
+the case of small batch sizes, as the estimate of the batch mean and variance
+becomes less accurate.\\
+
+\noindent \textbf{Fully connected layer.} \ac{FC} layers, also known as
+\emph{Dense} layers are often the last layers of a \ac{CNN}, effectively serving
+as a classifier, whereas the convolutional layers act as a feature extractor.
+\ac{FC} layers perform high-level reasoning by conducting non-linear
+transformations of the extracted features and combining them to make decisions.
+In an FC layer, each neuron is connected to every neuron in the previous layer.
+A \ac{FC} layer can be describe as a matrix-vector product as in
+\cref{eqn:dlo:fc_layer}.\\
+
+\begin{equation}
+  \label{eqn:dlo:fc_layer}
+  y = \mathbf{w}^T \cdot \mathbf{x} + b
+\end{equation}
+
+\noindent where $\mathbf{x}$ is the input vector, $\mathbf{w}$ is the weight
+matrix and $b$ is the bias. In the context of \acp{CNN}, before passing the
+output of the last convolutional layer to the first \ac{FC} layer, it needs to
+be flattened or reshaped into a single column vector. The final layer in a
+\ac{CNN} is a \ac{FC} layer that has a number of neurons equal to the number of
+output classes, and it typically uses a softmax activation to output a
+probability distribution over those classes.\\
+
+%TODO: rajouter phrase pour dire que l'on peut remplacer les layers FC par des
+%layers conv pour des réseaux "fully convolutional"
+
+%TODO: traiter le paragraphe Dropout.
+
+\noindent \textbf{Dropout.} Dropout is a regularization technique used to
+prevent overfitting in neural networks, including Convolutional Neural Networks
+(CNNs). Overfitting occurs when a model learns to perform well on the training
+data but does not generalise well to unseen data. By applying Dropout, we aim to
+enhance the model's ability to generalise, thereby improving its performance on
+validation and test data.\\
+
+Dropout, introduced by Hinton et al., works by randomly deactivating a
+proportion of neurons in a layer during each training iteration [1]. More
+specifically, during the forward pass, each neuron has a probability \$p\$ of
+being temporarily removed from the network, effectively breaking up
+co-adaptations between neurons and forcing them to learn more robust and
+independent features.\\
+
+Mathematically, the operation can be described as follows. Let \$x\$ denote the
+activations of a certain layer, and \$r\$ be a binary mask vector of the same
+shape as \$x\$, where each element of \$r\$ is independently drawn from a
+Bernoulli distribution with success probability \$p\$:\\
+
+\begin{equation}
+  \label{eqn:dlo:dropout}
+  r \sim \text{Bernoulli}(p)
+\end{equation}
+
+∼Bernoulli(p) The output \$y\$ after applying Dropout can then be expressed as:\\
+
+\begin{equation}
+  \label{eqn:dlo:dropout_output}
+  y = \frac{x \odot r}{p}
+\end{equation}
+
+where \$*\$ denotes element-wise multiplication.\\
+
+The network with Dropout can be seen as a collection of possible smaller
+sub-networks, each trained on a different subset of the data. During testing,
+all neurons are used but their outputs are scaled down by factor \$p\$ to
+account for the larger number of active units at test time, leading to a sort of
+``averaging'' effect over the learned sub-networks [1].\\
+
+It's important to note that although Dropout has proven to be an effective tool
+in preventing overfitting, it may not always lead to the best performance,
+especially when used with modern normalization techniques like Batch
+Normalization [2].\\
+
 \subsection{Architectures}\label{sec:dlo:architectures}
 
 \section{Datasets}\label{sec:dlo:datasets}
