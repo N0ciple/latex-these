@@ -1031,7 +1031,7 @@ specific global loss is expressed as:
 \end{equation}
 
 Where $||~.~||_1$ represents the $\ell_1$. Values of $N$ for most of the used
-architectures are reported in \cref{tab:intro:networks_size}.\\
+architectures are reported in \cref{tab:dlo:networks_size}.\\
 
 In both variants, the reparametrisation is kept in order to isolate the impact
 of the budget loss. We evaluated the performance of our approach and the two
@@ -1283,7 +1283,7 @@ function in synergy.
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/budget_only_cifar100_PrunableResNet20.pdf}}
   \caption{Comparison of our method and its variant without the
     reparametrization on ResNet20, evaluated on CIFAR-10 and CIFAR-100. Due to the
-    small size of the network (see \cref{tab:intro:networks_size}), the pruned
+    small size of the network (see \cref{tab:dlo:networks_size}), the pruned
     version of our method (\emph{budget + reparam}) and the \emph{budget only}
     variant cannot keep up with the unpruned version. Nevertheless, if considering
     the pruned versions, our method scores better, thanks to the addition of the
