@@ -5,9 +5,10 @@
 \section{Introduction}
 
 Deep learning is a subfield of machine learning that focuses on the study of
-\acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
-roots in \acp{ANN} which aim to learn a data representation from unstructured
-data such as raw images \cite{DBLP:conf/nips/KrizhevskySH12}, text
+\acp{DNN}. Deep Learning is a family of machine learning algorithms called
+\acp{DNN} that have their roots in \acp{ANN} which aim to learn a data
+representation from unstructured data such as raw images
+\cite{DBLP:conf/nips/KrizhevskySH12}, text
 \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
 \cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
 \acp{ANN} were initially conceptualised based on the understanding of biological
@@ -57,7 +58,7 @@ focuses on the functional definition of a neural network and its training.
 \Cref{sec:dlo:cnn} presents the building blocks and architectures of various
 \acp{CNN} for computer vision, and in particular the ones we benchmark our
 methods with (see \cref{sec:chap1:experiments,sec:chap2:experiments}). Finally,
-\Cref{sec:dlo:datasets} gives an overview of the most used the datasets that we
+\Cref{sec:dlo:datasets} gives an overview of the most used datasets that we
 used in our experiments.
 
 
@@ -76,7 +77,7 @@ linear decision boundary. It was proposed by
 and conceptualised based on the understanding of biological neural networks
 present in the brain \cite{mcculloch1943logical,hebb2005organization}. The
 perceptron is composed of inputs that are weighted and summed before being
-passed through an nonlinear function refered to as an activation function. The
+passed through a nonlinear function referred to as an activation function. The
 conceptrual representation of the perceptrion is displayed in
 \cref{fig:dlo:perceptron} and its mathematical formulation is defined in
 \cref{eqn:dlo:perceptron}: \\
@@ -157,7 +158,7 @@ translation \cite{wasserman1988neural}.
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/mlp_scheme.pdf}
   \caption{Conceptual scheme of a \ac{MLP} with one hidden layer. Each circle
-  represent a neuron and each line a connection associated to a weight.}
+  represent a neuron and each line a connection associated with a weight.}
   \label{fig:dlo:mlp}
 \end{figure}
 
@@ -168,7 +169,7 @@ that learns to predict an output given input data by adjusting its internal
 parameters, also referred to as weights. This optimisation, also called
 \emph{training}, involves iteratively tuning these weights so that the
 discrepancy between the output predicted by the model and the reference output
-is minimised. Weights tuning relies on gradient-based methods that hinges
+is minimised. Weights tuning relies on gradient-based methods that hinge
 arround to core components: the \emph{backpropagation} algorithm to compute the
 gradients and the \ac{SGD} algorithm to update the weights.
 
@@ -209,7 +210,7 @@ generally converted into a one-hot vector, where the only non-zero coefficient i
 at the index of the predicted class. The true label $y$, referred to as the
 ground truth is either the class index and $y\in\llbracket0;n-1\rrbracket$,
 where $n$ is the number of classes considered. The ground truth can also be
-converted in a one-hot vector.\\
+converted into a one-hot vector.\\
 
 % In the case of image classification, the input $X$ given to the neural network
 % is an image, and the output $\hat{y}$ is a probability vector where the largest
@@ -243,9 +244,9 @@ of the training data, the cost function $\mathcal{J}(\theta)$, also denoted the
 distribution is not known, and thus, the empirical distribution $\delta$ is used
 instead. The minimisation of the empirical risk alone is not sufficient. Indeed,
 the neural network could learn to perfectly predict the output of the training
-set, but fail to generalise to unseen data. This phenomenon is called
+set but fail to generalise to unseen data. This phenomenon is called
 \emph{overfitting}. To prevent overfitting, we add a regularisation term to the
-empirical risk. The regularisation term, denoted $\mathcal{R}$ is a function of
+empirical risk. The regularisation term, denoted $\mathcal{R}$, is a function of
 the parameters $\theta$ of the neural network which penalises the complexity of
 the model, and thus prevents overfitting. To account for regularisation, the
 cost function in \cref{eqn:dlo:cost_function} is updated to:
@@ -337,7 +338,7 @@ optimal set of parameters $\theta$ that minimises a cost function
 $\mathcal{J}(\theta)$. This process of optimisation is typically carried out
 using gradient-based methods which rely on the iterative adjustment of the
 parameters in the opposite direction of the gradient of the cost function. The
-gradient of a function provides the direction of steepest ascent at a given
+gradient of a function provides the direction of the steepest ascent at a given
 point \cite{boyd2004convex}. Thus, by moving the parameters in the opposite
 direction of the gradient, we seek to descend to a local minimum of the
 function.\\
@@ -405,17 +406,17 @@ gradients on the whole dataset in one step.\\
 
 
 \noindent \textbf{Learning Rate.} The learning rate is a hyperparameter that
-determines the step size during each iteration while moving toward a minimum of
-a loss function. Setting the learning rate too high can cause the learning
-process to converge too quickly or overshoot while setting it too low can make
-the learning process slow to converge, as shown in
+determines the step size of the update at each iteration while moving toward a
+minimum of the loss function. Setting the learning rate too high can cause the
+learning process to converge too quickly or overshoot while setting it too low
+can make the learning process slow to converge, as shown in
 \cref{fig:dlo:gradient_descent}.\\
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/gradient_descent.pdf}
   \caption{Illustration of the effect of the learning rate on the convergence of
-    the gradient descent. The gradient descent have beed applied iteratively for
+    the gradient descent. The gradient descent has been applied iteratively for
     20 epochs. On the one hand, a too-high learning (1.01) rate causes the
     gradient descent to overshoot the minimum of the loss function. On the other
     hand, a too-low learning rate (0.01) causes the gradient descent to converge
@@ -469,9 +470,9 @@ building blocks of \acp{CNN}. Each convolution layer performs a series of
 spatial convolutions on the input data using a set of learnable filters or
 kernels. These filters are designed to extract low-level features such as edges,
 corners, and textures in the early layers, while they learn high-level features
-like object parts or even whole objects in the deeper layers. In contrary to
-manual feature engineering, the features learned by \ac{CL} layers are
-learned in a \emph{end-to-end} fashion. The convolution operation is defined in
+like object parts or even whole objects in the deeper layers. Contrary to manual
+feature engineering, the features learned by \ac{CL} layers are learned in a
+\emph{end-to-end} fashion. The convolution operation is defined in
 \cref{eqn:dlo:convolution} :\\
 
 \begin{equation}
@@ -482,10 +483,10 @@ learned in a \emph{end-to-end} fashion. The convolution operation is defined in
 \noindent where, $x$ is the input, $k$ is the kernel, $(i,j)$ are the spatial
 coordinates in the output feature map and $m$ and $n$ represents the spatial
 coordinates of the kernel $k$. Note that some Deep Learning frameworks
-implements \emph{cross-correlation} instead of convolution. In the former, the
-kernel is not spatially flipped leading to the cross-corelation not being
+implement \emph{cross-correlation} instead of convolution. In the former, the
+kernel is not spatially flipped leading to the cross-correlation not being
 commutative \cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically
-smaller than the input along width and height dimensions (they are generaly
+smaller than the input along width and height dimensions (they are generally
 $3\times 3$ \cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much channels as the
 input. During the forward pass, each kernel is spatially convolved channel-wise
 with the input and their outputs are summed along the channel dimension to yield
@@ -544,7 +545,7 @@ distribution over those classes.\\
   \label{fig:sota:layers}
 \end{figure}
 
-\noindent \textbf{Activation function.} Activation function are often applied to
+\noindent \textbf{Activation function.} Activation functions are often applied to
 the output feature map of a convolutional or fully connected layer. This
 function introduces non-linearity into the model, allowing it to learn more
 complex patterns \cite{long2015fully}. A common activation function used in
@@ -566,7 +567,7 @@ vanishing or exploding gradients problem
 \noindent \textbf{Pooling.} Pooling is often employed after \ac{CL} layers
 in a \ac{CNN} and aims at progressively reducing the spatial size of the input
 representation, thus reducing the number of parameters and computations in the
-network. This also helps control overfitting, and increase the receptive field
+network. This also helps control overfitting and increases the receptive field
 of the subsequent layers. The pooling operation is performed independently on
 each input channel, so the depth dimension remains unchanged. The two most
 common types of pooling are \emph{max pooling} and \emph{average pooling}. with
@@ -583,7 +584,7 @@ input matrix $\mathbf{x}$ and a pooling function $p$, the output matrix $
 \noindent where $s$ is the stride or step size, $f$ is the spatial extent of the
 filter, or window size and $\mathbf{x}(m:n)$ denotes a slice of the vector or
 matrix $\mathbf{x}$ starting at index $m$ and ending at index $n$. Note that
-pooling have no learnable parameters. They only downsample the input based on a
+pooling has no learnable parameters. They only downsample the input based on a
 fixed function.\\
 
 
@@ -637,27 +638,26 @@ independent features (see \cref{eqn:dlo:dropout}).\\
 \end{equation}\\
 
 \noindent where $\mathbf{x}$ denote the output of a layer processed with
-dropout, $\mathbf{r}$ is a binary mask vector of the same shape as $\mathbf{x}$, where
-each element of $r$ is independently drawn from a Bernoulli distribution with
-probability $1-p$, leading to $r_i=1$ if the associated weight is kept and a
-$r_i=0$ if not. The product $\mathbf{x} \odot \mathbf{r}$ is scaled by $1-p$ to
-ensure that the expected value of $\mathbf{x}$ remains the the sum over all
-inputs is unchanged. During evaluation, the dropout is changed to an identity
-function.
+dropout, $\mathbf{r}$ is a binary mask vector of the same shape as $\mathbf{x}$,
+where each element of $r$ is independently drawn from a Bernoulli distribution
+with probability $1-p$, leading to $r_i=1$ if the associated weight is kept and
+a $r_i=0$ if not. The product $\mathbf{x} \odot \mathbf{r}$ is scaled by $1-p$
+to ensure that the expected value of $\mathbf{x}$ remains unchanged. During the
+evaluation, the dropout is changed to an identity function.
 
 \subsection{Architectures}\label{sec:dlo:architectures}
 
 
-The evolution of \aclp{CNN} is characterized by a consistent increase in
-their size and performance, alongside the introduction of new architectural
-modifications to address limitations of their predecessors (see
+The evolution of \aclp{CNN} is characterized by a consistent increase in their
+size and performance, alongside the introduction of new architectural
+modifications to address the limitations of their predecessors (see
 \cref{fig:dlo:net_sizes}). In this section, we present a historical overview of
 the \acp{CNN} evolution and we subsequently detail the architectures that we
 used in our experiments.\\
 
 The first \ac{CNN} was introduced in 1998: LeNet-5 was developed for digit
 recognition \cite{DBLP:journals/pieee/LeCunBBH98}, constituting a relatively
-simple network with 5 layers with learnable parameters : 2 \ac{CL} layers
+simple network with 5 layers with learnable parameters: 2 \ac{CL} layers
 and 3 fully connected layers. Its size is significantly smaller compared to the
 contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction of
 AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
@@ -677,21 +677,21 @@ introduced and popularised the \ac{ReLU} activation function.\\
 
 The next advancement was the VGG networks family
 \cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
-which proposed much deeper architectures with up to 19 layers, wich is a
+which proposed much deeper architectures with up to 19 layers, which is a
 significant increase over the 8 layers of AlexNet. However, the increased depth
 led to the \emph{vanishing gradients} problems. The vanishing gradients problem
 refers to the situation in training a deep neural network where gradients are
 backpropagated through layers and become increasingly small, effectively
 preventing the weights of earlier layers from learning and updating effectively.
 The VGG networks also introduced the practice of stacking multiple convolutional
-layers with small $3\times 3$ filters instead of using larger filters. In the
-same year, Google's Inception (or GoogLeNet)
-\cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced, addressing the vanishing
-gradients  issue with its novel inception modules, which allowed the network to
-learn at varying scales and increased computational efficiency, without overly
-increasing the network size. GoogleNet was also the first \ac{CNN} that was not
-a simple stack of layer and processed a single input with different blocks in
-parallel before merging them.\\
+layers with small $3\times 3$ filters instead of using larger filters. The same
+year, Google's Inception (or GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}
+was introduced, addressing the vanishing gradients  issue with its novel
+inception modules, which allowed the network to learn at varying scales and
+increased computational efficiency, without overly increasing the network size.
+GoogleNet was also the first \ac{CNN} that was not a simple stack of layers and
+processed a single input with different blocks in parallel before merging
+them.\\
 
 \begin{figure}[htbp]
   \centering
@@ -721,22 +721,22 @@ manage feature-map sizes.\\
 \end{figure}
 
 In response, DenseNet \cite{huang2017densely} was proposed. It connects each
-layer to every other following layers of the same block in a feed-forward
+layer to every other following layer of the same block in a feed-forward
 fashion. By reinforcing the propagation of features and gradients through the
 network, DenseNet alleviated the vanishing-gradient problem and further improved
-the network ability to pass on information from earlier layers to later ones.
-Thus, through these chronological advancements, neural networks not only grew in
-size but also improved in performance, thereby becoming more efficient and
-capable of handling more complex tasks.\\
+the ability of the network to pass on information from earlier layers to later
+ones. Thus, through these chronological advancements, neural networks not only
+grew in size but also improved in performance, thereby becoming more efficient
+and capable of handling more complex tasks.\\
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_sota/assets/network_sizes_normal.pdf}
-  \caption{Networks size comparison. The \emph{x-axis} represents the number
-    of \acp{FLOP} required to process a single image. The \emph{y-axis}
-    represents the Top-1 accuracy on the ImageNet \cite{deng2009imagenet}
-    dataset, and the size of the circles represents the number of parameters in
-    the network. Numbers are taken from \cite{pytorch_vision}}
+  \caption{Networks size comparison. The \emph{x-axis} represents the number of
+    \acp{FLOP} required to process a single image. The \emph{y-axis} represents
+    the Top-1 accuracy on the ImageNet \cite{deng2009imagenet} dataset and the
+    size of the circles represents the number of parameters in the network.
+    Numbers are taken from \cite{pytorch_vision}}
   \label{fig:dlo:net_sizes}
 \end{figure}
 
@@ -788,11 +788,11 @@ a \ac{ReLU} activation function. The VGG16 network is illustrated in
 \noindent \textbf{ResNet\{18,20\}.} The ResNet18 and ResNet20 networks
 \cite{DBLP:conf/cvpr/HeZRS16} are 18 and 20-layer \acp{CNN} respectively. These
 layers are organized into stages, with ResNet18, represented in
-\cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \ac{CL} layers
-each, while ResNet20, represented in \cref{fig:dlo:resnet20}, is structured into
-3 stages, each containing 3 \ac{CL} layers. They are composed of
-\emph{Residual Blocks} also refered to as \emph{Basic Blocks}. Each residual
-block follows the principle of learning the residual function:\\
+\cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \ac{CL} layers each,
+while ResNet20, represented in \cref{fig:dlo:resnet20}, is structured into 3
+stages, each containing 3 \ac{CL} layers. They are composed of \emph{Residual
+Blocks} also referred to as \emph{Basic Blocks}. Each residual block follows the
+principle of learning the residual function:\\
 
 \begin{equation}
   f(x) = h(x) - x
@@ -825,10 +825,10 @@ is tailored for CIFAR-10 and comprises 3 stages encompassing 3 \emph{Basic
 Blocks} of 2 \ac{CL} layers each, with an identity skip connection in each
 block. ResNet18 (\cref{fig:dlo:resnet18}) is tailored for ImageNet and is
 composed of 4 stages encompassing 4 \emph{Basic Blocks} of 2 convolutional
-layers each. There are two types of blocks: $\mathbf{B}_\text{I}$ with and
+layers each. There are two types of blocks: $\mathbf{B}_\text{I}$ with an
 identity skip connection and $\mathbf{B}_\text{P}$ with a projection skip
-connection. The projection skip connection is used to match dimensions between
-the input and the output of the block.}
+connection. The projection skip connection is used to match the dimensions
+between the input and the output of the block.}
 \label{fig:dlo:resnets}
 \end{figure}
 
@@ -856,16 +856,15 @@ represented in \cref{fig:dlo:conv246}.\\
 
 \section{Datasets}\label{sec:dlo:datasets}
 
-In this thesis manuscript, we focuses on image classification tasks and
-supervised learning. Supervised learning is a machine learning paradigm in which
-the model is trained using labelled data. In the context of image
-classification, the input data is an image, and the label is the class of the
-image. We denote an input image $X$ and its corresponding label $y$. Each image
-$X$ belongs to the set of all images of the dataset $\mathcal{X}$, and each
-label $y$ belongs to the set of all labels of the dataset $\mathcal{Y}$. The
-dataset, denoted $\mathcal{D}$, is a set of pairs $(X, y)$, where $X \in
-  \mathcal{X}$ and $y \in \mathcal{Y}$, so that $D \subset \mathcal{X} \times
-  \mathcal{Y}$. \\
+In this thesis manuscript, we focus on image classification tasks and supervised
+learning. Supervised learning is a machine learning paradigm in which the model
+is trained using labeled data. In the context of image classification, the input
+data is an image, and the label is the class of the image. We denote an input
+image $X$ and its corresponding label $y$. Each image $X$ belongs to the set of
+all images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set
+of all labels of the dataset $\mathcal{Y}$. The dataset, denoted $\mathcal{D}$,
+is a set of pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$,
+so that $D \subset \mathcal{X} \times \mathcal{Y}$. \\
 
 In our experiments, we evaluated our methods on three different datasets
 tailored for image classification: CIFAR-10 \cite{CIFARdataset}, CIFAR-100
@@ -892,18 +891,17 @@ up their main characteristics.\\
 
 \subsection{CIFAR-10}
 
-The CIFAR-10 dataset \cite{CIFARdataset} is a widely
-used dataset in machine learning and computer vision. This is a labeled subset
-of the \emph{80 Millions Tiny Images} dataset \cite{4531741}. CIFAR-10 is a
-simple yet challenging dataset that allows for quicker iteration or
-hyperparameter tuning than larger datasets such as ImageNet
-\cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is significanly more complex
-than the MNIST dataset \cite{6296535}, which contains grayscale handwritten
-digits images. the CIFAR-10 dataset contains 60,000 colour images of size 32x32
-pixels, split into 10 classes, namely: plane, car, bird, cat, deer, dog, horse,
-ship, truck. Each class contains 6,000 images. The dataset is divided into two
-sets: a training set, composed of 50,000 images and a test set containing 10,000
-of them.\\
+The CIFAR-10 dataset \cite{CIFARdataset} is a widely used dataset in machine
+learning and computer vision. This is a labeled subset of the \emph{80 Million
+Tiny Images} dataset \cite{4531741}. CIFAR-10 is a simple yet challenging
+dataset that allows for quicker iteration or hyperparameter tuning than larger
+datasets such as ImageNet \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is
+significantly more complex than the MNIST dataset \cite{6296535}, which contains
+grayscale handwritten digits images. the CIFAR-10 dataset contains 60,000 colour
+images of size 32x32 pixels, split into 10 classes, namely: plane, car, bird,
+cat, deer, dog, horse, ship, and truck. Each class contains 6,000 images. The
+dataset is divided into two sets: a training set, composed of 50,000 images and
+a test set containing 10,000 of them.\\
 
 \begin{figure}[ht!]
   \centering
@@ -937,16 +935,16 @@ CIFAR-100 is also divided into two sets: a training set and a test, composed of
 
 \subsection{TinyImageNet}
 
-TinyImageNet dataset is another popular dataset
-in machine learning and computer vision, conceived as a subset of the larger
-ImageNet dataset \cite{DBLP:journals/ijcv/RussakovskyDSKS15}. It comprises
-100,000 colour images of size 64x64 pixels, split into 200 classes, whereas
-ImageNet contains 1.2 million images of size 256x256 pixels, split into 1,000
-classes. The dataset is divided in 3 sets: the train set, containing 500
-images per class, the validation and test sets, both containing 50. The scaled
-down image size and count make TinyImageNet more computationally accessible than
-ImageNet while still being a challenging task and maintening the diversity of
-the images and classes.\\
+TinyImageNet dataset is another popular dataset in machine learning and computer
+vision, conceived as a subset of the larger ImageNet dataset
+\cite{DBLP:journals/ijcv/RussakovskyDSKS15}. It comprises 100,000 colour images
+of size 64x64 pixels, split into 200 classes, whereas ImageNet contains 1.2
+million images of size 256x256 pixels, split into 1,000 classes. The dataset is
+divided in 3 sets: the train set, which contains 500 images per class, the
+validation and test sets, which both contain 50. The scaled-down image size and
+count make TinyImageNet more computationally accessible than ImageNet while
+still being a challenging task and maintaining the diversity of the images and
+classes.\\
 
 
 \begin{figure}[ht!]
@@ -958,53 +956,23 @@ the images and classes.\\
   \label{fig:intro:tinyimagenet_examples}
 \end{figure}
 
-% In addition to these two folds, we
-% also use a validation set to tune the hyperparameters of our method before
-% applying it on the test set. The validation dataset is obtained by selecting
-% 10\% of the training set. \Cref{tab:dlo:datasets} summaries the composition of
-% the three datasets.\\ 
-
-% The CIFAR-10 and CIFAR-100 datasets both contain 60 000 colour images of size
-% 32x32 pixels, split into 10 and 100 classes, respectively. The TinyImageNet
-% dataset is a shrunk version of the ImageNet dataset
-% \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, and contains 100 000 images of size
-% 64x64 pixels, split into 200 classes. Each dataset is divided into two folds: a
-% training set and a test set. In addition to these two folds, we also use a
-% validation set to tune the hyperparameters of our method before applying it on
-% the test set. The validation dataset is obtained by selecting 10\% of the
-% training set. \Cref{tab:dlo:datasets} summaries the composition of the three
-% datasets.\\
-
-% In combination with these datasets, we use four different neural networks. Conv4
-% is a reasonably small convolutional neural network which is a
-% shrunk-down version of the VGG16 architecture. VGG16 is a \acl{CNN}
-% of larger size and depth, which is a popular choice for image classification. We
-% used a slightly modified version of VGG16 that is better suited to CIFAR-10. We
-% do not use dropout, but we use batch normalisation, and the fully connected
-% section has only one layer. ResNet18 is a residual neural network that
-% introduces skip connections in its architectural design. ResNet20 is a modified
-% version of the ResNet18 architecture to make it suited for CIFAR-10 and CIFAR-100
-% datasets. \Cref{tab:dlo:networks_size} summarises the size of the different
-% models. In our experiments, we use ResNet18 exclusively for TinyImageNet and the
-% other networks for CIFAR-10 and CIFAR-100.\\
-
 \subsection{Train, Validation and Test Sets}
 
 In our experiments, for each dataset, we use 3 sets: train, validation and test
 sets. The training set serves to train the model, while the validation set is
-used to monitor the evolution of performance metrics on unseen data throughout
-the training. Validation metrics provides the necessary triggers for the early
-stopping policy (\emph{i.e.} interrupting the training prematurely if the
-validation metrics do not change over a given number of iterations). The test
-set, on the other hand, is used to evaluate the model's performance on entirely
-new data and reporting the final test accuracy. When utilizing datasets like
-CIFAR-10 and CIFAR-100, only training and testing sets are available. For these
-datasets, we split the given train set in half with the following proportions:
-90\% of the original training set is used for training for the network and the
-remaining 10\% is used as the validation set. On the other hand, the
-TinyImageNet dataset does provide training, validation, and testing sets, but
-the test set lacks annotations. Hence, we use 90\% of the training set for model
-training and the remaining 10\% for validation. Instead of the unannotated test
-set, we repurpose the original validation set to serve as the test set. This is
-a common strategy employed by other implementations
+used to monitor the evolution of the performance metric on unseen data
+throughout the training. The validation metric provides the necessary triggers
+for the early stopping policy (\emph{i.e.} interrupting the training prematurely
+if the validation metrics do not change over a given number of iterations). The
+test set, on the other hand, is used to evaluate the model's performance on
+entirely new data and to report the final test accuracy. When utilizing datasets
+like CIFAR-10 and CIFAR-100, only training and testing sets are available. For
+these datasets, we split the given train set in half with the following
+proportions: 90\% of the original training set is used for training for the
+network and the remaining 10\% is used as the validation set. On the other hand,
+the TinyImageNet dataset does provide training, validation, and testing sets,
+but the test set lacks annotations. Hence, we use 90\% of the training set for
+model training and the remaining 10\% for validation. Instead of the unannotated
+test set, we repurpose the original validation set to serve as the test set.
+This is a common strategy employed by other implementations
 \cite{hanyuanxu2018tinyimagenet,nbdt,alvinwan2020nbdt}.\\
