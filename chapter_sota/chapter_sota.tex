@@ -44,98 +44,14 @@ its architecture to produce a more compact and efficient model. First,
 weights and activations of networks in order to speed up their computation and
 reduce their memory footprint. Lastly, \cref{sec:sota:pruning} considers neural
 network pruning, a set of techniques that remove redundant or insignificant
-connections and weights from networks, resulting in a sparser and more
+connections and weights from networks, resulting in sparser and more
 computationally efficient models.\\
+
+%TODO: faire une mindmap des méthodes
 
 % endregion: intro
 
-% \section{Deep Learning Overview}\label{sec:sota:dl_overview}
-
-
-
-% % Deep learning is a subfield of machine learning that focuses on the study of
-% % \acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
-% % roots in \acp{ANN} which aim to learn a data representation from unstructured
-% % data such as raw images \cite{DBLP:conf/nips/KrizhevskySH12}, text
-% % \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
-% % \cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
-% % \acp{ANN} were initially conceptualised based on the understanding of biological
-% % neural networks present in the brain
-% % \cite{mcculloch1943logical,hebb2005organization}.
-% % \citeauthor{rosenblatt1958perceptron} proposed in
-% % \cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
-% % \emph{perceptron}, which was capable of learning a linear decision boundary. The
-% % perceptron model was later extended to multiple layers of neurons, giving rise
-% % to the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
-% % \acl{MLP} is a type of artificial neural network that extends the concept of a
-% % single-layer perceptron by including one or more hidden layers of neurons, with
-% % each layer being fully connected to the next, allowing the model to learn and
-% % represent more complex, non-linear relationships in the input data. In the
-% % context of \acp{DNN}, the term \emph{deep} denotes the stacking of many layers
-% % within a neural network. A \ac{DNN} consists of layers, each layer is an
-% % operation that takes information from the previous layers, processes it and then
-% % passes it on through an activation function
-% % \cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
-% % introduce non linearity. Finally, this output is sent to the next layer. Among
-% % the most fundamental types of these layers are \emph{Convolutional} and
-% % \emph{Dense} (or fully connected) layers. \\
-
-% % \begin{figure}[htbp]
-% %   \centering
-% %   \subfloat[Convolutional Layer\label{fig:dlo:conv_layer}]{
-% %     \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
-% %   \subfloat[Dense Layer\label{fig:dlo:dense_layer}]{
-% %     \includegraphics[width=0.49\textwidth]{chapter_sota/assets/dense_layer.pdf}}
-% %   \caption{Conceptual representation of a convolutional layer and a dense
-% %     layer. The convolutional layer (\cref{fig:dlo:conv_layer}) takes a
-% %     multi-channel input and produces a multi-channel output. Each coefficient of
-% %     the output is computed by applying a convolution operation at a
-% %     corresponding location in the input. The dense layer
-% %     (\cref{fig:dlo:dense_layer}) takes a vector input and produces a vector
-% %     output. Each connection is represented by a weight in the weight matrix.}
-% %   \label{fig:sota:layers}
-% % \end{figure}
-
-
-% % Dense layers, often referred to as fully connected layers, are characterised by
-% % neurons that connect to every neuron in the preceding layer. This characteristic
-% % is central to \ac{MLP} networks, where these dense layers are stacked together.
-% % Convolutional layers are typically used for image analysis tasks
-% % \cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
-% % convolve with the input data. They are used for detecting edges, textures, and
-% % patterns, and are often used as feature extractors. Typical neural networks
-% % targeted towards image processing are composed of convolutional layers and thus
-% % named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
-% % their output are usually fed into a fully-connected layer for further processing
-% % \cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
-% % Conceptual representations of these layers are shown in \cref{fig:sota:layers},
-% % and a typical \ac{CNN} architecture is shown in
-% % \cref{fig:sota:lenet5,fig:sota:vgg16}.\\
-
-
-% % The process of training a neural network involves adjusting the weights of the
-% % network to minimise a loss function. The loss function measures the error
-% % between the predicted output of the network and the ground truth. Since neural
-% % networks are differentiable, the weights can be adjusted using gradient-based
-% % methods. The most prevalent method is \acf{SGD}, a derivative of the
-% % Robbins–Monro algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient
-% % of the loss function is computed for a random subset of the data (a \emph{batch}
-% % or \emph{mini-batch}), and the weights are shifted in the direction that
-% % decreases the loss function. This direction is computed via the backpropagation
-% % algorithm \cite{rumelhart1986learning} which calculates the gradient of the loss
-% % with respect to each weight using the chain rule. \acl{SGD} is a widely used
-% % method for loss function optimisation in neural networks; however, numerous
-% % other methods also exist. These include momentum-based strategies
-% % \cite{sutskever2013importance}, adaptive learning rate approaches
-% % \cite{zeiler2012adadelta} and moment estimation techniques
-% % \cite{kingma2014adam}.\\
-
-% % endregion: dlo_old
-
-% \section{Neural Networks Size and Achitecture Evolution}\label{sec:sota:nn_evolution}
-
 \section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
-
 
 Among various operations and functions used in neural networks, two fundamental
 mathematical operations, convolution and matrix multiplication are used
@@ -156,7 +72,7 @@ accelerating convolution operations rely on the \ac{FFT}
 \cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17},
 and leverage the Convolution Theorem. The Convolution Theorem states that the
 convolution of two signals in the source domain is the product of the two
-signals in the Fourier domain, as show in \cref{eqn:sota:conv_theorem_fourier}:\\
+signals in the Fourier domain, as shown in \cref{eqn:sota:conv_theorem_fourier}:\\
 
 \begin{equation}
   \label{eqn:sota:conv_theorem_fourier}
@@ -192,10 +108,10 @@ matrix multiplications (see
 
 Considering a matrix multiplication of two square matrices $A$ and $B$ of size
 $2n$ with $n\in\mathbb{N}$, defined in \cref{eqn:sota:matrix_multiplication},
-the output of the standard bloc matrix multiplication, refered to as $C$, is
+the output of the standard bloc matrix multiplication, referred to as $C$, is
 defined in \cref{eqn:sota:matrix_multiplication_result}. Note that $A_{ij}$ and
 $B_{ij}$ are either a scalar if $n=1$, or a matrix of size $\frac{n}{2} \times
-  \frac{n}{2}$.\\
+\frac{n}{2}$.\\
 
 \begin{equation}
   \label{eqn:sota:matrix_multiplication}
@@ -211,8 +127,8 @@ $B_{ij}$ are either a scalar if $n=1$, or a matrix of size $\frac{n}{2} \times
 \end{equation}\\
 
 \noindent The Strassen algorithm reduces the number of multiplications to 7 by
-defining the following 7 products, refered to as $P_{i}$, with $i\in \llbracket
-  1;7 \rrbracket$:\\
+defining the following 7 products, referred to as $P_{i}$, with $i\in \llbracket
+1;7 \rrbracket$:\\
 
 \begin{equation}
   \label{eqn:sota:matrix_multiplication_strassen}
@@ -247,14 +163,14 @@ targeted towards a specific \ac{FPGA} \ac{CPU}
 \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
 
 \subsection{Leveraging Matrix Structures}\label{sec:sota:matrix_structures}
-Using particular matrix structure also speed up the standard operations used in
-a neural network. Fully connected layers can be effectively accelerated by
+Using a particular matrix structure also speeds up the standard operations used
+in a neural network. Fully connected layers can be effectively accelerated by
 forcing the use of specific matrix structures. For instance,
 \citeauthor{DBLP:conf/iccv/ChengYFKCC15} devised a method where dense layers
 standard operation is replaced by a circulant projection
 \cite{DBLP:conf/iccv/ChengYFKCC15}. The circulant matrix can be stored in a
-memory efficient way and can be furthuer speed up with \ac{FFT}. $C$ is an
-example of a circulant matrix (see \cref{eqn:sota:circulant_matrix}).\\
+memory-efficient way and can be further sped up with \ac{FFT}. $C$ is an example
+of a circulant matrix (see \cref{eqn:sota:circulant_matrix}).\\
 
 \begin{equation}
   \label{eqn:sota:circulant_matrix}
@@ -280,11 +196,11 @@ matrices. A Toeplitz matrix, or diagonal-constant matrix, has the unique
 characteristic of each descending diagonal from left to right being constant.
 $T$ is an example of a Toeplitz matrix (see \cref{eqn:sota:circulant_matrix}).
 This property is particularly useful for convolutions, as they can be expressed
-as a multiplication by a Toeplitz matrix \cite{gray2006toeplitz}, as show in
+as a multiplication by a Toeplitz matrix \cite{gray2006toeplitz}, as shown in
 \cref{eqn:sota:toeplitz_matrix_conv}. This algorithm has been used in
 \cite{liao2019compressing}, focusing on \ac{FPGA} architectures. Note that the
-representation of a convolution as a product with a Toeplitz matrix can further
-be accelerated by using the aforementioned optimisations to the matrix
+representation of convolution as a product with a Toeplitz matrix can further be
+accelerated by using the aforementioned optimisations to the matrix
 multiplication algorithm, such as the Strassen or Coppersmith-Winograd
 algorithm.\\
 
@@ -315,11 +231,11 @@ as a Toeplitz matrix $H$. The convolution of $x$ and $h$ can be expressed as:\\
 The algorithms presented in
 \cref{sec:sota:fft,sec:sota:matrix_multiplication,sec:sota:matrix_structures}
 offer significant acceleration in the computation of convolution operations and
-are widely implemented and used in state-off-the-art software
+are widely implemented and used in state-of-the-art software
 \cite{pytorch_vision,DBLP:journals/corr/AbadiABBCCCDDDG16}. In particular, the
-Coppersmith-Winograd algorithm is used in various deep learning frameworks
+Coppersmith-Winograd algorithm is used in various Deep Learning frameworks
 \cite{DBLP:journals/corr/AbadiABBCCCDDDG16,DBLP:conf/nips/PaszkeGMLBCKLGA19} or
-neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest
+neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest the
 algorithm is automatically selected based on the tensor sizes and the hardware.
 However, depending on the operand size, the execution speed can be bound to the
 hardware and more specifically, to the memory throughput and data access time,
@@ -328,12 +244,12 @@ more than the computation time
 
 \section{Teaching Paradigm}\label{sec:sota:teaching_paradigm}
 
-Teaching paradigm is a class method that aims to transfer the knowledge of a
-large, complex and accurate network, referred to as the \emph{teacher}, to a
-smaller and more efficient one called the \emph{student}. The student is trained
-with a combination of the main task loss as well as a supplementary supervision
-signal which is derived from the feature maps of the teacher network at various
-depths.\\
+The teaching paradigm embraces a class method that aims to transfer the
+knowledge of a large, complex and accurate network, referred to as the
+\emph{teacher}, to a smaller and more efficient one called the \emph{student}.
+The student is trained with a combination of the main task loss as well as a
+supplementary supervision signal which is derived from the feature maps of the
+teacher network at various depths.\\
 
 
 \subsection{Knowledge Distillation}
@@ -369,27 +285,27 @@ Inspired by \ac{KD}, \cite{DBLP:journals/corr/RomeroBKCGB14} introduced FitNet,
 a two-stage training algorithm, where an intermediate layer of the teacher is
 chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
   \citeauthor{DBLP:journals/corr/RomeroBKCGB14}
-  \cite{DBLP:journals/corr/RomeroBKCGB14} to denote a feature map used as a target
-  for the student network.} for an intermediate layer of the student. Initially,
-the first layers of the student are trained to mimic the hint feature map. Then,
-the whole student network is trained with standard \ac{KD} against the whole
-teacher. In the first step, a regressor is needed in order to adapt the
-dimensions of the feature map, which may differ from the teacher to the student
-networks, as illustrated in \cref{fig:sota:kd_frameworks}.
-\citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map matching
-utilised by FitNets is overly restrictive. Drawing inspiration from the
-techniques used in \cite{DBLP:journals/corr/GatysEB15a} for style transfer, they
-propose an alternative method. In the context of style transfer, the Gram matrix
-of the feature maps is employed to encapsulate the texture information of an
-image. Adapting this approach, the method presented in
-\cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across multiple layers
-feature maps. This computed Gram matrix, dubbed the Flow of Solution Procedure
-matrix, then serves as a \emph{hint} for the student network, guiding its
-training process. In practice, handling full-dimensional feature maps is
-cumbersome. That is why, in order to avoid this issue,
-\cite{DBLP:conf/iclr/ZagoruykoK17} use an attention map generated by squashing
-the feature maps to a 2D map allowing for a smaller 2D regressor to match
-attention map dimensions.\\
+  \cite{DBLP:journals/corr/RomeroBKCGB14} to denote a feature map used as a
+  target for the student network.} for an intermediate layer of the student.
+  Initially, the first layers of the student are trained to mimic the hint
+  feature map. Then, the whole student network is trained with standard \ac{KD}
+  against the whole teacher. In the first step, a regressor is needed in order
+  to adapt the dimensions of the feature map, which may differ from the teacher
+  to the student networks, as illustrated in \cref{fig:sota:kd_frameworks}.
+  \citeauthor{DBLP:conf/cvpr/YimJBK17} argue that the direct feature map
+  matching utilised by FitNets is overly restrictive. Drawing inspiration from
+  the techniques used in \cite{DBLP:journals/corr/GatysEB15a} for style
+  transfer, they propose an alternative method. In the context of style
+  transfer, the Gram matrix of the feature maps is employed to encapsulate the
+  texture information of an image. Adapting this approach, the method presented
+  in \cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across the
+  feature maps of multiple layers. This computed Gram matrix, dubbed the Flow of
+  Solution Procedure matrix, then serves as a \emph{hint} for the student
+  network, guiding its training process. In practice, handling full-dimensional
+  feature maps is cumbersome. That is why, in order to avoid this issue,
+  \cite{DBLP:conf/iclr/ZagoruykoK17} use an attention map generated by squashing
+  the feature maps to a 2D map allowing for a smaller 2D regressor to match
+  attention map dimensions.\\
 
 \begin{figure}[htbp]
   \centering
@@ -409,10 +325,10 @@ attention map dimensions.\\
 Note that the aforementioned knowledge transfer methods require teacher-student
 pairs and assume that teachers are large trained models.
 \cite{DBLP:conf/cvpr/ZhangXHL18} relax this assumption by proposing \emph{Deep
-  Mutual Learning}, which enables a pool of networks of different architectures to
+Mutual Learning}, which enables a pool of networks of different architectures to
 learn together, provided that they have the same logit dimensions, and none of
 the models in the pool requires a pretraining step. The uncertainty of each
-model is distilled to each other, which creates additional knowledge.\\
+model is distilled into each other, which creates additional knowledge.\\
 
 \subsection{Teacher Assistant}
 In all the aforementioned methods, the efficacy of knowledge distillation, and
@@ -467,11 +383,11 @@ between the two (see \cref{fig:sota:pkt_scheme}).\\
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
-  \caption{Conceptual scheme of the
-    Probabilistic Knowledge Transfer method. Both the student and the teacher
-    feature maps are modelled using probability distributions. The divergence of the
-    latter is minimised in order to transfer knowledge from the teacher to the
-    student. Illustration taken from \cite{DBLP:conf/eccv/PassalisT18}.}
+  \caption{Conceptual scheme of the Probabilistic Knowledge Transfer method.
+    Both the student and the teacher feature maps are modeled using probability
+    distributions. The divergence of the latter is minimised in order to
+    transfer knowledge from the teacher to the student. Illustration taken from
+    \cite{DBLP:conf/eccv/PassalisT18}.}
   \label{fig:sota:pkt_scheme}
 \end{figure}
 
@@ -509,7 +425,7 @@ This section explores techniques aimed at the creation of efficient and
 effective neural networks through the careful selection and assembly of
 optimised building blocks. The organization of these components plays an
 important role in network compression and optimization, highlighting that high
-performance can be also be reached with designs that are less
+performance can also be reached with designs that are less
 resource-demanding.\\
 
 \subsection{Building Blocks for Efficient Architecture Design}\label{sec:sota:efficient_archi}
@@ -592,17 +508,17 @@ the $3x3$ ones.\\
 
 % region: shufflenet
 
-\noindent\textbf{ShuffleNet.} Pushing the concept of depthwise separable convolutions further,
-\cite{ZhangShuffleNet} introduces pointwise group convolutions and channel
-shuffle operations to enhance efficiency while maintaining accuracy. Pointwise
-group convolutions were initially introduced in
+\noindent\textbf{ShuffleNet.} Pushing the concept of depthwise separable
+convolutions further, \cite{ZhangShuffleNet} introduces pointwise group
+convolutions and channel shuffle operations to enhance efficiency while
+maintaining accuracy. Pointwise group convolutions were initially introduced in
 \cite{DBLP:conf/nips/KrizhevskySH12}, though their original purpose was not for
 compression. Instead, group convolutions in \cite{DBLP:conf/nips/KrizhevskySH12}
 were used to enable distributed training across multiple \acp{GPU} with limited
 memory. However, ShuffleNet \cite{ZhangShuffleNet} leverages this concept for
 network efficiency by dividing the input channels into groups and performing
 convolutions on each group independently. This approach reduces the number of
-operations and computational cost compared to traditional convolutions. To
+operations and the computational cost compared to traditional convolutions. To
 counteract the potential loss of expressive power caused by the separation of
 channels into groups, ShuffleNet incorporates \emph{channel shuffle operations}
 as shown in \cref{fig:sota:shuffle_net}. This technique allows for information
@@ -639,22 +555,22 @@ in subsequent ones.\\
   \label{fig:sota:channel_split}
 \end{figure}
 
-\noindent\textbf{ShuffleNetV2.} Building on the success of ShuffleNet, ShuffleNetV2 was introduced in
-\cite{MaShuffleNetV2}, focusing on enhancing network efficiency through the
-combination of strided convolution and channel split. Strided convolution helps
-reducing the spatial dimensions of feature maps, thereby reducing the
-computation cost. The Channel Split technique efficiently processes the input
-feature maps while maintaining the expressive power of the architecture. Channel
-Split works by dividing the input feature maps into two equal parts. One part is
-passed through the main branch of the ShuffleNet unit, while the other part is
-sent through the identity branch, which leaves its input unchanged. In the main
-branch, a sequence of pointwise and $3\times 3$ convolutions are performed.
-After both the main branch and the identity branch complete their respective
-operations, the two parts are concatenated along the channel dimension and the
-channels are shuffled. Finally, the output feature maps are passed to the next
-ShuffleNet unit in the network. This process is represented in
-\cref{fig:sota:channel_split}. This approach balances computational efficiency
-with the expressive capacity of the model.\\
+\noindent\textbf{ShuffleNetV2.} Building on the success of ShuffleNet,
+ShuffleNetV2 was introduced in \cite{MaShuffleNetV2}, focusing on enhancing
+network efficiency through the combination of strided convolution and channel
+split. Strided convolution helps reducing the spatial dimensions of feature
+maps, thereby reducing the computation cost. The Channel Split technique
+efficiently processes the input feature maps while maintaining the expressive
+power of the architecture. Channel Split works by dividing the input feature
+maps into two equal parts. One part is passed through the main branch of the
+ShuffleNet unit, while the other part is sent through the identity branch, which
+leaves its input unchanged. In the main branch, a sequence of pointwise and
+$3\times 3$ convolutions are performed. After both the main branch and the
+identity branch complete their respective operations, the two parts are
+concatenated along the channel dimension and the channels are shuffled. Finally,
+the output feature maps are passed to the next ShuffleNet unit in the network.
+This process is represented in \cref{fig:sota:channel_split}. This approach
+balances computational efficiency with the expressive capacity of the model.\\
 % endregion: shufflenet
 
 % region: mobilenetv2
@@ -707,7 +623,7 @@ ones. The \ac{SE} module (represented in \cref{fig:sota:se_module}) performs
 global average pooling to create a channel descriptor that summarises the
 spatial information for each channel. The excitation operation uses this
 descriptor to learn non-linear interactions between channels through two fully
-connected layers. The output of this mini-network are per-channel modulation
+connected layers. The outputs of this mini-network are per-channel modulation
 weights that recalibrate the original feature maps, scaling or "exciting" them
 by these weights.\\
 
@@ -790,21 +706,21 @@ major strategies and their impact on the field of \ac{NAS}.\\
 
 
 
-\noindent\textbf{Search space.} The search space is a critical aspect of \ac{NAS} as it bounds the possibilities
-of architectures and significantly influences the outcome of the search. The
-search space could be as broad as all possible configurations of a certain
-network type or as specific as various arrangements of a predefined set of
-layers or blocks. For instance, \cite{DBLP:conf/iclr/ZophL17} define their
-search space as a set of repeatable sub-structures composed of basic layers
-(convolution layers, fully connected layers, \ac{BN} layers, etc...) often
-called \emph{cells} that are stacked to form the final architecture, while
-\cite{DBLP:conf/iclr/XieZLL19} design their search space based on the
-connectivity patterns between network blocks. DARTS
+\noindent\textbf{Search space.} The search space is a critical aspect of
+\ac{NAS} as it bounds the possibilities of architectures and significantly
+influences the outcome of the search. The search space could be as broad as all
+possible configurations of a certain network type or as specific as various
+arrangements of a predefined set of layers or blocks. For instance,
+\cite{DBLP:conf/iclr/ZophL17} define their search space as a set of repeatable
+sub-structures composed of basic layers (convolution layers, fully connected
+layers, \ac{BN} layers, etc...) often called \emph{cells} that are stacked to
+form the final architecture, while \cite{DBLP:conf/iclr/XieZLL19} design their
+search space based on the connectivity patterns between network blocks. DARTS
 \cite{DBLP:conf/iclr/LiuSY19} propose a continuous search space where the
 architecture is parameterized as a differentiable function, allowing for
 efficient search using gradient-based methods. Hierarchical search spaces, on
-the other hand, offer a strategic approach to manage the complexity of the
-architecture search in \ac{NAS}
+the other hand, offer a strategic approach which allows to manage the complexity
+of the architecture search in \ac{NAS}
 \cite{DBLP:conf/cvpr/LiuCSAHY019,DBLP:conf/cvpr/TanCPVSHL19}. In such a setup,
 the architecture is divided into several levels of hierarchy, with each one
 searched independently. This structure enables a more systematic and organized
@@ -832,28 +748,28 @@ are shown in \ref{fig:sota:efficientnet_perfs}.\\\
 \end{figure}
 
 
-\noindent\textbf{Search strategy.} The search strategy is another major component of \ac{NAS}, dictating how the
-algorithm explores the search space to find the optimal architecture. A wide
-range of search strategies have been proposed. Evolutionary algorithms
-\cite{DBLP:conf/icml/RealMSSSTLK17} use principles of natural evolution such as
-mutation, crossover, and selection to explore the search space. Despite their
-potential to find high-quality solutions, these methods often require
-substantial computational resources due to the large number of evaluations
-needed. Reinforcement Learning-based methods \cite{DBLP:conf/iclr/ZophL17}
-employ a policy network to generate architectures and a reward signal, typically
-validation accuracy, to guide the search. While reinforcement learning methods
-can effectively navigate large search spaces, their success heavily depends on
-the quality of the reward signal. Gradient-based methods
-\cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20} make the search space
-continuous and use gradient descent for optimization, which enables efficient
-exploration of the search space but requires careful regularization to prevent
-overfitting. \cite{DBLP:conf/nips/BergstraBBK11} uses Bayesian optimization to
-build a probabilistic model of the objective function and uses it to select
-promising architectures, balancing exploitation and exploration. This method can
-be sample-efficient but might struggle with high-dimensional spaces. These
-diverse strategies offer multiple paths to navigate the complex landscape of
-architecture search, each with its unique trade-offs between efficiency,
-effectiveness, and computational demands.\\
+\noindent\textbf{Search strategy.} The search strategy is another major
+component of \ac{NAS}, dictating how the algorithm explores the search space to
+find the optimal architecture. A wide range of search strategies have been
+proposed. Evolutionary algorithms \cite{DBLP:conf/icml/RealMSSSTLK17} use
+principles of natural evolution such as mutation, crossover, and selection to
+explore the search space. Despite their potential to find high-quality
+solutions, these methods often require substantial computational resources due
+to the large number of evaluations needed. Reinforcement Learning-based methods
+\cite{DBLP:conf/iclr/ZophL17} employ a policy network to generate architectures
+and a reward signal, typically validation accuracy, to guide the search. While
+reinforcement learning methods can effectively navigate large search spaces,
+their success heavily depends on the quality of the reward signal.
+Gradient-based methods \cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20}
+make the search space continuous and use gradient descent for optimization,
+which enables efficient exploration of the search space but requires careful
+regularization to prevent overfitting. \cite{DBLP:conf/nips/BergstraBBK11} uses
+Bayesian optimization to build a probabilistic model of the objective function
+and uses it to select promising architectures, balancing exploitation and
+exploration. This method can be sample-efficient but might struggle with
+high-dimensional spaces. These diverse strategies offer multiple paths to
+navigate the complex landscape of architecture search, each with its unique
+trade-offs between efficiency, effectiveness, and computational demands.\\
 
 
 \begin{figure}[htbp]
@@ -913,16 +829,16 @@ hardware.\\
 Quantising a neural network has been proposed as early as the 1990s
 \cite{balzer1991weight,fiesler1990weight}. This later regains traction as
 \citeauthor{37631} leveraged Single Input Multiple Data instructions (SIMD) of
-x86 \ac{CPU} to speedup the fixed-point 8-bit operations \cite{37631}.
+x86 \ac{CPU} to speed up the fixed-point 8-bit operations \cite{37631}.
 \citeauthor{gupta2015deep} used uniform quantisation with fixed-point 16-bit
 representation and stochastic rounding to train neural networks. Quantisation
 has also been applied together with K-means clustering
 \cite{steinhaus1956division}. \cite{DBLP:journals/corr/HanMD15} uses K-means
 clustering to iteratively compute a lookup table or \emph{code book} for the
-weights. This code book is later further compressed using Huffman coding
+weights. This codebook is later further compressed using Huffman coding
 \cite{huffman1952method}. Note that this method is mostly useful for storage,
 but for training or inference, the weights need to be decompressed and their
-original value fetch in the code book before being used.\\
+original value fetched in the code book before being used.\\
 
 \noindent\textbf{Logarithmic quantisation.} Logarithmic quantisation provides compelling alternatives to uniform
 quantisation. On the one hand, logarithmic quantisation enables to quantise
@@ -965,20 +881,20 @@ or activations after the training are called \ac{PTQ} methods. Quantising an
 already existing network is a widely used technique in the most famous deep
 learning framework \cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they
 quantise the weights after the training, \ac{PTQ} methods are fast and easy to
-apply. However, they often introduce an irreversible information loss and  a
-performance drop that need to be compensated for
+apply. However, they often introduce an irreversible information loss and a
+performance drop that needs to be compensated for
 \cite{DBLP:journals/ijon/LiangGWSZ21}. In order to solve this issue, several
 works proposed to take into account the effect of quantisation on the weights
 and feature maps during the training. These methods are called \ac{QAT} methods.
 Such methods include BinaryConnect \cite{courbariaux2015binaryconnect}, which
 use a variant of Bayesian inference called Expectation Back Propagation
 \cite{DBLP:journals/corr/ChengSML15,DBLP:conf/nips/SoudryHM14}. Another
-binarisation method, uses \ac{STE} \cite{DBLP:journals/corr/BengioLC13} to
-bypass the binarisation function in the backward pass
+binarisation method uses \ac{STE} \cite{DBLP:journals/corr/BengioLC13} to bypass
+the binarisation function in the backward pass
 \cite{DBLP:conf/nips/HubaraCSEB16}. \ac{STE} is also employed for quantisation
 in \cite{DBLP:conf/cvpr/JacobKCZTHAK18} which uses it together with \emph{fake
-  quantisation} nodes for 8-bit quantisation (see \cref{fig:sota:fake_quant}). The
-fake quantisation nodes are injected inside the computaion graph and simulates
+quantisation} nodes for 8-bit quantisation (see \cref{fig:sota:fake_quant}). The
+fake quantisation nodes are injected inside the computation graph and simulate
 the effect of quantisation in the forward pass.\\
 
 Quantisation and binarisation are solutions to compress and accelerate neural
@@ -1056,8 +972,8 @@ entire structural components of the network, such as rows, columns, channels,
 filters, layers or even whole subnetworks (note that pruning a channel in layer
 $n+1$ implies pruning a filter in layer $n$, and vice-versa). This type of
 pruning results in regular\footnote{regular in this context means that all
-  weight tensors are dense and that the acceleration of computations does not rely
-  on sparse computing enhancement.} network structures that are easier to exploit
+weight tensors are dense and that the acceleration of computations does not rely
+on sparse computing enhancement.} network structures that are easier to exploit
 on typical hardware and do not necessitate a specific sparse computing library
 or hardware, making it an attractive approach for practical deployment. To some
 extent, structured pruning can be seen as a subcategory of \acl{NAS}
@@ -1200,7 +1116,7 @@ epoch. The dynamic nature of Soft Filter Pruning allows soft-pruned filters to
 be updated in the next epoch, with new masks being formed based on the updated
 weights. Focusing on the inference stage, \citeauthor{DBLP:conf/nips/LinRLZ17}
 introduced Runtime Neural Pruning \cite{DBLP:conf/nips/LinRLZ17} which employs a
-unique framework consisting of a \ac{CNN} backbone and an recurent neural
+unique framework consisting of a \ac{CNN} backbone and a recurrent neural
 network as a decision network. This approach enables the model to adapt to the
 properties of different input images by dynamically adjusting its complexity.
 For easier tasks or simpler images, the network can become sparser, saving
@@ -1224,12 +1140,12 @@ As previously discussed, structured pruning removes indivisible groups of
 weights and therefore yields regular network architectures that can be
 implemented in standard deep learning frameworks in a straightforward way.
 Despite its practicality, structured pruning enforces a strong topological prior
-by pruning entire groups of weights from the original network, which consequently
-leads to a lower sparsity rate compared to its counterpart, unstructured
-pruning. Unstructured pruning, provides a more flexible approach by removing
-individual weights from the original network structure. This process not only
-offers greater adaptability compared to structured pruning, but also results in
-higher pruning rates.\\
+by pruning entire groups of weights from the original network, which
+consequently leads to a lower sparsity rate compared to its counterpart,
+unstructured pruning. Unstructured pruning provides a more flexible approach by
+removing individual weights from the original network structure. This process
+not only offers greater adaptability compared to structured pruning, but also
+results in higher pruning rates.\\
 
 \noindent\textbf{Unstructured pruning.} In the early stages, unstructured
 pruning methodologies identified weights that could be eliminated based on their
@@ -1239,10 +1155,10 @@ A simpler and more tractable strategy for larger networks was later introduced
 by \citeauthor{DBLP:conf/nips/HanPTD15} in \cite{DBLP:conf/nips/HanPTD15},
 suggesting a straightforward heuristic: the pruning of weights with the smallest
 magnitude (\emph{i.e.} absolute value), also referred to as \emph{magnitude
-  pruning}. This technique presented in \cite{DBLP:conf/nips/HanPTD15} devises an
+pruning}. This technique presented in \cite{DBLP:conf/nips/HanPTD15} devises an
 iterative method wherein a portion of the smallest magnitude weights are
-removed, followed by the retraining of the network to compensate for reduction
-in accuracy. This cycle is reiterated until the preferred level of sparsity is
+removed, followed by the retraining of the network to compensate for the drop of
+the accuracy. This cycle is reiterated until the preferred level of sparsity is
 attained. Furthermore, magnitude pruning has been used together with
 quantisation and compression techniques to minimise the storage footprint of a
 network \cite{DBLP:journals/corr/HanMD15}. Magnitude pruning has also been used
@@ -1255,8 +1171,8 @@ noticeable drop in accuracy is observed. Dynamic Network Surgery
 \cite{DBLP:conf/nips/GuoYC16} puts forward a derivative of magnitude pruning. A
 mask, whose value is updated during training, is computed for each weight. This
 mask is used to stochastically prune a weight or splice\footnote{to splice is
-  the verb used by the authors (\citeauthor{DBLP:conf/nips/GuoYC16}) to denote the
-  reactivation of a weight that was previously pruned} it. The saliency of the
+the verb used by the authors (\citeauthor{DBLP:conf/nips/GuoYC16}) to denote the
+reactivation of a weight that was previously pruned} it. The saliency of the
 weights is ascertained based on the magnitude of the associated mask.\\
 
 \noindent\textbf{Effective subnetworks.} More recently, the unstructured pruning
@@ -1324,13 +1240,14 @@ substantial computational cost. This process of fine-tuning can be both
 time-consuming and resource-intensive.\\
 
 \Cref{chap:chapter1} delves into the fine-tuning issue and presents a new
-pruning method that circumvent the need for the expensive fine-tuning step.
+pruning method that circumvents the need for the expensive fine-tuning step.
 Furthermore, \cref{chap:chapter2} tackles the challenge of identifying relevant
 weights without even having to train them. It proposes a method of topology
-selection given a set untrained weights that achieves compelling performances,
-thereby also sidesteping the fine-tuning. This innovative approach opens up new
-possibilities for further reducing the computational costs associated with
-pruning, and provides a new direction for future research in this area.\\
+selection given a set of untrained weights that achieves compelling
+performances, thereby also sidestepping the fine-tuning. This innovative
+approach opens up new possibilities for further reducing the computational costs
+associated with pruning and provides a new direction for future research in this
+area.\\
 
 % In summary, although pruning presents certain challenges, this thesis introduces
 % new methods and perspectives that contribute to mitigating these issues, thus
@@ -1362,55 +1279,13 @@ architectures. Lastly, we addressed the strategies for compressing and
 optimising existing neural networks, considering both quantisation and
 binarisation techniques that lower the numerical precision of weights and
 activations, as well as pruning techniques that remove redundant or
-insignificant weights and connections, resulting in a sparser, more
-computationally efficient model. In conclusion, these techniques provide a
+insignificant weights and connections, resulting in sparser and more
+computationally efficient models. In conclusion, these techniques provide a
 multi-faceted approach to neural network compression and acceleration, with each
 offering unique advantages and trade-offs.\\
 
 The next chapters will present approaches to neural network compression based on
-pruning. The \cref{chap:chapter1} details our first contributions that consists
+pruning. The \cref{chap:chapter1} details our first contributions that consist
 in a method to simultaneously train and prune neural networks while matching a
-budget. This method allows to remove the need for the finetuning step present in
+budget. This method allows to bypass the need for the finetuning step present in
 most methods based on magnitude pruning.
-
-
-% \begin{tikzpicture}[
-%     mindmap,
-%     every node/.style={concept, execute at begin node=\hskip0pt, fill=white, drop shadow},
-%     root concept/.append style={
-%         concept color=black, fill=white, line width=0.5ex, text=black, font=\large\scshape
-%       },
-%     text=black,
-%     grow cyclic,
-%     level 1 concept/.append style={level distance=4.5cm,sibling angle=90,font=\normalsize},
-%     level 2 concept/.append style={level distance=3cm,sibling angle=45,font=\small},
-%     level 3 concept/.append style={level distance=2.5cm,sibling angle=30,font=\footnotesize} % Added level 3 with decreased level distance and font size
-%   ]
-%   \node [root concept] {Deep Neural Network Compression and Acceleration}
-%   child [concept color=blue!30] {
-%       node {Accelerating Computations}
-%       child { node {Algorithm}
-%           child { node {Method 1}} % New level 3 child
-%           child { node {Method 2}} % New level 3 child
-%         }
-%       child { node {Data Structures \cite{4531741}}}
-%     }
-%   child [concept color=red!30] {
-%       node {Teaching paradigm}
-%       child { node {Linux}}
-%       child { node {Windows}}
-%     }
-%   child [concept color=orange!30] {
-%       node {Architecture Design}
-%       child { node {Requirements Analysis}}
-%       child { node {System Design}}
-%     }
-%   child [concept color=green!30!black] {
-%       node {Compressing and Optimising an Existing Architecture}
-%       child { node {Quantisation}}
-%       child { node {NoSQL}}
-%     };
-
-% \end{tikzpicture}
-
-% ==============================================================================
