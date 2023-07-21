@@ -23,10 +23,7 @@ This chapter focuses on state-of-the-art neural network compression methods,
 predominantly based on various operations applied to the weights of an already
 existing large neural network. This chapter is organised as follows:
 % TODO: changer les sections quand on aura déplacé les parties dans l'intro
-\cref{sec:sota:dl_overview} provides a brief overview of deep learning and
-neural network evolution. \Cref{sec:sota:nn_evolution} underscores the increase
-in size of the most popular architectures. Following this line,
-\cref{sec:sota:fast_convolutions} examines fast convolution techniques, which
+\Cref{sec:sota:fast_convolutions} examines fast convolution techniques, which
 aim to accelerate the computation of convolutions in neural networks, thereby
 reducing both the runtime and computational resources required. Thereafter,
 \cref{sec:sota:teaching_paradigm} delves into \ac{KD}, a process by which the
@@ -54,162 +51,90 @@ computationally efficient models.\\
 
 % endregion: intro
 
-\section{Deep Learning Overview}\label{sec:sota:dl_overview}
-
-Deep learning is a subfield of machine learning that focuses on the study of
-\acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
-roots in \acp{ANN} which aim to learn a data representation from unstructured
-data such as raw images \cite{DBLP:conf/nips/KrizhevskySH12}, text
-\cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
-\cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
-\acp{ANN} were initially conceptualised based on the understanding of biological
-neural networks present in the brain
-\cite{mcculloch1943logical,hebb2005organization}.
-\citeauthor{rosenblatt1958perceptron} proposed in
-\cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
-\emph{perceptron}, which was capable of learning a linear decision boundary. The
-perceptron model was later extended to multiple layers of neurons, giving rise
-to the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
-\acl{MLP} is a type of artificial neural network that extends the concept of a
-single-layer perceptron by including one or more hidden layers of neurons, with
-each layer being fully connected to the next, allowing the model to learn and
-represent more complex, non-linear relationships in the input data. In the
-context of \acp{DNN}, the term \emph{deep} denotes the stacking of many layers
-within a neural network. A \ac{DNN} consists of layers, each layer is an
-operation that takes information from the previous layers, processes it and then
-passes it on through an activation function
-\cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
-introduce non linearity. Finally, this output is sent to the next layer. Among
-the most fundamental types of these layers are \emph{Convolutional} and
-\emph{Dense} (or fully connected) layers. \\
-
-\begin{figure}[htbp]
-  \centering
-  \subfloat[Convolutional Layer\label{fig:sota:conv_layer}]{
-    \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
-  \subfloat[Dense Layer\label{fig:sota:dense_layer}]{
-    \includegraphics[width=0.49\textwidth]{chapter_sota/assets/dense_layer.pdf}}
-  \caption{Conceptual representation of a convolutional layer and a dense
-    layer. The convolutional layer (\cref{fig:sota:conv_layer}) takes a
-    multi-channel input and produces a multi-channel output. Each coefficient of
-    the output is computed by applying a convolution operation at a
-    corresponding location in the input. The dense layer
-    (\cref{fig:sota:dense_layer}) takes a vector input and produces a vector
-    output. Each connection is represented by a weight in the weight matrix.}
-  \label{fig:sota:layers}
-\end{figure}
+% \section{Deep Learning Overview}\label{sec:sota:dl_overview}
 
 
-Dense layers, often referred to as fully connected layers, are characterised by
-neurons that connect to every neuron in the preceding layer. This characteristic
-is central to \ac{MLP} networks, where these dense layers are stacked together.
-Convolutional layers are typically used for image analysis tasks
-\cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
-convolve with the input data. They are used for detecting edges, textures, and
-patterns, and are often used as feature extractors. Typical neural networks
-targeted towards image processing are composed of convolutional layers and thus
-named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
-their output are usually fed into a fully-connected layer for further processing
-\cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
-Conceptual representations of these layers are shown in \cref{fig:sota:layers},
-and a typical \ac{CNN} architecture is shown in
-\cref{fig:sota:lenet5,fig:sota:vgg16}.\\
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.70\textwidth]{chapter_sota/assets/lenet.png}
-  \caption{Architecture of LeNet-5, a \acl{CNN} used for handwritten digit
-    recognition. Image taken from \cite{DBLP:journals/pieee/LeCunBBH98}}
-  \label{fig:sota:lenet5}
-\end{figure}
+% % Deep learning is a subfield of machine learning that focuses on the study of
+% % \acp{DNN}. \acp{DNN} are a family of machine learning algorithms that have their
+% % roots in \acp{ANN} which aim to learn a data representation from unstructured
+% % data such as raw images \cite{DBLP:conf/nips/KrizhevskySH12}, text
+% % \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
+% % \cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
+% % \acp{ANN} were initially conceptualised based on the understanding of biological
+% % neural networks present in the brain
+% % \cite{mcculloch1943logical,hebb2005organization}.
+% % \citeauthor{rosenblatt1958perceptron} proposed in
+% % \cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
+% % \emph{perceptron}, which was capable of learning a linear decision boundary. The
+% % perceptron model was later extended to multiple layers of neurons, giving rise
+% % to the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
+% % \acl{MLP} is a type of artificial neural network that extends the concept of a
+% % single-layer perceptron by including one or more hidden layers of neurons, with
+% % each layer being fully connected to the next, allowing the model to learn and
+% % represent more complex, non-linear relationships in the input data. In the
+% % context of \acp{DNN}, the term \emph{deep} denotes the stacking of many layers
+% % within a neural network. A \ac{DNN} consists of layers, each layer is an
+% % operation that takes information from the previous layers, processes it and then
+% % passes it on through an activation function
+% % \cite{glorot2011deep,DBLP:journals/pieee/LeCunBBH98,klambauer2017self} that
+% % introduce non linearity. Finally, this output is sent to the next layer. Among
+% % the most fundamental types of these layers are \emph{Convolutional} and
+% % \emph{Dense} (or fully connected) layers. \\
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{chapter_sota/assets/vgg16.png}
-  \caption{Architecture of the VGG16 network introduced in
-    \cite{DBLP:journals/corr/SimonyanZ14a}. Image taken from
-    \cite{ferguson2017automatic}}
-  \label{fig:sota:vgg16}
-\end{figure}
-
-
-The process of training a neural network involves adjusting the weights of the
-network to minimise a loss function. The loss function measures the error
-between the predicted output of the network and the ground truth. Since neural
-networks are differentiable, the weights can be adjusted using gradient-based
-methods. The most prevalent method is \acf{SGD}, a derivative of the
-Robbins–Monro algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient
-of the loss function is computed for a random subset of the data (a \emph{batch}
-or \emph{mini-batch}), and the weights are shifted in the direction that
-decreases the loss function. This direction is computed via the backpropagation
-algorithm \cite{rumelhart1986learning} which calculates the gradient of the loss
-with respect to each weight using the chain rule. \acl{SGD} is a widely used
-method for loss function optimisation in neural networks; however, numerous
-other methods also exist. These include momentum-based strategies
-\cite{sutskever2013importance}, adaptive learning rate approaches
-\cite{zeiler2012adadelta} and moment estimation techniques
-\cite{kingma2014adam}.\\
-
-\section{Neural Networks Size and Achitecture Evolution}\label{sec:sota:nn_evolution}
-
-The evolution of neural networks is characterized by a consistent increase in
-their size and performance, alongside the introduction of new architectural
-modifications to address limitations of their predecessors (see
-\cref{fig:sota:net_sizes}). In 1998, LeNet-5 was developed for digit recognition
-\cite{DBLP:journals/pieee/LeCunBBH98}, constituting a relatively simple network
-with seven layers. Its size is significantly smaller compared to the
-contemporary models (see \cref{fig:sota:net_sizes}). With the introduction of
-AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
-considerably grew, comprising more layers and neurons to handle more complex
-tasks, like large-scale image recognition. AlexNet tackled the overfitting issue
-in LeNet-5 with the use of data augmentation and dropout techniques.\\
+% % \begin{figure}[htbp]
+% %   \centering
+% %   \subfloat[Convolutional Layer\label{fig:dlo:conv_layer}]{
+% %     \includegraphics[width=0.49\textwidth]{chapter_sota/assets/conv_layer.pdf}}
+% %   \subfloat[Dense Layer\label{fig:dlo:dense_layer}]{
+% %     \includegraphics[width=0.49\textwidth]{chapter_sota/assets/dense_layer.pdf}}
+% %   \caption{Conceptual representation of a convolutional layer and a dense
+% %     layer. The convolutional layer (\cref{fig:dlo:conv_layer}) takes a
+% %     multi-channel input and produces a multi-channel output. Each coefficient of
+% %     the output is computed by applying a convolution operation at a
+% %     corresponding location in the input. The dense layer
+% %     (\cref{fig:dlo:dense_layer}) takes a vector input and produces a vector
+% %     output. Each connection is represented by a weight in the weight matrix.}
+% %   \label{fig:sota:layers}
+% % \end{figure}
 
 
-The next advancement was the VGG networks family
-\cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
-which emphasized the importance of depth in neural networks. With up to 19
-layers, VGG expanded on AlexNet's deep architecture. However, the increased
-depth led to vanishing gradient problems. In the same year, Google's Inception
-(or GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced,
-addressing this issue with its novel inception modules, which allowed the
-network to learn at varying scales and increased computational efficiency,
-without overly increasing the network size.\\
+% % Dense layers, often referred to as fully connected layers, are characterised by
+% % neurons that connect to every neuron in the preceding layer. This characteristic
+% % is central to \ac{MLP} networks, where these dense layers are stacked together.
+% % Convolutional layers are typically used for image analysis tasks
+% % \cite{DBLP:journals/pieee/LeCunBBH98}. They are composed of several kernels that
+% % convolve with the input data. They are used for detecting edges, textures, and
+% % patterns, and are often used as feature extractors. Typical neural networks
+% % targeted towards image processing are composed of convolutional layers and thus
+% % named \aclp{CNN}. In a such architecture, convolutional layers are stacked and
+% % their output are usually fed into a fully-connected layer for further processing
+% % \cite{DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,huang2017densely}.
+% % Conceptual representations of these layers are shown in \cref{fig:sota:layers},
+% % and a typical \ac{CNN} architecture is shown in
+% % \cref{fig:sota:lenet5,fig:sota:vgg16}.\\
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.5\textwidth]{chapter_sota/assets/skip_connection.pdf}
-  \caption{A residual block and its skip connection used in
-    ResNets\cite{DBLP:conf/cvpr/HeZRS16}}
-  \label{fig:sota:skip_connection}
-\end{figure}
 
-Later, the ResNet models family was proposed in \cite{DBLP:conf/cvpr/HeZRS16},
-which effectively tackled the vanishing gradient problem by introducing skip (or
-shortcut) connections, allowing gradients to backpropagate directly through
-several layers. These shortcut connections also allowed the network to grow in
-depth up to 152 layers without a significant increase in computational cost.
-However, a challenge remained with the constant need for careful design to
-manage feature-map sizes.\\
+% % The process of training a neural network involves adjusting the weights of the
+% % network to minimise a loss function. The loss function measures the error
+% % between the predicted output of the network and the ground truth. Since neural
+% % networks are differentiable, the weights can be adjusted using gradient-based
+% % methods. The most prevalent method is \acf{SGD}, a derivative of the
+% % Robbins–Monro algorithm \cite{robbins1951stochastic}. In \ac{SGD}, the gradient
+% % of the loss function is computed for a random subset of the data (a \emph{batch}
+% % or \emph{mini-batch}), and the weights are shifted in the direction that
+% % decreases the loss function. This direction is computed via the backpropagation
+% % algorithm \cite{rumelhart1986learning} which calculates the gradient of the loss
+% % with respect to each weight using the chain rule. \acl{SGD} is a widely used
+% % method for loss function optimisation in neural networks; however, numerous
+% % other methods also exist. These include momentum-based strategies
+% % \cite{sutskever2013importance}, adaptive learning rate approaches
+% % \cite{zeiler2012adadelta} and moment estimation techniques
+% % \cite{kingma2014adam}.\\
 
-In response, DenseNet \cite{huang2017densely} was proposed. It connects each
-layer to every other layer in a feed-forward fashion. By reinforcing the
-propagation of features and gradients through the network, DenseNet alleviated
-the vanishing-gradient problem and further improved the network ability to pass
-on information from earlier layers to later ones. Thus, through these
-chronological advancements, neural networks not only grew in size but also
-improved in performance, thereby becoming more efficient and capable of handling
-more complex tasks.
+% % endregion: dlo_old
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\textwidth]{chapter_sota/assets/network_sizes_normal.pdf}
-  \caption{Networks size comparison. The \emph{x-axis} represents the number
-    of \acp{FLOP} required to process a single image. The \emph{y-axis}
-    represents the Top-1 accuracy on the ImageNet \cite{deng2009imagenet}
-    dataset, and the size of the circles represents the number of parameters in
-    the network. Numbers are taken from \cite{pytorch_vision}}
-  \label{fig:sota:net_sizes}
-\end{figure}
+% \section{Neural Networks Size and Achitecture Evolution}\label{sec:sota:nn_evolution}
 
 \section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
 
@@ -819,7 +744,7 @@ compared to standard architecture sizes on \cref{fig:sota:net_sizes_std_eff}.\\
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.70\textwidth]{chapter_sota/assets/network_sizes_normal_eff.pdf}
-  \caption{\Cref{fig:sota:net_sizes} updated with the size and performance of the efficient
+  \caption{\Cref{fig:dlo:net_sizes} updated with the size and performance of the efficient
     architectures detailed in \cref{sec:sota:efficient_archi}}
   \label{fig:sota:net_sizes_std_eff}
 \end{figure}
@@ -1112,7 +1037,7 @@ impact on the loss. This method, and in particular the computation of the
 hessian matrix were refined in Optimal Brain Surgeon
 \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
 As neural networks have become larger and more computationally intensive (see
-\cref{sec:sota:nn_evolution,fig:sota:net_sizes}), pruning has been receiving
+\cref{sec:dlo:architectures,fig:dlo:net_sizes}), pruning has been receiving
 increased attention as a method to compress the latter. Pruning methods can be
 classified into two categories: \emph{structured} and \emph{unstructured}.\\
 
@@ -1336,28 +1261,28 @@ mask is used to stochastically prune a weight or splice\footnote{to splice is
   reactivation of a weight that was previously pruned} it. The saliency of the
 weights is ascertained based on the magnitude of the associated mask.\\
 
-\noindent\textbf{} More recently, the unstructured pruning research focuses on the discovery of
-small sub-networks inside the original network. In other words, to identify a
-subset of weight that can perform, under certain conditions or assumptions, as
-well as the original network. Most notably, the Lottery Ticket Hypothesis
-\cite{DBLP:conf/iclr/FrankleC19} states that within a large, randomly
-initialized neural network, there exist sub-networks or \emph{Lottery Tickets}
-that are capable of training effectively when isolated from the rest of the
-weights. These smaller networks, found by pruning the smallest magnitude weights
-from the trained original network, are observed to train faster and achieve
-comparable or even superior performance with respect to the original network.
-The \emph{lottery ticket} is found by training the original network up to
-convergence, then pruned with magnitude pruning and finally, the remaining
-weights are reinitialized to their original values, it is to say the value they
-had before the training even started. The resulting sub-network is the
-\emph{lottery ticket}. This research sparked significant interest and various
-works: \cite{DBLP:conf/nips/ZhouLLY19} proposed an analysis of the results
-presented in \cite{DBLP:conf/iclr/FrankleC19}, These results
-\cite{DBLP:conf/iclr/FrankleC19} have been extended to larger networks in
-\cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training the original
-network to convergence to find the Lottery Tickets has been challenged in
-\cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket} (or
-in other words the subnetwork) has been theoretically proven in
+\noindent\textbf{Effective subnetworks.} More recently, the unstructured pruning
+research focuses on the discovery of small sub-networks inside the original
+network. In other words, to identify a subset of weight that can perform, under
+certain conditions or assumptions, as well as the original network. Most
+notably, the Lottery Ticket Hypothesis \cite{DBLP:conf/iclr/FrankleC19} states
+that within a large, randomly initialized neural network, there exist
+sub-networks or \emph{Lottery Tickets} that are capable of training effectively
+when isolated from the rest of the weights. These smaller networks, found by
+pruning the smallest magnitude weights from the trained original network, are
+observed to train faster and achieve comparable or even superior performance
+with respect to the original network. The \emph{lottery ticket} is found by
+training the original network up to convergence, then pruned with magnitude
+pruning and finally, the remaining weights are reinitialized to their original
+values, it is to say the value they had before the training even started. The
+resulting sub-network is the \emph{lottery ticket}. This research sparked
+significant interest and various works: \cite{DBLP:conf/nips/ZhouLLY19} proposed
+an analysis of the results presented in \cite{DBLP:conf/iclr/FrankleC19}, These
+results \cite{DBLP:conf/iclr/FrankleC19} have been extended to larger networks
+in \cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training the
+original network to convergence to find the Lottery Tickets has been challenged
+in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket}
+(or in other words the subnetwork) has been theoretically proven in
 \cite{DBLP:conf/icml/MalachYSS20} and the requirements of the theoretical size
 of the original network has been later refined in
 \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.\\
