@@ -3,7 +3,6 @@
 \localtableofcontents
 
 \section{Introduction}\label{sec:sota:intro}
-% TODO: relier avec ce que l'on a dit avant (context netatmo)
 
 % region: intro
 The fast development of neural networks has led, on the one hand, to the
@@ -22,7 +21,6 @@ applications or resource-constrained environments.\\
 This chapter focuses on state-of-the-art neural network compression methods,
 predominantly based on various operations applied to the weights of an already
 existing large neural network. This chapter is organised as follows:
-% TODO: changer les sections quand on aura déplacé les parties dans l'intro
 \Cref{sec:sota:fast_convolutions} examines fast convolution techniques, which
 aim to accelerate the computation of convolutions in neural networks, thereby
 reducing both the runtime and computational resources required. Thereafter,
@@ -867,7 +865,7 @@ effectiveness, and computational demands.\\
 \end{figure}
 
 \section{Compressing and Optimising an Existing Architecture}\label{sec:sota:refining_existing}
-%TODO: retravailler le titre de la section
+
 While the prior sections have primarily focused on constructing new, efficient
 network architectures and mechanisms for automatic architecture discovery, this
 part of the chapter transitions towards compressing and optimising existing neural
@@ -937,7 +935,7 @@ logarithmic base. This is particularly beneficial for \ac{FPGA} implementations
 power of two and \cite{DBLP:conf/iclr/ZhouYGXC17} improved this technique by
 applying it iteratively.\\
 
-% TODO: ajouter des méthodes de quantisation non uniforme qui ne sont pas basé
+% FIXME: ajouter des méthodes de quantisation non uniforme qui ne sont pas basé
 % sur les puissances de 2.
 
 \begin{figure}[htbp]
@@ -1287,6 +1285,57 @@ in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket}
 of the original network has been later refined in
 \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.\\
 
+\section{Positioning}
+
+Within the various deep neural network compression methods presented in this
+chapter, we choose to focus specifically on pruning in the context of supervised
+image classification. Among various types of pruning, our interest goes towards
+structured pruning due to the flexibility it offers, in particular, its
+potential for achieving high pruning rates compared to unstructured pruning.\\
+
+\noindent Our decision to work on pruning is rooted in the following
+considerations:
+\begin{itemize}
+  \item First, pruning allows the creation of lightweight networks while still
+  ensuring a high standard of performance.
+
+  \item Then, pruning yields compact and lightweight neural networks. These
+  networks are easier to transmit and store in embedded devices. This advantage
+  is significant since companies are typically charged for bandwidth, therefore
+  deploying a large neural network to hundreds of thousands of devices can come
+  at a significant cost. Moreover, the storage capabilities of the said embedded
+  devices can be limited and compact networks ease the pressure on storage
+  resources.
+  
+  \item  Finally, pruning does not necessitate the creation and development of
+  an architecture from scratch. It can be applied to an already existing
+  architecture to compress it, which makes it possible to develop small,
+  lightweight networks without the need for extensive research into the creation
+  of the base architecture. This approach allows freeing exploration and
+  research and development efforts that can be allocated to other topics.
+
+\end{itemize}
+
+Despite its numerous advantages, pruning is not without challenges. One such
+challenge is the identification of the weights to be preserved. This is a topic
+that is the subject of many works detailed in \cref{chap:sota}. Additionally,
+the preserved weights typically require fine-tuning, which can impose a
+substantial computational cost. This process of fine-tuning can be both
+time-consuming and resource-intensive.\\
+
+\Cref{chap:chapter1} delves into the fine-tuning issue and presents a new
+pruning method that circumvent the need for the expensive fine-tuning step.
+Furthermore, \cref{chap:chapter2} tackles the challenge of identifying relevant
+weights without even having to train them. It proposes a method of topology
+selection given a set untrained weights that achieves compelling performances,
+thereby also sidesteping the fine-tuning. This innovative approach opens up new
+possibilities for further reducing the computational costs associated with
+pruning, and provides a new direction for future research in this area.\\
+
+% In summary, although pruning presents certain challenges, this thesis introduces
+% new methods and perspectives that contribute to mitigating these issues, thus
+% enhancing the overall efficacy and practicality of neural network compression.\\
+
 \section{Conclusion}
 
 
@@ -1297,28 +1346,29 @@ state-of-the-art methodologies for reducing the computational demands and memory
 footprints of deep neural networks, thereby facilitating their usage in a
 variety of application domains.\\
 
-First, we explored the historical progression and the major architectures of
-deep neural networks, illustrating the connection between their complexity and
-performance. We then investigated techniques for accelerating computations
-within neural networks, emphasising the role of fast convolution techniques in
-reducing both runtime and computational resources. Our focus then shifted to
-\acl{KD}, a paradigm that allows the transfer of knowledge from a large, complex
-network to a smaller, more efficient one. The core idea is to teach a
-lightweight student network to mimic the behaviour of a teacher network, thus
-achieving comparable performance with a reduced footprint. Next, we delved into
-efficient architecture design methods, including bespoke architectures designed
-to minimise size while maintaining performance, and \acl{NAS} strategies for
-automating the discovery of optimal architectures. Lastly, we addressed the
-strategies for compressing and optimising existing neural networks, considering
-both quantisation and binarisation techniques that lower the numerical precision
-of weights and activations, as well as pruning techniques that remove redundant
-or insignificant weights and connections, resulting in a sparser, more
+First, we explored \cref{chap:dlo} the historical progression and the major
+architectures of deep neural networks, illustrating the connection between their
+complexity and performance. Then, in this chapter, we first investigated the
+techniques for accelerating computations within neural networks, emphasising the
+role of fast convolution techniques in reducing both runtime and computational
+resources. Our focus then shifted to \acl{KD}, a paradigm that allows the
+transfer of knowledge from a large, complex network to a smaller, more efficient
+one. The core idea is to teach a lightweight student network to mimic the
+behaviour of a teacher network, thus achieving comparable performance with a
+reduced footprint. Next, we delved into efficient architecture design methods,
+including bespoke architectures designed to minimise size while maintaining
+performance, and \acl{NAS} strategies for automating the discovery of optimal
+architectures. Lastly, we addressed the strategies for compressing and
+optimising existing neural networks, considering both quantisation and
+binarisation techniques that lower the numerical precision of weights and
+activations, as well as pruning techniques that remove redundant or
+insignificant weights and connections, resulting in a sparser, more
 computationally efficient model. In conclusion, these techniques provide a
 multi-faceted approach to neural network compression and acceleration, with each
 offering unique advantages and trade-offs.\\
 
 The next chapters will present approaches to neural network compression based on
-pruning. The \cref{chap:chapter1} details our first contribution that consists
+pruning. The \cref{chap:chapter1} details our first contributions that consists
 in a method to simultaneously train and prune neural networks while matching a
 budget. This method allows to remove the need for the finetuning step present in
 most methods based on magnitude pruning.
