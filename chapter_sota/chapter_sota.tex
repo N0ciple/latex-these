@@ -476,7 +476,7 @@ $$\displaystyle\frac{C_\text{out}\times k \times k}{C_\text{out} + k \times k}.$
 % endregion: depthwise separable convolutions
 
 % region: fire module
-\textbf{Fire Module.} An alternative approach for designing efficient
+\noindent \textbf{Fire Module.} An alternative approach for designing efficient
 architectures involves the integration of \emph{fire modules}, as proposed in
 \cite{DBLP:journals/corr/IandolaMAHDK16}. These modules aim to minimise
 computational requirements by employing two distinct strategies: \emph{(i)}
@@ -658,8 +658,9 @@ compared to standard architecture sizes on \cref{fig:sota:net_sizes_std_eff}.\\
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.70\textwidth]{chapter_sota/assets/network_sizes_normal_eff.pdf}
-  \caption{\Cref{fig:dlo:net_sizes} updated with the size and performance of the efficient
-    architectures detailed in \cref{sec:sota:efficient_archi}}
+  \caption{\Cref{fig:dlo:net_sizes} updated with the size and performance of the
+    efficient architectures detailed in \cref{sec:sota:efficient_archi}. Best
+    viewed in colours.}
   \label{fig:sota:net_sizes_std_eff}
 \end{figure}
 
@@ -776,7 +777,8 @@ trade-offs between efficiency, effectiveness, and computational demands.\\
   \centering
   \includegraphics[width=0.70\textwidth]{chapter_sota/assets/network_sizes_normal_eff_nas.pdf}
   \caption{\Cref{fig:sota:net_sizes_std_eff} updated with the size and
-    performance of architectures detailed in \cref{sec:sota:nas}}
+    performance of architectures detailed in \cref{sec:sota:nas}. Best viewed in
+    colours.}
   \label{fig:sota:net_sizes_std_eff_nas}
 \end{figure}
 
@@ -1051,9 +1053,10 @@ filter. They aim to understand and quantify the total impact on network
 performance when a specific filter is removed, accounting for cascading effects
 across all layers.\\
 
-Other methods learn structured sparse networks by introducing various sparsity
-regularizers. Some methods focus on \acl{BN} parameters, employing methods like
-Gated Batch Normalisation \cite{DBLP:conf/nips/YouYYM019} and Network Slimming
+\noindent \textbf{Regularisation-based structured pruning.} Other methods learn
+structured sparse networks by introducing various sparsity regularizers. Some
+methods focus on \acl{BN} parameters, employing methods like Gated Batch
+Normalisation \cite{DBLP:conf/nips/YouYYM019} and Network Slimming
 \cite{DBLP:conf/iccv/LiuLSHYZ17}. These methods aim to push certain BN
 parameters towards zero, effectively disabling corresponding channels and
 inducing sparsity. Network Slimming applies a $\ell_1$ regularisation on the
@@ -1061,8 +1064,8 @@ scaling factors $\gamma$ of the \ac{BN} \cite{DBLP:conf/iccv/LiuLSHYZ17},
 whereas \cite{DBLP:conf/nips/YouYYM019} adds the $\ell_1$ regularisation on
 scalar factors associated with feature map channels.
 \citeauthor{DBLP:conf/icml/KangH20} use \ac{BN} parameters to craft a mask that
-prunes channels whose output is likely to be null once evaluated by the \ac{ReLU}
-\cite{DBLP:conf/icml/KangH20}. \\
+prunes channels whose output is likely to be null once evaluated by the
+\ac{ReLU} \cite{DBLP:conf/icml/KangH20}. \\
 
 \begin{figure}[htbp]
   \centering
@@ -1075,8 +1078,9 @@ prunes channels whose output is likely to be null once evaluated by the \ac{ReLU
 \end{figure}
 
 
-The Taylor Expansion is a tool that can be used to approximate the change in the
-loss function due to pruning. Early unstructured pruning methods, Optimal Brain
+\noindent \textbf{Taylor Expansion-based structured pruning.} The Taylor
+Expansion is a tool that can be used to approximate the change in the loss
+function due to pruning. Early unstructured pruning methods, Optimal Brain
 Damage \cite{DBLP:conf/nips/CunDS89} and Optimal Brain Surgeon
 \cite{DBLP:conf/icnn/HassibiSW93} used Taylor expansion of the hessian matrix to
 remove weights with the least impact on the loss function. More recently, in
@@ -1212,17 +1216,23 @@ potential for achieving high pruning rates compared to unstructured pruning.\\
 \noindent Our decision to work on pruning is rooted in the following
 considerations:
 \begin{itemize}
-  \item First, pruning allows the creation of lightweight networks while still
-  ensuring a high standard of performance.
+  \item First, pruning allows the creation of lightweight networks while
+  preserving or sometimes improving the performance of the original network.
 
-  \item Then, pruning yields compact and lightweight neural networks. These
-  networks are easier to transmit and store in embedded devices. This advantage
-  is significant since companies are typically charged for bandwidth, therefore
-  deploying a large neural network to hundreds of thousands of devices can come
-  at a significant cost. Moreover, the storage capabilities of the said embedded
-  devices can be limited and compact networks ease the pressure on storage
-  resources.
+  % FIXME: déplacer ce point dans l'introduction. c'est plus une justification
+  % pour avoir des petits réseaux que pour l'utilisation du pruning.
   
+  % \item Then, pruning yields compact and lightweight neural networks. These
+  % networks are easier to transmit and store in embedded devices. This advantage
+  % is significant since companies are typically charged for bandwidth, therefore
+  % deploying a large neural network to hundreds of thousands of devices can come
+  % at a significant cost. Moreover, the storage capabilities of the said embedded
+  % devices can be limited and compact networks ease the pressure on storage
+  % resources.
+
+  \item Then, pruning integrates well with other compression techniques and can
+  be applied in conjunction them, on any kind of architectures.
+
   \item  Finally, pruning does not necessitate the creation and development of
   an architecture from scratch. It can be applied to an already existing
   architecture to compress it, which makes it possible to develop small,
@@ -1234,10 +1244,10 @@ considerations:
 
 Despite its numerous advantages, pruning is not without challenges. One such
 challenge is the identification of the weights to be preserved. This is a topic
-that is the subject of many works detailed in \cref{chap:sota}. Additionally,
-the preserved weights typically require fine-tuning, which can impose a
-substantial computational cost. This process of fine-tuning can be both
-time-consuming and resource-intensive.\\
+that is the subject of many works detailed in this chapter. Additionally, the
+preserved weights typically require fine-tuning, which can impose a substantial
+computational cost. This process of fine-tuning can be both time-consuming and
+resource-intensive.\\
 
 \Cref{chap:chapter1} delves into the fine-tuning issue and presents a new
 pruning method that circumvents the need for the expensive fine-tuning step.

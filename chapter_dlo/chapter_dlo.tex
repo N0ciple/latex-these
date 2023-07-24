@@ -4,15 +4,25 @@
 
 \section{Introduction}
 
-Deep learning is a subfield of machine learning that focuses on the study of
-\acp{DNN}. Deep Learning is a family of machine learning algorithms called
-\acp{DNN} that have their roots in \acp{ANN} which aim to learn a data
+Deep Learning is a subfield of machine learning that focuses on the study of
+\acp{DNN} which have their roots in \acp{ANN}. \acp{DNN} aim to learn a data
 representation from unstructured data such as raw images
 \cite{DBLP:conf/nips/KrizhevskySH12}, text
 \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
 \cite{DBLP:journals/corr/HannunCCCDEPSSCN14}, in an end-to-end fashion.
-\acp{ANN} were initially conceptualised based on the understanding of biological
-neural networks present in the brain
+\acp{DNN} have been used to solve a wide range of tasks, including image and
+speech recognition
+\cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
+natural language processing
+\cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
+object detection \cite{DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15},
+semantic segmantation \cite{long2015fully,DBLP:conf/cvpr/LiuCSAHY019}, text and
+image generation
+\cite{goodfellow2020generative,karras2019style,DBLP:conf/emnlp/BudzianowskiV19}
+as well as exotic domains like video games
+\cite{silver2016mastering,silver2018general} or molecules folding
+\cite{jumper2021highly}. \acp{ANN} were initially conceptualised based on the
+understanding of biological neural networks present in the brain
 \cite{mcculloch1943logical,hebb2005organization}.
 \citeauthor{rosenblatt1958perceptron} proposed in
 \cite{rosenblatt1958perceptron} a theoretical model of a neuron, denoted the
@@ -23,43 +33,42 @@ to the \ac{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
 single-layer perceptron by including one or more hidden layers of neurons
 connected upstream to an input layer and downstream to an output layer. Each
 layer is fully connected to the next, allowing the model to learn and represent
-more complex, non-linear relationships in the input data. Although able to learn
-more complex boundaries than the perceptron, the \ac{MLP} is still limited by
-its depth. The next advance came from the stacking of multiple layers, leading
-to \aclp{DNN}.\\
+more complex, non-linear relationships in the input data. Although more capable
+than the perceptron, the \ac{MLP} is still limited by its depth. The next
+advance came from the stacking of multiple layers, leading to \aclp{DNN}.\\
 
 In the context of \acp{DNN}, the term \emph{deep} denotes the stacking of many
 layers within a neural network. The concept of \acp{DNN} is based on the idea
 that the depth and the numerous layers can help in learning features at various
 levels of abstraction, enabling the network to learn complex hierarchical
-patterns. For instance, in the context of image recognition, lower layers may
-learn local features like edges and textures, while deeper layers might learn to
-identify more abstract concepts like shapes or objects.\\
+patterns. For instance, in the context of image recognition, lower layers learn
+local features like edges and textures, while deeper layers learn to identify
+more abstract concepts like shapes or objects.\\
 
 The rise of \acp{DNN} was made possible by several factors. On the one hand the
 increase in computational power, and in particular the use of \acp{GPU}, which
-made the training of deep networks feasible. Indeed, AlexNet, the first \ac{CNN}
-to win the ImageNet Large Scale Visual Recognition Challenge
+made the training of large and deep networks feasible. Indeed, AlexNet, the
+first \ac{CNN} to win the ImageNet Large Scale Visual Recognition Challenge
 \cite{DBLP:conf/nips/KrizhevskySH12}, was trained on two \acp{GPU} in parallel
 to accelerate computations. Nowadays, the use of \acp{GPU} or dedicated hardware
-such as \acp{TPU} is ubiquitous and supported by all the major deep learning
-frameworks
-\cite{DBLP:journals/corr/AbadiABBCCCDDDG16,DBLP:conf/nips/PaszkeGMLBCKLGA19}.On
+such as \acp{TPU} \cite{jouppi2017datacenter} is ubiquitous and supported by all
+the major deep learning frameworks
+\cite{DBLP:journals/corr/AbadiABBCCCDDDG16,DBLP:conf/nips/PaszkeGMLBCKLGA19}. On
 the other hand, the availability of large-scale datasets such as ImageNet
 \cite{deng2009imagenet} allowed to train or pre-train deep networks with
 millions of parameters without overfitting.\\
 
 This chapter aims to give an overview of the different neural network
 architectures, building blocks, training techniques and datasets that are widely
-used in Deep Learning for computer vision as well as our experiments.
+used in Deep Learning for computer vision and in our experiments.
 \Cref{sec:dlo:early_architectures} introduced the early neural network
 architectures, namely the perceptron and the \ac{MLP}. \Cref{sec:dlo:training}
 focuses on the functional definition of a neural network and its training.
 \Cref{sec:dlo:cnn} presents the building blocks and architectures of various
 \acp{CNN} for computer vision, and in particular the ones we benchmark our
 methods with (see \cref{sec:chap1:experiments,sec:chap2:experiments}). Finally,
-\Cref{sec:dlo:datasets} gives an overview of the most used datasets that we
-used in our experiments.
+\Cref{sec:dlo:datasets} gives an overview of the most used datasets that we used
+in our experiments.
 
 
 \section{Early Architectures}\label{sec:dlo:early_architectures}
@@ -78,7 +87,7 @@ and conceptualised based on the understanding of biological neural networks
 present in the brain \cite{mcculloch1943logical,hebb2005organization}. The
 perceptron is composed of inputs that are weighted and summed before being
 passed through a nonlinear function referred to as an activation function. The
-conceptrual representation of the perceptrion is displayed in
+conceptrual representation of the perceptron is displayed in
 \cref{fig:dlo:perceptron} and its mathematical formulation is defined in
 \cref{eqn:dlo:perceptron}: \\
 % and can be express in vector form as written in \cref{eqn:dlo:perceptron_vector}.\\
@@ -95,9 +104,10 @@ conceptrual representation of the perceptrion is displayed in
 % \end{equation}\\
 
 \noindent where $x_i$ is the $i$th input, $w_i$ is the weight associated with
-the $i$th input,$n$ is the number of inputs, $b$ is the bias, $g$ is the
-activation function, and $\hat{y}$ is the perceptron's output. This formulation
-can also be written in vector form as in \cref{eqn:dlo:perceptron_vector}: \\
+the $i$th input, $n$ is the number of inputs, $b$ is the bias, $g$ is the
+activation function, and $\hat{y}$ is the output of the perceptron. This
+formulation can also be written in vector form as in
+\cref{eqn:dlo:perceptron_vector}: \\
 
 \begin{equation}
   \label{eqn:dlo:perceptron_vector}
@@ -105,11 +115,12 @@ can also be written in vector form as in \cref{eqn:dlo:perceptron_vector}: \\
 \end{equation}\\
 
 \noindent where $\mathbf{x}$ is the vector of inputs and $\mathbf{w}$ is the
-vector of weights. The activation function is typically a nonlinear function,
-such as the sigmoid function or the hyperbolic tangent function. Due to its
-shallow architecture, the perceptron cannot learn complex decision boundaries.
-Nevertheless, it is possible to stack several perceptrons to learn nonlinear
-decision boundaries, leading to a \acl{MLP}.\\
+vector of weights. The activation function $g$ is typically a nonlinear
+function, such as the sigmoid function or the hyperbolic tangent function (see
+\cref{fig:dlo:activation_functions}). Due to its shallow architecture, the
+perceptron cannot learn complex decision boundaries. Nevertheless, it is
+possible to stack several perceptrons to learn nonlinear decision boundaries,
+leading to a \acl{MLP}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -123,12 +134,11 @@ decision boundaries, leading to a \acl{MLP}.\\
 
 \subsection{Multilayer Perceptron}\label{sec:dlo:mlp}
 
-
 The \acf{MLP} is an extension of the perceptron model, comprising multiple
 layers of perceptrons, also referred to as neurons \cite{rumelhart1986learning}.
 A \ac{MLP} with one hidden layer is represented in \cref{fig:dlo:mlp}. In the
-latter, the circles represent the neurons, and the connections between
-representing weights are materialised by lines. The \ac{MLP} is the simplest
+latter, the circles represent the neurons and the connections between them,
+representing weights, are materialised by lines. The \ac{MLP} is the simplest
 type of feedforward \ac{ANN}. Feedforward refers to the fact that the
 connections between neurons in the \ac{MLP} form a \acf{DAG}, where the outputs
 of the neurons from one layer are passed to the next, with no backward
@@ -148,7 +158,7 @@ Each layer of the \ac{MLP} being fully connected to the next one, it enables the
 requiring nonlinear decision boundaries. Furthermore,
 \citeauthor{cybenko1989approximation} proved in \cite{cybenko1989approximation}
 that an \ac{MLP} can approximate continuous functions on compact subsets of
-$\mathbb{R}^n$. This result is known as the \emph{Universal Approximation
+$\mathds{R}^n$. This result is known as the \emph{Universal Approximation
 Theorem}. Before the emergence of Deep Learning, \acp{MLP} have been applied to
 various domains, including voice recognition, image recognition, and machine
 translation \cite{wasserman1988neural}.
@@ -179,8 +189,8 @@ Neural networks can be defined as a mapping function from an input space
 $\mathcal{X}$ to an ouput space $\mathcal{Y}$. This mapping function $f$ is
 parametrised by a set of parameters $\theta$, often called \emph{weights}. The
 training of a neural network consists in tuning the parameters $\theta$ so that,
-given an input $X_i$, the mapping function $f$ output, denoted $\hat{y}_i$, is
-as close as possible to the associated true output $y_i$. This training is done
+given an input $X$, the mapping function $f$ output, denoted $\hat{y}$, is as
+close as possible to the associated true output $y$. This training is done
 iteratively by using example pairs $(X, y) \in \mathcal{X} \times \mathcal{Y}$,
 where $X\in\mathcal{X}$ is the input and $y\in\mathcal{Y}$ is the output. In the
 context of image classification, $X$ is an image and $y$ is a label that
@@ -205,12 +215,12 @@ output.\\
 
 Considering image classification,  the output $\hat{y}$ is a probability vector
 where the largest coefficient is the one whose index corresponds to the
-predicted class of the input image, often called a label. This vector is
-generally converted into a one-hot vector, where the only non-zero coefficient is
-at the index of the predicted class. The true label $y$, referred to as the
-ground truth is either the class index and $y\in\llbracket0;n-1\rrbracket$,
-where $n$ is the number of classes considered. The ground truth can also be
-converted into a one-hot vector.\\
+predicted class of the input image. This vector is generally converted into a
+one-hot vector, where the only non-zero coefficient is at the index of the
+predicted class. The true label $y$, referred to as the ground truth, is the
+class index so that $y\in\llbracket0;n-1\rrbracket$, where $n$ is the number of
+classes considered. The ground truth can also be converted into a one-hot
+vector.\\
 
 % In the case of image classification, the input $X$ given to the neural network
 % is an image, and the output $\hat{y}$ is a probability vector where the largest
@@ -233,7 +243,7 @@ However, optimising directly the metric $P$ might be intractable. To solve for
 this issue, we define a differentiable cost function and minimise the latter as
 a proxy for optimising $P$. Considering $\delta$ as the empirical distribution
 of the training data, the cost function $\mathcal{J}(\theta)$, also denoted the
-\emph{empirical risk} is defined as:
+\emph{empirical risk}, is defined as:
 
 \begin{equation}
   \label{eqn:dlo:cost_function}
@@ -242,14 +252,15 @@ of the training data, the cost function $\mathcal{J}(\theta)$, also denoted the
 
 \noindent where $\mathcal{L}$ is the loss function. Note that the true data
 distribution is not known, and thus, the empirical distribution $\delta$ is used
-instead. The minimisation of the empirical risk alone is not sufficient. Indeed,
-the neural network could learn to perfectly predict the output of the training
-set but fail to generalise to unseen data. This phenomenon is called
-\emph{overfitting}. To prevent overfitting, we add a regularisation term to the
-empirical risk. The regularisation term, denoted $\mathcal{R}$, is a function of
-the parameters $\theta$ of the neural network which penalises the complexity of
-the model, and thus prevents overfitting. To account for regularisation, the
-cost function in \cref{eqn:dlo:cost_function} is updated to:
+instead. The minimisation of the empirical risk alone is not sufficient to
+ensure a good overall performance. Indeed, the neural network could learn to
+perfectly predict the output of the training set but fail to generalise to
+unseen data. This phenomenon is called \emph{overfitting}. To prevent
+overfitting, we add a regularisation term to the empirical risk. The
+regularisation term, denoted $\mathcal{R}$, is a function of the parameters
+$\theta$ of the neural network which penalises the complexity of the model, and
+thus prevents overfitting. To account for regularisation, the cost function in
+\cref{eqn:dlo:cost_function} is updated to:
 
 \begin{equation}
   \label{eqn:dlo:regularised_cost_fn}
@@ -283,15 +294,17 @@ multi-class cross-entropy loss is defined as follows:
 
 \begin{equation}
   \label{eqn:dlo:multiclass_cross_entropy_loss}
-  \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \displaystyle\frac{\exp(\hat{y}_i)}{\displaystyle\sum_{j=1}^c \exp(\hat{y}_j)} \right)
+  % \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \displaystyle\frac{\exp(\hat{y}_i)}{\displaystyle\sum_{j=1}^c \exp(\hat{y}_j)} \right)
+  \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \phi(\mathbf{\hat{y}})_i \right)
 \end{equation}\\
 
 \noindent In the above equation, $\hat{\mathbf{y}}$ is the unormalised raw
 output vector of the neural network and $\phi$ is the softmax function, whose
 expression is given in \cref{eqn:dlo:softmax}. The softmax function is used to
 convert the raw output vector of real numbers into a probability distribution.
-Note that some models output directly a probability distribution, in which case
-the softmax is not needed.\\
+Note that some models which uses the softmax as the activation function of their
+last layer output directly a probability distribution, in which case the softmax
+is not needed.\\
 
 \begin{equation}
   \label{eqn:dlo:softmax}
@@ -362,8 +375,8 @@ making the backpropagation algorithm computationally efficient.\\
   \frac{\partial z}{\partial x} = \frac{\partial z}{\partial y} \frac{\partial y}{\partial x}
 \end{equation}\\
 
-\noindent \textbf{\acl{SGD}.} Once the gradients are calculated, they are
-used to update the parameters. The most prevalent for parameter updates is
+\noindent \textbf{\acl{SGD}.} Once the gradients are calculated, they are used
+to update the parameters. The most prevalent method for parameter updates is
 \acf{SGD}, a derivative of the Robbins–Monro algorithm
 \cite{robbins1951stochastic}. In \ac{SGD}, the gradient of the loss function is
 computed for a random subset of the data (a \emph{batch} or \emph{mini-batch}),
@@ -382,35 +395,34 @@ to that parameter multiplied by a learning rate $\eta$:\\
 accuracy. Indeed, the gradient is estimated using a subset of the entire
 training set, which is, on the one hand, less accurate than using the whole
 dataset, but on the other hand, less computationally intensive. The size of the
-minibatch, which is a hyperparameter of the training algorithm, determines this
+mini-batch, which is a hyperparameter of the training algorithm, determines this
 trade-off and should also be chosen depending on the computational and memory
 resources available. Note that the size of modern datasets, subsequently
 detailed in \cref{sec:dlo:datasets}, makes it intractable to evaluate the
-gradients on the whole dataset in one step.\\
+gradients on the whole dataset in one step, hence the use of mini-batches.\\
 
 \begin{algorithm}
   \caption{Stochastic Gradient Descent Algorithm}
   \label{alg:dlo:sgd}
   \begin{algorithmic}
-    \REQUIRE {Learning rate $\eta$, minibatch size $m$,Initial parameters
-    $\theta^{(0)}$, $n>m$ training pairs $(X,y)\in
-    \mathcal{X}\times\mathcal{Y}$, Loss function $\mathcal{J}$}
-    \WHILE {Stopping criterion not met}
-    \STATE {Sample minibatch of size $m$ from training set}
-    \STATE {Compute gradient estimate on minibatch: $\hat{g} \gets \nabla \mathcal{J}(\theta)$}
-    \STATE {Update parameters: $\theta^{(t+1)} \gets \theta^{(t)} - \eta \hat{g}$}
-    \ENDWHILE
-    \RETURN {Optimal parameters $\theta$}
+    \REQUIRE {Learning rate $\eta$, mini-batch size $m$, Initial parameters
+    $\theta^{(0)}$, $n \geq m$ training pairs $(X,y)\in
+    \mathcal{X}\times\mathcal{Y}$, Loss function $\mathcal{J}$} \WHILE {Stopping
+    criterion not met} \STATE {Sample mini-batch of size $m$ from training set}
+    \STATE {Compute gradient estimate on mini-batch: $\hat{g} \gets \nabla
+    \mathcal{J}(\theta)$} \STATE {Update parameters: $\theta^{(t+1)} \gets
+    \theta^{(t)} - \eta \hat{g}$} \ENDWHILE \RETURN {Optimal parameters
+    $\theta$}
   \end{algorithmic}
 \end{algorithm}
 
 
 \noindent \textbf{Learning Rate.} The learning rate is a hyperparameter that
 determines the step size of the update at each iteration while moving toward a
-minimum of the loss function. Setting the learning rate too high can cause the
-learning process to converge too quickly or overshoot while setting it too low
-can make the learning process slow to converge, as shown in
-\cref{fig:dlo:gradient_descent}.\\
+minimum of the loss function (see \cref{eqn:dlo:sgd_update}). Setting the
+learning rate too high can cause the learning process to converge too quickly or
+overshoot while setting it too low can make the learning process slow to
+converge, as shown in \cref{fig:dlo:gradient_descent}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -426,19 +438,19 @@ can make the learning process slow to converge, as shown in
 
 \noindent \textbf{Alternative methods.} To enhance the performance of \ac{SGD},
 various modifications and extensions have been proposed, such as \ac{SGD} with
-momentum \cite{sutskever2013importance}, RMSProp \cite{hinton2012neural}, or
-Adam \cite{kingma2014adam}. These methods aim to adjust the learning rate
-dynamically or dampen the oscillations in the gradient descent to achieve faster
-and more stable convergence.\\
+momentum \cite{sutskever2013importance,polyak1964some}, RMSProp
+\cite{hinton2012neural}, or Adam \cite{kingma2014adam}. These methods aim to
+adjust the learning rate dynamically or dampen the oscillations in the gradient
+descent to achieve faster and more stable convergence.\\
 
-For instance, \ac{SGD} with momentum \cite{sutskever2013importance} uses a
-momentum term $\gamma$ to dampen the oscillations in the gradient descent. It
-allows smoothing the variations of the descent direction and thus, preventing
-the optimisation to get stuck in small local minimums. The momentum term is a
-moving average of the gradients, here denoted $v$, and it is used to update the
-parameters as shown in \cref{eqn:dlo:sgd_momentum_update}. In this equation, the
-momentum term $\gamma \in [0,1]$ is a hyperparameter that is typically set close
-to 1, $0.9$ being a common value.\\
+For instance, \ac{SGD} with momentum
+\cite{sutskever2013importance,polyak1964some} uses a momentum coefficient
+$\gamma$ and smoothes the variations of the descent direction and thus,
+preventing the optimisation to get stuck in small local minimums. The momentum
+term is a moving average of the gradient, here denoted $v$, and it is used to
+update the parameters as shown in \cref{eqn:dlo:sgd_momentum_update}. In this
+equation, the momentum coefficient $\gamma \in [0,1]$ is a hyperparameter that
+is typically set close to 1, $0.9$ being a common value.\\
 
 \begin{equation}
   \label{eqn:dlo:sgd_momentum_update}
@@ -482,26 +494,26 @@ feature engineering, the features learned by \ac{CL} layers are learned in a
 
 \noindent where, $x$ is the input, $k$ is the kernel, $(i,j)$ are the spatial
 coordinates in the output feature map and $m$ and $n$ represents the spatial
-coordinates of the kernel $k$. Note that some Deep Learning frameworks
-implement \emph{cross-correlation} instead of convolution. In the former, the
-kernel is not spatially flipped leading to the cross-correlation not being
-commutative \cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically
-smaller than the input along width and height dimensions (they are generally
-$3\times 3$ \cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much channels as the
-input. During the forward pass, each kernel is spatially convolved channel-wise
-with the input and their outputs are summed along the channel dimension to yield
-a single scalar for each kernel position on the input (see
+coordinates of the kernel $k$. Note that some Deep Learning frameworks implement
+\emph{cross-correlation} instead of convolution. In the former, the kernel is
+not spatially flipped leading to the cross-correlation not being commutative
+\cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically smaller than
+the input along width and height dimensions (they are generally $3\times 3$
+\cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much channels as the input.
+During the forward pass, each kernel is spatially convolved channel-wise with
+the input and their outputs are summed along the channel dimension to yield a
+single scalar for each kernel position on the input (see also
 \cref{fig:dlo:conv_layer}).\\
 
-\ac{CL} are more computationally efficient than \ac{FC} layers, as they have a
-form of weight sharing baked in. Indeed, the same kernel is applied to every
-location of the input, which brings two main benefits: \emph{(i)} the number of
-parameters is independent of the input size and \emph{(ii)} a single learned
-kernel, acting as a feature detector, can be used in multiple locations. This is
-especially useful for early feature detector that detects basic shapes or
-textures. In addition, because of the kernels being convolved across the whole
-input, \ac{CL} layers are also less sensitive to spatial translations that might
-occur in different instances of the same class.
+\ac{CL} layers are more computationally efficient than \ac{FC} layers, as they
+have a form of weight sharing baked in. Indeed, the same kernel is applied to
+every location of the input, which brings two main benefits: \emph{(i)} the
+number of parameters is independent of the input size and \emph{(ii)} a single
+learned kernel, acting as a feature detector, can be used in multiple locations.
+This is especially useful for early feature detector that detects basic shapes
+or textures. In addition, because of the kernels being convolved across the
+whole input, \ac{CL} layers are also less sensitive to spatial translations that
+might occur in different instances of the same class.\\
 
 \noindent \textbf{Fully connected layer.} \ac{FC} layers, also known as
 \emph{Dense} layers are often the last layers of a \ac{CNN}, effectively serving
@@ -514,7 +526,7 @@ A \ac{FC} layer can be describe as a matrix-vector product as in
 
 \begin{equation}
   \label{eqn:dlo:fc_layer}
-  y = \mathbf{w}^T \cdot \mathbf{x} + b
+  \mathbf{y} = \mathbf{w}^T \cdot \mathbf{x} + \mathbf{b}
 \end{equation}\\
 
 \noindent where $\mathbf{x}$ is the input vector, $\mathbf{w}$ is the weight
@@ -533,34 +545,35 @@ distribution over those classes.\\
   \centering
   \subfloat[Convolutional Layer\label{fig:dlo:conv_layer}]{
     \includegraphics[width=0.49\textwidth]{chapter_dlo/assets/conv_layer.pdf}}
-  \subfloat[Dense Layer\label{fig:dlo:dense_layer}]{
+    \subfloat[Fully Connected Layer\label{fig:dlo:dense_layer}]{
     \includegraphics[width=0.49\textwidth]{chapter_dlo/assets/dense_layer.pdf}}
-  \caption{Conceptual representation of a \acl{CL} and a dense
-    layer. The \acl{CL} (\cref{fig:dlo:conv_layer}) takes a
-    multi-channel input and produces a multi-channel output. Each coefficient of
-    the output is computed by applying a convolution operation at a
-    corresponding location in the input. The dense layer
-    (\cref{fig:dlo:dense_layer}) takes a vector input and produces a vector
-    output. Each connection is represented by a weight in the weight matrix.}
+    \caption{Conceptual representation of a \acl{CL} and a \acl{FC} layer. The
+    \acl{CL} layer (\cref{fig:dlo:conv_layer}) takes a multi-channel input and
+    produces a multi-channel output. Each coefficient of the output is computed
+    by applying a convolution operation at a corresponding location in the
+    input. The \acl{FC} layer (\cref{fig:dlo:dense_layer}) takes a vector input
+    and produces a vector output. Each connection is represented by a weight in
+    the weight matrix.}
   \label{fig:sota:layers}
 \end{figure}
 
-\noindent \textbf{Activation function.} Activation functions are often applied to
-the output feature map of a convolutional or fully connected layer. This
-function introduces non-linearity into the model, allowing it to learn more
-complex patterns \cite{long2015fully}. A common activation function used in
-\acp{CNN} is the \ac{ReLU} function, represented as $f(x)=\max(0,x)$. Other
-functions like the sigmoid $f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x}
--e^{-x})/(e^{x}+e^{-x})$ functions have been used (see
-\cref{fig:dlo:activation_functions}), however, the \ac{ReLU} is prefered over
-the latter for its computational efficiency and its ability to mitigate the
-vanishing or exploding gradients problem
+\noindent \textbf{Activation function.} Activation functions are often applied
+to the output feature map of a convolutional or fully connected layer, resulting
+in the \emph{activation map} or \emph{activations}. This function introduces
+non-linearity into the model, allowing it to learn more complex patterns
+\cite{long2015fully}. A common activation function used in \acp{CNN} is the
+\ac{ReLU} function, represented as $f(x)=\max(0,x)$. Other functions like the
+sigmoid $f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x} -e^{-x})/(e^{x}+e^{-x})$
+functions have been used (see \cref{fig:dlo:activation_functions}), however, the
+\ac{ReLU} is prefered over the latter for its computational efficiency and its
+ability to mitigate the vanishing or exploding gradients problem
 \cite{hochreiter2001gradient,glorot2010understanding}.\\
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/activation_functions.pdf}
-  \caption{\ac{ReLU}, tanh and sigmoid activation functions.}
+  \caption{\ac{ReLU}, tanh and sigmoid activation functions. Best viewed in
+  colours.}
   \label{fig:dlo:activation_functions}
 \end{figure}
 
@@ -591,12 +604,13 @@ fixed function.\\
 \noindent \textbf{Batch Normalisation.} \ac{BN} is a technique introduced in
 \cite{DBLP:conf/icml/IoffeS15} to combat the issue of internal covariate shift
 in deep neural networks, thereby accelerating training and improving
-generalization. Covariate shift refers to the change in the input distribution
-to a learning system, which can lead to slow convergence and make the network
-harder to train. \ac{BN} normalises the input layer by adjusting and scaling the
-activations. For each mini-batch, it computes the mean and variance of the
-activations and performs normalization. The transformation is defined as
-follows:\\
+generalization. Covariate shift refers to the changes in the distribution of
+features in the training and test dataset, which can lead to slow convergence,
+make the network harder to train or hinder its generalisation capabilities.
+\ac{BN} normalises the input of the layer by adjusting and scaling the
+activations of the previous one. For each mini-batch, it computes the mean and
+variance of the activations and performs normalization. The transformation is
+defined as follows:\\
 
 \begin{equation}
   \label{eqn:dlo:batchnorm}
@@ -608,7 +622,7 @@ $\sigma_{B}^{2}$ is the mini-batch variance, and $\varepsilon$ is a small
 constant for numerical stability. After normalization, the method allows the
 network to learn an affine transformation for each activation, permitting the
 network to control the mean and standard deviation of the input distribution,
-formalised in \cref{eqn:dlo:batchnorm}.\\
+formalised in \cref{eqn:dlo:batchnorm}:\\
 
 \begin{equation}
   \label{eqn:dlo:batchnorm_affine}
@@ -637,7 +651,7 @@ independent features (see \cref{eqn:dlo:dropout}).\\
     \mathbf{y} = \frac{\mathbf{x} \odot \mathbf{r}}{1 - p} 
 \end{equation}\\
 
-\noindent where $\mathbf{x}$ denote the output of a layer processed with
+In the above equation, $\mathbf{x}$ denote the output of a layer processed with
 dropout, $\mathbf{r}$ is a binary mask vector of the same shape as $\mathbf{x}$,
 where each element of $r$ is independently drawn from a Bernoulli distribution
 with probability $1-p$, leading to $r_i=1$ if the associated weight is kept and
@@ -647,8 +661,7 @@ evaluation, the dropout is changed to an identity function.
 
 \subsection{Architectures}\label{sec:dlo:architectures}
 
-
-The evolution of \aclp{CNN} is characterized by a consistent increase in their
+The evolution of \aclp{CNN} is characterised by a consistent increase in their
 size and performance, alongside the introduction of new architectural
 modifications to address the limitations of their predecessors (see
 \cref{fig:dlo:net_sizes}). In this section, we present a historical overview of
