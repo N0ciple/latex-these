@@ -11,7 +11,7 @@ one part, highly dependent on the input size, and for the other part, higher
 than the number of parameters.\\
 
 Without loss of generality, consider a 2D square matrix $M$ of size $m \times
-    m$, and a 2D convolution kernel $K$ of size $k \times k$, with $k<m$. The output
+m$, and a 2D convolution kernel $K$ of size $k \times k$, with $k\ll m$. The output
 of the spatial convolution of $M$ by $K$ is denoted $O$. The matrix $O$ is of
 size $(m-k+1) \times (m-k+1)$. Each one of the $(m-k+1)^2$ elements of $O$
 necessitates $k^2$ multiplications and $k^2-1$ additions. For the sake of
@@ -29,8 +29,8 @@ $$
 $$\\
 
 
-Since $k<m$, the ratio $\frac{\mu}{k^2}$ is always greater than $1$, and grows
-quadratically with $m$. Therefore, for a 2D convolution, the computational
+Since $k\ll m$, the ratio $\frac{\mu}{k^2}$ is always greater than $1$, and
+grows quadratically with $m$. Therefore, for a 2D convolution, the computational
 complexity can roughly be estimated as $(m-k+1)^2$ times the number of
 parameters in the convolution kernel.\\
 
