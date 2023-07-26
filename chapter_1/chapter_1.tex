@@ -114,125 +114,382 @@ predefined pruning rate.
 % network size, memory and power consumption.\\
 
 
-Pruning is an excellent way to obtain lightweight neural
-networks because it reduces the number of parameters in a pre-trained network
-without the need to design a new architecture. Instead of starting from scratch,
-pruning techniques can be applied to existing architectures, which have been
-trained and tested on large-scale datasets. Pruning aims to reduce the number of
-network parameters by removing redundant or unnecessary weights from a given
-network which we will refer to as the \textit{original network}. It then yields
-a sparsified and lightweight version of the latter, hereafter referred to as the
-\textit{pruned network}. Pruning methods can be split into two major categories:
-\textit{(i)} unstructured weight pruning, where individual weights of the
-network are removed based on their importance, and \textit{(ii)} structured
-pruning, where entire columns, rows, channels, filters or even entire parts,
-such as skip connections of a residual network \cite{DBLP:conf/cvpr/HeZRS16},
-are removed. \\
+Pruning is an excellent way to obtain lightweight neural networks because it
+reduces the number of parameters in a pre-trained network without the need to
+design a new architecture. Instead of starting from scratch, pruning techniques
+can be applied to existing architectures, which have been trained and tested on
+large-scale datasets. Pruning aims to reduce the number of network parameters by
+removing redundant or unnecessary weights from a given network referred to as
+the \textit{original network}. It then yields a sparsified and lightweight
+architecture, hereafter referred to as \textit{pruned network}. Pruning methods
+can be split into two major categories: \textit{(i)} unstructured weight
+pruning, where individual weights of a given network are removed based on their
+importance, and \textit{(ii)} structured pruning, where entire columns, rows,
+channels, filters or even entire parts, such as skip connections of a residual
+network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \\
+% TODO: rajotuer une phrase pour dire que l'on s'inscrit dans le cadre du
+% pruning non structuré.
 
 % TODO: relire les sections et voir ce que l'on met dans travaux liés. On peut
 % envisager de mettre une section pruning, pruning non structuré, mangitude
 % pruning, et peut-être pruning avec budget ou reparamétrisation.
 
+% TODO: Liste des paragraphes à rajouter:
+% [X]: magnitude pruning
+% [X]: pruning sans finetuner les poids
+% [ ]: pruning avec reparamétrisation
+% [ ]: pruning avec budget
 
-Early pruning methods for shallow networks were proposed in the late 1980s.
-Techniques from that area are based on removing the smallest weight connections
-\cite{janowsky1989pruning}, introducing a weight scaling factor and the study of
-its impact on the loss function \cite{DBLP:conf/nips/MozerS88} or the study of
-the sensitivity of the weights based on the gradients
-\cite{DBLP:journals/tnn/Karnin90}. The most influential papers of the early
-pruning days are Optimal Brain Damage \cite{DBLP:conf/nips/CunDS89} and Optimal
-Brain Surgeon
-\cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
-The former work focuses on pruning weights based on their impact on the loss,
-approximated by its Taylor series, which requires the computation of the Hessian
-matrix of the loss. However, computing the hessian matrix is intractable in
-practice due to the large number of parameters in the neural networks.
-Therefore, \citeauthor{DBLP:conf/icnn/HassibiSW93}
-\cite{DBLP:conf/icnn/HassibiSW93} introduced the assumption that the
-interactions between the weights are negligible and therefore that the hessian
-matrix is diagonal.\\
+\noindent\textbf{Unstructured magnitude pruning.} Unstructured magnitude
+pruning, has emerged as an effective heuristic for determining the saliency of
+the weights. This method focuses on removing independent weights from the global
+structure of the network, hence offering greater flexibility compared to
+structured pruning which imposes a strong topological prior by eliminating whole
+sections of the original network. Magnitude pruning revolves around the
+intuition that the smallest weight contributes less to the final output of the
+network and can thereby be removed with minimal impact on the performance.
+Considering a weight tensor $\mathbf{w}$, if $p$ represents a pruning function,
+magnitude pruning can be formalised and implemented as follows:\\
 
+\begin{equation}
+  \label{eqn:chap1:magnitude_pruning}
+  \mathbf{w}_{\text{pruned}} = p(\mathbf{w}, \alpha) = \mathbf{w} \odot \mathbf{m}_\alpha
+\end{equation}\\
 
-More recently, pruning regained traction with the work of Han et al.
-\cite{DBLP:conf/nips/HanPTD15}. The authors introduced a three-step pruning
-method where the weights are first tuned, then all the weights whose absolute
-values are below a certain threshold are removed; and finally, the remaining weights
-are fine-tuned. \\
+\noindent where $\alpha$ is a threshold, $\odot$ denotes the Hadamar product and
+$\mathbf{m}_\alpha$ is a binary mask that is defined as follows:\\
 
+\begin{equation}
+  \label{eqn:chap1:magnitude_mask}
+  (m_\alpha)_i = \begin{cases}
+  0 & \text{if } |\mathbf{w}_i| \leq \alpha \\
+    1 & \text{otherwise}
+  \end{cases}
+\end{equation}\\
 
-\noindent\textbf{Structured Pruning.} Following this work \cite{DBLP:conf/nips/HanPTD15},
-research efforts stirred toward structured pruning which consists in removing
-groups of weights. The structure of a group can be a simple row or column in a
-filter, a channel of a filter, the filter itself or even entire parts.
-Structured pruning aims to reshape the network by removing unnecessary and
-computationally expensive parts, rather than simply sparsifying weight tensors.
-This approach focuses on eliminating parts of the network that have minimal
-impact on the performance for the given task. Since the remaining weight tensors
-are not sparse, speedups can be achieved with conventional libraries and
-hardware. In this context, Anwar et al. \cite{anwar2017structured} proposed a
-pruning technique on various levels (channels, kernels and intra-kernel levels),
-while Li et al. \cite{DBLP:conf/iclr/0022KDSG17} proposed a pruning method at a
-larger (filter) level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a
-streamlined approach that aims at pruning the most useless channels in the
-layers preceding \ac{BN} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity
-with $\ell_1$ penalisation of the \ac{BN} scaling factors, each one associated
-with a channel. Then channels are removed based on the relative importance of
-their associated scaling factor up to a predefined sparsity ratio. More recent
-works proposed an automatic policy for pruning, such as \ac{amc}
-\cite{DBLP:conf/eccv/HeLLWLH18}, which relies on reinforcement learning with two
-interacting agents; the first one iterates over the layers of the architecture
-and defines a targeted sparsity, and the second agent implements the targeted
-sparsity using channel pruning. The \ac{amc} algorithm is either constrained by
-accuracy or efficiency, depending on the reward assigned to the agents. Going
-further with the concept of automatic pruning and architecture search,
-Ramakrishnan et al. \cite{DBLP:conf/crv/RamakrishnanSN20} adapt $\ell_1$
-penalisation from \cite{DBLP:conf/iccv/LiuLSHYZ17} to model the relative
-importance of layers, groups of layers or network parts that can be removed.
-Following the same line, \cite{DBLP:conf/icml/KangH20} proposed a channel
-pruning method based on batch normalisation parameters. The authors introduce
-masks that model the likelihood of feature maps being inhibited by the \ac{ReLU}
-activation function, thereby not contributing to the evaluation of the
-underlying network. These masks are obtained by binarising the cumulative
-density function of the Gaussian distribution parameterised by the scaling and
-the shift of the BN layer. Masks and BN parameters are updated "end-to-end" with
-a gradient estimated using the Gumble Softmax trick
-\cite{DBLP:conf/iclr/JangGP17}. Authors claim that high accuracy is maintained
-after pruning and without fine-tuning. \\
+The threshold $\alpha$ is typically chosen to be the $k$-th percentile of the
+weights so that the pruning rate, defined as the fraction of non-zero weights,
+is equal to $k$.\\
+
+Unstructured magnitude pruning have been used in various works and in particular
+in \cite{DBLP:conf/nips/HanPTD15} where a three-step process is proposed:\\
+
+\begin{enumerate}
+  \item The process begins with standard training to identify the most important
+  connections within the network.
+  \item This is followed by a magnitude pruning step where weights with the
+  smallest magnitude (or absolute value) are removed.
+  \item The final step involves fine-tuning the remaining weights to compensate
+  for any loss of accuracy caused by the pruning.\\
+\end{enumerate}
+
+The authors also propose an iterative variant where the steps 2 and 3 are
+repeated while gradually increasing the pruning rate until the final pruning
+rate is reached. This method was further used in
+\cite{DBLP:journals/corr/HanMD15}, where it was combined with quantisation and
+Huffman coding. In both methods
+\cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15} obtaining the final
+network is computationally intensive due to the fine-tuning step, which can be
+all the more computationally intensive if the magnitude pruning and fine-tuning
+are performed iteratively. \\
 
 
+Unstructured magnitude pruning has gained significant renewed interest with the
+advent of the \acf{LTH} \cite{DBLP:conf/iclr/FrankleC19}. An empirical study in
+\cite{DBLP:conf/iclr/FrankleC19} demonstrated the existence of subnetworks,
+termed \acf{LT}, within large pre-trained networks. These subnetworks, when
+trained with initial weights from the larger networks, yielded comparably
+accurate classifiers. To isolate these lottery tickets, the authors rely on
+magnitude pruning or its iterative variant to identify the subnetworks. The
+large network is trained to convergence, then its weights are pruned with
+magnitude pruning, and restored to their original values. Despite the potency of
+this approach, its practical application is often hindered by the
+computationally intensive training and fine-tuning steps required to obtain a
+trained lightweight subnetwork.\\
 
-\noindent\textbf{Unstructured Pruning.} Although convenient to implement in practice,
-structured pruning imposes a strong topological prior by removing whole chunks
-of the original network and achieves a lower sparsity rate compared to
-unstructured pruning. On the other hand, unstructured weight pruning focuses on
-removing independent weights from the global structure. As a result, this method
-is much more flexible and leads to high sparsity rates and compression ratios.
-Han et al. \cite{DBLP:conf/nips/HanPTD15} introduced a simple yet effective
-three-step algorithm for unstructured weight pruning: a first standard training
-step to identify the most important connections, a magnitude pruning step to
-remove weights with the smallest magnitude (\emph{i.e.}, absolute value) and a
-final fine-tuning step to compensate for the loss of accuracy introduced by
-pruning. \cite{DBLP:journals/corr/HanMD15} used the same technique in
-combination with quantisation and Huffman coding, achieving a compression ratio
-of up to 49x for a VGG16 network. Other methods do not rely on weight magnitude,
-such as \cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic
-gates as a surrogate $\ell_0$ norm and penalises non-zero weights during
-training. Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
-multiplicative gaussian noise as an alternative to binary dropout
-\cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
-an unbound dropout rate. Magnitude pruning regained significant attention after
-the publication of the Lottery Ticket Hypothesis
-\cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
-\cite{DBLP:conf/iclr/FrankleC19} shows that large pre-trained networks encompass
-subnetworks, called \textit{Lottery Tickets}, whose training with initial
-weights taken from the large networks yields comparably accurate classifiers. To
-extract the lottery ticket, it is necessary to train the large network up to
-convergence, apply magnitude pruning and restore the original values of the
-unpruned weights. This Lottery Ticket can then be trained to match the level of
-performances of the large network, with at most the same number of epochs
-needed. Although remarkable, this result is hardly applicable in practice since
-it requires multiple computationally intensive training steps to obtain a
-trained sparse subnetwork.\\
+
+\noindent \textbf{Weight reparametrisation.} Weight reparametrisation is a
+technique where the weights are expressed as a function of other variables.
+Typically the weights used in the network, here denoted $\mathbf{\hat{w}}$ and
+referred to as \emph{apparent weights}, are expressed as a function of the
+\emph{latent weights} $\mathbf{w}$ and other variables. In
+\cref{schwarz2021powerpropagation}, \citeauthor{schwarz2021powerpropagation}
+presented a weight reparametrisation based on raising a weight to the power of
+$\alpha$ while preserving its sign. This reparametrisation is formalised as: \\
+
+\begin{equation}
+  \label{eqn:chap1:power_propagation}
+  \mathbf{\hat{w}} = \mathbf{w} |\mathbf{w}|^{\alpha-1}
+\end{equation}\\
+
+\noindent where $\alpha$ is a hyperparameter of the method, typically set
+between 1 and 3 \cite{schwarz2021powerpropagation}. This reparametrisation
+creates a \emph{rich get richer (sic)} dynamics according to the authors,
+referring to the fact that the weights with the largest magnitude are all the
+more increased. The pruning is enforced by pruning reparametrised weights with
+magnitude pruning.\\
+
+
+\noindent \textbf{Pruning with budget.} Most pruning techniques, including the
+ones presented in this section, enforce a pruning rate after the initial
+training. Consequently, the optimisation process is not taking into account the
+final weight budget that will be allocated to the network.\\ 
+
+\citeauthor{lemaire2019structured} introduced in \cite{lemaire2019structured} a
+Budget-Aware Regularisation loss or BAR loss that performs structured pruning on
+the channels of the activations (and consequently of the kernels of the layer
+yielding it). This loss is combined with the task loss to drive the sparsity
+toward the targeted pruning rate as described in \cref{eqn:chap1:bar_loss}. The
+relative importance of both losses is set with a mixing coefficient $\lambda$.\\
+
+\begin{equation}
+  \label{eqn:chap1:bar_loss}
+  \mathcal{L} = \mathcal{L}_{\text{task}} + \lambda \mathcal{L}_{\text{BAR}}
+\end{equation}\\
+
+\noindent The BAR loss is responsible for introducing sparsity in the network on the
+one hand, and for driving the sparsity toward the targeted pruning rate on the
+other hand. The BAR loss is defined as follows:\\ 
+
+\begin{equation}
+  \mathcal{L}_{\text{BAR}}(\Phi,V,a,b) = \mathcal{L}_S(\Phi)f(V,a,b)
+\end{equation}\\
+
+\noindent where $\Phi$ is a mask sampled from the \emph{hard concrete}
+distribution \cite{louizos2017learning}, a continuous relaxation of the
+Bernoulli distribution. $V$ is the current budget used by the network, referred
+to as the \emph{activation volume} by the authors, $b$ and $a$ are
+hyperparameter detailed subsequently. This BAR loss is composed of two parts.
+The first part, $\mathcal{L}_S(\Phi)$ introduces sparsity in the network by
+penalising the masks $\Phi$ with the hard concrete loss
+\cite{louizos2017learning}, and the second part $f(V,a,b)$ controls the budget.
+The function $f$ implements a variant of the log barrier function
+\cite{boyd2004convex}, where $a$ controls the steepness of the function and $b$
+is the target budget.\\
+
+\noindent\textbf{Pruning without fine-tuning.} Most pruning methods cause a
+performance drop following the pruning step. This is due to the fact that the
+weights that are removed are playing a non-negligible role in the network. In
+this context, fine-tuning is a common technique that aims to recover the lost
+performance but fine-tuning is a computationally intensive task. Some works
+propose pruning methods that are design to circumvent the need for fine-tuning
+\cite{DBLP:conf/nips/HassibiS92,DBLP:conf/icnn/HassibiSW93,DBLP:conf/icml/KangH20}.\\
+
+
+\ac{OBS} introduced in \cite{DBLP:conf/nips/HassibiS92} by
+\citeauthor{DBLP:conf/nips/HassibiS92} is a Hessian-based pruning method that builds
+upon \cite{DBLP:conf/nips/CunDS89} but contrary to the former, it relaxes the
+diagonal assumption of the loss Hessian matrix. \ac{OBS} is a second-order
+pruning method that uses the Hessian matrix of the loss function to identify the
+most removable weights and determine the optimal update for the remaining
+weights in order to mitigate the performance drop. Among their contributions in
+\cite{DBLP:conf/nips/HassibiS92}, \cite{DBLP:conf/nips/HassibiS92} also proposed
+an iterative method to compute the inverse of the Hessian matrix but this is
+outside of the scope of this section. \ac{OBS} consideres the following
+expression of the loss function Taylor expansion at a local minimum:\\
+
+\begin{equation}
+  \label{eqn:chap1:obs_taylor}
+  \delta \mathcal{L} = \left( \frac{\partial \mathcal{L}}{\partial \mathbf{w}} \right)^T \cdot  \partial \mathbf{w} + \frac{1}{2} \delta \mathbf{w}^T \cdot \mathbf{H} \cdot \delta \mathbf{w} + O(\| \delta \mathbf{w}\|^3)
+\end{equation}\\
+
+\noindent where $\delta \mathcal{L}$ is the variation of the loss function,
+$\delta \mathbf{w}$ is the variation of the weights and $\mathbf{H}$ is the
+loss Hessian matrix w.r.t. the weights. In \cref{eqn:chap1:obs_taylor}, at a
+local minimum, the first term vanishes and the author neglects third order
+terms. The \cref{eqn:chap1:obs_taylor} is updated to:\\
+
+\begin{equation}
+  \label{eqn:chap1:obs_taylor_approx}
+  \delta \mathcal{L} \approx \frac{1}{2} \delta \mathbf{w}^T \cdot \mathbf{H} \cdot \delta \mathbf{w} 
+\end{equation}\\
+
+\noindent The authors then propose to remove the weights that have the smallest
+impact of the loss function, quantified by \cref{eqn:chap1:obs_taylor_approx},
+and formalise the pruning problem as the following optimisation problem:\\
+
+\begin{equation}
+  \label{eqn:chap1:obs_optimisation}
+  \min_{q}\{\min_{\partial \mathbf{w}} \{\ \frac{1}{2} \delta \mathbf{w}^T \cdot \mathbf{H} \cdot \delta \mathbf{w} \} \quad \text{s.t.} \quad  \mathbf{e}_q^T \cdot \delta \mathbf{w} + w_q = 0\} 
+\end{equation}\\
+
+\noindent where $\mathbf{e}_q$ is the $q$-th canonical vector and
+$\mathbf{e}_q^T \cdot \delta \mathbf{w} + w_q = 0$ expresses the pruning of
+the weight $q$. Solving this optimisation problem yeilds the saliency
+indicator for each weight $L_i$, defined as:
+
+\begin{equation}
+  L_i = \frac{1}{2} \frac{w_q^2}{[\mathcal{H}^{-1}]_{qq}}
+\end{equation}\\
+
+\noindent where $[\mathcal{H}^{-1}]_{qq}$ is the $q$-th diagonal element of the
+inverse of the Hessian matrix. The authors then propose to remove the weight
+with the smallest saliency indicator and update the remaining weights with the
+following update, also given by solving \cref{eqn:chap1:obs_optimisation}:\\
+
+\begin{equation}
+  \label{eqn:chap1:obs_update}
+  \delta \mathbf{w} = - \frac{w_q}{[\mathcal{H}^{-1}]_{qq}} \mathbf{H}^{-1} \cdot \mathbf{e}_q
+\end{equation}\\
+
+This process of removing the weight with the smallest saliency indicator and
+updating the remaining weights is repeated until a defined stopping criterion.
+\citeauthor{DBLP:conf/nips/HassibiS92} suggest to stop the pruning process when
+the impact on the loss function is no longer negligible compared to the value of
+the loss itself. Once the pruning is stopped, The remaining weight can be used
+as is ad do not necessitate further fine tuning thanks to the corrections
+applied (\cref{eqn:chap1:obs_update}). The authors applied this method
+sucessfully on small networks (a few tens of thousands weights) compared to
+modern architectures (see \cref{tab:dlo:networks_size}). This method is
+intractable in practice with larger neural networks, in particular the
+computation of the hessian matrix which size is quadratic in the number of
+weights of the network.\\
+
+Whereas \ac{OBS} corrects the remaining weights after pruning it is possible to
+introduce sparsity while training the network.
+\citeauthor{DBLP:conf/icml/KangH20} introduced a stochastic structured pruning
+method in \cite{DBLP:conf/icml/KangH20} that prunes the channels after a \ac{BN}
+layer that have the highest probability of being inhibited by the \ac{ReLU}
+activation function. Each channel is associated with a mask defined as:\\
+
+\begin{equation}
+  q(\delta;\beta,\gamma) = \frac{1}{1 +\exp ( - k (\Phi(\delta;\beta,\gamma)-c))}
+\end{equation}\\
+
+\noindent where $\delta$ and $c$ are given threshold that are hyperparameter of
+the method and $\beta$ and $\gamma$ are the shift and scale parameters of the
+\ac{BN}. $\Phi(\delta;\beta,\gamma)$ is the cumulative density function of the
+Gaussian distribution parameterised by $\beta$ and $\gamma$ (see \cref{eqn:chap1:cdf_bn}). The mask is then a
+binary mask obtained by binarising $q(\delta;\beta,\gamma)$ with the Gumble
+Softmax trick \cite{DBLP:conf/iclr/JangGP17}.\\
+
+\begin{equation}
+  \label{eqn:chap1:cdf_bn}
+  \Phi(\delta;\beta,\gamma) = \int_{-\infty}^{\delta} \frac{1}{\sqrt{2\pi\gamma^2}} \exp( - \frac{(t-\beta)^2}{2\gamma^2} ) dt 
+\end{equation}\\
+
+\noindent Sparsity is then introduced in the masks by adding a regularisation
+loss defined as follows:\\ 
+
+\begin{equation}
+ \mathcal{L}_{\text{{sparse}}}(B, C) = \sum_{\beta_j \in B, \gamma_j \in C} \beta_j + s|\gamma_j|
+\end{equation}\\
+
+\noindent where $B$ and $C$ are the set of shift and scale parameters of the
+\ac{BN}, and $s$ is a hyperparameter of the method. This setup allows for a
+joint optimisation of the masks through the \ac{BN} parameters and the network
+weights. Once the training is completed, the masks are binarised following
+\cref{eqn:chap1:kang_binarisation} and multiplied with their associated channels
+to prune the network. Since the optimisation of the masks is done jointly with
+the network weights, the network does not necessitate further fine-tuning.\\
+
+
+\begin{equation}
+  \label{eqn:chap1:kang_binarisation}
+  q(\delta;\beta,\gamma) = \begin{cases}
+    0 & \text{if } \Phi(\delta;\beta,\gamma) \geq c \\
+    1 & \text{otherwise}
+  \end{cases}
+\end{equation}\\
+
+% Early pruning methods for shallow networks were proposed in the late 1980s.
+% Techniques from that area are based on removing the smallest weight connections
+% \cite{janowsky1989pruning}, introducing a weight scaling factor and the study of
+% its impact on the loss function \cite{DBLP:conf/nips/MozerS88} or the study of
+% the sensitivity of the weights based on the gradients
+% \cite{DBLP:journals/tnn/Karnin90}. The most influential papers of the early
+% pruning days are Optimal Brain Damage \cite{DBLP:conf/nips/CunDS89} and Optimal
+% Brain Surgeon
+% \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
+% The former work focuses on pruning weights based on their impact on the loss,
+% approximated by its Taylor series, which requires the computation of the Hessian
+% matrix of the loss. However, computing the hessian matrix is intractable in
+% practice due to the large number of parameters in the neural networks.
+% Therefore, \citeauthor{DBLP:conf/icnn/HassibiSW93}
+% \cite{DBLP:conf/icnn/HassibiSW93} introduced the assumption that the
+% interactions between the weights are negligible and therefore that the hessian
+% matrix is diagonal.\\
+
+
+% More recently, pruning regained traction with the work of Han et al.
+% \cite{DBLP:conf/nips/HanPTD15}. The authors introduced a three-step pruning
+% method where the weights are first tuned, then all the weights whose absolute
+% values are below a certain threshold are removed; and finally, the remaining weights
+% are fine-tuned. \\
+
+
+% \noindent\textbf{Structured Pruning.} Following this work \cite{DBLP:conf/nips/HanPTD15},
+% research efforts stirred toward structured pruning which consists in removing
+% groups of weights. The structure of a group can be a simple row or column in a
+% filter, a channel of a filter, the filter itself or even entire parts.
+% Structured pruning aims to reshape the network by removing unnecessary and
+% computationally expensive parts, rather than simply sparsifying weight tensors.
+% This approach focuses on eliminating parts of the network that have minimal
+% impact on the performance for the given task. Since the remaining weight tensors
+% are not sparse, speedups can be achieved with conventional libraries and
+% hardware. In this context, Anwar et al. \cite{anwar2017structured} proposed a
+% pruning technique on various levels (channels, kernels and intra-kernel levels),
+% while Li et al. \cite{DBLP:conf/iclr/0022KDSG17} proposed a pruning method at a
+% larger (filter) level. Network slimming \cite{DBLP:conf/iccv/LiuLSHYZ17} is a
+% streamlined approach that aims at pruning the most useless channels in the
+% layers preceding \ac{BN} \cite{DBLP:conf/icml/IoffeS15}. It induces sparsity
+% with $\ell_1$ penalisation of the \ac{BN} scaling factors, each one associated
+% with a channel. Then channels are removed based on the relative importance of
+% their associated scaling factor up to a predefined sparsity ratio. More recent
+% works proposed an automatic policy for pruning, such as \ac{amc}
+% \cite{DBLP:conf/eccv/HeLLWLH18}, which relies on reinforcement learning with two
+% interacting agents; the first one iterates over the layers of the architecture
+% and defines a targeted sparsity, and the second agent implements the targeted
+% sparsity using channel pruning. The \ac{amc} algorithm is either constrained by
+% accuracy or efficiency, depending on the reward assigned to the agents. Going
+% further with the concept of automatic pruning and architecture search,
+% Ramakrishnan et al. \cite{DBLP:conf/crv/RamakrishnanSN20} adapt $\ell_1$
+% penalisation from \cite{DBLP:conf/iccv/LiuLSHYZ17} to model the relative
+% importance of layers, groups of layers or network parts that can be removed.
+% Following the same line, \cite{DBLP:conf/icml/KangH20} proposed a channel
+% pruning method based on batch normalisation parameters. The authors introduce
+% masks that model the likelihood of feature maps being inhibited by the \ac{ReLU}
+% activation function, thereby not contributing to the evaluation of the
+% underlying network. These masks are obtained by binarising the cumulative
+% density function of the Gaussian distribution parameterised by the scaling and
+% the shift of the BN layer. Masks and BN parameters are updated "end-to-end" with
+% a gradient estimated using the Gumble Softmax trick
+% \cite{DBLP:conf/iclr/JangGP17}. Authors claim that high accuracy is maintained
+% after pruning and without fine-tuning. \\
+
+
+% Although convenient to implement in practice, structured pruning imposes a
+% strong topological prior by removing whole chunks of the original network and
+% achieves a lower sparsity rate compared to unstructured pruning. On the other
+% hand, unstructured weight pruning focuses on removing independent weights from
+% the global structure. As a result, this method is much more flexible and leads
+% to high sparsity rates and compression ratios. Han et al.
+% \cite{DBLP:conf/nips/HanPTD15} introduced a simple yet effective three-step
+% algorithm for unstructured weight pruning: a first standard training step to
+% identify the most important connections, a magnitude pruning step to remove
+% weights with the smallest magnitude (\emph{i.e.}, absolute value) and a final
+% fine-tuning step to compensate for the loss of accuracy introduced by pruning.
+% \cite{DBLP:journals/corr/HanMD15} used the same technique in combination with
+% quantisation and Huffman coding, achieving a compression ratio of up to 49x for
+% a VGG16 network. Other methods do not rely on weight magnitude, such as
+% \cite{DBLP:conf/iclr/LouizosWK18}, which uses non-negative stochastic gates as a
+% surrogate $\ell_0$ norm and penalises non-zero weights during training.
+% Variational Dropout \cite{DBLP:conf/icml/MolchanovAV17} introduces a
+% multiplicative gaussian noise as an alternative to binary dropout
+% \cite{DBLP:journals/corr/abs-1207-0580,DBLP:journals/jmlr/SrivastavaHKSS14} with
+% an unbound dropout rate. Magnitude pruning regained significant attention after
+% the publication of the Lottery Ticket Hypothesis
+% \cite{DBLP:conf/iclr/FrankleC19}; an empirical study in
+% \cite{DBLP:conf/iclr/FrankleC19} shows that large pre-trained networks encompass
+% subnetworks, called \textit{Lottery Tickets}, whose training with initial
+% weights taken from the large networks yields comparably accurate classifiers. To
+% extract the lottery ticket, it is necessary to train the large network up to
+% convergence, apply magnitude pruning and restore the original values of the
+% unpruned weights. This Lottery Ticket can then be trained to match the level of
+% performances of the large network, with at most the same number of epochs
+% needed. Although remarkable, this result is hardly applicable in practice since
+% it requires multiple computationally intensive training steps to obtain a
+% trained sparse subnetwork.\\
 
 
 These structured or unstructured methods propose different saliency indicators
@@ -243,11 +500,12 @@ final desired model size, or weight budget, during the optimization process. In
 other words, the pruning strategy, rather than being integrated into the
 training process, is an afterthought. This results in an inefficient process
 where the network is first trained with a large number of weights, many of which
-are later pruned. This introduces a loss of functional performance - depending on
-the task considered - that needs to be compensated for (with the exception of
-\cite{DBLP:conf/icml/KangH20}). This is achieved through fine-tuning the sparse
-or lightened networks obtained after applying the pruning criterion. Fine-tuning
-is a computationally intensive task and requires additional training time
+are later pruned. This introduces a loss of functional performance - depending
+on the task considered - that needs to be compensated for (with the exception of
+\cite{DBLP:conf/icml/KangH20,DBLP:conf/nips/HassibiS92}). This is achieved
+through fine-tuning the sparse or lightened networks obtained after applying the
+pruning criterion. Fine-tuning is a computationally intensive task and requires
+additional training time
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}. Moreover, the amount
 of weights pruned is enforced after the initial training, meaning that the final
 target size or weight budget is never considered in the optimisation procedure.
@@ -292,7 +550,7 @@ encompassing a total of $\nu_\ell$ elements, associated with layer $\ell$.
 Following the notation introduced in \cref{sec:dlo:datasets}, the parameter $X$
 of $f$ represents the input given to the network. Each input $X$ is associated
 with a label $y$, also called ground truth. This functional conception of a
-neural network can be formally written as:
+neural network can be formally written as:\\
 
 %Each pair $(X,y)$ is an element of a
 % dataset $\mathcal{D}$, with $\mathcal{D} \subset \mathcal{X} \times
@@ -418,7 +676,7 @@ exhibit four properties: \\
   \item $h_t(x) \in C^1 \text{ on } \mathds{R}$
   \item $h_t(x) = h_t(-x)$
   \item $\forall a,\varepsilon \in\mathds{R}^{+\ast},~ \exists ~t
-          \in\mathds{R}^{+\ast} ~ | ~ h_t(x) \leq \varepsilon, x \in [-a,a]$
+          \in\mathds{R}^{+\ast} ~ | ~ h_t(x) \leq \varepsilon, x \in [-a,a]$\\
 \end{enumerate}
 
 \noindent\textbf{First Property - Constrained Image} \\
