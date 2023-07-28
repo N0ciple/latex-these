@@ -59,7 +59,6 @@ loss that drives the sparsity toward the predefined pruning rate.
 
 
 \subsection{Related Work}
-%TODO: modifier la partie travaux liés pour mettre en avant les méthodes de pruning
 
 % region
 % Neural networks have disrupted the field of machine learning, leading to
@@ -127,18 +126,9 @@ pruning, where individual weights of a given network are removed based on their
 importance, and \textit{(ii)} structured pruning, where entire columns, rows,
 channels, filters or even entire parts, such as skip connections of a residual
 network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \\
+
 % TODO: rajotuer une phrase pour dire que l'on s'inscrit dans le cadre du
 % pruning non structuré.
-
-% TODO: relire les sections et voir ce que l'on met dans travaux liés. On peut
-% envisager de mettre une section pruning, pruning non structuré, mangitude
-% pruning, et peut-être pruning avec budget ou reparamétrisation.
-
-% TODO: Liste des paragraphes à rajouter:
-% [X]: magnitude pruning
-% [X]: pruning sans finetuner les poids
-% [ ]: pruning avec reparamétrisation
-% [ ]: pruning avec budget
 
 \noindent\textbf{Unstructured magnitude pruning.} Unstructured magnitude
 pruning, has emerged as an effective heuristic for determining the saliency of
@@ -570,7 +560,7 @@ conventional approach where multidimensional tensors entries are indexed by $i$,
 in addition to the layer index $\ell$, effectively vectorising these entities
 for ease of manipulation. \\
 
-%TODO: The rest of this chapter is organised as follows...
+%BUG: A COMPLETER !! The rest of this chapter is organised as follows...
 
 % endregion
 
@@ -1490,12 +1480,11 @@ Conv4, ResNet20, and VGG16 networks using CIFAR-10 and CIFAR-100 datasets (see
 Both the proposed approach and \emph{budget only} variant are trained with the
 same hyperparameters, namely, the learning rate, weight decay, number of epochs
 and the \emph{Reduce on Plateau} policy for the learning rate. For the
-\textit{budget only} variant,  we perform
-%TODO: changer la valeur de 500 en 50.
-experiments by varying the mixing coefficient $\lambda$ from 0.5 to 500. The
-performances did not vary significantly w.r.t. $\lambda$, suggesting that the
-mixing coefficient does not have a significant impact on the performance.
-Therefore, in order to ensure the clarity of
+\textit{budget only} variant,  we perform experiments by varying the mixing
+coefficient $\lambda$ from 0.5 to 500. The performances did not vary
+significantly w.r.t. $\lambda$, suggesting that the mixing coefficient does not
+have a significant impact on the performance. Therefore, in order to ensure the
+clarity of
 \cref{fig:chap1:budget_only_conv4,fig:chap1:budget_only_resnet20,fig:chap1:budget_only_vgg16},
 we only display the results for $\lambda = 5$.\\
 
