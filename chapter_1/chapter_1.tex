@@ -47,14 +47,14 @@
 \section{Introduction}
 
 This chapter addresses the challenge of pruning large neural networks without
-degrading their performance. Most pruning methods degrade the performance of the
-neural network due to the pruning step that removes weights from the network,
-therefore, a costly fine-tuning step is required to recover the lost
-performance. The method we introduce in this chapter circumvents this issue and
-yields lightweight pruned networks with minimal performance degradation. This is
-achieved through a combination of weight reparametrisation that encompass a
-surrogate $\ell_0$ norm and a budget loss that drives the sparsity toward the
-predefined pruning rate.
+degrading their performance. Most of the  existing pruning methods degrade the
+performance of neural networks due to the pruning step that removes weights from
+the networks. Therefore, a costly fine-tuning step is usually required in order
+to compensate for the loss in performances. The method we introduce in this
+chapter circumvents this issue and yields lightweight pruned networks with
+minimal performance degradation. This is achieved through a combination of
+weight reparametrisation that encompasses  a surrogate $\ell_0$ norm and a budget
+loss that drives the sparsity toward the predefined pruning rate.
 
 
 
@@ -167,27 +167,27 @@ $\mathbf{m}_\alpha$ is a binary mask that is defined as follows:\\
   \end{cases}
 \end{equation}\\
 
-The threshold $\alpha$ is typically chosen to be the $k$-th percentile of the
-weights so that the pruning rate, defined as the fraction of non-zero weights,
-is equal to $k$.\\
+\noindent In \cref{eqn:chap1:magnitude_mask}, the threshold $\alpha$ is
+typically chosen to be the $k$-th percentile of the weights so that the pruning
+rate, defined as the fraction of non-zero weights, is equal to $k$.\\
 
-Unstructured magnitude pruning have been used in various works and in particular
+Unstructured magnitude pruning has been used in various works and in particular
 in \cite{DBLP:conf/nips/HanPTD15} where a three-step process is proposed:\\
 
 \begin{enumerate}
   \item The process begins with standard training to identify the most important
   connections within the network.
   \item This is followed by a magnitude pruning step where weights with the
-  smallest magnitude (or absolute value) are removed.
+  smallest magnitude (or absolute value) are removed until a given pruning rate
+  is reached.
   \item The final step involves fine-tuning the remaining weights to compensate
   for any loss of accuracy caused by the pruning.\\
 \end{enumerate}
 
-The authors also propose an iterative variant where the steps 2 and 3 are
+The authors also propose an iterative variant where steps 2 and 3 are
 repeated while gradually increasing the pruning rate until the final pruning
-rate is reached. This method was further used in
-\cite{DBLP:journals/corr/HanMD15}, where it was combined with quantisation and
-Huffman coding. In both methods
+rate is reached. This method was used in \cite{DBLP:journals/corr/HanMD15},
+where it was combined with quantisation and Huffman coding. In both methods
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15} obtaining the final
 network is computationally intensive due to the fine-tuning step, which can be
 all the more computationally intensive if the magnitude pruning and fine-tuning
@@ -212,10 +212,10 @@ trained lightweight subnetwork.\\
 technique where the weights are expressed as a function of other variables.
 Typically the weights used in the network, here denoted $\mathbf{\hat{w}}$ and
 referred to as \emph{apparent weights}, are expressed as a function of the
-\emph{latent weights} $\mathbf{w}$ and other variables. In
-\cref{schwarz2021powerpropagation}, \citeauthor{schwarz2021powerpropagation}
-presented a weight reparametrisation based on raising a weight to the power of
-$\alpha$ while preserving its sign. This reparametrisation is formalised as: \\
+\emph{latent weights} $\mathbf{w}$ and other variables. In \cite{powerprop},
+\citeauthor{powerprop} presented a weight reparametrisation based on raising a
+weight to the power of $\alpha$ while preserving its sign. This
+reparametrisation is formalised as: \\
 
 \begin{equation}
   \label{eqn:chap1:power_propagation}
@@ -223,8 +223,8 @@ $\alpha$ while preserving its sign. This reparametrisation is formalised as: \\
 \end{equation}\\
 
 \noindent where $\alpha$ is a hyperparameter of the method, typically set
-between 1 and 3 \cite{schwarz2021powerpropagation}. This reparametrisation
-creates a \emph{rich get richer (sic)} dynamics according to the authors,
+between 1 and 3 \cite{powerprop}. This reparametrisation
+creates a \emph{rich get richer (sic)} dynamic according to the authors,
 referring to the fact that the weights with the largest magnitude are all the
 more increased. The pruning is enforced by pruning reparametrised weights with
 magnitude pruning.\\
@@ -233,7 +233,10 @@ magnitude pruning.\\
 \noindent \textbf{Pruning with budget.} Most pruning techniques, including the
 ones presented in this section, enforce a pruning rate after the initial
 training. Consequently, the optimisation process is not taking into account the
-final weight budget that will be allocated to the network.\\ 
+final weight budget that will be allocated to the network. Some work tackled
+this issue by adding a loss that drives the network to respect a budget. Note
+that the works described subsequently all fall into the \emph{structured}
+pruning category.\\ 
 
 \citeauthor{lemaire2019structured} introduced in \cite{lemaire2019structured} a
 Budget-Aware Regularisation loss or BAR loss that performs structured pruning on
@@ -257,15 +260,49 @@ other hand. The BAR loss is defined as follows:\\
 
 \noindent where $\Phi$ is a mask sampled from the \emph{hard concrete}
 distribution \cite{louizos2017learning}, a continuous relaxation of the
-Bernoulli distribution. $V$ is the current budget used by the network, referred
-to as the \emph{activation volume} by the authors, $b$ and $a$ are
-hyperparameter detailed subsequently. This BAR loss is composed of two parts.
-The first part, $\mathcal{L}_S(\Phi)$ introduces sparsity in the network by
-penalising the masks $\Phi$ with the hard concrete loss
-\cite{louizos2017learning}, and the second part $f(V,a,b)$ controls the budget.
-The function $f$ implements a variant of the log barrier function
-\cite{boyd2004convex}, where $a$ controls the steepness of the function and $b$
-is the target budget.\\
+Bernoulli distribution. $V$ is the current budget used by the network, computed
+as the fraction of active channels in the activations and referred to as the
+\emph{activation volume} by the authors, $b$ and $a$ are hyperparameter detailed
+subsequently. This BAR loss is composed of two parts. The first part,
+$\mathcal{L}_S(\Phi)$ introduces sparsity in the network by penalising the masks
+$\Phi$ with the hard concrete loss \cite{louizos2017learning}, and the second
+part $f(V,a,b)$ controls the budget. The function $f$ implements a variant of
+the log barrier function \cite{boyd2004convex}, where $a$ controls the steepness
+of the function and $b$ is the target budget.\\
+
+ChipNet \cite{tiwari2021chipnet} is another channel-based structured pruning
+method that include a sparsity inducing loss $\mathcal{L}_c$ dubbed
+\emph{crispness loss} and a budget loss $\mathcal{L}_b$. Both loss are combined
+with the task loss with two mixing coefficients $\alpha_1$ and $\alpha_2$
+respectively, as show in \cref{eqn:chap1:chipnet_loss}:
+
+\begin{equation}
+  \label{eqn:chap1:chipnet_loss}
+  \mathcal{L} = \mathcal{L}_{\text{task}} + \alpha_1 \mathcal{L}_c + \alpha_2 \mathcal{L}_b
+\end{equation}\\
+
+The crispness loss is defined as the squared $\ell_2$ norm of the difference of
+$\mathbf{z}$ and $\tilde{\mathbf{z}}$ where $\mathbf{z}$ represents the masks of
+the channels and $\tilde{\mathbf{z}}$ an intermediate representation of
+$\mathbf{z}$. The intermediate representation $\tilde{\mathbf{z}}$ is itself
+parametrised by $\psi$, so that $\mathbf{z}=g(\tilde{\mathbf{z}})=g \circ
+f(\psi)$. The functions $f$ and $g$ are given in \cref{eqn:chap1:chipnet_f_g}:
+
+\begin{equation}
+  \label{eqn:chap1:chipnet_f_g}
+  \tilde{\mathbf{z}} = f(\psi) = \frac{1}{1 + \exp(-\beta(\psi-\psi_0))}, \quad \mathbf{z} = g(\tilde{\mathbf{z}}) = 1 + e^{-\gamma\tilde{\mathbf{z}}} + \tilde{\mathbf{z}}e^{-\gamma}
+\end{equation}\\
+
+\noindent where $\beta$, $\psi_0$ and $\gamma$ are hyperparameters of the
+method. For the budget loss, authors of \cite{tiwari2021chipnet} propose four
+variant depending on the type of budget that is enforced, namely: a
+\emph{channel budget} that computes fraction of channels that are not pruned, a
+\emph{volume budget} that is equivalent to the \emph{activation volume} of
+\cite{lemaire2019structured}, a \emph{parameter budget} and finaly a
+\emph{\ac{FLOP} budget}. In their experiments, the authors reported that they
+fine-tuned the networks after the pruning with the same hyperparameters as the
+initial training phrase and in particular with the same number of epochs,
+effectively doubling the training time.\\
 
 \noindent\textbf{Pruning without fine-tuning.} Most pruning methods cause a
 performance drop following the pruning step. This is due to the fact that the
@@ -345,7 +382,7 @@ intractable in practice with larger neural networks, in particular the
 computation of the hessian matrix which size is quadratic in the number of
 weights of the network.\\
 
-Whereas \ac{OBS} corrects the remaining weights after pruning it is possible to
+Whereas \ac{OBS} corrects the remaining weights after pruning, it is possible to
 introduce sparsity while training the network.
 \citeauthor{DBLP:conf/icml/KangH20} introduced a stochastic structured pruning
 method in \cite{DBLP:conf/icml/KangH20} that prunes the channels after a \ac{BN}
@@ -509,7 +546,8 @@ additional training time
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}. Moreover, the amount
 of weights pruned is enforced after the initial training, meaning that the final
 target size or weight budget is never considered in the optimisation procedure.
-Hence the need for a fine-tuning step. \\
+Indeed, separating the topology from weights tuning is sub-optimal, hence the
+need for a fine-tuning step. \\
 
 \subsection{Contributions}
 
