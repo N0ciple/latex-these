@@ -1,0 +1,194 @@
+\chapter{Introduction}\label{chap:intro}
+
+% - révolutions industrielles de la première à la 4ème avec pour objectifs la mecanisation du travail dans la première (détailler les 3 autres)
+
+% - composante de la 4ème révolution industrielle : 
+%     - l'intelligence artificielle permise par le développement des capacités de calcul
+%     - naissance d'objects intelligents et doté de capacités de calcul embarqués (smartphones, voitures autonomes, satellites, etc...)
+
+% - la taille des modèles est un frein au déploiement de l'intelligence artificielle sur des objets embarqués.
+% - CEPENDANT: la 4ème révolution industrielle est aussi celle des objets communiquants donc on pourrait déporter les calculs sur des serveurs distants.
+% - MAIS: il existe des raisons de vouloir faire du calcul embarqué:
+%     - confidentialité des données
+%     - distribuer la charge de calcul et ne pas assumer le coût, ni de la communication, ni du calcul
+%     - plus grand réactivité (temps de latence)
+%     - coût de la communication
+%     - pas necessairement d'accès à internet (autonomie: ex: rover sur Mars)
+
+From the spinning jenny, blast furnace and steam engine that sparked the first
+industrial revolution to the \ac{IOT} devices that drives the fourth, the
+objective of mechanising labour and optimising productivity has been a
+persistent theme throughout the past centuries. The first industrial revolution,
+which dates back to 1760, introduced mechanisation through the use of water
+wheels and steam engines. The second industrial revolution, starting towards the
+end of the \textsc{XIX}th century, is linked to the development of automobiles, crude oil
+extraction and assembly lines powered by electric energy. The third industrial
+revolution, also called the digital revolution took place in the second half of
+the \textsc{XX}th century and brought electronics, information and communication
+technology, and automated production. The Fourth Industrial Revolution, often
+known as Industry 4.0, inaugurates the digital integration of production chains
+as well as smart and connected devices that lead to more efficient manufacturing
+systems. The fourth industrial revolution focuses on the interconnectivity of
+devices and the development of their computational capabilities. This track
+leads to the emergence of \ac{IOT} devices with embedded computing facilities,
+such as smartphones, autonomous vehicles or satellites.\\
+
+In parallel with these industrial revolutions, the field of \ac{AI} has seen
+substantial growth and development. The term \emph{\acl{AI}} was first used at
+the Dartmouth workshop in 1956 which is considered to be the founding event of
+\ac{AI} as a research field \cite{dartmouth1956}. It launched decades of
+research into machine learning natural language processing among others
+\cite{nilsson1998artificial}. In the subsequent decades, \ac{AI} saw significant
+strides, including the development of rule-based systems, called expert systems
+\cite{giarratano1994expert}, in the 1970s and the early exploration of machine
+learning in the 1980s \cite{rumelhart1986learning}. These developments
+paralleled the third industrial revolution, setting the stage for further
+advancements in \ac{AI}. In the late XXth and early XXIst centuries, coinciding
+with the premises of the fourth industrial revolution, that \ac{AI} started to
+draw tremendous attention from both researchers and industrials with the advent
+of Deep Learning. Deep Learning is a subset of machine learning which uses
+multi-layer \ac{ANN} to learn and model complex patterns in datasets in an
+end-to-end fashion, bringing significant improvement over manually engineered
+features. The fast development of Deep learning has been driving advancements in
+various domains such as natural language processing
+\cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
+image and speech recognition
+\cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
+text and image generation
+\cite{goodfellow2020generative,karras2019style,DBLP:conf/emnlp/BudzianowskiV19},
+video game playing \cite{silver2016mastering,silver2018general} and molecule
+folding \cite{jumper2021highly} to name a few.\\
+
+
+The conquest of new fields and the quest for performance improvement of Deep
+Learning models have led to a significant increase in their computational
+complexity and size, particularly regarding their number of parameters. The
+sheer size of modern \ac{ANN} presents a significant barrier to their deployment
+on embedded devices whose memory and computational resources are inherently
+limited. To circumnavigate this hurdle, the prevalent approach is to offload
+computations onto remote servers, leveraging the ever-interconnected nature of
+modern \ac{IOT} devices and appliances.\\
+
+% TODO: Travailler le pragraphe suivant en donnant des raisons détaillées de
+% vouloir travailler en local. Il faut reprendre, entre autre, le point du fixme
+% dans le chapitre SOTA
+
+Nonetheless, several compelling reasons exist for conducting embedded
+computation. These include ensuring data privacy, distributing the computational
+load to avoid bearing the cost of communication and computation, enhancing
+responsiveness by reducing latency, minimising communication costs, and not
+necessarily relying on internet access (thus ensuring autonomy; e.g., a Mars
+rover).\\
+
+\section{Industrial Context}
+
+% - Thèse CIFRE Netamo 
+% - Netatmo : entreprise française spécialisée dans les objets connectés
+% - en particulier les cameras de sécurité pour les particuliers qui font de la reconnaissance de visages et de la detection d'objets
+% - le but est de faire du calcul embarqué sur les cameras pour éviter de devoir envoyer les données sur des serveurs distants
+% - C'est utile pour les raisons évoquées à la section précédente, et en particulier pour la confidentialité des données etle fait de ne pas avoir à faire payer d'abonnement aux utilisateurs
+
+This research work forms part of a CIFRE thesis with Netatmo, a French company
+specialising in smart devices that is now part of the Legrand Group. Notably,
+Netatmo has established a niche in security cameras for individual use that
+perform tasks such as face recognition and object detection.\\
+
+The objective is to conduct embedded computation on these cameras, negating the
+need to send data to distant servers. This approach aligns well with the reasons
+outlined in the previous section, particularly in ensuring data privacy and
+averting the necessity of charging users with subscription fees.\\
+
+As such, this research aims to delve into the compression of neural networks to
+help overcome the constraints of model size, facilitating the deployment of \ac{AI}
+in embedded devices. This would be a significant stride in realising the full
+potential of Industry 4.0, enabling greater efficiency, productivity, and
+autonomy while ensuring user privacy.\\
+
+
+\section{Why Deep learning}
+
+Deep learning, a subset of machine learning, has been at the forefront of the
+most exciting capabilities in Artificial Intelligence. It employs artificial
+neural networks with multiple abstraction layers to model and understand complex
+patterns in datasets. Deep learning models have proven their mettle in numerous
+domains and have been particularly revolutionary in the realm of computer vision
+tasks.\\
+
+Computer vision, which lies at the heart of Netatmo's smart camera
+functionalities, is a field of artificial intelligence that trains computers to
+interpret and understand the visual world. By utilising digital images from
+cameras and videos, as well as deep learning models, machines can accurately
+identify and classify objects, and then react to what they 'see.'\\
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{chapter_intro/assets/models_vs_human.pdf}
+    \caption{Models top-5 accuracy on ImageNet \cite{deng2009imagenet} compared
+    to human performance.}
+    \label{fig:intro:models_vs_humans}
+\end{figure}
+
+Neural networks are the backbone of most advanced computer vision applications,
+including Netatmo's facial recognition and object detection features. Neural
+networks are computing systems with interconnected nodes that work similarly to
+neurons in the human brain. Using algorithms, they can recognise patterns, and
+by processing data through these networks, accurate decisions or predictions can
+be made.\\
+
+More specifically, deep learning's Convolutional Neural Networks (CNNs) have set
+new benchmarks in the field of computer vision. They can process images
+directly, reducing the need for manual feature extraction, and their capacity
+for hierarchical feature learning makes them particularly effective for tasks
+such as object recognition and classification. Their architecture is such that
+they excel at recognising patterns in the spatial and hierarchical structure of
+the data, enabling them to outperform other machine learning models in computer
+vision tasks.\\
+
+In essence, given the nature of tasks the Netatmo cameras are designed to
+perform, deep learning and neural networks are not just a choice but a
+necessity. They represent the state of the art in computer vision tasks and
+continue to push the boundaries of what is possible in this domain.\\
+
+\section{Challenges}
+
+While deep learning, particularly through the use of Convolutional Neural
+Networks (CNNs), is the technology of choice for computer vision applications,
+it comes with its set of challenges that need to be addressed, especially in the
+context of deploying these models on embedded devices. These challenges include,
+but are not limited to, model complexity, computational requirements, power
+consumption, data privacy, and real-time processing.\\
+
+One of the most significant challenges in deploying deep learning models,
+especially CNNs, on embedded devices, is the large model size. These models
+often have millions of parameters, making them computationally heavy and
+challenging to fit into the limited memory of embedded devices.\\
+
+Secondly, these complex models require substantial computational resources to
+operate. This translates into high energy consumption, a critical issue for
+battery-powered devices. Balancing the demand for high-performing models against
+the constraints of power consumption becomes a significant challenge.\\
+
+Data privacy presents another challenge. While it is possible to process data on
+remote servers, doing so can raise serious privacy concerns. In the context of
+Netatmo's security cameras, the data being processed can be sensitive, as it can
+involve recognising faces or detecting objects in private spaces.\\
+
+Another consideration is the need for real-time processing. For security
+cameras, it is crucial to detect and alert anomalies in real-time. High latency
+can lead to delayed alerts, reducing the effectiveness of the security system.\\
+
+Lastly, the deployment of deep learning models on embedded devices must be
+robust to environmental changes and adaptable to new situations. It is crucial
+to ensure that the performance of these models remains consistent in different
+conditions.\\
+
+To conclude, while deep learning and CNNs represent an exciting frontier in
+computer vision applications, several challenges need to be addressed for
+efficient and effective deployment on embedded devices. Addressing these
+challenges forms the crux of this research, with a particular focus on model
+compression techniques to reduce the size and complexity of neural networks
+without significant loss in performance.\\
+
+
+\section{Contributions}
+\section{Outline}
