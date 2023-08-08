@@ -10,33 +10,35 @@
   This chapter focuses on the development of lightweight and efficient neural
   networks for image classification tasks, particularly in visual category
   recognition. These lightweight networks are increasingly important for
-  intelligent embedded systems with limited computational resources and energy
-  availability. Pruning techniques are popular in designing lightweight
-  networks, but they require weight training, pruning and fine-tuning. These
-  weights are pruned based on criteria or saliency indicators that are learned
-  alongside the weights.
+  intelligent embedded systems with limited computational and energy resources.
+  Pruning techniques are popular in designing lightweight networks, but they
+  require weight training, pruning and fine-tuning. These weights are pruned
+  based on criteria or saliency indicators that are learned alongside the
+  weights.
   
   This chapter introduces approaches that extract effective subnetworks by
   pruning large untrained networks, without weight training. A new method, named
   \acf{ASLP}, is proposed to extract effective subnetworks from a large,
   untrained deep neural network using the \acf{STGS} technique, which enables
   stochastic computation graphs to be trained with discrete variables while
-  still preserving differentiability. Additionally, the \acf{SR} weight
-  rescaling mechanism is introduced. It rescales the weight distributions of the
-  selected subnetworks and as a result, improves the performance and reduces the
-  number of epochs required for training as shown in later experiments. Finally,
-  we introduce a novel pruning strategy that finds the pruning rate yielding the
-  best performances, without the need to search for and enforce a fixed pruning
-  rate.\\
+  still preserving differentiability. Additionally,a weight rescaling mechanism,
+  referered to as \acf{SR}, is introduced. It rescales the weight distributions
+  of the selected subnetworks and as a result, improves the performance and
+  reduces the number of epochs required for training as shown later in
+  experiments. Finally, we introduce a novel pruning strategy that finds the
+  pruning rate yielding the best performances, without the need to search for
+  and enforce a fixed pruning rate.\\
 
-  The \ac{ASLP} method, which integrates the \ac{STGS} sampling technique and the
-  \ac{SR} mechanism, is evaluated through experiments on CIFAR-10, CIFAR-100,
-  and TinyImageNet datasets. In most cases, \ac{ASLP} outperforms other
-  state-of-the-art methods and consistently surpasses them for various network
-  architectures. Further experiments show that the sparsity of the networks
-  extracted with \ac{ASLP} can be increased with minimal impact on the
-  performance. They also demonstrate the robustness of the method to extreme
-  learning rate values and the effectiveness of the \ac{SR} mechanism.\\
+  The \ac{ASLP} method, which integrates the \ac{STGS} sampling technique and
+  the \ac{SR} mechanism, is evaluated through experiments on CIFAR-10,
+  CIFAR-100, and TinyImageNet datasets. In most cases, \ac{ASLP} outperforms
+  other state-of-the-art methods and consistently surpasses them for various
+  network architectures. Further experiments show that the sparsity of the
+  networks extracted with \ac{ASLP} can be increased with minimal impact on the
+  performance. These experiments also show the robustness of the method to
+  extreme learning rate values and the effectiveness of the \ac{SR} mechanism
+  regarding the performance improvement and the reduction in the number of
+  epochs needed to reach convergence.\\
 
   \noindent This chapter presents work that has resulted in the publication of the
   following conference article:
@@ -63,24 +65,24 @@ In this chapter, we tackle the challenge of extracting lightweight and effective
 subnetworks from large, untrained neural networks. The goal is to obtain
 subnetworks that have both a smaller number of parameters compared to the
 original network and compelling performances. Contrary to \cref{chap:chapter1}
-where the focus was on soft pruning weight based on their value while training,
+where the focus was on soft-pruning weights based on their value while training,
 the method presented in this chapter relies on training latent masks. The latter
-represent a parametrisation of the probabilities for the weights to be selected
-on not in a sampled topology. Unlike the method described in
+represents a parametrisation of the probabilities for the weights to be selected
+or not in a sampled topology. Unlike the method described in
 \cref{chap:chapter1}, the method introduced in this chapter is, on the one hand,
 stochastic, and on the other hand, decorrelating the pruning criterion from the
 weight value.\\
 
-This method boasts several advantages over the method presented in the previous
-chapter: First, as we just mentioned, the pruning criterion is decorrelated from
-the value of the weight, offering more flexibility. Indeed, two weights with the
-same value can have different probabilities of being selected. Second, this
-method does not train the weights but selects the best subset of them to
-minimise the loss. Consequently, this method is perfectly suited for
-applications where training the weight might not be possible and activating or
-deactivating a weight is the only option. Finally, from a global standpoint,
-this method provides a new path to neural network training that does not rely on
-weight training.\\
+This method exhibits several advantages over the method presented in the
+previous chapter: First, as we just mentioned, the pruning criterion is
+decorrelated from the value of the weight, offering more flexibility. Indeed,
+two weights with the same value can have different probabilities of being
+selected. Second, this method does not train the weights but selects the best
+subset of them to minimise the loss. Consequently, this method is perfectly
+suited for applications where training the weight might not be possible and
+activating or deactivating a weight is the only option. Finally, from a global
+standpoint, this method provides a new path to neural network training that does
+not rely on weight training.\\
 
 \subsection{Related Work}\label{sec:chap2:related_work}
 
@@ -143,7 +145,7 @@ $g_j(\bf{w};\mathcal{D})$ is the gradient of the loss function with respect to
 an auxilarry variable denoted $c_j$ by the authors that represents the presence
 ($c_j=1$) or absence ($c_j=0$) of the connection $j$ in the network. The
 connections are then sorted by their connection sensitivity score and the
-top-$k$ connection are kept to match a given pruning rate.\\
+top-$k$ connections are kept to match a given pruning rate.\\
 
 GraSP (Gradient Signal Preservation) \cite{DBLP:conf/iclr/WangZG20} is a
 refinement of SNIP that takes into account the \emph{gradient flow}. The authors
@@ -158,16 +160,17 @@ network training. The scores of the weights are defined in a vectorised way as :
 weights, $\bf{H}$ is the Hessian matrix of the loss function with respect to the
 weights and $\bf{g}$ is the gradient of the loss function with respect to the
 weights. Considering how the score is defined in \cref{eqn:chap2:grasp_score},
-pruning is achieved by removing the top-$k$ weights that reduces the gradient
+pruning is achieved by removing the top-$k$ weights that reduce the gradient
 flow to match a given pruning rate.\\
 
-Both SNIP and GraSP require a single a mini-batch to compute their respective
-scrores, whereas SynFlow \cite{DBLP:conf/nips/TanakaKYG20} is a data-free
-pruning method that seeks to preserve \emph{synaptic flow} in the network in
-order to prevent \emph{layer-collapse}. The latter is defined by the authors as
-the complete pruning of a layer, which effectively renders the network
-untrainable. For a given layer $\ell$, the synaptic flow score of the weights
-$\theta_\ell$ of the layer is defined as :
+Both SNIP and GraSP require a single mini-batch to compute their respective
+scrores. Another pruning method known as SynFlow
+\cite{DBLP:conf/nips/TanakaKYG20} is data-free and seeks to preserve
+\emph{synaptic flow}, defined subsequently, in a given  network in order to
+prevent \emph{layer-collapse}. The latter is defined by the authors as the
+complete pruning of a layer, which effectively renders the network untrainable.
+For a given layer $\ell$, the \emph{synaptic flow} score of the weights
+$\theta_\ell$ of a layer $\ell$ is defined as :
 
 \begin{equation}
   \label{eqn:chap2:synflow_score}
@@ -254,26 +257,26 @@ subnetworks that already achieves compelling performances without any weight
 training.\\ 
 
 
-\noindent\textbf{Proof of effective subnetworks existence.} At first, it seems counterintuitive that
-there exists a subnetwork in a large network, that can achieve compelling
-performances without any weight training. This has been first conjectured in
-\cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \acl{LTH}. A  few
-theoretical analyses provide evidence that such subnetworks do exist.
+\noindent\textbf{Existence of effective subnetworks.} At first, it seems
+counterintuitive that there exists a subnetwork in a large network, that can
+achieve compelling performances without any weight training. This has been first
+conjectured in \cite{DBLP:conf/cvpr/RamanujanWKFR20} as the Strong \acl{LTH}. A
+few theoretical analyses provide evidence that such subnetworks do exist.
 \cite{DBLP:conf/icml/MalachYSS20} demonstrate that a neural network of width $d$
 and depth $l$ can be approximated by pruning a randomly initialised one that is
 a factor $O(d^4l^2)$ wider and twice as deep. The  upper bound on the network
 width has later been improved by \cite{DBLP:conf/nips/OrseauHR20} to
 $O(d^2\log(dl))$ under the assumption of a hyperbolic weight distribution. This
 upper bound has eventually been refined to $O(d\log(dl))$ by
-\cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of distributions, including
-the uniform one which is widely used for weight initialisation
+\cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of weight distributions,
+including the uniform one which is widely used for weight initialisation
 \cite{DBLP:conf/iccv/HeZRS15}.\\
 
 \noindent\textbf{Subnetwork topology extraction.} Although the existence of
 effective subnetworks with untrained weights has been established, no
-constructive proof has been provided in order to identify the lightweight and
-efficient from-scratch subnetworks. In this context, several methods proposed
-heuristics to extract them from a large untrained network
+constructive proof has been provided in order to identify them. In this context,
+several methods proposed heuristics to extract the lightweight and efficient
+subnetwork from a large untrained network
 \cite{DBLP:conf/nips/ZhouLLY19,DBLP:conf/cvpr/RamanujanWKFR20}.\\
 
 Supermark is a method introduced by \citeauthor{DBLP:conf/nips/ZhouLLY19} in
@@ -283,6 +286,7 @@ weights of the network are stochastically sampled following a Bernoulli
 distribution parametrised by a latent variable $m$. To that extent, weights are
 reparametrised as follows:
 \begin{equation}
+  \label{eqn:chap2:sigmoid_reparam}
   w' = w_i \odot \text{Bern}(\sigma(m))
 \end{equation}
 where $w'$ is the \emph{effective weight} used in the network, $w_i$ is the
@@ -295,8 +299,8 @@ to train directly $m$ with \ac{SGD}. Instead, the authors proposed to use the
 gradient in the backward pass with a continuous surrogate function of the
 forward pass non-differentiable function. \citeauthor{DBLP:conf/nips/ZhouLLY19}
 also introduced a weight rescaling mechanism, called \ac{DWR}, to mitigate the
-weight statistics disrupting due to pruning \cite{DBLP:conf/iccv/HeZRS15}. More
-details are given in
+disruption of weight statistics due to pruning \cite{DBLP:conf/iccv/HeZRS15}.
+More details are given in
 \cref{sec:chap2:stochastic-sampling,sec:chap2:smart-rescale}.\\
 
 
@@ -322,8 +326,9 @@ pruning rate throughout all the layers of the network, which is suboptimal.
 Indeed, the optimal pruning rate is layer-dependent and varies from one layer to
 another. Moreover, finding the pruning rate giving the highest performances has
 to be made through a cumbersome and time-consuming grid search. Like Supermask,
-Edge-popup also includes a weight rescaling mechanism subsequently detailed in
-\cref{sec:chap2:smart-rescale}.\\
+Edge-popup also includes a weight rescaling mechanism, based on a learnt
+rescaling factor that rescale the weight distribution in a layer-wise fashion,
+subsequently detailed in \cref{sec:chap2:smart-rescale}.\\
 
 \subsection{Contributions}
 \label{sec:chap2:intro_contributions}
@@ -341,12 +346,12 @@ training is accelerated and the accuracy of the resulting subnetworks improves
 as shown later in experiments. Our proposed pruning strategy is designed such
 that it does not necessitate any prior information regarding the optimal pruning
 rate that would yield the best performance. Instead, it automatically sets the
-optimal rate, eliminating the need for exhaustive grid search procedures.\\ 
+optimal rate, eliminating the need for exhaustive grid search.\\ 
 
 The rest of this chapter is organized as follows: \cref{sec:chap2:method} delves
 into our proposed method, named \acf{ASLP}, for extracting efficient subnetworks
-using \acl{GS}, including stochastic weight sampling and our unique weight
-rescaling approach. The overall workflow of our proposed method is detailed in
+using \acl{GS}, including stochastic weight sampling and our weight rescaling
+approach. The overall workflow of our proposed method is detailed in
 \cref{sec:chap2:overview}. In \cref{sec:chap2:experiments}, we share the results
 of our comprehensive experiments, including performance benchmarks, the impact
 of our weight rescaling approach, the effect of increased a posteriori sparsity,
@@ -354,8 +359,8 @@ and the impact of the learning rate on the training convergence speed and final
 performance. We conclude the chapter in \cref{sec:chap2:conclusion}, summarizing
 our contributions and our key findings. As we will demonstrate, our new approach
 overcomes several of the challenges associated with previous techniques,
-offering a more efficient and effective way to identify and train
-high-performance subnetworks without weight training.
+offering a more efficient and effective way to extract high-performance
+subnetworks without weight training.
 
 
 \section{Extracting Effective Subnetworks with Gumbel-Softmax}\label{sec:chap2:method}
@@ -439,16 +444,18 @@ algorithm:\\
 \noindent As a result, although masks $\bm{m}_\ell$ are sampled and thus
 disconnected from the computation graph (sampling being not differentiable),
 their reparametrisation $\bm{\hat{m}}_\ell$ can be updated as if they were used
-in the computational graph as shown in \cref{eqn:chap2:pruned_layer_eq}.\\
+in the computation graph as shown in \cref{eqn:chap2:pruned_layer_eq}.\\
 
 
 \noindent\textbf{Gumbel-Softmax.} In what follows, we consider an alternative to
-\ac{STE} based on \acf{GS} \cite{DBLP:conf/iclr/JangGP17} that
-demonstrates better performances for differentiable categorical sampling.
-Gumbel-Softmax is a technique that can be used to approximate a discrete
-categorical distribution with a continuous relaxation. Gumbel-Softmax works by
-using the Gumbel distribution to add noise to a categorical distribution and
-then applying the Softmax function to obtain a continuous relaxation of the
+\ac{STE} based on \acf{GS} \cite{DBLP:conf/iclr/JangGP17} that demonstrates
+better performances for differentiable categorical sampling, which is the
+process of randomly selecting a category from a given set of categories, where
+each category has a specified probability of being chosen. Gumbel-Softmax is a
+technique that can be used to approximate a discrete categorical distribution
+with a continuous relaxation. Gumbel-Softmax works by using the Gumbel
+distribution \cite{gumbel1935valeurs} to add noise to a categorical distribution
+and then applying the Softmax function to obtain a continuous relaxation of the
 discrete distribution. The proposed method, dubbed as \acf{STGS}, is based on a
 variant of \acl{GS} combined with \acl{STE}. In the forward pass, the softmax of
 \ac{GS} is replaced by an argmax operator. Since this operator is not
@@ -456,7 +463,7 @@ differentiable, the standard softmax is considered in the backward pass. The
 argmax operator allows sampling from a categorical distribution, as the limit of
 \ac{GS} (\emph{i.e.}, when its softmax temperature approaches zero). \\
 
-Let $z$ be a categorical random variable, associated with $n$ class probability
+Let $z$ be a categorical random variable, associated with $n$-class probability
 distribution $\mathcal{P} = [\pi_1,\dots,\pi_n]$. In order to sample in a
 differentiable manner, the Gumbel-Softmax estimator takes as an input a vector
 of log-probabilities \\
@@ -476,8 +483,9 @@ of our categorical variable $z$ is obtained as \\
   q = \underset{k}{ \text{argmax}} \ [ \log(\pi_k)+g_k ],
 \end{equation}\\
 
-with $g_k$ being independent and identically distributed sampled from  the
-Gumbel distribution denoted $\mathcal{G}(0,1)$.\\
+with $g_k$ being independent and identically distributed samples from  the
+Gumbel distribution with zero mean and unit variance, denoted
+$\mathcal{G}(0,1)$.\\
 
 For mask sampling, only two possible outcomes are considered. Either the
 corresponding weight is selected and its mask is set to 1, or it is pruned from
@@ -495,10 +503,10 @@ distribution $\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
   \end{array} \right.
 \end{equation}\\
 
-with $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
+with, again, $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
 underlying connection. Since there are only two mutually exclusive outcomes,
-$\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or
-not) in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
+$\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or not)
+in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
 Considering \cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
 is defined as\\
 
@@ -579,9 +587,8 @@ weight level:\\
 
 Here, the second coefficient of the vector, normally representing
 $\log(1-p_{ij})$, is set and fixed to 0. It is important to note that this
-formulation is not equal to the ones of
-\cref{eqn:chap2:gumbel-softmax-input,eqn:chap2:our-input-formulation}. We
-interpret this formulation as:
+formulation is not the same as the one of \cref{eqn:chap2:gumbel-softmax-input}.
+We interpret the formulation of \cref{eqn:chap2:our-input-formulation} as:
 
 \begin{equation}
   \label{eqn:chap2:our-formulation}
@@ -601,15 +608,18 @@ as an input for \ac{STGS}, we interpret \cref{eqn:chap2:gumbel-softmax-input} as
 $\log(\mathcal{P}_{ij}(.)) + c$ , which is the input of the argmax in
 \cref{eqn:chap2:gumbel-softmax-argmax}.\\
 
-The constant $c \in \mathds{R}$ does not need to be known.
-Adding this constant ensures that even if $\bm{\hat{m}}_{ij} > 0$, we can still interpret $p_{ij}$
-as a probability with $\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in [0,1]$. This is
-enforced by setting the second coefficient of the vector to 0, rather
-than computing it explicitly. Although different, the formulation of
+The constant $c \in \mathds{R}$ does not need to be known. Adding this constant
+ensures that even if $\bm{\hat{m}}_{ij} > 0$, we can still interpret $p_{ij}$ as
+a probability with $\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in
+[0,1]$. This is enforced by setting the second coefficient of
+\cref{eqn:chap2:our-input-formulation,eqn:chap2:our-formulation}  to zero,
+rather than computing it explicitly. Although different, the formulation of
 \cref{eqn:chap2:our-formulation} is theoretically equivalent to the
-aforementioned sigmoid reparametrisation. Indeed, solving the system of
-\cref{eqn:chap2:our-formulation} with respect to $\bm{\hat{m}}_{ij}$ yields $p_{ij} =
-  \sigma(\bm{\hat{m}}_{ij})$ (see \cref{prop:chap2:probability-interpretation}). \\
+aforementioned sigmoid reparametrisation (see
+\cref{eqn:chap2:sigmoid_reparam,eqn:chap2:pruned_layer_eq2}). Indeed, solving
+the system of \cref{eqn:chap2:our-formulation} with respect to
+$\bm{\hat{m}}_{ij}$ yields $p_{ij} = \sigma(\bm{\hat{m}}_{ij})$ (see
+\cref{prop:chap2:probability-interpretation}). \\
 
 \begin{proposition}
   [Formulation equivalence]
@@ -632,10 +642,10 @@ aforementioned sigmoid reparametrisation. Indeed, solving the system of
   $$\\
   Substracting $(2)$ from $(1)$ yields:\\
   $$ (1) - (2) \Leftrightarrow \bm{\hat{m}}_{ij} = \displaystyle\log\left( \frac{p_{ij}}{1 - p_{ij}} \right)$$\\
-  $$ \Leftrightarrow \log\left(\frac{1-p_{ij}}{p_{ij}} \right) = -
-    \bm{\hat{m}}_{ij}$$\\
+  % $$ \Leftrightarrow \log\left(\frac{1-p_{ij}}{p_{ij}} \right) = -
+  %   \bm{\hat{m}}_{ij}$$\\
   $$ \Leftrightarrow \frac{1}{p_{ij}} - 1 = \exp(-\bm{\hat{m}}_{ij})$$\\
-  $$ \Leftrightarrow \frac{1}{p_{ij}} = \exp(-\bm{\hat{m}}_{ij}) + 1$$\\
+  % $$ \Leftrightarrow \frac{1}{p_{ij}} = \exp(-\bm{\hat{m}}_{ij}) + 1$$\\
   $$ \Leftrightarrow p_{ij} = \frac{1}{\exp(-\bm{\hat{m}}_{ij}) + 1}$$\\
   $$ \Leftrightarrow p_{ij} = \sigma(\bm{\hat{m}}_{ij})$$\\
 
@@ -653,7 +663,7 @@ initialised to 0 (see \cref{sec:chap2:experiments}) and the sigmoid function
 applied to them makes the gradients of $\bm{\hat{m}}_{ij}$ vanishingly small
 when $\bm{\hat{m}}_{ij}$ deviate from 0. Because $\bm{\hat{m}}_{ij}$ are updated
 following the \ac{SGD} algorithm, vanishingly small gradients results in
-vanishigly small updates of $\bm{\hat{m}}_{ij}$. In practice, it prevents the
+vanishingly small updates of $\bm{\hat{m}}_{ij}$. In practice, it prevents the
 $\bm{\hat{m}}_{ij}$ reaching $\pm\infty$ and thus
 $\sigma(\bm{\hat{m}}_{ij})=p_{ij}$ from reaching 0 or 1, which validates the
 assumption of \cref{prop:chap2:probability-interpretation}.\\
@@ -683,7 +693,7 @@ not trained, it is all the more important to address this issue. The sampling of
 the weights alters the original weight distribution and therefore its
 statistics.\\
 
-\ac{DWR} \cite{DBLP:conf/nips/ZhouLLY19}, along with the \ac{SKD}
+\acf{DWR} \cite{DBLP:conf/nips/ZhouLLY19}, along with the \ac{SKD}
 \cite{DBLP:conf/cvpr/RamanujanWKFR20}, are two recognised strategies for
 adjusting the weights of chosen subnetworks to mitigate the aforementioned
 issue. Each approach has its limitations, which we address with our proposed
@@ -691,24 +701,26 @@ weight rescaling method.\\
 
 \noindent\textbf{ \acl{DWR}.} The \ac{DWR} \cite{DBLP:conf/nips/ZhouLLY19}
 method calculates the effective pruning rate at each training step on a
-layer-by-layer basis, denoted the \emph{observed} pruning rate. This is achieved
-by dividing the number of active weights in the layer (corresponding to a mask
-value of 1) by the layer total weight count. Subsequently, all weights are
-rescaled by multiplying them with the inverse of the observed pruning rate. A
-drawback of \ac{DWR} is that it demands the storage of sampled masks and the
-calculation of the observed pruning rate at each training step for every layer
-in the network. This makes the procedure computationally demanding. Furthermore,
-the flexibility and adaptability of the method are limited due to the rescaling
-being tied to the pruning rate. There is no guarantee that the inverse of the
-observed pruning rate is the optimal factor to prevent changes to the weight
-distribution statistics. The performance boost attributable to \ac{DWR}, as
-noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the increase of
-the standard deviation of the Xavier (or Glorot) initialisation
-\cite{glorot2011deep} that the author used. Indeed, within the context of this
-chapter, the Kaiming initialisation \cite{DBLP:conf/cvpr/HeZRS16}, has a larger
-standard deviation and achieves superior results
-\cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:journals/corr/abs-2202-12002}. Kaiming
-and Glorot initialisation are detailed in \cref{sec:appendix:xavier_init}\\
+layer-by-layer basis, referred to as the \emph{observed} pruning rate. This is
+achieved by dividing the number of active weights in the layer (corresponding to
+a mask value of 1) by the total number of weights in the layer. Subsequently,
+all weights are rescaled by multiplying them with the inverse of the observed
+pruning rate. A drawback of \ac{DWR} is that it demands the storage of sampled
+masks and the calculation of the observed pruning rate at each training step for
+every layer in the network. This makes the procedure computationally demanding.
+Furthermore, the flexibility and adaptability of the method are limited due to
+the rescaling being tied to the pruning rate; there is no guarantee that the
+inverse of the observed pruning rate is the optimal factor to prevent changes to
+the weight distribution statistics. The performance boost attributable to
+\ac{DWR}, as noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the
+increase of the standard deviation of the Xavier (or Glorot) initialisation
+\cite{glorot2011deep} that the author used. Experimentaly, a larger standard
+deviation improve the performance within the context of this chapter. Indeed,
+the Kaiming initialisation\footnote{Kaiming and Glorot initialisation are
+detailed in \cref{sec:appendix:xavier_init}} \cite{DBLP:conf/cvpr/HeZRS16}, has
+a larger standard deviation than the Xavier initialisation and achieves superior
+results
+\cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:journals/corr/abs-2202-12002}.\\
 
 \noindent\textbf{\acl{SKD}.} The Kaiming initialisation
 \cite{DBLP:conf/cvpr/HeZRS16} was presented by
@@ -727,7 +739,7 @@ rescaling factor proportionally to the pruning rate (as achieved for instance in
 \cite{DBLP:conf/nips/ZhouLLY19}), \ac{SR} is learned layerwise and provides an
 effective (and also efficient) way to adapt the dynamic of the forward pass
 without retraining the entire weights of the selected subnetwork. These
-localised adjustments of distributions provides an advantage over the
+localised adjustments of distributions provide an advantage over the
 aforementioned methods that depend on a scaling factor that is reliant on the
 pruning rate and which is the same across all layers in the case of the Scaled
 Kaiming distribution. This flexibility ends up reducing the number of epochs
@@ -748,9 +760,9 @@ With \ac{SR}, the $\ell$-th layer network output becomes \\
 \noindent where $s_\ell$ refers to the rescaling factor  of the $\ell$-th layer
 (see also algorithm~\ref{alg:chap2:ASLP}). Smart Rescale increases the
 flexibility of subnetwork selection and adaptation compared to \ac{DWR} (which
-is bound to the pruning rate). Moreover, scaling factors obtained with \ac{SR}
-vary smoothly, consequently making the training more stable with \ac{SGD}
-compared to the ones obtained with \ac{DWR} which are again inversely
+is again bound to the pruning rate). Moreover, scaling factors obtained with
+\ac{SR} vary smoothly, consequently making the training more stable with
+\ac{SGD} compared to the ones obtained with \ac{DWR} which are again inversely
 proportional to the observed pruning rates, and changes of the latter are more
 abrupt due to stochastic mask sampling. \\
 
@@ -760,18 +772,17 @@ abrupt due to stochastic mask sampling. \\
 \label{sec:chap2:freezing_topology}
 
 This section presents a pruning strategy to evaluate our method on a fixed
-topology. Once the \emph{latent} masks $\bm{\hat{m}}_{ij}$ are trained, a
-pruning step is applied to extract a subnetwork from the original heavy and
-unpruned network. This pruning fixes the values of the masks $\bm{m}_{ij}$ to
-either 0 or 1 (\emph{c.f.} \cref{eqn:chap2:pruned_layer_eq}), effectively
-freezing the network topology which was previously stochastic. This pruning step
-does not enforce a specific pruning rate, rather it is based on thresholding the
-weights probability of being selected $p_{ij}$. The resulting pruning rate,
-denoted \emph{observed} pruning rate is computed as the fraction of weights
-whose $p_{ij}$ is bellow the said threshold, denoted $\tau$. This pruning step
-can be defined as applying the function $\xi_\tau$ to each mask
-$\bm{\hat{m}}_{ij}$, and assigning its result to $\bm{m}_{ij}$, as shown in
-\cref{eq:chap2:pruning}.\\
+topology. Once the \emph{latent} masks $\bm{\hat{m}}_{ij}$ trained, a pruning
+step is applied to extract a subnetwork from the original heavy and unpruned
+network. This pruning fixes the values of the masks $\bm{m}_{ij}$ to either 0 or
+1 (\emph{c.f.} \cref{eqn:chap2:pruned_layer_eq}), effectively freezing the
+network topology which was previously stochastic. This pruning step does not
+enforce a specific pruning rate, it is rather based on thresholding the weights
+probability of being selected $p_{ij}$. The resulting \emph{observed} pruning
+rate is computed as the fraction of weights whose $p_{ij}$ is below the said
+threshold, denoted $\tau$. This pruning step can be defined by applying the
+function $\xi_\tau$ to each mask $\bm{\hat{m}}_{ij}$, and assigning its result
+to $\bm{m}_{ij}$, as shown in \cref{eq:chap2:pruning}.\\
 
 \begin{equation}
   \bm{m}_{ij} \leftarrow \xi_\tau(\bm{\hat{m}}_{ij}) =
@@ -794,12 +805,12 @@ as the logit function, whose expression is given in \cref{eqn:chap2:logit}.\\
 
 Our pruning strategy seeks to retain the weights that have the highest
 probability of being present in the sampled topologies. Specifically, we set
-$\tau$ so that retained weights must be selected, on average, in at least of
-half the sampled topologies. This implies that the weight selection
-probabilities $p_{ij}$, which are defined as $\sigma(\bf{\hat{m_{ij}}})$, must
-be greater or equal than $\tau=0.5$, otherwise, the related weight $\bm{w}_{ij}$
-is pruned. In other words, the weight is kept if the binary event of keeping a
-connection is more likely than its removal. Since $p_{ij}$ is defined as
+$\tau$ so that retained weights must be selected, on average, in at least half
+the sampled topologies. This implies that the weight selection probabilities
+$p_{ij}$, which are defined as $\sigma(\bf{\hat{m_{ij}}})$, must be greater or
+equal than $\tau=0.5$, otherwise, the related weight $\bm{w}_{ij}$ is pruned. In
+other words, the weight is kept if the binary event of keeping a connection is
+more likely than its removal. Since $p_{ij}$ is defined as
 $\sigma(\bm{\hat{m}}_{i,j})$, in terms of latent masks, it means that a weight
 is kept if its associated latent mask $\bm{\hat{m}}_{i,j} \geq
 \sigma^{-1}(0.5)=0$. We refer to this pruning method as \textit{thresholding}.\\
@@ -898,12 +909,11 @@ effectiveness of our thresholding pruning strategy method.
 Our experiments were conducted on the CIFAR-10, CIFAR-100 and TinyImageNet
 datasets which are described in \cref{sec:dlo:datasets}. Unless stated
 otherwise, on each table we report the test accuracy evaluated on the test set
-of the said datasets. This accuracy is given in percentages with the standard
+of the datasets. This accuracy is given in percentages with the standard
 deviation. The latter is given numerically in tables or represented by the
-shaded area arround curves for figures. Values are obtained by averaging 5
-independent runs for each data point. The architectures considered are Conv2,
-Conv4, Conv6, VGG16, ResNet-20 and ResNet-18, which are presented in
-\cref{sec:dlo:architectures}\\
+shaded area around curves for figures. Each data point is obtained by averaging
+5 independent runs. The architectures considered are Conv2, Conv4, Conv6, VGG16,
+ResNet-20 and ResNet-18, which are presented in \cref{sec:dlo:architectures}\\
 
 In order to demonstrate the efficacy of our method in a standard image
 classification scenario, we compare our approach with state-of-the-art methods,
@@ -986,31 +996,31 @@ changes to the network structure or the values of the weights.\\
 
 Overall, the analysis of our \ac{ASLP} method results, presented in
 \cref{tab:chap2:con_performances_comparison_cifar10,tab:chap2:con_performances_comparison_cifar100,tab:chap2:r20_VGG16_performances_comparison,tab:chap2:tinyimagenet_performances_comparison},
-shows that \ac{ASLP} outperforms both Edge Popup and Supermask methods on CIFAR-10
-and CIFAR-100 datasets, a trend consistent across all tested networks, including
-Conv2, Conv4, Conv6, VGG16, and ResNet20. Notably, our \textit{thresholding}
-pruning strategy demonstrated superior performance compared to Supermask
-\textit{averaging} approach (see \cref{sec:chap2:freezing_topology} for details
-of both strategies). The \textit{thresholding} strategy ensures that the most
-likely-to-be-selected weights are incorporated into the final frozen network. It
-is accomplished by setting a threshold on $p_{ij}$, the proability for a weight
-of being selected. Only those weights exceeding this threshold are preserved,
-leading to the retention of most valuable connections in the network. This
-approach focuses on the utilisation of high impact weights, which contributes to
-the enhanced performance of the pruned network. Contrastingly, the
-\textit{averaging} strategy employed by the Supermask method
-\cite{DBLP:conf/nips/ZhouLLY19} takes a different approach. It draws 10 random
-subnetworks, each possessing a distinct set of weights. However, this strategy
-introduces a risk, as these randomly selected weight sets may contain weights
-that contribute minimally to the network overall performance. The inclusion of
-such potentially unuseful weights could dilute the efficiency of the pruned
-network.\\
+shows that \ac{ASLP} outperforms both Edge Popup and Supermask methods on
+CIFAR-10 and CIFAR-100 datasets, a trend consistent across all tested networks,
+including Conv2, Conv4, Conv6, VGG16, and ResNet20. Notably, our
+\textit{thresholding} pruning strategy demonstrated superior performance
+compared to Supermask \textit{averaging} approach (see
+\cref{sec:chap2:freezing_topology} for details of both strategies). The
+\textit{thresholding} strategy ensures that the most likely-to-be-selected
+weights are incorporated into the final frozen network. It is accomplished by
+setting a threshold on $p_{ij}$, the probability for a weight of being selected.
+Only those weights exceeding this threshold are preserved, leading to the
+retention of most valuable connections in the network. This approach focuses on
+the utilisation of high impact weights, which contributes to the enhanced
+performance of the pruned network. Contrastingly, the \textit{averaging}
+strategy employed by the Supermask method \cite{DBLP:conf/nips/ZhouLLY19} takes
+a different approach. It draws 10 random subnetworks, each possessing a distinct
+set of weights. However, this strategy introduces a risk, as these randomly
+selected weight sets may contain weights that contribute minimally to the
+network overall performance. The inclusion of such potentially useless weights
+could reduce the performance of the pruned network.\\
 
-Remarkably, for larger networks such as VGG16 and ResNet-20, our \ac{ASLP} method
-employing the \textit{thresholding} strategy also consistently surpasses all
-other methods (see \cref{tab:chap2:r20_VGG16_performances_comparison}).
-Nevertheless, a ResNet-18 trained on TinyImagenet with \ac{ASLP} it outperformed by
-its counterpart trained with Edge-popup (see
+Remarkably, for larger networks such as VGG16 and ResNet-20, our \ac{ASLP}
+method employing the \textit{thresholding} strategy also consistently surpasses
+all other methods (see \cref{tab:chap2:r20_VGG16_performances_comparison}).
+Nevertheless, a ResNet-18 trained on TinyImagenet with \ac{ASLP} is outperformed
+by its counterpart trained with Edge-popup (see
 \cref{tab:chap2:tinyimagenet_performances_comparison}).\\
 
 We put forth several hypotheses to account for the reduced performance. First,
@@ -1025,7 +1035,7 @@ TinyImageNet images to $224 \times 224$ as a preprocessing step in order to
 prevent an exponential increase in computational cost.\\
 
 Secondly, the ResNet-18 network is among the largest networks we examined,
-having roughly 3 times the parameter count of a Conv4 network (refer to
+having roughly 3 times the number of parameters of a Conv4 network (refer to
 \cref{tab:dlo:networks_size}). As a result, there are numerous possible weight
 combinations and subnetworks. Viewing \ac{ASLP} as a Neural Architecture Search
 method, the search space for ResNet-18 is considerably larger than for the
@@ -1069,16 +1079,16 @@ network.\\
     \end{tabular}
   } \caption {Comparison of the number of explored topologies for the Conv4 and
     ResNet-18 networks with CIFAR-10 and TinyImageNet, respectively. Since a new
-    topology is sampled for every battch, the number of explored topologies
-    ($E$) is computed as the product of the number of batches and the number of
-    epochs during which the network is trained (here $10^3$). The number of
-    possible topologies ($P$) is computed as the number of possible weight
-    combinations in the network ($2^N$). The ratio of the fraction of explored
-    topologies is computed as the ratio of the fraction of explored topologies
-    for the Conv4 network and the fraction of explored topologies for the
-    ResNet-18 network. In these experimental setups, the fraction of explored
-    topologies for the Conv4 network significantly higher than the fraction of
-    explored topologies for the ResNet-18 network.}
+    topology is sampled for every batch, the number of explored topologies ($E$)
+    is computed as the product of the number of batches and the number of epochs
+    during which the network is trained (here $10^3$). The number of possible
+    topologies ($P$) is computed as the number of possible weight combinations
+    in the network ($2^N$). The fraction of explored topologies is computed as
+    the ratio of the fraction of explored topologies for the Conv4 network and
+    the fraction of explored topologies for the ResNet-18 network. In these
+    experimental setups, the fraction of explored topologies for the Conv4
+    network significantly higher than the fraction of explored topologies for
+    the ResNet-18 network.}
   \label{tab:chap2:topologies_exploration}
 \end{table}
 
@@ -1088,16 +1098,16 @@ network has more parameters than the ResNet-18 (see
 \cref{tab:dlo:networks_size}), nevertheles, in our experiments, \ac{ASLP}
 achieves superior results compared to other methods on the VGG16 architecture.
 We suggest the following explanation: First, the CIFAR-10 and CIFAR-100 datasets
-are simpler datasets with less classes, compared to TinyImageNet. And then,
+are simpler datasets with less classes, compared to TinyImageNet. Secondly,
 although the VGG16 has more parameters, it has fewer weights in its fully
-connected layers since the datasets it is evaluated on have fewer classes.
+connected layers since the datasets it is benchmarked on have fewer classes.
 Indeed, a VGG16 network tailored for CIFAR-100 has 51,200 parameters in its last
 fully connected layer, whereas a ResNet-18 network designed for TinyImageNet has
 102,400. Thus, the search space for the fully connected part of the VGG network
 is significantly smaller than on the ResNet-18 network. Therefore, because of
-the smaller search space, \ac{ASLP} founds a more optimal subset of weight for
+the smaller search space, \ac{ASLP} founds a more optimal subset of weights for
 the last layer of the VGG16 network than the ResNet-18 one. This final fully
-connected layers of a neural network play a crucial role in determining its
+connected layer of a neural network plays a crucial role in determining its
 overall performance and accuracy in predicting outcomes.\\
 
 %=============================================
@@ -1437,9 +1447,9 @@ overall performance and accuracy in predicting outcomes.\\
     \textbf{ResNet-18} & \multicolumn{2}{c}{52.73 $\pm$ 0.28}\\
     \bottomrule
     \end{tabular}
-  \caption{Comparison of the \ac{ASLP} method observed \textbf{pruning rates} across
-    various neural network architectures and datasets (CIFAR-10 and CIFAR-100)
-    after applying the \emph{thresholding} procedure, detailed in
+  \caption{Comparison of observed \textbf{pruning rates} of the \ac{ASLP} method
+    across various neural network architectures and datasets (CIFAR-10 and
+    CIFAR-100) after applying the \emph{thresholding} procedure, detailed in
     \cref{sec:chap2:freezing_topology}. The results are presented as mean
     percentages of pruned weights with their respective standard deviations, for
     the setup with data augmentation, \acf{WR} and \acf{SC} weight
@@ -1507,7 +1517,7 @@ convergence, \ac{SR} is also an efficient alternative to \acf{DWR}
 \cite{DBLP:conf/nips/ZhouLLY19}. \ac{DWR} requires rectifying weights layerwise
 using the inverse of the observed pruning rates. In order to find the observed
 pruning rate for each layer, it is necessary to store the sampled masks and
-compute the active fraction of them. These layerwise evaluations introduce a
+compute their active fraction. These layerwise evaluations introduce a
 substantial overhead at each training epoch. On the other hand, \ac{SR} involves
 straightforward scalar multiplications for each layer, resulting in reduced
 complexity. In our experiments, enabling \ac{DWR} increases the epoch runtime by
@@ -1600,7 +1610,7 @@ performance.\\
 
 Unlike Edge-popup \cite{DBLP:conf/cvpr/RamanujanWKFR20} where the pruning rate
 is a hyperparameter of the method, the proposed \ac{ASLP} approach does not
-enforce a predefined pruning rate during training. Instead, it determines its an
+enforce a predefined pruning rate during training. Instead, it determines an
 optimal subset of weights that enables the network to minimises the loss
 function by updating weights probabilities of selection $p_{ij}$ through
 backpropagation \cite{rumelhart1986learning}. Rather than being enforced, the
@@ -1627,7 +1637,7 @@ deviation.\\
 
 Moreover, the results presented in \cref{fig:chap2:sparsity_impact} provide
 further support for the \textit{thresholding} strategy. This figure displays the
-test accuracy networks trained with \ac{ASLP} and pruned a posteriori, as
+test accuracy of networks trained with \ac{ASLP} and pruned a posteriori, as
 described in the above paragraph, for various pruning rates. Sweeping through
 the pruning rate enables us to determine the optimal pruning rate for each
 network and dataset combination. The optimal pruning rate is defined as the
