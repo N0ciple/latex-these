@@ -31,8 +31,8 @@ production chains as well as smart and connected devices that lead to more
 efficient manufacturing systems. The fourth industrial revolution focuses on the
 interconnectivity of devices and the development of their computational
 capabilities. This track leads to the emergence of ever-connected \ac{IOT}
-devices with embedded computing facilities that leverage \ac{AI} algorithms,
-such as smartphones, autonomous vehicles or satellites.\\
+devices with embedded computing facilities, such as smartphones, autonomous
+vehicles or satellites, that leverage \ac{AI} algorithms.\\
 
 In parallel with these industrial revolutions, the field of \ac{AI} has seen
 substantial growth and development. The term \emph{\acl{AI}} was first used at
@@ -77,21 +77,22 @@ nature of modern \ac{IOT} devices and appliances.\\
 % dans le chapitre SOTA
 
 Nonetheless, several compelling reasons exist for conducting embedded
-computation. First, processing the data locally on premises ensures better data
-privacy, since the latter does not need to leave the device and be processed on
-the cloud. Indeed cloud instances can be located on various continents where the
-legislation about data privacy might be different from the one of the countries
-where the data is collected. Second, local computations can distribute the
-processing and limit communications. This is particularly relevant in more ways
-than one: first, it can reduce the cost of communication, which is typically
-billed to the companies. Second, in some scenarios, the device might not have
-access to a large bandwidth or cannot afford to transmit a lot of data, which
-can be the case for remote areas or some devices with a low power budget. Third,
-local computations can lead to greater responsiveness by reducing latency, which
-might be critical in some applications such as autonomous vehicles. Fourth,
-local computations can enable autonomy, which is particularly relevant for
-devices that cannot rely on internet access, such as Mars rovers, submarine
-drones or any other devices that need to process data in a radio silence.\\
+computation instead of moving them to the cloud. First, processing the data
+locally on premises ensures better data privacy, since the latter does not need
+to leave the device and be processed on the cloud. Indeed cloud instances can be
+located on various continents where the legislation about data privacy might be
+different from the one of the countries where the data is collected. Second,
+local computations can distribute the processing and limit communications. This
+is particularly relevant in more ways than one: first, it can reduce the cost of
+communication, which is typically billed to the companies. Second, in some
+scenarios, the device might not have access to a large bandwidth or cannot
+afford to transmit a lot of data, which can be the case for remote areas or some
+devices with a low power budget. Third, local computations can lead to greater
+responsiveness by reducing latency, which might be critical in some applications
+such as autonomous vehicles. Fourth, local computations can enable autonomy,
+which is particularly relevant for devices that cannot rely on internet access,
+such as Mars rovers, submarine drones or any other devices that need to process
+data in a radio silence.\\
 
 The fourth industrial revolution and the rapid evolution in the field of \ac{AI}
 have opened up a myriad of applications, with \ac{AI} algorithms and in
@@ -122,26 +123,28 @@ performances, with a focus on topology selection.\\
 This research work is a CIFRE thesis with Netatmo, a French company specialising
 in smart devices that is now part of the Legrand Group. Notably, Netatmo has
 established a niche in security cameras for individual use that perform tasks
-such as face recognition and object detection using \acp{DNN}.\\
-
-The objective is to run the \acp{DNN} directly on these cameras, sidestepping the
-need to send data to distant servers. This approach aligns well with the reasons
-outlined in the previous section, particularly in ensuring data privacy and
-allowing for a subscription-free business benefiting the end user, since there
-is no need to pay for cloud infrastructures dedicated to running \acp{DNN}.\\
-
-Therefore, Netatmo needs to develop lightweight neural networks that can be run
-on embedded devices while maintaining the performance of their larger and more
-complex counterparts. The models should be lightweight in order to, on the one
-hand, run on limited hardware, and on the other hand, be fast enough to perform
-real-time intruder detection and alerting.\\
+such as face recognition and object detection using \acp{DNN}. The objective is
+to run the \acp{DNN} directly on these cameras, sidestepping the need to send
+data to distant servers. This approach aligns well with the reasons outlined in
+the previous section, particularly in ensuring data privacy and allowing for a
+subscription-free business benefiting the end user, since there is no need to
+pay for cloud infrastructures dedicated to running \acp{DNN}. Therefore, Netatmo
+needs to develop lightweight neural networks that can be run on embedded devices
+while maintaining the performance of their larger and more complex counterparts.
+The models should be lightweight in order to, on the one hand, run on limited
+hardware, and on the other hand, be fast enough to perform real-time intruder
+detection and alerting.\\
 
 \section{Why Deep learning ?}
 
 Deep learning is a subfield of machine learning that is the subject of intense
 research efforts and numerous publications. It employs \aclp{ANN}, called
 \acfp{DNN}, that aim to learn and model complex patterns in unstructured data in
-an end-to-end fashion. Deep learning models have proven their effectiveness in
+an end-to-end fashion. Deep learning models have proven their effec 
+
+
+
+tiveness in
 numerous domains and have been particularly performant in the field of computer
 vision tasks. Computer vision, which lies at the heart of Netatmo smart camera
 functionalities, encompasses algorithms that enable computers to interpret and
