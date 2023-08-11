@@ -1096,8 +1096,9 @@ network.\\
       Batch Size used for training                       & 256                                  & 256        \\
       Nb. of batches for 1 epoch                         & 196                                  & 352        \\
       Nb. of explored topologies in $10^3$ epochs ($E$)  & 196,000                              & 352,000    \\
-      Nb. of possible topologies ($P$)                   & $2^N
-      \approx 5\times 10^{10^{5.86}}$                    & $2^N \approx 5\times 10^{10^{6.54}}$              \\
+      Nb. of possible topologies ($P$)                   & $P=2^N \approx
+      5\times 10^{10^{5.86}}$                    & $P=2^N \approx 5\times
+      10^{10^{6.54}}$              \\
       Fraction of explored topologies ($\nu_\text{exp}$) &
       $\nu_\text{exp}^\text{Conv4} = \displaystyle\frac{E}{P} \approx
       10^{{-10}^{5.86}}$                                 & $\nu_\text{exp}^\text{ResNet-18} =
@@ -1214,11 +1215,11 @@ overall performance and accuracy in predicting outcomes.\\
     \caption{Without data augmentation.}
     \label{tab:chap2:perf-tables:without-augmentation}
   \end{subtable}
-  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and Supermask
-    \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on \textbf{CIFAR-10}
-    using various configurations. We use the configurations tested by the
-    authors in their articles. Performances are presented with
-    (\cref{tab:chap2:perf-tables:with-augmentation}) and without
+  \caption{Comparison of \ac{ASLP} \textbf{test accuracy} against Edge-Popup and
+    Supermask \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} on
+    \textbf{CIFAR-10} using various configurations. We reimplemented the
+    configurations tested by the authors in their articles. Performances are
+    presented with (\cref{tab:chap2:perf-tables:with-augmentation}) and without
     (\cref{tab:chap2:perf-tables:without-augmentation}) data augmentation,
     \acf{WR}, and \acf{SC} weight distribution. A dash denotes a configuration
     that was not tested by the authors. Our method performances are reported for
