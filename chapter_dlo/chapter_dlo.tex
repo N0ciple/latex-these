@@ -61,7 +61,7 @@ millions of parameters without overfitting.\\
 This chapter aims to give an overview of the different neural network
 architectures, building blocks, training techniques and datasets that are widely
 used in Deep Learning for computer vision and in our experiments.
-\Cref{sec:dlo:early_architectures} introduced the early neural network
+\Cref{sec:dlo:early_architectures} introduces the early neural network
 architectures, namely the perceptron and the \ac{MLP}. \Cref{sec:dlo:training}
 focuses on the functional definition of a neural network and its training.
 \Cref{sec:dlo:cnn} presents the building blocks and architectures of various
@@ -103,11 +103,10 @@ conceptrual representation of the perceptron is displayed in
 %   \hat{y} = g(\mathbf{w}^T \mathbf{x} + b)
 % \end{equation}\\
 
-\noindent where $x_i$ is the $i$th input, $w_i$ is the weight associated with
-the $i$th input, $n$ is the number of inputs, $b$ is the bias, $g$ is the
-activation function, and $\hat{y}$ is the output of the perceptron. This
-formulation can also be written in vector form as in
-\cref{eqn:dlo:perceptron_vector}: \\
+\noindent where $x_i$ is the $i$th input, $w_i$ its associated weight, $n$ is
+the number of inputs, $b$ is the bias, $g$ is the activation function, and
+$\hat{y}$ is the output of the perceptron. This formulation can also be written
+in vector form as in \cref{eqn:dlo:perceptron_vector}: \\
 
 \begin{equation}
   \label{eqn:dlo:perceptron_vector}
@@ -116,7 +115,7 @@ formulation can also be written in vector form as in
 
 \noindent where $\mathbf{x}$ is the vector of inputs and $\mathbf{w}$ is the
 vector of weights. The activation function $g$ is typically a nonlinear
-function, such as the sigmoid function or the hyperbolic tangent function (see
+function, such as the sigmoid or the hyperbolic tangent (see
 \cref{fig:dlo:activation_functions}). Due to its shallow architecture, the
 perceptron cannot learn complex decision boundaries. Nevertheless, it is
 possible to stack several perceptrons to learn nonlinear decision boundaries,
@@ -153,7 +152,7 @@ $\mathbf{b}_i$ denotes their belonging to the $i$th layer.\\
   \hat{\mathbf{y}} = g_2(\mathbf{w}_2^T \cdot  g_1(\mathbf{w}_2^T \cdot \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2)
 \end{equation}\\
 
-Each layer of the \ac{MLP} being fully connected to the next one, it enables the
+Each layer of the \ac{MLP}, being fully connected to the next one, enables the
 \ac{MLP} to handle problems that the perceptron cannot solve, such as problems
 requiring nonlinear decision boundaries. Furthermore,
 \citeauthor{cybenko1989approximation} proved in \cite{cybenko1989approximation}
@@ -168,7 +167,7 @@ translation \cite{wasserman1988neural}.
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/mlp_scheme.pdf}
   \caption{Conceptual scheme of a \ac{MLP} with one hidden layer. Each circle
-  represent a neuron and each line a connection associated with a weight.}
+  represents a neuron and each line a connection associated with a weight.}
   \label{fig:dlo:mlp}
 \end{figure}
 
@@ -187,7 +186,7 @@ gradients and the \ac{SGD} algorithm to update the weights.
 
 Neural networks can be defined as a mapping function from an input space
 $\mathcal{X}$ to an ouput space $\mathcal{Y}$. This mapping function $f$ is
-parametrised by a set of parameters $\theta$, often called \emph{weights}. The
+characterised by a set of parameters $\theta$, often called \emph{weights}. The
 training of a neural network consists in tuning the parameters $\theta$ so that,
 given an input $X$, the mapping function $f$ output, denoted $\hat{y}$, is as
 close as possible to the associated true output $y$. This training is done
@@ -218,7 +217,7 @@ where the largest coefficient is the one whose index corresponds to the
 predicted class of the input image. This vector is generally converted into a
 one-hot vector, where the only non-zero coefficient is at the index of the
 predicted class. The true label $y$, referred to as the ground truth, is the
-class index so that $y\in\llbracket0;n-1\rrbracket$, where $n$ is the number of
+class index so that $y\in\llbracket0;C-1\rrbracket$, where $C$ is the number of
 classes considered. The ground truth can also be converted into a one-hot
 vector.\\
 
@@ -237,13 +236,13 @@ vector.\\
 
 \subsection{Loss Function and Regularisation}
 Training a neural network aims at finding the optimal parameters $\theta$ that
-maximises a performance, quantified by the metric $P$, often based on the
+maximises a performance, quantified by a metric $P$, often based on the
 discrepancy between the predicted output $\hat{y}$ and the true output $y$.
 However, optimising directly the metric $P$ might be intractable. To solve for
-this issue, we define a differentiable cost function and minimise the latter as
-a proxy for optimising $P$. Considering $\delta$ as the empirical distribution
-of the training data, the cost function $\mathcal{J}(\theta)$, also denoted the
-\emph{empirical risk}, is defined as:
+this issue, one may define a differentiable cost function and minimise the
+latter as a proxy for optimising $P$. Considering $\delta$ as the empirical
+distribution of the training data, the cost function $\mathcal{J}(\theta)$, also
+referred to as the \emph{empirical risk}, is defined in the following equation:
 
 \begin{equation}
   \label{eqn:dlo:cost_function}
@@ -264,7 +263,7 @@ thus prevents overfitting. To account for regularisation, the cost function in
 
 \begin{equation}
   \label{eqn:dlo:regularised_cost_fn}
-  \mathcal{J}_r(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) + \mathcal{R}(\theta) \right]
+  \mathcal{J}_r(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right] + \mathcal{R}(\theta) 
 \end{equation}\\
 
 \noindent\textbf{Loss function.} In
@@ -287,16 +286,17 @@ as follows:\\
 
 \noindent The binary cross-entropy loss defined in
 \cref{eqn:dlo:binary_cross_entropy_loss} can be extended to problems with more
-than two classes. For a classification problem with $c$ classes, the ground
-truth is a one-hot vector $\mathbf{y}\in \{0,1\}^c$ and the output is a
-$c$-dimensional vector $f(X,\theta)=\hat{\mathbf{y}}\in\mathds{R}^c$. The
+than two classes. For a classification problem with $C$ classes, the ground
+truth is a one-hot vector $\mathbf{y}\in \{0,1\}^C$ and the output is a
+$C$-dimensional vector $f(X,\theta)=\hat{\mathbf{y}}\in\mathds{R}^C$. The
 multi-class cross-entropy loss is defined as follows:
 
 \begin{equation}
   \label{eqn:dlo:multiclass_cross_entropy_loss}
   % \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \displaystyle\frac{\exp(\hat{y}_i)}{\displaystyle\sum_{j=1}^c \exp(\hat{y}_j)} \right)
-  \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^c y_i \log \left( \phi(\mathbf{\hat{y}})_i \right)
+  \mathcal{L}(\hat{\mathbf{y}}, \mathbf{y}) = - \sum_{i=1}^C y_i \log \left( \phi(\mathbf{\hat{y}})_i \right)
 \end{equation}\\
+
 
 \noindent In the above equation, $\hat{\mathbf{y}}$ is the unormalised raw
 output vector of the neural network and $\phi$ is the softmax function, whose
@@ -306,9 +306,13 @@ Note that some models which uses the softmax as the activation function of their
 last layer output directly a probability distribution, in which case the softmax
 is not needed.\\
 
+Considering a vector $\mathbf{z} = [z_1, \dots, z_n]$, the $j$-th component of
+vector $\mathbf{z}$ normalised by the softmax function is given by: 
+
 \begin{equation}
   \label{eqn:dlo:softmax}
-  \phi(\mathbf{z})_j = \frac{\exp(z_j)}{\displaystyle\sum_{k=1}^{\text{dim}(\mathbf{z})} \exp(z_k)}
+  % \phi(\mathbf{z})_j = \frac{\exp(z_j)}{\displaystyle\sum_{k=1}^{\text{dim}(\mathbf{z})} \exp(z_k)}
+  \phi(\mathbf{z})_j = \frac{\exp(z_j)}{\displaystyle\sum_{k=1}^{n} \exp(z_k)}
 \end{equation}\\
 
 \noindent \textbf{Regularisation.} The regularisation term $\mathcal{R}$ is a
@@ -332,16 +336,20 @@ The regularisation term $\mathcal{R}$ is added to the cost function with a
 regularisation coefficient, usually denoted as $\lambda$, which is a
 hyperparameter that balances the trade-off between fitting the training data
 (minimising the loss $\mathcal{L}$) and limiting the complexity of the model
-(minimising $\mathcal{R}$).
+(minimising $\mathcal{R}$).\\
+
+For a network with L layers and parameters $\theta={\mathbf{w}_1, \dots,
+\mathbf{w}_L}$, the $\ell_1$ and $\ell_2$ regularisation term is defined as
+follows:\\
 
 \begin{equation}
   \label{eqn:dlo:reg_l1}
-  \mathcal{R}_{\ell_1}(\theta) = \lambda \sum_{i=1}^{\text{dim}(\theta)} \left| \theta_i \right|
+  \mathcal{R}_{\ell_1}(\theta) = \lambda \sum_{i=1}^{L} \left| \mathbf{w}_i \right|
 \end{equation}\\
 
 \begin{equation}
   \label{eqn:dlo:reg_l2}
-  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda \| \theta \|_2}{2} 
+  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2 
 \end{equation}\\
 
 \subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
@@ -429,10 +437,10 @@ converge, as shown in \cref{fig:dlo:gradient_descent}.\\
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/gradient_descent.pdf}
   \caption{Illustration of the effect of the learning rate on the convergence of
     the gradient descent. The gradient descent has been applied iteratively for
-    20 epochs. On the one hand, a too-high learning (1.01) rate causes the
-    gradient descent to overshoot the minimum of the loss function. On the other
-    hand, a too-low learning rate (0.01) causes the gradient descent to converge
-    slowly.}
+    20 epochs. On the one hand, a too-high learning rate ($\eta=1.01$) causes
+    the gradient descent to overshoot the minimum of the loss function. On the
+    other hand, a too-low learning rate ($\eta=0.01$) causes the gradient
+    descent to converge slowly.}
   \label{fig:dlo:gradient_descent}
 \end{figure}
 
@@ -475,7 +483,7 @@ hierarchical fashion. In this section, we explore the building blocks of
 This section covers the most common building blocks of \acp{CNN} for computer
 vision. These building blocks are organised in layers that are stacked to form
 neural network architectures subsequently detailed in
-\cref{sec:dlo:architectures}.\\
+\cref{sec:dlo:architectures,sec:dlo:architectures_used}.\\
 
 \noindent\textbf{Convolutional layer.} \ac{CL} layers are one of the core
 building blocks of \acp{CNN}. Each convolution layer performs a series of
@@ -484,25 +492,26 @@ kernels. These filters are designed to extract low-level features such as edges,
 corners, and textures in the early layers, while they learn high-level features
 like object parts or even whole objects in the deeper layers. Contrary to manual
 feature engineering, the features learned by \ac{CL} layers are learned in a
-\emph{end-to-end} fashion. The convolution operation is defined in
+\emph{end-to-end} fashion. The 2D convolution operation is defined in
 \cref{eqn:dlo:convolution} :\\
 
 \begin{equation}
   \label{eqn:dlo:convolution}
-  (x * k)(i,j) = \sum_{m} \sum_{n} x(i -m, j -n) \cdot k(m, n)
+  % (x * k)(i,j) = \sum_{m} \sum_{n} x(i -m, j -n) \cdot k(m, n)
+    Y_{ij} = \sum_{{a=0}}^{{k_h-1}} \sum_{{b=0}}^{{k_w-1}} X_{i-a, j-b} \cdot K_{ab}    
 \end{equation}\\
 
-\noindent where, $x$ is the input, $k$ is the kernel, $(i,j)$ are the spatial
-coordinates in the output feature map and $m$ and $n$ represents the spatial
-coordinates of the kernel $k$. Note that some Deep Learning frameworks implement
-\emph{cross-correlation} instead of convolution. In the former, the kernel is
-not spatially flipped leading to the cross-correlation not being commutative
+\noindent where $\mathbf{X}$ is the input, $\mathbf{K}$ is the kernel of size
+$k_h \times k_w$ and $(i,j)$ are the spatial coordinates in the output feature
+map. Note that some Deep Learning frameworks implement \emph{cross-correlation}
+instead of convolution. In the former, the kernel is not spatially flipped
+leading to the cross-correlation not being commutative
 \cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically smaller than
 the input along width and height dimensions (they are generally $3\times 3$
 \cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much channels as the input.
 During the forward pass, each kernel is spatially convolved channel-wise with
-the input and their outputs are summed along the channel dimension to yield a
-single scalar for each kernel position on the input (see also
+the input and the convolution outputs are summed along the channel dimension to
+yield a single scalar for each kernel position on the input (see also
 \cref{fig:dlo:conv_layer}).\\
 
 \ac{CL} layers are more computationally efficient than \ac{FC} layers, as they
@@ -557,16 +566,16 @@ distribution over those classes.\\
   \label{fig:sota:layers}
 \end{figure}
 
-\noindent \textbf{Activation function.} Activation functions are often applied
-to the output feature map of a convolutional or fully connected layer, resulting
-in the \emph{activation map} or \emph{activations}. This function introduces
+\noindent \textbf{Activation function.} These functions are often applied to the
+output feature map of a convolutional or fully connected layer, resulting in the
+\emph{activation map} or \emph{activations}. This function introduces
 non-linearity into the model, allowing it to learn more complex patterns
 \cite{long2015fully}. A common activation function used in \acp{CNN} is the
-\ac{ReLU} function, represented as $f(x)=\max(0,x)$. Other functions like the
-sigmoid $f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x} -e^{-x})/(e^{x}+e^{-x})$
-functions have been used (see \cref{fig:dlo:activation_functions}), however, the
-\ac{ReLU} is prefered over the latter for its computational efficiency and its
-ability to mitigate the vanishing or exploding gradients problem
+\ac{ReLU}, represented as $f(x)=\max(0,x)$. Other functions like the sigmoid
+$f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x} -e^{-x})/(e^{x}+e^{-x})$ functions have
+been used (see \cref{fig:dlo:activation_functions}), however, the \ac{ReLU} is
+preferred over the latter for its computational efficiency and its ability to
+mitigate the vanishing or exploding gradient problem
 \cite{hochreiter2001gradient,glorot2010understanding}.\\
 
 \begin{figure}[htbp]
@@ -577,28 +586,39 @@ ability to mitigate the vanishing or exploding gradients problem
   \label{fig:dlo:activation_functions}
 \end{figure}
 
-\noindent \textbf{Pooling.} Pooling is often employed after \ac{CL} layers
-in a \ac{CNN} and aims at progressively reducing the spatial size of the input
+\noindent \textbf{Pooling.} Pooling is often employed after \ac{CL} layers in a
+\ac{CNN} and aims at progressively reducing the spatial extent of the input
 representation, thus reducing the number of parameters and computations in the
 network. This also helps control overfitting and increases the receptive field
 of the subsequent layers. The pooling operation is performed independently on
-each input channel, so the depth dimension remains unchanged. The two most
-common types of pooling are \emph{max pooling} and \emph{average pooling}. with
-the former, the maximum value in each window (often of size $2\times 2$) is
-selected, while the latter computes the average value of the window. Given an
-input matrix $\mathbf{x}$ and a pooling function $p$, the output matrix $
-\mathbf{y} $ for a certain spatial location $(i, j)$ is defined as follows:\\
+each input channel, so the number of channels remains unchanged. The two most
+common types of pooling are \emph{max} and \emph{average pooling}. The former
+selects the maximum value in each window (often of size $2\times 2$), while the
+latter computes the average value of the window. Given an input matrix
+$\mathbf{X}$, the output matrix $ \mathbf{Y} $ for a
+certain spatial location $(i, j)$ is defined in \cref{eqn:dlo:max_pooling} for
+\emph{max pooling} and \cref{eqn:dlo:avg_pooling} for \emph{average pooling}:\\
 
+% \begin{equation}
+%   \label{eqn:dlo:pooling}
+%   Y_{ij} = p \left( \mathbf{X}(i⋅s:i⋅s+f,j⋅s:j⋅s+f) \right)
+% \end{equation}\\
+
+% Max Pooling
 \begin{equation}
-  \label{eqn:dlo:pooling}
-  y_{ij} = p \left( \mathbf{x}(i⋅s:i⋅s+f,j⋅s:j⋅s+f) \right)
+  \label{eqn:dlo:max_pooling}
+  Y^{\text{max}}_{ij} = \max_{(a,b) \in [0, k_h-1] \times [0, k_w-1]} X_{i + a, j + b}
+\end{equation}\\
+  
+  % Average Pooling
+  \begin{equation}
+  \label{eqn:dlo:avg_pooling}
+  Y^{\text{avg}}_{ij} = \frac{1}{k_h \times k_w} \sum_{a=0}^{k_h-1} \sum_{b=0}^{k_w-1} X_{i + a, j + b}  
 \end{equation}\\
 
-\noindent where $s$ is the stride or step size, $f$ is the spatial extent of the
-filter, or window size and $\mathbf{x}(m:n)$ denotes a slice of the vector or
-matrix $\mathbf{x}$ starting at index $m$ and ending at index $n$. Note that
-pooling has no learnable parameters. They only downsample the input based on a
-fixed function.\\
+\noindent where $k_h$ and $k_w$ represent the height and width of the pooling
+windows respectively. Note that pooling has no learnable parameters. They only
+downsample the input based on a fixed function.\\
 
 
 \noindent \textbf{Batch Normalisation.} \ac{BN} is a technique introduced in
@@ -608,9 +628,10 @@ generalization. Covariate shift refers to the changes in the distribution of
 features in the training and test dataset, which can lead to slow convergence,
 make the network harder to train or hinder its generalisation capabilities.
 \ac{BN} normalises the input of the layer by adjusting and scaling the
-activations of the previous one. For each mini-batch, it computes the mean and
-variance of the activations and performs normalization. The transformation is
-defined as follows:\\
+activations of the previous one. For each mini-batch of inputs (for instance,
+the activation map of the previous layer), it computes the mean and variance of
+the activations and performs normalization. The transformation is defined as
+follows:\\
 
 \begin{equation}
   \label{eqn:dlo:batchnorm}
@@ -643,7 +664,7 @@ proportion of neurons in a layer during each training iteration. More
 specifically, during the forward pass, each neuron has a probability $p$ of
 being temporarily removed from the network, effectively breaking up
 co-adaptations between neurons and forcing them to learn more robust and
-independent features (see \cref{eqn:dlo:dropout}).\\
+independent features. The ouput of Dropout is given in \cref{eqn:dlo:dropout}:\\
 
 \begin{equation}
   \label{eqn:dlo:dropout}
@@ -651,15 +672,16 @@ independent features (see \cref{eqn:dlo:dropout}).\\
     \mathbf{y} = \frac{\mathbf{x} \odot \mathbf{r}}{1 - p} 
 \end{equation}\\
 
-In the above equation, $\mathbf{x}$ denote the output of a layer processed with
-dropout, $\mathbf{r}$ is a binary mask vector of the same shape as $\mathbf{x}$,
-where each element of $r$ is independently drawn from a Bernoulli distribution
-with probability $1-p$, leading to $r_i=1$ if the associated weight is kept and
-a $r_i=0$ if not. The product $\mathbf{x} \odot \mathbf{r}$ is scaled by $1-p$
-to ensure that the expected value of $\mathbf{x}$ remains unchanged. During the
-evaluation, the dropout is changed to an identity function.
+\noindent In the above equation, $\mathbf{x}$ denote the output of a layer
+processed with dropout, $\mathbf{r}$ is a binary mask vector of the same shape
+as $\mathbf{x}$, where each element of $r$ is independently drawn from a
+Bernoulli distribution with probability $1-p$, leading to $r_i=1$ if the
+associated weight is kept and a $r_i=0$ if not. The product $\mathbf{x} \odot
+\mathbf{r}$ is scaled by $1-p$ to ensure that the expected value of $\mathbf{x}$
+remains unchanged. During the evaluation, the dropout is changed to an identity
+function.
 
-\subsection{Architectures}\label{sec:dlo:architectures}
+\subsection{Architectures Evolution}\label{sec:dlo:architectures}
 
 The evolution of \aclp{CNN} is characterised by a consistent increase in their
 size and performance, alongside the introduction of new architectural
@@ -668,16 +690,17 @@ modifications to address the limitations of their predecessors (see
 the \acp{CNN} evolution and we subsequently detail the architectures that we
 used in our experiments.\\
 
-The first \ac{CNN} was introduced in 1998: LeNet-5 was developed for digit
-recognition \cite{DBLP:journals/pieee/LeCunBBH98}, constituting a relatively
-simple network with 5 layers with learnable parameters: 2 \ac{CL} layers
-and 3 fully connected layers. Its size is significantly smaller compared to the
-contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction of
-AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
+One of the earliest \ac{CNN} was introduced in 1998: LeNet-5 was developed for
+digit recognition \cite{DBLP:journals/pieee/LeCunBBH98}, constituting a
+relatively simple network with 5 layers with learnable parameters: 2 \ac{CL}
+layers and 3 fully connected layers. Its size is significantly smaller compared
+to the contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction
+of AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
 considerably grew, comprising more layers and neurons to handle more complex
 tasks, like large-scale image recognition. AlexNet tackled the overfitting issue
 in LeNet-5 with the use of data augmentation and dropout techniques and
-introduced and popularised the \ac{ReLU} activation function.\\
+introduced it also introduced and popularised the \ac{ReLU} activation
+function.\\
 
 \begin{figure}[htbp]
   \centering
@@ -697,7 +720,7 @@ refers to the situation in training a deep neural network where gradients are
 backpropagated through layers and become increasingly small, effectively
 preventing the weights of earlier layers from learning and updating effectively.
 The VGG networks also introduced the practice of stacking multiple convolutional
-layers with small $3\times 3$ filters instead of using larger filters. The same
+layers with small $3\times 3$ filters instead of using larger ones. The same
 year, Google's Inception (or GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}
 was introduced, addressing the vanishing gradients  issue with its novel
 inception modules, which allowed the network to learn at varying scales and
@@ -721,7 +744,9 @@ shortcut) connections, allowing gradients to backpropagate directly through
 several layers. These shortcut connections also allowed the network to grow in
 depth up to 152 layers without a significant increase in computational cost.
 However, a challenge remained with the constant need for careful design to
-manage feature-map sizes.\\
+manage feature-map sizes. Indeed, stacking numerous layers, with their channel
+count increasing with depth, can lead to an explosion in the number of
+parameters as well as increased memory consumption.\\
 
 \begin{figure}[htbp]
   \centering
@@ -736,11 +761,12 @@ manage feature-map sizes.\\
 In response, DenseNet \cite{huang2017densely} was proposed. It connects each
 layer to every other following layer of the same block in a feed-forward
 fashion. By reinforcing the propagation of features and gradients through the
-network, DenseNet alleviated the vanishing-gradient problem and further improved
-the ability of the network to pass on information from earlier layers to later
-ones. Thus, through these chronological advancements, neural networks not only
-grew in size but also improved in performance, thereby becoming more efficient
-and capable of handling more complex tasks.\\
+network, the DenseNet architecture alleviates the vanishing-gradient problem and
+further improves the information flow from earlier layers to later ones by
+reusing earlier feature in the deeper layers. Thus, through these chronological
+advancements, neural networks not only grew in size but also improved in
+performance, thereby becoming more efficient and capable of handling more
+complex tasks.\\
 
 \begin{figure}[htbp]
   \centering
@@ -752,6 +778,8 @@ and capable of handling more complex tasks.\\
     Numbers are taken from \cite{pytorch_vision}}
   \label{fig:dlo:net_sizes}
 \end{figure}
+
+\subsection{Architectures Used in Experiments}\label{sec:dlo:architectures_used}
 
 In the subsequent paragraphs, we detail the architectures that we used in our
 experiments. We chose these architectures because they are representative of the
@@ -801,11 +829,13 @@ a \ac{ReLU} activation function. The VGG16 network is illustrated in
 \noindent \textbf{ResNet\{18,20\}.} The ResNet18 and ResNet20 networks
 \cite{DBLP:conf/cvpr/HeZRS16} are 18 and 20-layer \acp{CNN} respectively. These
 layers are organized into stages, with ResNet18, represented in
-\cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \ac{CL} layers each,
-while ResNet20, represented in \cref{fig:dlo:resnet20}, is structured into 3
-stages, each containing 3 \ac{CL} layers. They are composed of \emph{Residual
-Blocks} also referred to as \emph{Basic Blocks}. Each residual block follows the
-principle of learning the residual function:\\
+\cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \emph{Basic Blocks}
+(defailed subsequently) 2 each, while ResNet20, represented in
+\cref{fig:dlo:resnet20}, is structured into 3 stages, each containing 3
+\emph{Basic Blocks}. The \emph{Basic Blocks}, also referred to as \emph{Residual
+Blocks}, are composed of \ac{CL} layers (see
+\cref{fig:dlo:resnet18,fig:dlo:resnet20}) and follow the principle of learning
+the residual function:\\
 
 \begin{equation}
   f(x) = h(x) - x
@@ -845,13 +875,13 @@ between the input and the output of the block.}
 \label{fig:dlo:resnets}
 \end{figure}
 
-\noindent \textbf{Conv\{2,4,6\}.} The Conv2, Conv4 and Conv6 networks are shrunk
-down versions of the VGG16 network, composed of 2, 4 and 6 \ac{CL} layers
-respectively and 3 \ac{FC} layers. Although the Conv2, Conv4 and Conv6 networks
+\noindent \textbf{Conv\{2,4,6\}.} Conv2, Conv4 and Conv6 are shrunk down
+versions of the VGG16 network architecture, composed of 2, 4 and 6 \ac{CL}
+layers respectively and 3 \ac{FC} layers. Although Conv2, Conv4 and Conv6,
 introduced by \citeauthor{DBLP:conf/iclr/FrankleC19} in
-\cite{DBLP:conf/iclr/FrankleC19} are not widely featured in existing literature,
-we chose to employ them due to their use in the methods we benchmark against.
-The \ac{CL} layers are stacked in increasing depth, and their
+\cite{DBLP:conf/iclr/FrankleC19}, are not widely featured in existing
+literature, we chose to employ them due to their use in the methods we benchmark
+against. The \ac{CL} layers are stacked in increasing depth, and their
 convolutional filters are of size $3\times 3$ with a stride of 1. The
 max-pooling layers are of size $2\times 2$ with a stride of 2. They are
 represented in \cref{fig:dlo:conv246}.\\
@@ -869,15 +899,16 @@ represented in \cref{fig:dlo:conv246}.\\
 
 \section{Datasets}\label{sec:dlo:datasets}
 
-In this thesis manuscript, we focus on image classification tasks and supervised
-learning. Supervised learning is a machine learning paradigm in which the model
-is trained using labeled data. In the context of image classification, the input
-data is an image, and the label is the class of the image. We denote an input
-image $X$ and its corresponding label $y$. Each image $X$ belongs to the set of
-all images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set
-of all labels of the dataset $\mathcal{Y}$. The dataset, denoted $\mathcal{D}$,
-is a set of pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$,
-so that $D \subset \mathcal{X} \times \mathcal{Y}$. \\
+In this thesis, we focus on image classification and supervised learning, a
+machine learning paradigm in which the model is trained using labeled data. In
+the context of image classification, the labeled data are pairs of images and
+labels which are the class of their associated image. We denote an input image
+$X$ and its corresponding label $y$. Each image $X$ belongs to the set of all
+images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set of
+all labels of the dataset $\mathcal{Y}$. The ensemble of the image-label pairs
+are gathered in a dataset, denoted $\mathcal{D}$, which is formally a set of
+pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$, so that $D
+\subset \mathcal{X} \times \mathcal{Y}$. \\
 
 In our experiments, we evaluated our methods on three different datasets
 tailored for image classification: CIFAR-10 \cite{CIFARdataset}, CIFAR-100
@@ -904,24 +935,24 @@ up their main characteristics.\\
 
 \subsection{CIFAR-10}
 
-The CIFAR-10 dataset \cite{CIFARdataset} is a widely used dataset in machine
-learning and computer vision. This is a labeled subset of the \emph{80 Million
-Tiny Images} dataset \cite{4531741}. CIFAR-10 is a simple yet challenging
-dataset that allows for quicker iteration or hyperparameter tuning than larger
-datasets such as ImageNet \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is
-significantly more complex than the MNIST dataset \cite{6296535}, which contains
-grayscale handwritten digits images. the CIFAR-10 dataset contains 60,000 colour
-images of size 32x32 pixels, split into 10 classes, namely: plane, car, bird,
-cat, deer, dog, horse, ship, and truck. Each class contains 6,000 images. The
-dataset is divided into two sets: a training set, composed of 50,000 images and
-a test set containing 10,000 of them.\\
+CIFAR-10 \cite{CIFARdataset} is a widely used dataset in machine learning and
+computer vision. This is a labeled subset of the \emph{80 Million Tiny Images}
+dataset \cite{4531741}. CIFAR-10 is a simple yet challenging dataset that allows
+for quicker iteration or hyperparameter tuning than larger datasets such as
+ImageNet \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is significantly
+more complex than the MNIST dataset \cite{6296535}, which contains grayscale
+handwritten digits images. the CIFAR-10 dataset contains 60,000 colour images of
+size 32x32 pixels, split into 10 classes, namely: plane, car, bird, cat, deer,
+dog, horse, ship, and truck. Each class contains 6,000 images. The dataset is
+divided into two sets: a training set, composed of 50,000 images and a test set
+containing 10,000 of them.\\
 
 \begin{figure}[ht!]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/cifar-10_example.png}
-  \caption{ A sample grid of images from the CIFAR-10 dataset. Each row
-    contains images from one of the 10 classes: plane, car, bird, cat,
-    deer, dog, frog, horse, ship, and truck}
+  \caption{ A sample of images from CIFAR-10. Each row contains images from one
+    of the 10 classes: plane, car, bird, cat, deer, dog, frog, horse, ship, and
+    truck}
   \label{fig:intro:cifar10_examples}
 \end{figure}
 
@@ -933,7 +964,7 @@ version of CIFAR-10. Like the latter, it is a labeled subset of the \emph{80
   Millions Tiny Images} and  is composed of 60,000 colour images of size 32x32
 pixels. However, instead of 10 classes, CIFAR-100 contains 100 classes of 600
 images each. As a result, each class has far fewer images than in CIFAR-10.
-CIFAR-100 is also divided into two sets: a training set and a test, composed of
+CIFAR-100 is also divided into two sets: a training and a test set, composed of
 50,000 and 10,000 images respectively.\\
 
 \begin{figure}[ht!]
@@ -954,38 +985,37 @@ vision, conceived as a subset of the larger ImageNet dataset
 of size 64x64 pixels, split into 200 classes, whereas ImageNet contains 1.2
 million images of size 256x256 pixels, split into 1,000 classes. The dataset is
 divided in 3 sets: the train set, which contains 500 images per class, the
-validation and test sets, which both contain 50. The scaled-down image size and
-count make TinyImageNet more computationally accessible than ImageNet while
-still being a challenging task and maintaining the diversity of the images and
-classes.\\
+validation and test sets, which both contain 50 images. The scaled-down image
+size and the reduced number of images make TinyImageNet more computationally
+manageable than ImageNet while still being challenging by offering diversity in
+the image classes.\\
 
 
 \begin{figure}[ht!]
   \centering
-  \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/tinyimagenet_example.png}
-  \caption{A sample grid of images from the Tiny ImageNet dataset. The images
-    represent a subset of the 200 distinct classes, each image represents a
-    unique class.}
+  \includegraphics[width=0.9\textwidth]{chapter_dlo/assets/tinyimagenet_example.png}
+  \caption{A sample of images from the Tiny ImageNet dataset. Each image
+    represents an instance of one of the  200 distinct classes.}
   \label{fig:intro:tinyimagenet_examples}
 \end{figure}
 
 \subsection{Train, Validation and Test Sets}
 
-In our experiments, for each dataset, we use 3 sets: train, validation and test
-sets. The training set serves to train the model, while the validation set is
-used to monitor the evolution of the performance metric on unseen data
-throughout the training. The validation metric provides the necessary triggers
-for the early stopping policy (\emph{i.e.} interrupting the training prematurely
-if the validation metrics do not change over a given number of iterations). The
-test set, on the other hand, is used to evaluate the model's performance on
-entirely new data and to report the final test accuracy. When utilizing datasets
-like CIFAR-10 and CIFAR-100, only training and testing sets are available. For
-these datasets, we split the given train set in half with the following
-proportions: 90\% of the original training set is used for training for the
-network and the remaining 10\% is used as the validation set. On the other hand,
-the TinyImageNet dataset does provide training, validation, and testing sets,
-but the test set lacks annotations. Hence, we use 90\% of the training set for
-model training and the remaining 10\% for validation. Instead of the unannotated
-test set, we repurpose the original validation set to serve as the test set.
-This is a common strategy employed by other implementations
+In our experiments, for each dataset, we use 3 distinct sets for training,
+validation and testing. The training set serves to train the model, while the
+validation set is used to monitor the evolution of the performance metric on
+unseen data throughout the training. The validation metric provides the
+necessary triggers for the early stopping policy (\emph{i.e.} interrupting the
+training prematurely if the validation metrics do not change over a given number
+of iterations). The test set, on the other hand, is used to evaluate the model's
+performance on entirely new data and to report the final test accuracy. When
+utilizing datasets like CIFAR-10 and CIFAR-100, only training and testing sets
+are available. For these datasets, we split the given train set using the
+following proportions: 90\% is used for training the network and the remaining
+10\% is for validation. On the other hand, the TinyImageNet dataset does provide
+training, validation, and testing sets, but the test set lacks annotations.
+Hence, we use 90\% of the original training set for model training and the
+remaining 10\% for validation. Instead of the original unannotated test set, we
+repurpose the original validation set to serve as the test set. This is a common
+strategy employed by other implementations
 \cite{hanyuanxu2018tinyimagenet,nbdt,alvinwan2020nbdt}.\\
