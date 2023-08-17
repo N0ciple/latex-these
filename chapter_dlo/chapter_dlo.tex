@@ -16,7 +16,7 @@ speech recognition
 natural language processing
 \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
 object detection \cite{DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15},
-semantic segmantation \cite{long2015fully,DBLP:conf/cvpr/LiuCSAHY019}, text and
+semantic segmentation \cite{long2015fully,DBLP:conf/cvpr/LiuCSAHY019}, text and
 image generation
 \cite{goodfellow2020generative,karras2019style,DBLP:conf/emnlp/BudzianowskiV19}
 as well as exotic domains like video games
@@ -46,9 +46,9 @@ local features like edges and textures, while deeper layers learn to identify
 more abstract concepts like shapes or objects.\\
 
 The rise of \acp{DNN} was made possible by several factors. On the one hand the
-increase in computational power, and in particular the use of \acp{GPU}, which
-made the training of large and deep networks feasible. Indeed, AlexNet, the
-first \ac{CNN} to win the ImageNet Large Scale Visual Recognition Challenge
+increase in computational power, and in particular the use of \acp{GPU}, made
+the training of large and deep networks feasible. Indeed, AlexNet, the first
+\ac{CNN} to win the ImageNet Large Scale Visual Recognition Challenge
 \cite{DBLP:conf/nips/KrizhevskySH12}, was trained on two \acp{GPU} in parallel
 to accelerate computations. Nowadays, the use of \acp{GPU} or dedicated hardware
 such as \acp{TPU} \cite{jouppi2017datacenter} is ubiquitous and supported by all
@@ -87,7 +87,7 @@ and conceptualised based on the understanding of biological neural networks
 present in the brain \cite{mcculloch1943logical,hebb2005organization}. The
 perceptron is composed of inputs that are weighted and summed before being
 passed through a nonlinear function referred to as an activation function. The
-conceptrual representation of the perceptron is displayed in
+conceptual representation of the perceptron is displayed in
 \cref{fig:dlo:perceptron} and its mathematical formulation is defined in
 \cref{eqn:dlo:perceptron}: \\
 % and can be express in vector form as written in \cref{eqn:dlo:perceptron_vector}.\\
@@ -179,7 +179,7 @@ parameters, also referred to as weights. This optimisation, also called
 \emph{training}, involves iteratively tuning these weights so that the
 discrepancy between the output predicted by the model and the reference output
 is minimised. Weights tuning relies on gradient-based methods that hinge
-arround to core components: the \emph{backpropagation} algorithm to compute the
+around two core components: the \emph{backpropagation} algorithm to compute the
 gradients and the \ac{SGD} algorithm to update the weights.
 
 \subsection{Functional Definition}
@@ -252,7 +252,7 @@ referred to as the \emph{empirical risk}, is defined in the following equation:
 \noindent where $\mathcal{L}$ is the loss function. Note that the true data
 distribution is not known, and thus, the empirical distribution $\delta$ is used
 instead. The minimisation of the empirical risk alone is not sufficient to
-ensure a good overall performance. Indeed, the neural network could learn to
+ensure good overall performance. Indeed, the neural network could learn to
 perfectly predict the output of the training set but fail to generalise to
 unseen data. This phenomenon is called \emph{overfitting}. To prevent
 overfitting, we add a regularisation term to the empirical risk. The
@@ -298,11 +298,11 @@ multi-class cross-entropy loss is defined as follows:
 \end{equation}\\
 
 
-\noindent In the above equation, $\hat{\mathbf{y}}$ is the unormalised raw
+\noindent In the above equation, $\hat{\mathbf{y}}$ is the unnormalised raw
 output vector of the neural network and $\phi$ is the softmax function, whose
 expression is given in \cref{eqn:dlo:softmax}. The softmax function is used to
 convert the raw output vector of real numbers into a probability distribution.
-Note that some models which uses the softmax as the activation function of their
+Note that some models which use the softmax as the activation function of their
 last layer output directly a probability distribution, in which case the softmax
 is not needed.\\
 
@@ -664,7 +664,7 @@ proportion of neurons in a layer during each training iteration. More
 specifically, during the forward pass, each neuron has a probability $p$ of
 being temporarily removed from the network, effectively breaking up
 co-adaptations between neurons and forcing them to learn more robust and
-independent features. The ouput of Dropout is given in \cref{eqn:dlo:dropout}:\\
+independent features. The output of Dropout is given in \cref{eqn:dlo:dropout}:\\
 
 \begin{equation}
   \label{eqn:dlo:dropout}
@@ -763,7 +763,7 @@ layer to every other following layer of the same block in a feed-forward
 fashion. By reinforcing the propagation of features and gradients through the
 network, the DenseNet architecture alleviates the vanishing-gradient problem and
 further improves the information flow from earlier layers to later ones by
-reusing earlier feature in the deeper layers. Thus, through these chronological
+reusing earlier features in the deeper layers. Thus, through these chronological
 advancements, neural networks not only grew in size but also improved in
 performance, thereby becoming more efficient and capable of handling more
 complex tasks.\\
@@ -808,7 +808,7 @@ network architectures.\\
 % VGG16
 \noindent \textbf{VGG16.} The VGG16 network
 \cite{DBLP:journals/corr/SimonyanZ14a} is a 16-layer \ac{CNN} composed of 13
-\ac{CL} layers and 3 fully connected layers. VGG16 was originally deseign
+\ac{CL} layers and 3 fully connected layers. VGG16 was originally designed
 for ImageNet \cite{deng2009imagenet} and in our experiments with CIFAR-10 and
 CIFAR-100 (described in \cref{sec:dlo:datasets}) we use a slightly modified
 version of VGG16 where we replace the 3 \ac{FC} layers with an average pooling
@@ -830,7 +830,7 @@ a \ac{ReLU} activation function. The VGG16 network is illustrated in
 \cite{DBLP:conf/cvpr/HeZRS16} are 18 and 20-layer \acp{CNN} respectively. These
 layers are organized into stages, with ResNet18, represented in
 \cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \emph{Basic Blocks}
-(defailed subsequently) 2 each, while ResNet20, represented in
+(detailed subsequently) 2 each, while ResNet20, represented in
 \cref{fig:dlo:resnet20}, is structured into 3 stages, each containing 3
 \emph{Basic Blocks}. The \emph{Basic Blocks}, also referred to as \emph{Residual
 Blocks}, are composed of \ac{CL} layers (see
@@ -900,8 +900,8 @@ represented in \cref{fig:dlo:conv246}.\\
 \section{Datasets}\label{sec:dlo:datasets}
 
 In this thesis, we focus on image classification and supervised learning, a
-machine learning paradigm in which the model is trained using labeled data. In
-the context of image classification, the labeled data are pairs of images and
+machine learning paradigm in which the model is trained using labelled data. In
+the context of image classification, the labelled data are pairs of images and
 labels which are the class of their associated image. We denote an input image
 $X$ and its corresponding label $y$. Each image $X$ belongs to the set of all
 images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set of
@@ -936,7 +936,7 @@ up their main characteristics.\\
 \subsection{CIFAR-10}
 
 CIFAR-10 \cite{CIFARdataset} is a widely used dataset in machine learning and
-computer vision. This is a labeled subset of the \emph{80 Million Tiny Images}
+computer vision. This is a labelled subset of the \emph{80 Million Tiny Images}
 dataset \cite{4531741}. CIFAR-10 is a simple yet challenging dataset that allows
 for quicker iteration or hyperparameter tuning than larger datasets such as
 ImageNet \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is significantly
@@ -960,7 +960,7 @@ containing 10,000 of them.\\
 \subsection{CIFAR-100}
 
 CIFAR-100 \cite{CIFARdataset} is a more challenging
-version of CIFAR-10. Like the latter, it is a labeled subset of the \emph{80
+version of CIFAR-10. Like the latter, it is a labelled subset of the \emph{80
   Millions Tiny Images} and  is composed of 60,000 colour images of size 32x32
 pixels. However, instead of 10 classes, CIFAR-100 contains 100 classes of 600
 images each. As a result, each class has far fewer images than in CIFAR-10.
