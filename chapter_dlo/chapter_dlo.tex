@@ -476,7 +476,8 @@ effectiveness of \acp{CNN} lies in their architecture that leverages the \ac{CL}
 layers to automatically learn abstract features from visual data in a
 hierarchical fashion. In this section, we explore the building blocks of
 \acp{CNN} and various architectures that have been widely used and became
-\emph{de facto} standards in the literature.
+standards in the literature.
+% FIXME: rajouter \emph{de facto} ?
 
 \subsection{Building Blocks}
 
@@ -902,19 +903,20 @@ represented in \cref{fig:dlo:conv246}.\\
 In this thesis, we focus on image classification and supervised learning, a
 machine learning paradigm in which the model is trained using labelled data. In
 the context of image classification, the labelled data are pairs of images and
-labels which are the class of their associated image. We denote an input image
-$X$ and its corresponding label $y$. Each image $X$ belongs to the set of all
-images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set of
-all labels of the dataset $\mathcal{Y}$. The ensemble of the image-label pairs
-are gathered in a dataset, denoted $\mathcal{D}$, which is formally a set of
-pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$, so that $D
+labels which represent the class of their associated image. We denote an input
+image $X$ and its corresponding label $y$. Each image $X$ belongs to the set of
+all images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set
+of all labels of the dataset $\mathcal{Y}$. The ensemble of the image-label
+pairs are gathered in a dataset, denoted $\mathcal{D}$, which is formally a set
+of pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$, so that $D
 \subset \mathcal{X} \times \mathcal{Y}$. \\
 
-In our experiments, we evaluated our methods on three different datasets
-tailored for image classification: CIFAR-10 \cite{CIFARdataset}, CIFAR-100
-\cite{CIFARdataset} and TinyImageNet \cite{TinyImageNet}. The following
-paragraphs give details about these datasets and \cref{tab:dlo:datasets} sums
-up their main characteristics.\\
+Following these formal notations, the subsequent paragraphs give details about
+the datasets used in our experiments. We evaluated our methods on three
+different datasets tailored for image classification: CIFAR-10
+\cite{CIFARdataset}, CIFAR-100 \cite{CIFARdataset} and TinyImageNet
+\cite{TinyImageNet}. The following paragraphs give details about these datasets
+and \cref{tab:dlo:datasets} sums up their main characteristics.\\
 
 \begin{table}[ht!]
   \centering
