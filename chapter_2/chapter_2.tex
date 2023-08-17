@@ -21,13 +21,13 @@
   \acf{ASLP}, is proposed to extract effective subnetworks from a large,
   untrained deep neural network using the \acf{STGS} technique, which enables
   stochastic computation graphs to be trained with discrete variables while
-  still preserving differentiability. Additionally,a weight rescaling mechanism,
-  referered to as \acf{SR}, is introduced. It rescales the weight distributions
+  still preserving differentiability. Additionally, a weight rescaling mechanism,
+  referred to as \acf{SR}, is introduced. It rescales the weight distributions
   of the selected subnetworks and as a result, improves the performance and
   reduces the number of epochs required for training as shown later in
   experiments. Finally, we introduce a novel pruning strategy that automatically
   finds the pruning rate yielding the best performances once the training
-  complete, eliminating the need to iteratively search and strictly enforce of a
+  complete, eliminating the need to iteratively search and strictly enforce a
   specific pruning rate throughout the training.\\
 
   The \ac{ASLP} method, which integrates the \ac{STGS} sampling technique and
@@ -39,7 +39,7 @@
   performance. These experiments also show that our method can accept a broad
   range of learning rates and is robust to extremely large learning rate values.
   Additionally, the experiments show the effectiveness of the \ac{SR} mechanism
-  regarding the performance improvement and the reduction in the number of
+  regarding performance improvement and the reduction in the number of
   epochs needed to reach convergence.\\
 
   \noindent This chapter presents work that has resulted in the publication of the
@@ -75,7 +75,7 @@ be selected or not in a sampled topology. The method described in
 fully deterministic way. In contrast, the method introduced in this chapter is,
 on the one hand, stochastic, and on the other hand, decorrelating the pruning
 criterion from the weight value by relying on a separate latent mask to
-represents the weight saliency.\\
+represent the weight saliency.\\
 
 This method exhibits several advantages over the method presented in the
 previous chapter: First, as we just mentioned, the pruning criterion is
@@ -99,10 +99,10 @@ standard training.\\
 
 \subsection{Pruning at initialisation} 
 
-In general, extracting an efficient subnetwork is still an challenging problem
+In general, extracting an efficient subnetwork is still a challenging problem
 \cite{frankle2020pruning} and is computationally demanding as this amounts to
 full training of large networks (until convergence) prior to their pruning.
-Instead of pruning the network after an initial training phrase, existing
+Instead of pruning the network after an initial training phase, existing
 alternatives approach this problem by pruning the network weights just after
 their initialisation and before training
 \cite{DBLP:conf/iclr/LeeAT19,DBLP:conf/iclr/WangZG20,DBLP:conf/nips/TanakaKYG20}.
@@ -160,10 +160,10 @@ pruning is achieved by removing the top-$k$ weights that reduce the gradient
 flow to match a given pruning rate.\\
 
 Both SNIP and GraSP require a single mini-batch to compute their respective
-scrores. Another pruning method known as SynFlow
+scores. Another pruning method known as SynFlow
 \cite{DBLP:conf/nips/TanakaKYG20} is data-free and seeks to preserve
-\emph{synaptic flow}, defined subsequently, in a given  network in order to
-prevent \emph{layer-collapse}. The latter is defined by the authors as the
+\emph{synaptic flow}, defined subsequently, in a given network in order to
+prevent \emph{layer collapse}. The latter is defined by the authors as the
 complete pruning of a layer, which effectively renders the network untrainable.
 For a given layer $\ell$, the \emph{synaptic flow} score of the weights
 $\theta_\ell$ of a layer $\ell$ is defined as :\\
@@ -177,11 +177,11 @@ $\theta_\ell$ of a layer $\ell$ is defined as :\\
 \end{equation}\\
 
 \noindent where $L$ is the total number of layers in the network and
-$\mathbb{1}$ is the all ones vector. In contrary to previous methods, namely
+$\mathbb{1}$ is the all ones vector. Contrary to previous methods, namely
 SNIP \cite{DBLP:conf/iclr/LeeAT19} and GraSP \cite{DBLP:conf/iclr/WangZG20},
 SynFlow does not necessitate any data to compute the scores. These scores are
 computed and updated iteratively for 100 iterations, regardless of the targeted
-dataset or batch size. Since it prevents layer-collapse, networks pruning with
+dataset or batch size. Since it prevents layer collapse, network pruning with
 SynFlow can reach higher pruning rates than with SNIP or GraSP (see
 \cref{fig:chap2:synflow_perfs}).\\
 
@@ -194,7 +194,7 @@ SynFlow can reach higher pruning rates than with SNIP or GraSP (see
   \label{fig:chap2:synflow_perfs}
 \end{figure}
 
-These aforementioned methods allow to prune a network at initialisation, but
+These aforementioned methods allow pruning a network at initialisation but
 still require training the weights. Moreover, while these methods outperform the
 basic benchmark of random pruning, their accuracy is still below the one of
 post-training magnitude pruning \cite{frankle2020pruning}. In contrast to these
@@ -259,7 +259,7 @@ order to reach compelling performances. \citeauthor{DBLP:conf/iclr/LiuSZHD19}
 not important and can be randomly initialised, provided that the optimisation
 procedure is carefully designed: \citeauthor{DBLP:conf/iclr/LiuSZHD19} used a
 common \ac{SGD} optimiser with momentum instead of using an Adam optimiser
-\cite{kingma2014adam} with low learning rate as
+\cite{kingma2014adam} with a low learning rate as
 \citeauthor{DBLP:conf/iclr/FrankleC19} did in \cite{DBLP:conf/iclr/FrankleC19},
 suggesting that using an Adam optimiser might hinder the training of randomly
 initialised \ac{LT}.\\
@@ -268,7 +268,7 @@ The aforementioned works
 \cite{DBLP:conf/iclr/FrankleC19,DBLP:conf/icml/FrankleD0C20,DBLP:conf/iclr/LiuSZHD19}
 focus on finding a \acl{LT} that still needs to be trained in order to reach a
 satisfying level of performance. In contrast, our proposed method extracts a
-subnetworks that already achieves compelling performances without any weight
+subnetwork that already achieves compelling performances without any weight
 training.\\ 
 
 
@@ -280,7 +280,7 @@ Strong \acl{LTH}. A few theoretical analyses provide evidence that such
 subnetworks do exist. \cite{DBLP:conf/icml/MalachYSS20} demonstrate that a
 neural network of width $d$ and depth $l$ can be approximated by pruning a
 randomly initialised one that is a factor $O(d^4l^2)$ wider and twice as deep.
-The  upper bound on the network width has later been improved by
+The upper bound on the network width has later been improved by
 \cite{DBLP:conf/nips/OrseauHR20} to $O(d^2\log(dl))$ under the assumption of a
 hyperbolic weight distribution. This upper bound has eventually been refined to
 $O(d\log(dl))$ by \cite{DBLP:conf/nips/PensiaRNVP20} for a broad class of weight
@@ -330,7 +330,7 @@ selects the most prominent weights in the resulting subnetworks. Each weight
 $w_{ij}$ is associated with a latent saliency indicator $s_{ij}.$ During the
 forward pass, the weights associated with the top-$k$ saliency indicators are
 selected and the others are pruned. Similarly to Supermask, binarised saliency
-indicatord are not differentiable, therefore, the latter is made with \ac{STE}.
+indicators are not differentiable, therefore, the latter is made with \ac{STE}.
 The authors consider the following expression for the weights in the backward
 pass:
 \begin{equation}
@@ -343,7 +343,7 @@ Indeed, the optimal pruning rate is layer-dependent and varies from one layer to
 another. Moreover, finding the pruning rate giving the highest performances has
 to be made through a cumbersome and time-consuming grid search. Like Supermask,
 Edge-popup also includes a weight rescaling mechanism, based on a learnt
-rescaling factor that rescale the weight distribution in a layer-wise fashion,
+rescaling factor that rescales the weight distribution in a layer-wise fashion,
 subsequently detailed in \cref{sec:chap2:smart-rescale}.\\
 
 \section{Contributions}
@@ -362,7 +362,7 @@ training is accelerated and the accuracy of the resulting subnetworks improves
 as shown later in experiments. Our proposed pruning strategy is designed such
 that it does not necessitate any prior information regarding the optimal pruning
 rate that would yield the best performance. Instead, it automatically sets the
-optimal rate, eliminating the need for exhaustive grid search.\\ 
+optimal rate, eliminating the need for an exhaustive grid search.\\ 
 
 The rest of this chapter is organized as follows: \cref{sec:chap2:method} delves
 into our proposed method, named \acf{ASLP}, for extracting efficient subnetworks
@@ -422,13 +422,12 @@ the values of $\bm{m}_\ell$ to zero or one depending on the magnitude of the
 weight reparametrisation (see \cref{eqn:chap1:reparam,sec:chap1:overview}).
 Consequently, the masks $\bm{m}_\ell$ values are only determined by the weights
 values and not the topology of the network. In this chapter, we propose another
-approach to obtain the masks $\bm{m}_\ell$ that is not bound to the weights
-values. In \cref{eqn:chap2:pruned_layer_eq}, the masks $\bm{m}_\ell$
-are stochastic and sampled from a Bernoulli distribution. However, sampling is
-not a differentiable operation, therefore, optimising directly
-${\bm{m}_\ell}$ is not possible. To overcome this issue, while still
-relying on \ac{SGD}, the \acf{STE} technique is applied together with a
-reparametrisation of the mask.\\
+approach to obtain the masks $\bm{m}_\ell$ that is not bound to the value of the
+weights. In \cref{eqn:chap2:pruned_layer_eq}, the masks $\bm{m}_\ell$ are
+stochastic and sampled from a Bernoulli distribution. However, sampling is not a
+differentiable operation, therefore, optimising directly ${\bm{m}_\ell}$ is not
+possible. To overcome this issue, while still relying on \ac{SGD}, the \acf{STE}
+technique is applied together with a reparametrisation of the mask.\\
 
 \noindent\textbf{\acl{STE}.} Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
 consider a Bernoulli parametrisation of $\bm{m}_\ell$ in order to
