@@ -436,10 +436,10 @@ differentiable operation, they rely on the \ac{STE}. It is a technique developed
 in \cite{DBLP:journals/corr/BengioLC13} that enables the training of neural
 networks with discrete activations, such as binary or quantised activations. The
 technique involves using a differentiable relaxation to the non-differentiable
-activation function during backward pass, and using the non-differentiable
+activation function during the backward pass, and using the non-differentiable
 function in the forward pass. This allows for the use of \ac{SGD} to optimise
 the network, which was previously not possible with discrete activations. It is
-worth noting that \ac{STE} is an heuristic that does not provide the correct
+worth noting that \ac{STE} is a heuristic that does not provide the correct
 gradient, but it is effective in practice \cite{DBLP:journals/corr/BengioLC13}.\\
 
 In order to apply \ac{STE} to the problem of Bernoulli stochastic mask
@@ -568,7 +568,7 @@ evaluation of log and exponential for every mask in the network.\\
 
 \noindent\textbf{Arbitrarily Shifted Log Parametrisation.} In order to solve the
 issues related to \ac{STGS} in the context of this chapter, in particular, the
-need for numerical stabilisation and the computational complexity, another
+need for numerical stabilisation and computational complexity, another
 alternative is to consider the following expressions for
 $\log(\mathcal{P}_{ij})$:\\
 
@@ -583,7 +583,7 @@ $\log(\mathcal{P}_{ij})$:\\
 
 \noindent and learn the underlying mask $\bm{\hat{m}}_{ij}$. However, this
 reparametrisation is also flawed in the same way as the aforementioned sigmoid
-reparametrisation, namely: numerically unstable and a high computational cost,
+reparametrisation, namely: numerically unstable and high computational cost,
 again due to the combination of logarithmic and exponential functions.\\
 
 In what follows, we propose an equivalent formulation which turns out to be
@@ -876,7 +876,7 @@ pipelines rely on weight training and subsequent fine-tuning.\\
   \subfloat[Standard pruning pipelines \label{fig:chap2:standard-pipeline}]{
     \includegraphics[width=0.4\textwidth]{chapter_2/assets/standard_pruning_pipeline.pdf}}
   \caption{Overview of our pruning pipeline and standard pruning pipelines.
-    Our pipeline perfoms topology selection only: weights are not trained.
+    Our pipeline performs topology selection only: weights are not trained.
     On the contrary, standard pruning pipelines rely on weight training and fine-tuning.}
 \end{figure}
 
@@ -889,18 +889,21 @@ pipelines rely on weight training and subsequent fine-tuning.\\
     weights $\theta$, latent masks $\bm{\hat{m}}$, number of epochs $n$, learning rate $\eta$
     \FOR{$t = 1$ to $n$}
     \FOR{each $(X,y) \in \mathcal{D}$}
-    \STATE
-    $q_{i,j} \gets \text{argmax}
+    \STATE \textbf{Forward Pass:}
+    \STATE $q_{ij} \gets \text{argmax}
       \begin{bmatrix}
-        \bm{\hat{m}}_{i,j} + g_{i,j} \\
-        0 + g'_{i,j}                 \\
+        \bm{\hat{m}}_{ij} + g_{ij} \\
+        0 + g'_{ij}                 \\
       \end{bmatrix}$ \COMMENT{Sample of a topology}
     \STATE $m_{ij} \gets 1_{\{q_{ij}=1\}}$
-    \COMMENT{Give the masks $\bm{m}_{i,j}$ their values}
+    \COMMENT{Give the masks $\bm{m}_{ij}$ their values}
 
     \STATE ${\cal L}\big(f_\theta(X,
         s_\ell (\bm{m}_\ell \odot \bm{w}_\ell)),y \big)$
     \COMMENT{Compute the loss with masked weights and \ac{SR}}
+    \STATE \textbf{Backward pass:}
+        \COMMENT{In the backward pass, $\nabla_{\bm{\hat{m}}} \mathcal{L}$ is
+        computed as $q_{ij}$ is obtained through a softmax instead of an argmax}
     \STATE $\bm{\hat{m}}_{t+1} = \bm{\hat{m}}_t - \eta \nabla_{\bm{\hat{m}}} \mathcal{L}$ \COMMENT{Backpropagate the loss and update the masks}
     \ENDFOR
     \ENDFOR
