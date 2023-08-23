@@ -1,0 +1,39 @@
+\section{Introduction}
+
+La quatrième révolution industrielle, aussi appellée _Industrie 4.0_, inaugure
+l'intégration numérique des chaînes de production et des appareils intelligents
+et connectés pour des systèmes de fabrication plus efficaces. En parallèle, la
+recherche en intelligence artificielle (IA) a connu une croissance
+substantielle, avec des avancées significatives en matière de systèmes à base de
+règles, d'apprentissage automatique et de traitement du langage naturel. 
+
+Les réseaux de neurones profonds (DNN) modernes offrent un potentiel
+significatif pour renforcer les capacités des appareils de l'IoT. Cependant,
+leur déploiement sur ces appareils présente un défi en raison des contraintes de
+calcul et de mémoire. Au lieu de déplacer les calculs vers le cloud, cette thèse
+plaide en faveur de la réalisation de calculs embarqués. Cela garantit une
+meilleure confidentialité des données, limite les communications, augmente la
+réactivité en réduisant la latence et permet une autonomie.
+
+Le travail de cette thèse est réalisé dans le contexte industriel avec Netatmo,
+une entreprise française spécialisée dans les appareils intelligents. Le but est
+de faire fonctionner les DNN directement sur leurs caméras de sécurité, évitant
+ainsi l'envoi de données à des serveurs distants. Cela présente un cas
+convaincant pour le développement de réseaux de neurones allégés, adaptés aux
+appareils de l'IoT, qui maintiennent la puissance de leurs homologues plus
+grands tout en étant nettement moins gourmands en taille et en exigences de
+calcul.
+
+En raison de la nature des tâches que les caméras Netatmo sont conçues pour
+effectuer, l'apprentissage profond et les DNN ne sont pas seulement un choix,
+mais une nécessité. Ils représentent l'état de l'art dans les tâches de vision
+par ordinateur qui surpassent les autres algorithmes et permettent une détection
+et une reconnaissance d'objets précises et fiables.
+
+Cette thèse aborde le défi de la compression des DNN à travers l'élagage, une
+technique qui vise à réduire la taille d'un réseau de neurones en supprimant les
+paramètres redondants ou inutiles. Elle présente également des méthodes de
+rééchantillonnage stochastique des poids qui ne nécessitent pas la formation du
+réseau pour déterminer la pertinence des poids. Cela permet de rechercher une
+topologie à la fois légère et performante à l'intérieur du réseau original sans
+formation du réseau.
