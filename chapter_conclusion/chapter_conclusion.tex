@@ -67,25 +67,94 @@ better than those other methods in most tested scenarios, offering higher
 accuracy. We also provided experimental results to validate the relevance of our
 \ac{SR} mechanism and thresholding strategy, support our choice of learning rate
 and finally, show that our method is robust to modification of the pruning rate
-post-training.\\ 
+post-training. Finally, our code has been made publicly available \footnote{Code
+available at: \url{https://github.com/N0ciple/ASLP}} and contains the
+instructions to reproduce our results as well as a reimplementation of the
+state-of-the-art method we benchmark against in PyTorch.\\ 
 
 \section{Perspectives}
 
-blablabal Perspectives
+In this section, we discuss the perspectives and future works that could be
+undertaken to improve the methods we proposed in this thesis as well as push
+forward the findings we made.\\
 
-\noindent \textbf{Structured ASLP.}
-- avantage 1 : temps de calculate
-- avantage 2 : réseau réguliers
+\noindent \textbf{Experimental validation on larger datasets and architectures.}
+In our experiments, we chose to focus on results reliability and therefore we
+chose to run every configuration for every experiment at least 5 times to
+average the results and provide their standard deviation. This choice was made
+to avoid drawing conclusions based on a single run that could be an outlier.
+However, this choice comes at the cost of computational time and resources,
+thereby limiting the scale of datasets and architectures we could evaluate.\\
 
-\noindent \textbf{Controlling mask magnitude.}
-- permet d'éviter aux poids de s'écarter trop de l'origine et ainsi les remettre
-en cause plus facilement
+Futur works and development efforts could target the evaluation of our method on
+larger networks and datasets, namely the ResNet-50 architecture
+\cite{DBLP:conf/cvpr/HeZRS16}, Vision Transformers
+\cite{DBLP:conf/iclr/DosovitskiyB0WZ21}, both in combination with the ImageNet
+dataset \cite{DBLP:journals/ijcv/RussakovskyDSKS15}. A larger dataset like
+ImageNet would allow to sample more topologies and therefore explore the
+topology space more thoroughly.\\
 
-\noindent \textbf{Test sur d'autres configurations.}
-- test sur d'autres architectures (Vision Transformers) -> Challenge = beaucoup
-plus de layers FC et de paramètres en général.
-- test sur d'autres jeux de données (ImageNet) -> Beaucoup plus d'exemples ce
-qui permet d'échantionner d'avantage de topologies
+\noindent \textbf{Structured Pruning.} The methods introduced in
+\cref{chap:chapter1,chap:chapter2} are unstructured pruning methods, meaning
+that they prune weights individually which is a flexible approach that allows to
+reach high pruning rates. However, the speedup obtained by unstructured pruning
+is not straightforward and could necessitate additional optimisations. On the
+other hand, structured pruning methods, which prune weights in groups, yield
+networks with lower pruning rates but with a regular structure. This regularity
+can be exploited to obtain a more straightforward speedup in the most popular
+Deep Learning frameworks
+\cite{DBLP:conf/nips/PaszkeGMLBCKLGA19,DBLP:journals/corr/AbadiABBCCCDDDG16}.\\
+
+Our method, \acf{ASLP}, could benefit from a structured pruning approach. In
+addition to the aforementioned network regularity, using a structured approach
+could allow to reduce the number of masks to train. Instead of training a mask
+per weight, it is possible to train a mask per group of weights. This could lead
+to significant memory savings and speedups during training since the sampling
+operation takes a heavy toll on the \ac{GPU}. Our preliminary works on a
+semi-structured approach, where we start by pruning the network with a
+structured approach and then perform an unstructured pruning step afterwards,
+limits the sampling: we only sample the weights that are not pruned by the
+structured part. This approach is promising since it can reduce on average the
+number of masks to sample. However, the theoretical sampling speedup is not
+observed in practice due to memory latency caused by partial access to the
+masks. A careful reimplementation of the mask partial selection and sampling
+logic could resolve this issue and allow for faster sampling.\\
 
 
+\noindent \textbf{Controlling mask magnitude.} In \cref{chap:chapter2}, we used
+a learning rate value of 50 that is several orders of magnitude higher than
+standard learning rates used in baselines training \cite{nvidia-baselines}. This
+choice is motivated and explained in \cref{sec:chap2:impact_learning_rate}.
+However, this high learning rate together with vanishingly small gradients as
+masks move away from the origin (as explained in
+\cref{sec:chap2:stochastic-sampling}) can lead to masks being stuck at their
+high or low value and therefore being effectively frozen. \\
 
+Adding a regularisation term to the loss function that penalises masks with
+extreme values, or any other mechanism that can limit the magnitude of the masks
+could help to mitigate this issue and prevent a mask from being frozen. Our
+preliminary experiments with naive regularisation loss show improved results in
+the aforementioned semi-supervised setup.\\
+
+
+\noindent \textbf{Better initialisation scheme.} The \ac{ASLP} method introduced
+in \cref{chap:chapter2} extracts a lightweight and effective neural network from
+a large untrained one. The weights of the large network are initialised with
+state-of-the-art methods such as Kaiming initialisation
+\cite{DBLP:conf/iccv/HeZRS15} and are not modified. However, these
+initialisations are designed with weight training in mind and might not be
+optimal for the \ac{ASLP} method which does not train the weights.\\
+
+A better initialisation scheme could be designed to improve the performance of
+the \ac{ASLP} method. This initialisation scheme could be inspired by trained
+weights distributions and could be designed to be more robust to the pruning and
+sampling operation.\\
+
+\noindent \textbf{Training through pruning.} \ac{ASLP} and experiments conducted
+in \cref{chap:chapter2} showed that it is possible to achieve compelling
+performances without training the weights. This raises the question of the very
+necessity of training the weights and opens the way for new research directions
+that investigate the possibility of training a network through pruning.
+Furthermore, in this context, the word \emph{training} is to be understood
+\emph{lato sensu} and could include any strategy that selects a topology, not
+necessarily strategies that rely on gradient-based mask training as we proposed.

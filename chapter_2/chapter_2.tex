@@ -420,14 +420,15 @@ Here $\odot$ stands for the element-wise matrix product. In
 \cref{chap:chapter1}, the \emph{effective pruning} step was achieved by setting
 the values of $\bm{m}_\ell$ to zero or one depending on the magnitude of the
 weight reparametrisation (see \cref{eqn:chap1:reparam,sec:chap1:overview}).
-Consequently, the masks $\bm{m}_\ell$ values are only determined by the weights
-values and not the topology of the network. In this chapter, we propose another
-approach to obtain the masks $\bm{m}_\ell$ that is not bound to the value of the
-weights. In \cref{eqn:chap2:pruned_layer_eq}, the masks $\bm{m}_\ell$ are
-stochastic and sampled from a Bernoulli distribution. However, sampling is not a
-differentiable operation, therefore, optimising directly ${\bm{m}_\ell}$ is not
-possible. To overcome this issue, while still relying on \ac{SGD}, the \acf{STE}
-technique is applied together with a reparametrisation of the mask.\\
+Consequently, the value of the masks $\bm{m}_\ell$ are only determined by the
+value of the weights and not the topology of the network. In this chapter, we
+propose another approach to obtain the masks $\bm{m}_\ell$ that is not bound to
+the value of the weights. In \cref{eqn:chap2:pruned_layer_eq}, the masks
+$\bm{m}_\ell$ are stochastic and sampled from a Bernoulli distribution. However,
+sampling is not a differentiable operation, therefore, optimising directly
+${\bm{m}_\ell}$ is not possible. To overcome this issue, while still relying on
+\ac{SGD}, the \acf{STE} technique is applied together with a reparametrisation
+of the mask.\\
 
 \noindent\textbf{\acl{STE}.} Zhou et al. \cite{DBLP:conf/nips/ZhouLLY19}
 consider a Bernoulli parametrisation of $\bm{m}_\ell$ in order to
