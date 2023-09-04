@@ -146,7 +146,7 @@ magnitude pruning can be formalised and implemented as follows:\\
   \mathbf{w}_{\text{pruned}} = p(\mathbf{w}, \alpha) = \mathbf{w} \odot \mathbf{m}_\alpha
 \end{equation}\\
 
-\noindent where $\alpha$ is a threshold, $\odot$ denotes the Hadamar product and
+\noindent where $\alpha$ is a threshold, $\odot$ denotes the Hadamard product and
 $\mathbf{m}_\alpha$ is a binary mask that is defined as follows:\\
 
 \begin{equation}
@@ -692,7 +692,7 @@ $\mathbf{w}_\ell$ by applying the following reparametrisation:
 \end{equation}
 \noindent with $h_t$ being the reparametrisation function and $t$ its
 temperature parameter (see \cref{eqn:chap1:h_star_expression}). Here, $\odot$
-represents the Hadamar product. It means that it is element-wise, and every
+represents the Hadamard product. It means that it is element-wise, and every
 single weight has its own reparametrisation. This reparametrisation function
 enforces the prior that the smallest weights should be removed from the network
 and acts as a surrogate $\ell_0$ norm for the budget loss (see
