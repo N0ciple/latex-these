@@ -31,7 +31,7 @@ perceptron model was later extended to multiple layers of neurons, giving rise
 to the \acf{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
 \acl{MLP} is a type of artificial neural network that extends the concept of a
 single-layer perceptron by including one or more hidden layers of neurons
-connected upstream to an input layer and downstream to an output layer. Each
+connected downstream from an input layer and upstream to an output layer. Each
 layer is fully connected to the next, allowing the model to learn and represent
 more complex, non-linear relationships in the input data. Although more capable
 than the perceptron, the \ac{MLP} is still limited by its depth. The next
@@ -236,7 +236,7 @@ vector.\\
 
 \subsection{Loss Function and Regularisation}
 Training a neural network aims at finding the optimal parameters $\theta$ that
-maximises a performance, quantified by a metric $P$, often based on the
+maximise a performance, quantified by a metric $P$, often based on the
 discrepancy between the predicted output $\hat{y}$ and the true output $y$.
 However, optimising directly the metric $P$ might be intractable. To solve for
 this issue, one may define a differentiable cost function and minimise the
@@ -253,7 +253,7 @@ referred to as the \emph{empirical risk}, is defined in the following equation:
 distribution is not known, and thus, the empirical distribution $\delta$ is used
 instead. The minimisation of the empirical risk alone is not sufficient to
 ensure good overall performance. Indeed, the neural network could learn to
-perfectly predict the output of the training set but fail to generalise to
+perfectly predict the output of the training set but may fail to generalise to
 unseen data. This phenomenon is called \emph{overfitting}. To prevent
 overfitting, we add a regularisation term to the empirical risk. The
 regularisation term, denoted $\mathcal{R}$, is a function of the parameters
@@ -349,8 +349,11 @@ follows:\\
 
 \begin{equation}
   \label{eqn:dlo:reg_l2}
-  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2 
+  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2^2 
 \end{equation}\\
+
+\noindent where $\left|. \right|$ and $\|.\|_2^2$ respectively denote the sum of
+the absolute value and the sum of the squaring of each element of the vector.\\
 
 \subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
 
@@ -414,7 +417,7 @@ gradients on the whole dataset in one step, hence the use of mini-batches.\\
   \label{alg:dlo:sgd}
   \begin{algorithmic}
     \REQUIRE {Learning rate $\eta$, mini-batch size $m$, Initial parameters
-    $\theta^{(0)}$, $n \geq m$ training pairs $(X,y)\in
+    $\theta^{(0)}$, $m' \geq m$ training pairs $(X,y)\in
     \mathcal{X}\times\mathcal{Y}$, Loss function $\mathcal{J}$} \WHILE {Stopping
     criterion not met} \STATE {Sample mini-batch of size $m$ from training set}
     \STATE {Compute gradient estimate on mini-batch: $\hat{g} \gets \nabla
@@ -531,7 +534,7 @@ as a classifier, whereas the \ac{CL} layers act as a feature extractor.
 \ac{FC} layers perform high-level reasoning by conducting non-linear
 transformations of the extracted features and combining them to make decisions.
 In an FC layer, each neuron is connected to every neuron in the previous layer.
-A \ac{FC} layer can be describe as a matrix-vector product as in
+A \ac{FC} layer can be described as a matrix-vector product as in
 \cref{eqn:dlo:fc_layer} (see \cref{fig:dlo:dense_layer}).\\
 
 \begin{equation}
@@ -567,9 +570,9 @@ distribution over those classes.\\
   \label{fig:sota:layers}
 \end{figure}
 
-\noindent \textbf{Activation function.} These functions are often applied to the
-output feature map of a convolutional or fully connected layer, resulting in the
-\emph{activation map} or \emph{activations}. This function introduces
+\noindent \textbf{Activation functions.} They are often applied to the output
+feature map of a convolutional or fully connected layer, resulting in the
+\emph{activation map} or \emph{activations}. These functions introduce
 non-linearity into the model, allowing it to learn more complex patterns
 \cite{long2015fully}. A common activation function used in \acp{CNN} is the
 \ac{ReLU}, represented as $f(x)=\max(0,x)$. Other functions like the sigmoid
@@ -587,18 +590,18 @@ mitigate the vanishing or exploding gradient problem
   \label{fig:dlo:activation_functions}
 \end{figure}
 
-\noindent \textbf{Pooling.} Pooling is often employed after \ac{CL} layers in a
-\ac{CNN} and aims at progressively reducing the spatial extent of the input
-representation, thus reducing the number of parameters and computations in the
-network. This also helps control overfitting and increases the receptive field
-of the subsequent layers. The pooling operation is performed independently on
-each input channel, so the number of channels remains unchanged. The two most
-common types of pooling are \emph{max} and \emph{average pooling}. The former
-selects the maximum value in each window (often of size $2\times 2$), while the
-latter computes the average value of the window. Given an input matrix
-$\mathbf{X}$, the output matrix $ \mathbf{Y} $ for a
-certain spatial location $(i, j)$ is defined in \cref{eqn:dlo:max_pooling} for
-\emph{max pooling} and \cref{eqn:dlo:avg_pooling} for \emph{average pooling}:\\
+\noindent \textbf{Pooling.} This operation is often employed after \ac{CL}
+layers in a \ac{CNN} and aims at progressively reducing the spatial extent of
+the input representation, thus reducing the number of parameters and
+computations in the network. This also helps control overfitting and increases
+the receptive field of the subsequent layers. The pooling operation is performed
+independently on each input channel, so the number of channels remains
+unchanged. The two most common types of pooling are \emph{max} and \emph{average
+pooling}. The former selects the maximum value in each window (often of size
+$2\times 2$), while the latter computes the average value of the window. Given
+an input matrix $\mathbf{X}$, the output matrix $ \mathbf{Y} $ for a certain
+spatial location $(i, j)$ is defined in \cref{eqn:dlo:max_pooling} for \emph{max
+pooling} and \cref{eqn:dlo:avg_pooling} for \emph{average pooling}:\\
 
 % \begin{equation}
 %   \label{eqn:dlo:pooling}
@@ -698,10 +701,9 @@ layers and 3 fully connected layers. Its size is significantly smaller compared
 to the contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction
 of AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
 considerably grew, comprising more layers and neurons to handle more complex
-tasks, like large-scale image recognition. AlexNet tackled the overfitting issue
-in LeNet-5 with the use of data augmentation and dropout techniques and
-introduced it also introduced and popularised the \ac{ReLU} activation
-function.\\
+tasks, like large-scale image recognition.AlexNet tackled the overfitting
+issue in LeNet-5 using data augmentation and dropout techniques, while also
+introducing and popularising the \ac{ReLU} activation function.\\
 
 \begin{figure}[htbp]
   \centering
@@ -716,19 +718,18 @@ The next advancement was the VGG networks family
 \cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
 which proposed much deeper architectures with up to 19 layers, which is a
 significant increase over the 8 layers of AlexNet. However, the increased depth
-led to the \emph{vanishing gradients} problems. The vanishing gradients problem
-refers to the situation in training a deep neural network where gradients are
-backpropagated through layers and become increasingly small, effectively
-preventing the weights of earlier layers from learning and updating effectively.
-The VGG networks also introduced the practice of stacking multiple convolutional
-layers with small $3\times 3$ filters instead of using larger ones. The same
-year, Google's Inception (or GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15}
-was introduced, addressing the vanishing gradients  issue with its novel
-inception modules, which allowed the network to learn at varying scales and
-increased computational efficiency, without overly increasing the network size.
-GoogleNet was also the first \ac{CNN} that was not a simple stack of layers and
-processed a single input with different blocks in parallel before merging
-them.\\
+led to the \emph{vanishing gradient} problems, which refers to the situation in
+training a deep neural network where gradients are backpropagated through layers
+and become increasingly small, effectively preventing the weights of earlier
+layers from learning and updating effectively. The VGG networks also introduced
+the practice of stacking multiple convolutional layers with small $3\times 3$
+filters instead of using larger ones. The same year, Google's Inception (or
+GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced, addressing
+the vanishing gradient issue with its novel inception modules, which allowed
+the network to learn at varying scales and increased computational efficiency,
+without overly increasing the network size. GoogleNet was also the first
+\ac{CNN} that was not a simple stack of layers and processed a single input with
+different blocks in parallel before merging them.\\
 
 \begin{figure}[htbp]
   \centering
@@ -755,7 +756,7 @@ parameters as well as increased memory consumption.\\
   \caption{A residual block and its skip connection used in
     ResNets\cite{DBLP:conf/cvpr/HeZRS16}. The identity skip connection allows
     for the gradient to be backpropagated directly through several layers, thus
-    mitigating the \emph{vanishing gradients} problem.}
+    mitigating the \emph{vanishing gradient} problem.}
   \label{fig:dlo:skip_connection}
 \end{figure}
 
@@ -831,12 +832,11 @@ a \ac{ReLU} activation function. The VGG16 network is illustrated in
 \cite{DBLP:conf/cvpr/HeZRS16} are 18 and 20-layer \acp{CNN} respectively. These
 layers are organized into stages, with ResNet18, represented in
 \cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \emph{Basic Blocks}
-(detailed subsequently) 2 each, while ResNet20, represented in
-\cref{fig:dlo:resnet20}, is structured into 3 stages, each containing 3
-\emph{Basic Blocks}. The \emph{Basic Blocks}, also referred to as \emph{Residual
-Blocks}, are composed of \ac{CL} layers (see
-\cref{fig:dlo:resnet18,fig:dlo:resnet20}) and follow the principle of learning
-the residual function:\\
+(detailed subsequently), while ResNet20, represented in \cref{fig:dlo:resnet20},
+is structured into 3 stages, each containing 3 \emph{Basic Blocks}. The
+\emph{Basic Blocks}, also referred to as \emph{Residual Blocks}, are composed of
+\ac{CL} layers (see \cref{fig:dlo:resnet18,fig:dlo:resnet20}) and follow the
+principle of learning the residual function:\\
 
 \begin{equation}
   f(x) = h(x) - x
@@ -972,17 +972,16 @@ CIFAR-100 is also divided into two sets: a training and a test set, composed of
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/cifar-100_example.png}
-  \caption{A sample grid of images from the CIFAR-100 dataset. The images
-    represent a subset of the 100 available classes, each image represents
-    a unique class.}
+  \caption{A sample of images from CIFAR-100. Each image represents an instance
+    of one of the 100 distinct classes.}
   \label{fig:intro:cifar100_examples}
 \end{figure}
 
 
 \subsection{TinyImageNet}
 
-TinyImageNet dataset is another popular dataset in machine learning and computer
-vision, conceived as a subset of the larger ImageNet dataset
+TinyImageNet is another popular dataset in machine learning and computer vision,
+conceived as a subset of the larger ImageNet dataset
 \cite{DBLP:journals/ijcv/RussakovskyDSKS15}. It comprises 100,000 colour images
 of size 64x64 pixels, split into 200 classes, whereas ImageNet contains 1.2
 million images of size 256x256 pixels, split into 1,000 classes. The dataset is
@@ -1004,20 +1003,20 @@ the image classes.\\
 \subsection{Train, Validation and Test Sets}
 
 In our experiments, for each dataset, we use 3 distinct sets for training,
-validation and testing. The training set serves to train the model, while the
-validation set is used to monitor the evolution of the performance metric on
-unseen data throughout the training. The validation metric provides the
-necessary triggers for the early stopping policy (\emph{i.e.} interrupting the
-training prematurely if the validation metrics do not change over a given number
-of iterations). The test set, on the other hand, is used to evaluate the model's
-performance on entirely new data and to report the final test accuracy. When
-utilizing datasets like CIFAR-10 and CIFAR-100, only training and testing sets
-are available. For these datasets, we split the given train set using the
-following proportions: 90\% is used for training the network and the remaining
-10\% is for validation. On the other hand, the TinyImageNet dataset does provide
-training, validation, and testing sets, but the test set lacks annotations.
-Hence, we use 90\% of the original training set for model training and the
-remaining 10\% for validation. Instead of the original unannotated test set, we
-repurpose the original validation set to serve as the test set. This is a common
-strategy employed by other implementations
+validation and testing. The training set serves to tune the weights of the
+model, while the validation set is used to monitor the evolution of the
+performance metric on unseen data throughout the training. The validation metric
+provides the necessary triggers for the early stopping policy (\emph{i.e.}
+interrupting the training prematurely if the validation metrics do not change
+over a given number of iterations). The test set, on the other hand, is used to
+evaluate the model's performance on entirely new data and to report the final
+test accuracy. When utilizing datasets like CIFAR-10 and CIFAR-100, only
+training and testing sets are available. For these datasets, we split the given
+train set using the following proportions: 90\% is used for training the network
+and the remaining 10\% is for validation. On the other hand, the TinyImageNet
+dataset does provide training, validation, and testing sets, but the test set
+lacks annotations. Hence, we use 90\% of the original training set for model
+training and the remaining 10\% for validation. Instead of the original
+unannotated test set, we repurpose the original validation set to serve as the
+test set. This is a common strategy employed by other implementations
 \cite{hanyuanxu2018tinyimagenet,nbdt,alvinwan2020nbdt}.\\
