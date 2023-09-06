@@ -12,13 +12,15 @@ summarised our contributions in the following paragraphs.\\
 network post-training introduces a performance drop that needs to be compensated
 for with fine-tuning. In \cref{chap:chapter1} we propose a budget-aware pruning
 method based on a weight reparametrisation. Respecting a budget throughout
-training encourages the network not to use more capacity and therefore weights
-than what will be allowed once pruning is enforced.  To reach this goal, we
-introduce in \cref{chap:chapter1} two main components that work together. On the
-one hand, a budget regularisation loss that computes the current weight budget
-at each training step, guiding the optimisation process to adhere to it. On the
-other hand, a weight reparametrisation that embeds the saliency of the weights
-in their expression and thereby soft-prune them during training. Both components
+training allows for joint optimisation of the weights and the topology.
+Moreover, by controlling the number of parameters that will remain, it
+encourages the network not to use more capacity and therefore weights than what
+will be allowed once pruning is enforced.  To reach this goal, we introduce in
+\cref{chap:chapter1} two main components that work together. On the one hand, a
+budget regularisation loss that computes the current weight budget at each
+training step, guiding the optimisation process to adhere to it. On the other
+hand, a weight reparametrisation that embeds the saliency of the weights in
+their expression and thereby soft-prune them during training. Both components
 are based on our reparametrisation function that acts as a surrogate $\ell_0$
 norm and have been carefully designed to be differentiable and numerically
 stable.\\
@@ -30,36 +32,37 @@ and, for almost all tested pruning rates, better than magnitude pruning with
 fine-tuning. We also validated the relevance of each component of our method
 individually in a set of comparative experiments. Finally, we provided
 experimental results to discuss and support the choice of the mixing coefficient
-$\lambda$ and tested our method on trained and pruned initialisation to show the
-importance of budget enforcement, even on already pruned networks when they
-undergo fine-tuning.\\
+and tested our method on trained and pruned initialisation to show the
+importance of budget enforcement and weight reparametrisation, even on already
+pruned networks when they undergo fine-tuning.\\
 
 \noindent \textbf{Pruning without weight training with stochastic sampling.}
 When it comes to estimating the saliency of weights, the general approach is to
 derive an indicator based on their value, such as magnitude pruning which
 considers the absolute value of the weight as its saliency. However, these
-approaches, by design, cannot treat differently two weight that has the same
-value. In \cref{chap:chapter2}, we proposed a new stochastic approach to extract
-lightweight subnetworks from a large untrained network. This approach estimates
-the importance of a weight based on trained masks that are auxiliary variables
-that represent their associated weight saliency and are consequently not bound
-to the value of the weights. Furthermore, to also tackle the aforementioned
-issue with the necessity to fine-tune pruned networks, the method detailed in
-\cref{chap:chapter2} does not require any weight training and relies purely on
-topology selection through the optimisation of the auxiliary masks. This method
-works by stochastically sampling topologies from a large untrained network,
-based on the value of the masks, interpreted as probabilities of selection of
-the corresponding weight. These sampled topologies are evaluated to eventually
-identify a subnetwork with compelling performances. The subnetwork is extracted
-by pruning the weights of the large network identified as redundant from the
-larger network, with no performance drop. To achieve this, we introduced two
-components called \acf{ASLP} and \acf{SR}. The former is a computationally
-efficient and numerical stable technique that relies on \acl{GS} to train the
-masks in a stochastic context. The former is an efficient learnt-based weight
-rescaling mechanism that allows the network to rescale the weight distributions
-in order to mitigate the disruption of the weight distribution statistics caused
-by the pruning. We also introduce a thresholding strategy responsible for
-pruning the weights, that allows to effectively \emph{freeze} the topology.\\
+approaches, by design, cannot treat differently two connections with the same
+weight value. In \cref{chap:chapter2}, we proposed a new stochastic approach to
+extract lightweight subnetworks from a large untrained network. This approach
+estimates the importance of a weight based on trained masks which are auxiliary
+variables that represent their associated weight saliency and are consequently
+not bound to the value of the weights. Furthermore, to also tackle the
+aforementioned issue with the necessity to fine-tune pruned networks, the method
+detailed in \cref{chap:chapter2} does not require any weight training and relies
+purely on topology selection through the optimisation of the auxiliary masks.
+This method works by stochastically sampling topologies from a large untrained
+network, based on the value of the masks, interpreted as probabilities of
+selection of the corresponding weight. These sampled topologies are evaluated to
+eventually identify a subnetwork with compelling performances. The subnetwork is
+extracted by pruning the weights of the large network identified as redundant
+from the larger network, with no performance drop. To achieve this, we
+introduced two components called \acf{ASLP} and \acf{SR}. The former is a
+computationally efficient and numerical stable technique that relies on \acl{GS}
+to train the masks in a stochastic context. The former is an efficient
+learnt-based weight rescaling mechanism that allows the network to rescale the
+weight distributions in order to mitigate the disruption of the weight
+distribution statistics caused by the pruning. We also introduce a thresholding
+strategy responsible for pruning the weights, that allows to effectively
+\emph{freeze} the topology.\\
 
 We validated our approach by comparing our method against other state-of-the-art
 methods on various datasets and network architectures. Our method performs
