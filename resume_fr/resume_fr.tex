@@ -228,13 +228,13 @@ neronnes modernes sont maintenant trop importantes pour être déployés sur des
 appareils connectés.\\
 
 \begin{figure}
-\centering
-\subfloat[VGG16\label{fig:dlo:vgg16}]{
-  \includegraphics[width=0.3\textwidth]{./chapter_dlo/assets/vgg16_cifar.pdf}}
-\hspace{0.05\textwidth}
-\subfloat[ResNet-18\label{fig:dlo:resnet}]{
-  \includegraphics[width=0.5\textwidth]{./chapter_dlo/assets/resnet18.pdf}}
-\caption{Architecture de réseau de neurones convolutifs modernes.}
+  \centering
+  \subfloat[VGG16\label{fig:dlo:vgg16}]{
+    \includegraphics[width=0.3\textwidth]{./chapter_dlo/assets/vgg16_cifar.pdf}}
+  \hspace{0.05\textwidth}
+  \subfloat[ResNet-18\label{fig:dlo:resnet}]{
+    \includegraphics[width=0.5\textwidth]{./chapter_dlo/assets/resnet18.pdf}}
+  \caption{Architecture de réseau de neurones convolutifs modernes.}
 \end{figure}
 
 
@@ -261,7 +261,7 @@ domaine du problème $(y = x * k)$ est une multiplication dans le domaine de
 Fourier $(y_{\mathcal{F}} = x_{\mathcal{F}} \times k_{\mathcal{F}})$, il est
 possible d'accélérer les convolutions en utilisant la transformée de Fourier
 inverse sur la multiplication des opérandes dans le domaine de Fourier $(y =
-\mathcal{F}^{-1} (x_{\mathcal{F}} \times k_{\mathcal{F}}))$
+  \mathcal{F}^{-1} (x_{\mathcal{F}} \times k_{\mathcal{F}}))$
 \cite{DBLP:conf/nips/ChiJM20,DBLP:journals/npl/LinY19,DBLP:conf/pkdd/PrattWCZ17}.
 Il est également possible d'accélérer les multiplicatons matricielles en
 optimisant directement l'ordre des opérations. C'est ce que propose de faire
@@ -322,23 +322,25 @@ de nouvelles briques de bases qui permettent de réduire la taille des réseaux
 tout en conservant leurs performances. MobileNet
 \cite{DBLP:journals/corr/HowardZCKWWAA17} est le parfait exemple de ce type de
 réseau. Il est composé de \emph{convolutions séparables en profondeurs} qui
-permettent de réduire le nombre de paramètres et de calculs. Les convolutions
-séparables en profondeurs sont composées de 2 opérations : une convolution
-\emph{en profondeur} et une convolution \emph{en largeur}. La convolution en
-profondeur est une convolution spatiale classique, tandis que la convolution en
-largeur est une convolution $1 \times 1$ qui permet de réduire le nombre de
-canaux. D'autres briques de bases ont été proposées dans les achitectures
-SqueezeNet \cite{DBLP:journals/corr/IandolaMAHDK16} et ShuffleNet
+permettent de réduire le nombre de paramètres et de calculs (voir
+\cref{fig:dlo:depthwise_separable_conv}). Les convolutions séparables en
+profondeurs sont composées de 2 opérations : une convolution \emph{en
+  profondeur} et une convolution \emph{en largeur}. La convolution en profondeur
+est une convolution spatiale classique, tandis que la convolution en largeur est
+une convolution $1 \times 1$ qui permet de réduire le nombre de canaux. D'autres
+briques de bases ont été proposées dans les achitectures SqueezeNet
+\cite{DBLP:journals/corr/IandolaMAHDK16} et ShuffleNet
 \cite{ZhangShuffleNet,MaShuffleNetV2}. Le premier introduit les \emph{fire
-modules} qui sont des couches de convolution qui mélangent différentes tailles
+  modules} qui sont des couches de convolution qui mélangent différentes tailles
 de noyeau de convolution, afin de préserver l'expressivité du réseau tout en
 limitant le nombre de paramètres avec des noyeau plus petits. Le second propose
 le concept de \emph{channel shuffle} couplé à des convolutions groupées, ce qui
-permet de partager les caractéristiques apprises entre les groupes. Si ces
-architectures sont performantes, elles ont été conçues à la main par des humains
-et ont nécessité beaucoup de travail et d'expertise. Il est possible d'obtenir
-d'autres architecture de manière automatique en utilisant des méthodes de
-recherche d'architecture. Celles-ci sont basées sur des algorithmes
+permet de partager les caractéristiques apprises entre les groupes.\\
+
+Si ces architectures sont performantes, elles ont été conçues à la main par des
+humains et ont nécessité beaucoup de travail et d'expertise. Il est possible
+d'obtenir d'autres architecture de manière automatique en utilisant des méthodes
+de recherche d'architecture. Celles-ci sont basées sur des algorithmes
 d'optimisation qui cherchent à trouver la meilleure architecture pour une tâche
 donnée. Parmi ces méthodes, on peut citer les algorithmes génétiques
 \cite{DBLP:conf/icml/RealMSSSTLK17} et les algorithmes de recherche bayésienne
@@ -346,12 +348,440 @@ donnée. Parmi ces méthodes, on peut citer les algorithmes génétiques
 relaxations continue du problème et sont optimisées avec une descente de
 gradient \cite{DBLP:conf/iclr/LiuSY19}.\\
 
-\noindent \textbf{Compression d'architectures existantes.} \lipsum[2] \\
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\textwidth]{./chapter_sota/assets/depthwise_sep_conv_scheme.pdf}
+  \caption{Convolution séparables en profondeur.}
+  \label{fig:dlo:depthwise_separable_conv}
+\end{figure}
+
+\noindent \textbf{Compression d'architectures existantes.} Les méthodes basée
+sur la paradisme Professeur-Élève, les architectures spécifiques et celles
+obtenues par recherche d'architecture  partagent toute la caractéristiques
+suivante : la création d'un nouveau d'une achitecture spécifique qui répond à un
+besoin donné. Cependant, il est également possible de compresser des des
+architectures déjà existantes en les modifiant. C'est ce que propose les
+méthodes de quantisation, binarisation et élagage.  La quantisation consiste à
+réduire la précision des poids et des activations. Au lieu de traiter avec des
+valeurs flottantes avec une précision de 32 bits, des représentations sur moins
+de bits sont utilisées, avec par exemple des représentations sur 8 bits
+\cite{37631} ou 16 bits \cite{gupta2015deep}. La quantisation peut également
+être utilisée en combinaison avec un partionnement en K-moyennes
+\cite{DBLP:journals/corr/HanMD15}. Les poids peuvent alors prendre $K$ valeurs
+possibles, ces dernières étant les centroïdes du partitionnement. Cette approche
+est utile pour la compression pure, mais contrairement à une approche de
+quantisation classique qui réduit la précision de la représentation, cette
+approche ne permet pas de gain en temps de calcul. La binarisation est une forme
+extrême de quantisation où les poids sont représentés par des valeurs binaires
+($+1$ ou $-1$) \cite{courbariaux2015binaryconnect}. D'autres travaux se sont
+également intéressé à la binarisation des poids et des activations
+\cite{DBLP:conf/nips/HubaraCSEB16}. La quantisation ou la binarisation peuvent
+être effectuées après l'entrainement du réseau
+\cite{tensorrt,DBLP:journals/corr/HanMD15} mais cela induit une perte en
+performance. C'est pourquoi d'autres travaux se sont employés à quantifier les
+réseaux de neurones pendant l'entrainement soit de manière effective
+\cite{courbariaux2015binaryconnect,DBLP:conf/nips/HubaraCSEB16} soit en simulant
+l'effet de la quantisation pendant l'entrainement
+\cite{DBLP:conf/cvpr/JacobKCZTHAK18}.\\
+
+L'élagage est une autre méthode de compression qui consiste à modifier un réseau
+déjà existant en supprimant des poids jugés non importants ou redondants. On
+peut classer les méthodes d'élagage en 2 grandes catégories en fonction de la
+granularité avec laquelle les poids sont retirés. Ces 2 familles sont :
+l'élagage structuré et l'élagage non structuré (voir \cref{fig:sota:pruning}).
+L'élaguage structuré consiste en la suppression de structures entières du
+réseau, le plus souvent des canaux de convolution entiers, mais également des
+lignes et des colonnes de matrices de poids, des filtres de convolution entiers
+ou même des sous parties du réseau. L'importance des ses structures est évaluée
+de différentes manières et peut être soit basée sur la valeur même des poids qui
+la compose \cite{DBLP:conf/iclr/0022KDSG17} soit sur des indicateurs qui en sont
+directement dérivés \cite{DBLP:conf/cvpr/HeLWHY19,DBLP:conf/cvpr/WangLW21}.
+D'autres travaux se concentrent sur les activations et proposent l'élagage de
+des canneaux les plus redondants \cite{DBLP:conf/iccv/HeZS17} ou bien de ceux
+qui contiennent le plus de valeurs nulles \cite{DBLP:journals/corr/HuPTT16}.
+\cite{DBLP:conf/iccv/LiuLSHYZ17} et \cite{DBLP:conf/nips/YouYYM019} proposent
+d'introduire des variables auxiliaires qui permettent de quantifier l'importance
+de chaque canneaux et de les élaguer en conséquence. Ce concept est à la base de
+divers travaux qui introduisent des méthodes d'élaguage dynamiques qui
+appliquent celui-ci pendant l'entrainement et non a posteriori
+\cite{DBLP:conf/nips/GuoYC16,DBLP:conf/ijcai/HeKDFY18}.\\
+
+La deuxième grande famille d'élagage est l'élagage non structuré. Cette famille
+regroupe des méthodes qui se concentrent sur l'élagage individuel des poids.
+Parmis les premières méthodes d'élaguage non structuré, on peut citer les
+méthodes basées sur la Hessienne de la fonction de coût
+\cite{DBLP:conf/nips/CunDS89,DBLP:conf/icnn/HassibiSW93}. Ces approches
+utilisent la Hessienne pour déterminer l'impact du retrait d'un poids sur la
+fonction de coût et pour corriger les poids restants en conséquence. Du fait de
+la complexité de calcul de la Hessienne, ces méthodes ne sont plus adaptés aux
+architectures modernes. D'autres méthodes se sont intéressées à l'élagage non
+structuré en utilisant des indicateurs basés sur la valeur (ou magnitude) des
+poids \cite{DBLP:conf/nips/HanPTD15} et proposent de réentrainer les poids
+restants de manière itérative. Ces travaux ont inspiré le concept de
+\emph{Lottery Ticket} \cite{DBLP:journals/corr/abs-1903-01611}: un \emph{Lottery
+  Ticket} (billet de lotterie) est un sous réseau de neurones qui, quand il est
+entrainé indépendamment, atteint une précision équivalente à celle du réseau
+complet dont il est extrait. Les \emph{Lottery Tickets} sont identifiés en
+entrainant un réseau et en élaguant les poids les moins importants. Les poids du
+sous réseau sont ensuite initialisés avec les poids originaux du réseau complet.
+Cette découverte a été analysée dans \cite{DBLP:conf/nips/ZhouLLY19} et étendu à
+des réseaux plus profonds dans \cite{DBLP:journals/corr/abs-1903-01611}.
+L'existence du \emph{Lottery Ticket} (ou en d'autres termes le sous-réseau) a
+été théoriquement prouvée dans \cite{DBLP:conf/icml/MalachYSS20} et les
+exigences sur la taille théorique du réseau d'origine ont été affinées
+ultérieurement \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.
 
 
+\begin{figure}
+  \centering
+  \subfloat[Élagage structuré\label{fig:sota:structured_pruning}]{%
+    \includegraphics[width=0.6\textwidth]{chapter_sota/assets/structured_pruning.pdf}}
+  \hspace{0.09\textwidth}
+  \subfloat[Élagage non structuré\label{fig:sota:unstructured_pruning}]{%
+    \includegraphics[width=0.3\textwidth]{chapter_sota/assets/unstructured_pruning.pdf}}
+  \caption{Illustrations conceptuelles de l'élagage structuré et non structuré.}
+  \label{fig:sota:pruning}
+\end{figure}
+
+Au sein des diverses méthodes de compression des réseaux neuronaux profonds
+présentées, nous choisissons de mettre l'accent sur l'élagage dans le contexte
+de la classification d'images supervisée. L'élagage structuré se distingue par
+sa flexibilité, notamment son potentiel d'atteindre des taux d'élagage élevés
+par rapport à l'élagage non structuré. Plusieurs raisons motivent ce choix : la
+création de réseaux légers tout en préservant ou améliorant la performance du
+réseau d'origine, la complémentarité avec d'autres techniques de compression et
+la possibilité d'appliquer l'élagage à une architecture existante sans nécessité
+de la développer de zéro, permettant ainsi de consacrer du temps de recherche et
+développement pour d'autres sujets. Cependant, l'élagage présente des défis,
+comme l'identification des poids à conserver qui nécessite souvent un
+entrainement et un ajustement fin de ceux-ci qui est coûteux en temps et en
+ressources. Dans ce qui suit, nous présentons une nouvelle méthode d'élagage
+basée sur une reparametrisation des poids et une fonction de coût budgétaire,
+évitant l'ajustement fin ainsi qu'une deuxième méthode qui permet d'identifier
+les poids pertinents sans même les entraîner, offrant de nouvelles perspectives
+de recherche sur l'entrainement des poids.
 
 \section*{Élagage par reparametrisation avec régularisation basée sur le budget}
 
+
+Cette section traite du défi de l'élagage de grands réseaux de neurones en
+limitant la dégradation de leurs performances. La plupart des méthodes d'élagage
+existantes dégradent la performance des réseaux neuronaux à cause de l'étape
+d'élagage qui retire des poids des réseaux. Par conséquent, une étape coûteuse
+d'ajustement fin de ceux-ci est généralement nécessaire pour compenser la perte
+de performances. La méthode que nous introduisons dans cette section contourne
+ce problème et produit des réseaux élagués légers avec une dégradation minimale
+des performances. Ceci est réalisé grâce à une combinaison de reparamétrisation
+des poids qui englobe un substitut de la norme $\ell_0$ et une fonction de coût
+budgétaire qui oriente la parcimonie du réseau vers un taux d'élagage
+prédéfini.\\
+
+L'élagage est une technique permettant d'obtenir des réseaux de neurones légers en
+réduisant les paramètres d'un réseau pré-entraîné, évitant la conception d'une
+nouvelle architecture. Deux formes d'élagage existent : \textit{(i)} l'élagage
+de poids non structuré, qui supprime des poids individuels basés sur leur
+importance, et \textit{(ii)} l'élagage structuré qui élimine des sections
+entières du réseau.\\
+
+L'élagage non structuré par magnitude est une heuristique reconnue pour évaluer
+la saillance des poids, suggérant que les poids les plus faibles peuvent être
+retirés avec un impact minime. Cette méthode peut être formalisée par :\\
+
+\begin{equation}
+  \mathbf{w}_{\text{élagué}} = p(\mathbf{w}, \alpha) = \mathbf{w} \odot \mathbf{m}_\alpha
+\end{equation}\\
+
+
+\noindent où $p$ représente une fonction d'élagage,  $\mathbf{w}$ les poids
+élagués, $\alpha$, le seuil d'élagage, $odot$ le produit de Hadamard et $\mathbf{m}_\alpha$ un masque binaire
+défini par :\\
+
+\begin{equation}
+  (\mathbf{m}_\alpha)_i = \begin{cases}
+    0 & \text{si } |\mathbf{w}_i| \leq \alpha \\
+    1 & \text{sinon}
+  \end{cases}
+\end{equation}\\
+
+L'élagage par magnitude est composé de trois étapes : l'entraînement standard
+des poids, l'élagage par magnitude, puis l'ajustement fin des poids restants.
+Une variante itérative \cite{DBLP:conf/nips/HanPTD15} de cette méthode existe
+également ou les deux dernières étapes sont répétées jusqu'à atteindre un taux
+d'élagage souhaité. L'intérêt pour l'élagage non structuré a été renforcé par la
+théorie des \textit{Lottery Tickets} \cite{DBLP:conf/iclr/FrankleC19}, qui
+suggère l'existence de sous-réseaux performants au sein de grands réseaux,
+identifiables par l'élagage par magnitude. Cependant, malgré les avantages, le
+coût computationnel, en particulier pour le réglage fin, reste un défi.\\
+
+Notre méthode fait appel à la reparametrisation des poids pour inclure
+l'heuristique de l'élagage par magnitude au sein même de l'expression de
+ceux-ci. D'autres travaux ont également utilisé la reparametrisation des poids.
+Il s'agit méthode où les poids du réseau, appelés \emph{poids apparents}, sont définis
+en fonction d'autres \emph{poids latents}. Une reparamétrisation spécifique,
+présentée dans \cite{powerprop}, élève un poids à la puissance de $\alpha$
+en conservant son signe (voir \cref{eqn:res1:reparam}), créant ainsi une dynamique où les poids les plus
+importants augmentent davantage. L'élagage est ensuite effectué sur ces poids
+reparamétrisés.\\
+
+\begin{equation}
+  \mathbf{\hat{w}} = \mathbf{w} |\mathbf{w}|^{\alpha-1}
+  \label{eqn:res1:reparam}
+\end{equation}\\
+
+
+La plupart des techniques de pruning définissent un taux d'élagage après
+l'entraînement initial sans prendre en compte le budget de poids final alloué,
+ce qui induit une perte de performance après l'élagage. Des travaux ont abordé
+ce problème en ajoutant une fonction de perte, combinée à la fonction de coût de
+la tâche apprise via un coefficient de pondération $\lambda$ (voir
+\cref{eqn:res1:budg_loss}). la Budget-Aware Regularisation (BAR) loss
+\cite{lemaire2019structured}, qui effectue un élagage structuré des canaux des
+activations. Cette fonction de coût (BAR) est composé de deux parties : l'une
+introduisant la parcimonie et l'autre contrôlant le budget.\\
+
+\begin{equation}
+  \mathcal{L}_{\text{totale}} = \mathcal{L}_{\text{tâche}} + \lambda \mathcal{L}_{\text{budget}}
+  \label{eqn:res1:budg_loss}
+\end{equation}\\
+
+
+ChipNet  \cite{tiwari2021chipnet} est une autre méthode qui inclut une fonction
+de coût induisant la parcimonie, appelée \emph{crispness loss}, et une fonction
+coût budgétaire. Les auteurs de ChipNet proposent également plusieurs variantes
+de budget, dont le budget de canaux, le budget de volume d'activation et le
+budget de paramètres. Après le pruning, les réseaux suibissent un ajustement fin
+avec les mêmes hyperparamètres que l'entraînement initial, doublant ainsi le
+temps d'entraînement.\\
+
+Pour pallier la baisse de performance qui suit l'étape d'élagage, l'ajustement
+fin est couramment utilisé. Cependant, il est coûteux en termes de calcul. Des
+travaux ont été réalisés pour proposer des méthodes d'élagage qui évitent le
+besoin d'ajustement fin. L'une de ces méthodes, appelée \emph{Optimal Brain
+  Surgeon} \cite{DBLP:conf/icnn/HassibiSW93}, utilise la matrice Hessienne de la
+fonction de perte pour identifier les poids dont le retrait aura un impact
+minimal sur la fonction de coût d'une part, et pour corriger les poids restants
+d'autre part. Elle est basée sur l'expression de la fonction de perte à un
+minimum local comme suit, avec $\mathbf{H}$ la Hessienne :\\
+
+\begin{equation}
+  \delta \mathcal{L} \approx \frac{1}{2} \delta \mathbf{w}^T \cdot \mathbf{H} \cdot \delta \mathbf{w}
+\end{equation}\\
+
+Cette méthode est efficace sur de petits réseaux, mais est moins adaptée aux
+grands réseaux en raison du coût de calcul de la matrice Hessienne. D'autre
+travaux ont développé une approche qui ne necessite pas de calculer la
+Hessienne. En particulier,  Kang et al. \cite{DBLP:conf/ijcai/HeKDFY18} ont
+proposé une méthode qui introduit la parcimonie pendant l'entrainement du
+réseau. La méthode introduite élague les canaux dont la sortie sera nulle ou
+négative et qui sera donc rendu nulle par l'activation \ac{ReLU}. L'un des
+avantages majeurs de cette méthode est que le réseau n'a pas besoin d'un
+ajustement fin supplémentaire après l'élagage. Cependant, bien que ces méthodes
+visent à retirer des poids ou des groupes de poids redondants, elles abordent
+souvent l'élagage comme une réflexion après coup, ne prenant pas en compte leur
+nombre final, ce qui peut entraîner une perte de performance.\\
+
+Pour répondre aux défis de l'affinage fin coûteux et de la prise en compte du
+budget final et de la topologie du réseau, nous proposons une nouvelle
+reparamétrisation des poids couplée à une fonction de coût budgétaire, le tout,
+appuyé sur une norme $\ell_0$ de sustitution. Cette approche apprend à la fois
+les poids et la structure d'un réseau allégé. Elle permet une élagage non
+structuré tout en contrôlant le nombre de poids non nuls. Testée sur différentes
+tâches de classification, cette méthode s'est avérée efficace sans nécessité
+d'affinage.\\
+
+Dans ce qui suit, pour une simplicité conceptuelle, nous adopterons une approche
+conventionnelle où les entrées des tenseurs multidimensionnels sont indexées par
+$i$, en plus de l'indice de couche $\ell$, vectorisant ainsi ces entités pour
+faciliter leur manipulation.\\
+
+\subsection*{Principe de la méthode d'élaguage}
+
+La méthode que nous proposons est la combinaison d'une fonction de coût
+budgétaire donc l'objectif est de pousser les réseau à respecter un budget en
+terme de nombre de poids, ainsi qu'une reparamétrisation des poids qui permet
+d'inclure l'apriori de l'élagage par magnitude dans l'expression des poids. Ces
+deux composantes  dépendent d'une fonction de reparametrisation $h$ qui joue le
+rôle de norme $\ell_0$ de substitution dérivable.\\
+
+La fonction de reparamétrisation $h$ est exprimée dans
+l'\cref{eqn:res1:stable_h_expression}. Cette formlation permet de garantir 4 propriétés
+essentielles pour cette fonction qui sont :
+
+\begin{itemize}
+  \item \emph{Image contrainte}. Nous voulons que l'image de $\mathds{R}$ soit
+        le segment $[0, 1]$. Cela permet de s'assurer que les poids reparamétrisés ne
+        voient pas leur magnitude augmenter à cause de la reparametrisation.
+  \item \emph{Dérivabilité}. Afin de pouvoir utiliser la descente de gradient,
+        il faut que la fonction de reparametrisation soit dérivable.
+  \item \emph{Symétrie}. La fonction de reparametrisation doit être symétrique
+        pour ne pas favoriser les poids positifs ou négatifs.
+  \item \emph{Segment borné}. Il doit être possible de borner l'image de
+        n'importe quel segment $[-a, a]$ de $\mathds{R}$, par une constance arbitraire
+        $\epsilon$, afin de garantir que l'image d'un poid faible par la fonction de
+        reparametrisation est un poids faible.
+\end{itemize}
+
+\noindent La formulation choisie pour $h$ est donc la suivante :
+
+\begin{equation}
+  \label{eqn:res1:stable_h_expression}
+  h_t(x) = C_1 \biggl( \text{exp} \bigg\{-\displaystyle\frac{1}{(tx)^n +1}\bigg\} - C_2 \biggr),
+\end{equation}
+
+\noindent avec $C_1=\frac{1}{1-e^{-1}}$, $C_2 = e^{-1}$, $t$ un paramètre de
+température et $n$ un exposant fixé à 4 dans nos expériences. Cette fonction
+vérifie les 4 propriétés définies plus haut et est spécifiquement conçue pour
+être stable numériquement, même pour des petites valeurs de $x$.\\
+
+cette fonction de reparametrisation est utilisée dans la définition de nos poids
+\emph{apparents} afin de rendre les poids faibles encore plus faible mais de ne
+pas modifier les poids forts. La définition de ces poids apparents est donnée
+comme suit :
+
+\begin{equation}
+  \label{eqn:res1:reparametrized_weights}
+  \hat{\mathbf{w}} = \mathbf{w} \odot h_t(\mathbf{w})
+\end{equation}\\
+
+La fonction de coût budgétaire s'appuie sur cette fonction de reparametrisation
+pour compter le nombre de poids non nuls dans le réseau. Elle est de forme
+quadratique afin de faciliter l'optimisation et d'assurer un respect du budget.
+Elle est définie comme suit :
+
+\begin{equation}
+  \label{eqn:chap1:real_budget}
+  {\cal L}_\text{budget} = \biggl( \displaystyle\frac{C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) - C_\text{target}}{C_\text{initial}} \biggr)^2.
+\end{equation}\\
+
+\noindent avec :
+
+\begin{equation}
+  \label{eqn:chap1:cost_function}
+  C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) = \displaystyle \sum_{\ell=1}^{L} \sum_{i=1}^{\nu_\ell} h_t(\mathbf{w}_{\ell i}).
+\end{equation} \\
+
+\noindent où $L$ est le nombre de couches du réseau, $\nu_\ell$ le nombre de
+poids de la couche $\ell$, $C_\text{target}$ le budget cible et
+$C_\text{initial}$ le budget initial.\\
+
+\subsection*{Expériences}
+
+Afin de valider notre méthode et ses composantes, nous l'avons comparé à
+d'autres méthodes ou variantes dans différents cas de figure pour montrer
+expérimentalement leurs pertinence.\\
+
+Nous avons comparé notre méthode à l'élagage par magnitude avec et sans
+ajustement fin post-entraînement pour différent taux d'élagage. Les résultats
+démontrent de meilleures performances pour notre méthode, même comparé à
+l'élaguage avec ajustement fin, alors que notre méthode ne nécessite pas cet
+ajustement et n'a subit aucun réentrainement des poids après l'élagage. La
+\cref{fig:chap1:reparam_vs_mpft_conv4} montre les résultats comparatifs sur les
+base de donnée CIFAR-10 et 100 \cite{CIFARdataset} pour un réseau Conv4
+\cite{DBLP:conf/iclr/FrankleC19}.\\
+
+
+\begin{figure}
+  \centering
+  \subfloat[Conv4 - CIFAR-10]{
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar10.pdf}
+    \label{fig:chap1:reparam_vs_mpft_conv4_cifar10}}
+  \subfloat[Conv4 - CIFAR-100]{
+    \includegraphics[width=0.49\linewidth]{chapter_1/assets/reparam_vs_mpft_Conv4_cifar100.pdf}
+    \label{fig:chap1:reparam_vs_mpft_conv4_cifar100}} \caption{ Comparaison des
+    performances de notre méthode {\em(Ours)} face à l'élagage par magnitude
+    sans {\em(MP w/o FT)} et avec ajustement fin {\em(MP w/ FT)} utilisant un
+    réseau Conv4 sur les ensembles de données CIFAR-10 et CIFAR-100, pour
+    différents taux d'élagage. A voir en couleur de préférence.}
+  \label{fig:chap1:reparam_vs_mpft_conv4}
+\end{figure}
+
+Pour valider l'efficacité de la fonction de coût budgétaire, nous avons comparé
+les performances de notre méthode avec deux vairantes. Dans la première
+vériante, la fonction de coût budgétaire est simplement retirée de la fonction
+de coût global, et dans la deuxième variante, elle est remplacée par
+régularisation $\ell_1$ sur les poids du réseau afin d'introduire de la
+parcimonie. Nos résultats montrent que notre méthode performe systématiquement
+mieux que la variante sans fonction de coût budgétaire et que la variante avec
+régularisation $\ell_1$ (à l'exception de l'architecture ResNet-20
+\cite{DBLP:conf/cvpr/HeZRS16} pour cette dernière). Il est important que la
+variante avec régularisation $\ell_1$ dépend fortement du coefficient de
+pondération $\lambda$ (voir \cref{eqn:res1:budg_loss}) et que la valeur optimale
+pour $\lambda$ dépend de l'architecture et du jeu de donnée, alors que ça n'est
+pas le cas pour notre méthode.\\
+
+Nous avons également validé la fonction de reparametrisation en comparant notre
+méthode avec une variante où la fonction de reparametrisation n'est pas
+appliquée. Encore une fois, notre méthode performe significativement mieux que
+la variante sans reparametrisation une fois que celle ci est élaguée au taux
+cible.\\
+
+Ces expériences montrent la pertinence des deux composantes de notre méthode
+ainsi que son efficacité comparé aux méthodes d'élagague par magnitude qui
+nécessitent un ajustement fin post-entraînement.\\
+
+\subsection*{Points Clefs}
+
+Nous avons introduit une méthode d'élagage des réseaux neuronaux qui surmonte
+les limites des méthodes d'élagage traditionnelles. Ces dernières élaguent
+généralement les réseaux après une phase d'entraînement initiale sans considérer
+le taux d'élagage cible, nécessitant souvent un ajustement fin pour compenser la
+perte de précision. En revanche, notre méthode élimine le besoin d'ajustement
+fin tout en surpassant les méthodes d'élagage par magnitude actuelles. Elle
+s'appuie sur deux composants clés : une fonction de coût budgétaire et une
+reparamétrisation des poids. L'utilisation combinée de ces éléments augmente la
+robustesse du réseau à l'élagage. Toutefois, la méthode actuelle présente des
+limites, notamment l'incapacité de traiter les poids ayant des valeurs identques
+ou similaires différemment. Le chapitre suivant introduira une approche pour
+déterminer la topologie optimale d'un réseau sans entraîner les poids, en se
+basant sur un masque entrainé plutôt que sur la magnitude des poids.\\
+
+
 \section*{Entrainement de masques pour échantillonnage stochastique des poids}
+
+Dans cette section, nous explorons comment extraire des sous-réseaux performants
+et légers de grands réseaux de neurones sans entraîner les poids. Au lieu de se
+baser sur la valeur des poids pour établir leur pertinence au sein de
+l'architecture, comme dans le chapitre précédent, cette méthode se base sur un
+l'entraînement de masques latents. Dans cette méthode, le critère d'élagage
+n'est plus lié à la valeur du poids et l'on se concentre sur la sélection de la
+topologie plutôt que sur l'entraînement de ces derniers. Cette approche est
+adaptée pour des situations où modifier les poids n'est pas possible et offre
+une nouvelle perspective à l'entraînement des réseaux de neurones en s'éloignant
+du paradigme qui consiste à entraîner les poids.\\
+
+Certains travaux se sont attaqué au problème de l'élagage en adoptant une
+approche consistant à élager les poids du réseau avant l'entraînement de
+ceux-ci, c'est à dire à leur initialisation. C'est le cas notamment des méthodes
+SNIP \cite{DBLP:conf/iclr/LeeAT19}, GraSP \cite{DBLP:conf/iclr/WangZG20} and
+SynFlow \cite{DBLP:conf/nips/TanakaKYG20}. Ces 3 méthodes établissent chacune un
+critère de pertinence des poids dérivé de leur valeur et élaguent les poids
+avant même l'entrainement de ceux-ci. Il reste tout de même nécessaire de faire
+quelques passes d'entrainement pour calculer les critères de pertinences, et un
+entraînement complet des poids restants reste nécessaire.\\
+
+L'élagage à l'initialisation des poids, peut-être vu comme une manière de
+chercher un sous-réseau performant au sein d'un réseau plus grand. C'est cette
+problématique particulière qu'ont choisit d'aborder Frankle et al.
+\cite{DBLP:conf/iclr/FrankleC19} avec leur méthode des \emph{Lottery Tickets}.
+Pour trouver un sous réseau performant \emph{après entrainement}, les auteurs
+entraine d'abord un grand réseau, puis élagent les poids par magnitude et
+restaurent les poids restants à leur valeur initiale. Le sous réseau alors
+obtenu est appelé \emph{Lottery Ticket} et performe aussi bien que le grand
+réseau lorsqu'entraîné. Cette méthode a été étendue à des réseaux plus
+profondset plus grand en adaptant la procédure pour que  l'élagage soit
+iteratif, et les poids restorés non pas à leur valeur d'origine mais à une
+valeur postérieur à l'initialisation \cite{DBLP:conf/icml/FrankleD0C20}. Ces
+travaux ont été précisés dans \cite{DBLP:conf/iclr/LiuSZHD19}, où les auteurs
+montrent que seul la topologie est importante et pas la valeur des poids.\\
+
+
+
+
+
+\subsection*{Principe de la méthode d'élagage}
+
+\subsection*{Points Clefs}
+
+
 
 \section*{Conclusion}
