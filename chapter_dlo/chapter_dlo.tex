@@ -31,7 +31,7 @@ perceptron model was later extended to multiple layers of neurons, giving rise
 to the \acf{MLP} \cite{rosenblatt1961principles,rumelhart1986learning}. A
 \acl{MLP} is a type of artificial neural network that extends the concept of a
 single-layer perceptron by including one or more hidden layers of neurons
-connected downstream from an input layer and upstream to an output layer. Each
+connected \DIFdelbegin \DIFdel{upstream to }\DIFdelend \DIFaddbegin \DIFadd{downstream from }\DIFaddend an input layer and \DIFdelbegin \DIFdel{downstream }\DIFdelend \DIFaddbegin \DIFadd{upstream }\DIFaddend to an output layer. Each
 layer is fully connected to the next, allowing the model to learn and represent
 more complex, non-linear relationships in the input data. Although more capable
 than the perceptron, the \ac{MLP} is still limited by its depth. The next
@@ -236,7 +236,7 @@ vector.\\
 
 \subsection{Loss Function and Regularisation}
 Training a neural network aims at finding the optimal parameters $\theta$ that
-maximise a performance, quantified by a metric $P$, often based on the
+\DIFdelbegin \DIFdel{maximises }\DIFdelend \DIFaddbegin \DIFadd{maximise }\DIFaddend a performance, quantified by a metric $P$, often based on the
 discrepancy between the predicted output $\hat{y}$ and the true output $y$.
 However, optimising directly the metric $P$ might be intractable. To solve for
 this issue, one may define a differentiable cost function and minimise the
@@ -253,7 +253,7 @@ referred to as the \emph{empirical risk}, is defined in the following equation:
 distribution is not known, and thus, the empirical distribution $\delta$ is used
 instead. The minimisation of the empirical risk alone is not sufficient to
 ensure good overall performance. Indeed, the neural network could learn to
-perfectly predict the output of the training set but may fail to generalise to
+perfectly predict the output of the training set but \DIFaddbegin \DIFadd{may }\DIFaddend fail to generalise to
 unseen data. This phenomenon is called \emph{overfitting}. To prevent
 overfitting, we add a regularisation term to the empirical risk. The
 regularisation term, denoted $\mathcal{R}$, is a function of the parameters
@@ -349,13 +349,13 @@ follows:\\
 
 \begin{equation}
   \label{eqn:dlo:reg_l2}
-  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2^2 
-\end{equation}\\
+  \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2\DIFaddbegin \DIFadd{^2 
+}\DIFaddend \end{equation}\\
 
-\noindent where $\left|. \right|$ and $\|.\|_2^2$ respectively denote the sum of
-the absolute value and the sum of the squaring of each element of the vector.\\
+\DIFaddbegin \noindent \DIFadd{where $\left|. \right|$ and $\|.\|_2^2$ respectively denote the sum of
+the absolute value and the sum of the squaring of each element of the vector.}\\
 
-\subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
+\DIFaddend \subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
 
 As mentioned before, the training of a neural network involves finding the
 optimal set of parameters $\theta$ that minimises a cost function
@@ -417,7 +417,7 @@ gradients on the whole dataset in one step, hence the use of mini-batches.\\
   \label{alg:dlo:sgd}
   \begin{algorithmic}
     \REQUIRE {Learning rate $\eta$, mini-batch size $m$, Initial parameters
-    $\theta^{(0)}$, $m' \geq m$ training pairs $(X,y)\in
+    $\theta^{(0)}$, \DIFdelbegin \DIFdel{$n \geq m$ }\DIFdelend \DIFaddbegin \DIFadd{$m' \geq m$ }\DIFaddend training pairs $(X,y)\in
     \mathcal{X}\times\mathcal{Y}$, Loss function $\mathcal{J}$} \WHILE {Stopping
     criterion not met} \STATE {Sample mini-batch of size $m$ from training set}
     \STATE {Compute gradient estimate on mini-batch: $\hat{g} \gets \nabla
@@ -479,7 +479,8 @@ effectiveness of \acp{CNN} lies in their architecture that leverages the \ac{CL}
 layers to automatically learn abstract features from visual data in a
 hierarchical fashion. In this section, we explore the building blocks of
 \acp{CNN} and various architectures that have been widely used and became
-\emph{de facto} standards in the literature.
+standards in the literature.
+% FIXME: rajouter \emph{de facto} ?
 
 \subsection{Building Blocks}
 
@@ -533,7 +534,7 @@ as a classifier, whereas the \ac{CL} layers act as a feature extractor.
 \ac{FC} layers perform high-level reasoning by conducting non-linear
 transformations of the extracted features and combining them to make decisions.
 In an FC layer, each neuron is connected to every neuron in the previous layer.
-A \ac{FC} layer can be described as a matrix-vector product as in
+A \ac{FC} layer can be \DIFdelbegin \DIFdel{describe }\DIFdelend \DIFaddbegin \DIFadd{described }\DIFaddend as a matrix-vector product as in
 \cref{eqn:dlo:fc_layer} (see \cref{fig:dlo:dense_layer}).\\
 
 \begin{equation}
@@ -548,6 +549,9 @@ flattened or reshaped into a single column vector. The final layer in a \ac{CNN}
 is a \ac{FC} layer that has a number of neurons equal to the number of output
 classes, and it typically uses a softmax activation to output a probability
 distribution over those classes.\\
+
+%FIXME: rajouter phrase pour dire que l'on peut remplacer les layers FC par des
+%layers conv pour des réseaux "fully convolutional"
 
 
 \begin{figure}[htbp]
@@ -566,10 +570,11 @@ distribution over those classes.\\
   \label{fig:sota:layers}
 \end{figure}
 
-\noindent \textbf{Activation functions.} They are often applied to the output
+\noindent \textbf{Activation \DIFdelbegin \DIFdel{function}\DIFdelend \DIFaddbegin \DIFadd{functions}\DIFaddend .} \DIFdelbegin \DIFdel{These functions }\DIFdelend \DIFaddbegin \DIFadd{They }\DIFaddend are often applied to the output
 feature map of a convolutional or fully connected layer, resulting in the
-\emph{activation map} or \emph{activations}. These functions introduce
-non-linearity into the model, allowing it to learn more complex patterns
+\emph{activation map} or \emph{activations}. \DIFdelbegin \DIFdel{This function introduces
+}\DIFdelend \DIFaddbegin \DIFadd{These functions introduce
+}\DIFaddend non-linearity into the model, allowing it to learn more complex patterns
 \cite{long2015fully}. A common activation function used in \acp{CNN} is the
 \ac{ReLU}, represented as $f(x)=\max(0,x)$. Other functions like the sigmoid
 $f(x)=1/(1+e^{-x})$ or tanh $f(x)=(e^{x} -e^{-x})/(e^{x}+e^{-x})$ functions have
@@ -586,7 +591,7 @@ mitigate the vanishing or exploding gradient problem
   \label{fig:dlo:activation_functions}
 \end{figure}
 
-\noindent \textbf{Pooling.} This operation is often employed after \ac{CL}
+\noindent \textbf{Pooling.} \DIFdelbegin \DIFdel{Pooling }\DIFdelend \DIFaddbegin \DIFadd{This operation }\DIFaddend is often employed after \ac{CL}
 layers in a \ac{CNN} and aims at progressively reducing the spatial extent of
 the input representation, thus reducing the number of parameters and
 computations in the network. This also helps control overfitting and increases
@@ -609,7 +614,7 @@ pooling} and \cref{eqn:dlo:avg_pooling} for \emph{average pooling}:\\
   \label{eqn:dlo:max_pooling}
   Y^{\text{max}}_{ij} = \max_{(a,b) \in [0, k_h-1] \times [0, k_w-1]} X_{i + a, j + b}
 \end{equation}\\
-  
+
   % Average Pooling
   \begin{equation}
   \label{eqn:dlo:avg_pooling}
@@ -698,8 +703,10 @@ to the contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction
 of AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
 considerably grew, comprising more layers and neurons to handle more complex
 tasks, like large-scale image recognition.AlexNet tackled the overfitting
-issue in LeNet-5 using data augmentation and dropout techniques, while also
-introducing and popularising the \ac{ReLU} activation function.\\
+issue in LeNet-5 \DIFdelbegin \DIFdel{with the use of }\DIFdelend \DIFaddbegin \DIFadd{using }\DIFaddend data augmentation and dropout techniques\DIFdelbegin \DIFdel{and
+introduced it also
+introduced and popularised }\DIFdelend \DIFaddbegin \DIFadd{, while also
+introducing and popularising }\DIFaddend the \ac{ReLU} activation function.\\
 
 \begin{figure}[htbp]
   \centering
@@ -714,14 +721,15 @@ The next advancement was the VGG networks family
 \cite{DBLP:journals/corr/SimonyanZ14a} %, introduced in 2014 
 which proposed much deeper architectures with up to 19 layers, which is a
 significant increase over the 8 layers of AlexNet. However, the increased depth
-led to the \emph{vanishing gradient} problems, which refers to the situation in
+led to the \emph{vanishing \DIFdelbegin \DIFdel{gradients}\DIFdelend \DIFaddbegin \DIFadd{gradient}\DIFaddend } problems\DIFdelbegin \DIFdel{. The vanishing gradients problem
+}\DIFdelend \DIFaddbegin \DIFadd{, which }\DIFaddend refers to the situation in
 training a deep neural network where gradients are backpropagated through layers
 and become increasingly small, effectively preventing the weights of earlier
 layers from learning and updating effectively. The VGG networks also introduced
 the practice of stacking multiple convolutional layers with small $3\times 3$
 filters instead of using larger ones. The same year, Google's Inception (or
 GoogLeNet) \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} was introduced, addressing
-the vanishing gradient issue with its novel inception modules, which allowed
+the vanishing \DIFdelbegin \DIFdel{gradients  }\DIFdelend \DIFaddbegin \DIFadd{gradient }\DIFaddend issue with its novel inception modules, which allowed
 the network to learn at varying scales and increased computational efficiency,
 without overly increasing the network size. GoogleNet was also the first
 \ac{CNN} that was not a simple stack of layers and processed a single input with
@@ -752,7 +760,8 @@ parameters as well as increased memory consumption.\\
   \caption{A residual block and its skip connection used in
     ResNets\cite{DBLP:conf/cvpr/HeZRS16}. The identity skip connection allows
     for the gradient to be backpropagated directly through several layers, thus
-    mitigating the \emph{vanishing gradient} problem.}
+    mitigating the \DIFdelbeginFL \emph{\DIFdelFL{vanishing gradients}} %DIFAUXCMD
+\DIFdelendFL \DIFaddbeginFL \emph{\DIFaddFL{vanishing gradient}} \DIFaddendFL problem.}
   \label{fig:dlo:skip_connection}
 \end{figure}
 
@@ -828,7 +837,7 @@ a \ac{ReLU} activation function. The VGG16 network is illustrated in
 \cite{DBLP:conf/cvpr/HeZRS16} are 18 and 20-layer \acp{CNN} respectively. These
 layers are organized into stages, with ResNet18, represented in
 \cref{fig:dlo:resnet18}, consisting of 4 stages with 2 \emph{Basic Blocks}
-(detailed subsequently), while ResNet20, represented in \cref{fig:dlo:resnet20},
+(detailed subsequently)\DIFdelbegin \DIFdel{2 each}\DIFdelend , while ResNet20, represented in \cref{fig:dlo:resnet20},
 is structured into 3 stages, each containing 3 \emph{Basic Blocks}. The
 \emph{Basic Blocks}, also referred to as \emph{Residual Blocks}, are composed of
 \ac{CL} layers (see \cref{fig:dlo:resnet18,fig:dlo:resnet20}) and follow the
@@ -968,15 +977,17 @@ CIFAR-100 is also divided into two sets: a training and a test set, composed of
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/cifar-100_example.png}
-  \caption{A sample of images from CIFAR-100. Each image represents an instance
-    of one of the 100 distinct classes.}
+  \caption{A sample \DIFdelbeginFL \DIFdelFL{grid }\DIFdelendFL of images from \DIFdelbeginFL \DIFdelFL{the }\DIFdelendFL CIFAR-100\DIFdelbeginFL \DIFdelFL{dataset}\DIFdelendFL . \DIFdelbeginFL \DIFdelFL{The images
+    represent a subset }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{Each image represents an instance
+    of one }\DIFaddendFL of the 100 \DIFdelbeginFL \DIFdelFL{available }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{distinct }\DIFaddendFL classes\DIFdelbeginFL \DIFdelFL{, each image represents
+    a unique class}\DIFdelendFL .}
   \label{fig:intro:cifar100_examples}
 \end{figure}
 
 
 \subsection{TinyImageNet}
 
-TinyImageNet is another popular dataset in machine learning and computer vision,
+TinyImageNet \DIFdelbegin \DIFdel{dataset }\DIFdelend is another popular dataset in machine learning and computer vision,
 conceived as a subset of the larger ImageNet dataset
 \cite{DBLP:journals/ijcv/RussakovskyDSKS15}. It comprises 100,000 colour images
 of size 64x64 pixels, split into 200 classes, whereas ImageNet contains 1.2
@@ -999,7 +1010,7 @@ the image classes.\\
 \subsection{Train, Validation and Test Sets}
 
 In our experiments, for each dataset, we use 3 distinct sets for training,
-validation and testing. The training set serves to tune the weights of the
+validation and testing. The training set serves to \DIFdelbegin \DIFdel{train }\DIFdelend \DIFaddbegin \DIFadd{tune the weights of }\DIFaddend the
 model, while the validation set is used to monitor the evolution of the
 performance metric on unseen data throughout the training. The validation metric
 provides the necessary triggers for the early stopping policy (\emph{i.e.}

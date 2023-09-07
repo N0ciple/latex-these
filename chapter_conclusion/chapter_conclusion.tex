@@ -12,9 +12,9 @@ summarised our contributions in the following paragraphs.\\
 network post-training introduces a performance drop that needs to be compensated
 for with fine-tuning. In \cref{chap:chapter1} we propose a budget-aware pruning
 method based on a weight reparametrisation. Respecting a budget throughout
-training allows for joint optimisation of the weights and the topology.
+training \DIFaddbegin \DIFadd{allows for joint optimisation of the weights and the topology.
 Moreover, by controlling the number of parameters that will remain, it
-encourages the network not to use more capacity and therefore weights than what
+}\DIFaddend encourages the network not to use more capacity and therefore weights than what
 will be allowed once pruning is enforced.  To reach this goal, we introduce in
 \cref{chap:chapter1} two main components that work together. On the one hand, a
 budget regularisation loss that computes the current weight budget at each
@@ -32,18 +32,19 @@ and, for almost all tested pruning rates, better than magnitude pruning with
 fine-tuning. We also validated the relevance of each component of our method
 individually in a set of comparative experiments. Finally, we provided
 experimental results to discuss and support the choice of the mixing coefficient
-and tested our method on trained and pruned initialisation to show the
-importance of budget enforcement and weight reparametrisation, even on already
+\DIFdelbegin \DIFdel{$\lambda$ }\DIFdelend and tested our method on trained and pruned initialisation to show the
+importance of budget enforcement \DIFaddbegin \DIFadd{and weight reparametrisation}\DIFaddend , even on already
 pruned networks when they undergo fine-tuning.\\
 
 \noindent \textbf{Pruning without weight training with stochastic sampling.}
 When it comes to estimating the saliency of weights, the general approach is to
 derive an indicator based on their value, such as magnitude pruning which
 considers the absolute value of the weight as its saliency. However, these
-approaches, by design, cannot treat differently two connections with the same
-weight value. In \cref{chap:chapter2}, we proposed a new stochastic approach to
+approaches, by design, cannot treat differently two \DIFdelbegin \DIFdel{weight that has the same
+}\DIFdelend \DIFaddbegin \DIFadd{connections with the same
+weight }\DIFaddend value. In \cref{chap:chapter2}, we proposed a new stochastic approach to
 extract lightweight subnetworks from a large untrained network. This approach
-estimates the importance of a weight based on trained masks which are auxiliary
+estimates the importance of a weight based on trained masks \DIFdelbegin \DIFdel{that }\DIFdelend \DIFaddbegin \DIFadd{which }\DIFaddend are auxiliary
 variables that represent their associated weight saliency and are consequently
 not bound to the value of the weights. Furthermore, to also tackle the
 aforementioned issue with the necessity to fine-tune pruned networks, the method
