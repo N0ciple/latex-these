@@ -11,9 +11,9 @@ size growth and increase in their parameter count. The rapid evolution and
 adoption of these networks has given rise to various applications
 \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:conf/emnlp/BudzianowskiV19,silver2018general,jumper2021highly},
 particularly embedded ones\cite{kim2020review,kuutti2020survey}, whose resources
-are highly constrained in terms of computing power, energy consumption or memory
-footprint. Alongside the increase in the size of these networks, compression
-techniques
+are highly constrained in terms of computing power, energy consumption and
+memory footprint. Alongside the increase in the size of these networks,
+compression techniques
 \cite{DBLP:conf/nips/CunDS89,DBLP:journals/corr/HanMD15,DBLP:conf/nips/HanPTD15}
 have been devised, in order to enable the use of these algorithms in embedded
 applications or resource-constrained environments.\\
@@ -57,13 +57,12 @@ Among various operations and functions used in neural networks, two fundamental
 mathematical operations, convolution and matrix multiplication are used
 extensively and are the backbone of most computations in neural networks.
 However, performing these operations can be computationally demanding,
-particularly with large and complex networks. This may lead to significant
-processing times, posing a challenge for real-time or resource-limited
-applications. To mitigate this issue, some research efforts have focused on
-developing techniques to speed up these operations. These strategies encompass
-optimizing the underlying algorithms to leveraging hardware acceleration, with
-the objective of enhancing the speed and efficiency of neural network
-computations.\\
+particularly with large and complex networks. This may lead to long computation
+times, posing a challenge for real-time or resource-limited applications. To
+mitigate this issue, some research efforts have focused on developing techniques
+to speed up these operations. These strategies encompass optimizing the
+underlying algorithms to leveraging hardware acceleration, with the objective of
+enhancing the speed and efficiency of neural network computations.\\
 
 
 \subsection{\acl{FFT}}\label{sec:sota:fft}
@@ -138,8 +137,8 @@ defining the following 7 products, referred to as $P_{i}$, with $i\in \llbracket
     P_{3} & = A_{11}(B_{12} - B_{22})            \\
     P_{4} & = A_{22}(B_{21} - B_{11})            \\
     P_{5} & = (A_{11} + A_{12})B_{22}            \\
-    P_{7} & = (A_{21} - A_{11})(B_{11} + B_{12}) \\
-    P_{6} & = (A_{12} - A_{22})(B_{21} + B_{22})
+    P_{6} & = (A_{21} - A_{11})(B_{11} + B_{12}) \\
+    P_{7} & = (A_{12} - A_{22})(B_{21} + B_{22})
   \end{aligned}
 \end{equation}\\
 
@@ -478,19 +477,20 @@ $$\displaystyle\frac{C_\text{out}\times k \times k}{C_\text{out} + k \times k}.$
 % region: fire module
 \noindent \textbf{Fire Module.} An alternative approach for designing efficient
 architectures involves the integration of \emph{fire modules}, as proposed in
-\cite{DBLP:journals/corr/IandolaMAHDK16}. These modules aim to minimise
-computational requirements by employing two distinct strategies: \emph{(i)}
-diminishing the number of input channels supplied to the following conventional
-$k\times k$ convolutions and \emph{(ii)} substituting a portion of the
-resource-intensive $k\times k$ convolutions with pointwise convolutions, which
-possess $k^2$ times fewer parameters. The initial strategy is applied within the
-\emph{Squeeze Layer} of the \emph{fire module}, which decreases the number of
-input channels delivered to the \emph{Expand Layer}, subsequently reducing the
-parameter count in the \emph{Expand Layer} kernels. The second strategy is
-implemented in the \emph{Expand Layer}, where some $3\times3$ convolutions are
-replaced with $1\times1$ variants. Although the $1x1$ convolutions capture less
-spatial information, they are significantly less computationally demanding than
-the $3x3$ ones.\\
+\cite{DBLP:journals/corr/IandolaMAHDK16}. These modules, represented in
+\cref{fig:sota:fire_module}, aim to minimise computational requirements by
+employing two distinct strategies: \emph{(i)} diminishing the number of input
+channels supplied to the following conventional $k\times k$ convolutions and
+\emph{(ii)} substituting a portion of the resource-intensive $k\times k$
+convolutions with pointwise convolutions, which possess $k^2$ times fewer
+parameters. The initial strategy is applied within the \emph{Squeeze Layer} of
+the \emph{fire module}, which decreases the number of input channels delivered
+to the \emph{Expand Layer}, subsequently reducing the number of parameters in
+the \emph{Expand Layer} kernels. The second strategy is implemented in the
+\emph{Expand Layer}, where some $3\times3$ convolutions are replaced with
+$1\times1$ variants. Although the $1\times1$ convolutions capture less spatial
+information, they are significantly less computationally demanding than the
+$3\times3$ ones.\\
 
 \begin{figure}[htbp]
   \centering
@@ -558,19 +558,19 @@ in subsequent ones.\\
 \noindent\textbf{ShuffleNetV2.} Building on the success of ShuffleNet,
 ShuffleNetV2 was introduced in \cite{MaShuffleNetV2}, focusing on enhancing
 network efficiency through the combination of strided convolution and channel
-split. Strided convolution helps reducing the spatial dimensions of feature
-maps, thereby reducing the computation cost. The Channel Split technique
-efficiently processes the input feature maps while maintaining the expressive
-power of the architecture. Channel Split works by dividing the input feature
-maps into two equal parts. One part is passed through the main branch of the
-ShuffleNet unit, while the other part is sent through the identity branch, which
-leaves its input unchanged. In the main branch, a sequence of pointwise and
-$3\times 3$ convolutions are performed. After both the main branch and the
-identity branch complete their respective operations, the two parts are
-concatenated along the channel dimension and the channels are shuffled. Finally,
-the output feature maps are passed to the next ShuffleNet unit in the network.
-This process is represented in \cref{fig:sota:channel_split}. This approach
-balances computational efficiency with the expressive capacity of the model.\\
+split. Strided convolution helps to reduce the spatial extent of feature maps,
+thereby reducing the computation cost. The Channel Split technique efficiently
+processes the input feature maps while maintaining the expressive power of the
+architecture. Channel Split works by dividing the input feature maps into two
+equal parts. One part is passed through the main branch of the ShuffleNet unit,
+while the other part is sent through the identity branch, which leaves its input
+unchanged. In the main branch, a sequence of pointwise and $3\times 3$
+convolutions are performed. After both the main branch and the identity branch
+complete their respective operations, the two parts are concatenated along the
+channel dimension and the channels are shuffled. Finally, the output feature
+maps are passed to the next ShuffleNet unit in the network. This process is
+represented in \cref{fig:sota:channel_split}. This approach balances
+computational efficiency with the expressive capacity of the model.\\
 % endregion: shufflenet
 
 % region: mobilenetv2
@@ -602,11 +602,12 @@ reported in \cite{DBLP:conf/cvpr/SandlerHZZC18,DBLP:conf/cvpr/HanKK17}.\\
   \subfloat[Inverted Residual Block\label{fig:sota:inverted_residual_block}]{%
     \includegraphics[width=0.49\textwidth]{chapter_sota/assets/mobilenet_v2_inverted_residual.pdf}}
   \caption{Illustration scheme of the residual block and the inverted residual
-    block. Note that on the inverted residual block, the feature maps with the lower
-    channel count are the ones connected via the skip connection, whereas it is the
-    opposite on the standard residual block. Diagonally hatched layers do not use
-    non-linearities. The grey colour indicates the beginning of the next block. Both
-    illustrations are taken from \cite{DongMobileNetV2}. Best viewed in colours.}
+  block. Note that on the inverted residual block, the feature maps with the
+  lower number of channels are the ones connected via the skip connection,
+  whereas it is the opposite on the standard residual block. Diagonally hatched
+  layers do not use non-linearities. The grey colour indicates the beginning of
+  the next block. Both illustrations are taken from \cite{DongMobileNetV2}. Best
+  viewed in colours.}
   \label{fig:sota:inverted_vs_residual_blocks}
 \end{figure}
 
@@ -652,8 +653,8 @@ design of these architectures often relies on a deep understanding of the tasks
 at hand, the data they will process, and the constraints of the environment in
 which they will operate. However, the process of designing these efficient
 architectures can be automated, which is the subject of the next section. Sizes
-and performance of networks architecture detailed in this section can be
-compared to standard architecture sizes on \cref{fig:sota:net_sizes_std_eff}.\\
+and performance of network architectures detailed in this section can be
+compared to standard architecture sizes in \cref{fig:sota:net_sizes_std_eff}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -821,7 +822,7 @@ Historically, the training of neural networks has largely relied on the use of
 various hardware platforms and software libraries, which has made it a practical
 and convenient choice for the majority of machine learning tasks
 \cite{sze2017efficient}. However, using \acl{FP32} is not always necessary, and
-it is possible to contrain neural networks to use lower precision values,
+it is possible to constrain neural networks to use lower precision values,
 effectively quantising its parameters or feature maps, while maintaining
 compelling performances. Quantising a neural network can result in a reduced
 memory footprint as well as faster computation if the operations are implemented
@@ -972,7 +973,7 @@ classified into two categories: \emph{structured} and \emph{unstructured}.\\
 \noindent\textbf{Structured pruning.} Structured pruning involves the removal of
 entire structural components of the network, such as rows, columns, channels,
 filters, layers or even whole subnetworks (note that pruning a channel in layer
-$n+1$ implies pruning a filter in layer $n$, and vice-versa). This type of
+$\ell+1$ implies pruning a filter in layer $\ell$, and vice-versa). This type of
 pruning results in regular\footnote{regular in this context means that all
 weight tensors are dense and that the acceleration of computations does not rely
 on sparse computing enhancement.} network structures that are easier to exploit
@@ -1195,7 +1196,7 @@ pruning and finally, the remaining weights are reinitialized to their original
 values, it is to say the value they had before the training even started. The
 resulting sub-network is the \emph{lottery ticket}. This research sparked
 significant interest and various works: \cite{DBLP:conf/nips/ZhouLLY19} proposed
-an analysis of the results presented in \cite{DBLP:conf/iclr/FrankleC19}, These
+an analysis of the results presented in \cite{DBLP:conf/iclr/FrankleC19}. These
 results \cite{DBLP:conf/iclr/FrankleC19} have been extended to larger networks
 in \cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training the
 original network to convergence to find the Lottery Tickets has been challenged
@@ -1231,7 +1232,7 @@ considerations:
   % resources.
 
   \item Then, pruning integrates well with other compression techniques and can
-  be applied in conjunction them, on any kind of architectures.
+  be applied in conjunction with them, on any kind of architectures.
 
   \item  Finally, pruning does not necessitate the creation and development of
   an architecture from scratch. It can be applied to an already existing
@@ -1250,14 +1251,20 @@ computational cost. This process of fine-tuning can be both time-consuming and
 resource-intensive.\\
 
 \Cref{chap:chapter1} delves into the fine-tuning issue and presents a new
-pruning method that circumvents the need for the expensive fine-tuning step.
-Furthermore, \cref{chap:chapter2} tackles the challenge of identifying relevant
-weights without even having to train them. It proposes a method of topology
-selection given a set of untrained weights that achieves compelling
-performances, thereby also sidestepping the fine-tuning. This innovative
-approach opens up new possibilities for further reducing the computational costs
-associated with pruning and provides a new direction for future research in this
-area.\\
+pruning method that circumvents the need for the expensive fine-tuning step. Its
+budget loss together with the weight reparametrisation allows for joint
+optimisation of the topology and the weights of the network without the need for
+auxiliary variables. As a result, the obtained lightweight networks is robust to
+effective pruning and does not require fine-tuning. Furthermore,
+\cref{chap:chapter2} tackles the challenge of identifying relevant weights
+without even having to train them. It proposes a method of topology selection
+given a set of untrained weights that achieves compelling performances, thereby
+also sidestepping the fine-tuning. Contrary to other methods, the optimal
+pruning rate is discovered in one shot by our pruning strategy that circumvents
+the costly gird search for its value. This innovative approach opens up new
+possibilities for further reducing the computational costs associated with
+pruning and provides a new direction for future research in this area, as well
+as neural network training without weight tuning in general.\\
 
 
 \section{Conclusion}
@@ -1294,5 +1301,6 @@ offering unique advantages and trade-offs.\\
 The next chapters will present approaches to neural network compression based on
 pruning. The \cref{chap:chapter1} details our first contributions that consist
 in a method to simultaneously train and prune neural networks while matching a
-budget. This method allows to bypass the need for the finetuning step present in
-most methods based on magnitude pruning.
+budget. This method allows bypassing the need for the finetuning step present in
+most methods based on magnitude pruning by jointly optimising the topology and
+the weights without the need for additional auxiliary parameters. 
