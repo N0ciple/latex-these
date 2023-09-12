@@ -774,11 +774,73 @@ valeur postérieur à l'initialisation \cite{DBLP:conf/icml/FrankleD0C20}. Ces
 travaux ont été précisés dans \cite{DBLP:conf/iclr/LiuSZHD19}, où les auteurs
 montrent que seul la topologie est importante et pas la valeur des poids.\\
 
-
+Si Frankle et al. ont montré que l'on pouvait extraire un sous réseau performant
+une fois celui-ci entrainé, il existe un sous réseau performant sans même avoir
+besoin de l'entrainer. Ce résultat a d'abord été conjecturé dans
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} en tant que \emph{Strong Lottery Ticket
+Hypothesis} (Hypothèse forte du billet de lotterie). Des démonstration formelles
+ont été proposée et prouvent l'existence de ces sous réseau avec des conditions
+sur la taille du réseau d'origine
+\cite{DBLP:conf/icml/MalachYSS20,DBLP:conf/nips/OrseauHR20,DBLP:conf/nips/PensiaRNVP20}.
+Ces preuves cependant ne sont pas constructives et ne donnent pas de méthode
+pour trouver ces sous réseaux. Des travaux ont proposé des heuristiques basées
+sur des masques binaires pour trouver ces sous réseaux
+\cite{DBLP:conf/nips/ZhouLLY19} ou bien via l'entrainement de variables
+auxiliaires seuillées \cite{DBLP:conf/cvpr/RamanujanWKFR20}.
 
 
 
 \subsection*{Principe de la méthode d'élagage}
+
+Notre méthode est basée sur deux composantes principales. La première étant une
+technique d'échantillonnage stochastique des masques, et la deuxième étant un
+mécanisme de mise à l'échelle des distributions de poids. 
+
+La première composante permet l'entrainement de masques qui déterminent la
+saillance (c'est à dire la pertinence) des poids du réseau. Cette saillance est
+interprété dans notre méthode comme la parametrisation de la probabilité pour le
+poid d'être conservé. Grâce à ces probabilités, on peut échantillonner des
+topologies, les évaluer et ajuster les probabilités en conséquence. On souhaite
+entrainer des masques via la méthode classique de la descente de gradient.
+Cependant, l'opération d'échantillonnage n'est pas dérivable. Nous proposons
+donc la méthode \ac{ASLP} (log-parametrisation décallée arbitrairement). Cette
+méthode d'échantillonnage permet d'entraîner les masques avec des méthodes de
+gradient. Cette méthode est basée sur \ac{STGS} qui considère les
+log-probabilités des différents évènements. Dans notre cas nous considérons deux
+évènements : la conservation du poids et son élagage. Le vecteur de log
+probabilité des deux évènements pour une connection entre les neurones $i$ et
+$j$ s'écrit comme suit :
+
+\begin{equation}
+  \label{eqn:chap2:log_prob}
+  \log(\mathcal{P}_{ij}) = \begin{bmatrix}
+    \log(p^\text{conserver}_{ij}) \\
+    \log(p^\text{élaguer}_{ij})
+  \end{bmatrix}
+\end{equation}
+
+\noindent Les deux évènements étant mutuellement exclusifs, nous réécrivons
+$p^\text{conserver}_{ij} = p_{ij}$ et $p^\text{élaguer}_{ij} = 1 - p_{ij}$. De
+plus, nous considérons que $p_{ij}$ est parametrisé par un masque latent
+$\hat{m}_{ij}$ comme suit:
+
+\begin{equation}
+  \label{eqn:chap2:prob_param}
+  p_{ij} = \frac{1}{1 + \exp(-\hat{m}_{ij})} = \sigma(\hat{m}_{ij})
+\end{equation}
+
+\noindent où $\sigma$ est la fonction sigmoïde. Le vecteur de log probabilité
+s'écrit donc :
+
+\begin{equation}
+  \label{eqn:chap2:log_prob_param}
+  \log(\mathcal{P}_{ij}) = \begin{bmatrix}
+    \log(\sigma(\hat{m}_{ij})) \\
+    \log(1 - \sigma(\hat{m}_{ij}))
+  \end{bmatrix}
+\end{equation}
+
+
 
 \subsection*{Points Clefs}
 

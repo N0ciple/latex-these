@@ -176,8 +176,9 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 
 \newpage
 
-%récupérer les citation avec "/footnotemark"
-\nocite{*}
+%récupérer les citation avec "/footnotemark" \nocite{*} -> nocite fait que tout
+%les éléments sont cités même s'ils ne sont pas dans le texte de base. Ici, on
+%veut juste les citations qui sont dans le corps du résumé.
 
 %choix du style de la biblio
 \bibliographystyle{plainnat}
