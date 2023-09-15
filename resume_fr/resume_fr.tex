@@ -389,7 +389,7 @@ déjà existant en supprimant des poids jugés non importants ou redondants. On
 peut classer les méthodes d'élagage en 2 grandes catégories en fonction de la
 granularité avec laquelle les poids sont retirés. Ces 2 familles sont :
 l'élagage structuré et l'élagage non structuré (voir \cref{fig:sota:pruning}).
-L'élaguage structuré consiste en la suppression de structures entières du
+L'élaguge structuré consiste en la suppression de structures entières du
 réseau, le plus souvent des canaux de convolution entiers, mais également des
 lignes et des colonnes de matrices de poids, des filtres de convolution entiers
 ou même des sous parties du réseau. L'importance des ses structures est évaluée
@@ -402,13 +402,13 @@ qui contiennent le plus de valeurs nulles \cite{DBLP:journals/corr/HuPTT16}.
 \cite{DBLP:conf/iccv/LiuLSHYZ17} et \cite{DBLP:conf/nips/YouYYM019} proposent
 d'introduire des variables auxiliaires qui permettent de quantifier l'importance
 de chaque canneaux et de les élaguer en conséquence. Ce concept est à la base de
-divers travaux qui introduisent des méthodes d'élaguage dynamiques qui
+divers travaux qui introduisent des méthodes d'élagage dynamiques qui
 appliquent celui-ci pendant l'entrainement et non a posteriori
 \cite{DBLP:conf/nips/GuoYC16,DBLP:conf/ijcai/HeKDFY18}.\\
 
 La deuxième grande famille d'élagage est l'élagage non structuré. Cette famille
 regroupe des méthodes qui se concentrent sur l'élagage individuel des poids.
-Parmis les premières méthodes d'élaguage non structuré, on peut citer les
+Parmis les premières méthodes d'élagage non structuré, on peut citer les
 méthodes basées sur la Hessienne de la fonction de coût
 \cite{DBLP:conf/nips/CunDS89,DBLP:conf/icnn/HassibiSW93}. Ces approches
 utilisent la Hessienne pour déterminer l'impact du retrait d'un poids sur la
@@ -794,7 +794,7 @@ auxiliaires seuillées \cite{DBLP:conf/cvpr/RamanujanWKFR20}.
 
 Notre méthode est basée sur deux composantes principales. La première étant une
 technique d'échantillonnage stochastique des masques, et la deuxième étant un
-mécanisme de mise à l'échelle des distributions de poids. 
+mécanisme de mise à l'échelle des distributions de poids. \\
 
 La première composante permet l'entrainement de masques qui déterminent la
 saillance (c'est à dire la pertinence) des poids du réseau. Cette saillance est
@@ -840,10 +840,168 @@ s'écrit donc :
   \end{bmatrix}
 \end{equation}
 
+Cependant, cette formulation est complexe, coûteuse en calcul et peu stable
+numériquement à cause de la composition des fonctions et sigmoïde (elle même
+composée de fonctions exponentielles). Nous proposons donc une formulation plus
+simple d'une part et stable numériquement d'autre part. Nous définissons le
+vecteur de log probabilité comme suit :
+
+\begin{equation}
+  \label{eqn:chap2:log_prob_param_simple}
+  \log(\mathcal{P}_{ij}) +\begin{bmatrix}
+    c \\
+    c
+  \end{bmatrix} = \begin{bmatrix}
+    \hat{m}_{ij} \\
+    0
+  \end{bmatrix}
+\end{equation}
+
+\noindent La partie droite de l'\cref{eqn:chap2:log_prob_param_simple} garantie
+que la probabilité $p_{ij}$ est toujours paramétrisée de la même façon,
+c'est-à-dire par $\sigma(\hat{m}_{ij})$, mais représente le vecteur de log
+probabilité de l'\cref{eqn:chap2:log_prob_param} à une $c$ près inconnue. C'est
+cette constante qui donne son nom à la méthode. L'utilisation d'une constante ne
+change pas les résultats du \ac{STGS} car celui-ci utilise un argmax qui n'est
+pas affecté par le décallage induit par la constante $c$. C'est donc le vecteur
+de droite de l'\cref{eqn:chap2:log_prob_param_simple} qui est utilisée en lieu
+et place du vecteur de log probabilité pour l'échantillonnage des masques avec
+\ac{STGS}.\\
+
+La deuxième composante de notre méthode est un mécanisme de mise à l'échelle des
+distributions de poids. L'élagage des poids introduit par l'échantillonnage des
+masques perturbe les statistiques des distributions de poids de chaque couche du
+réseau. Ceux-ci n'étant pas entrainé, il est important de conserver les bonnes
+statistiques pour une bonne propagation du gradient
+\cite{DBLP:conf/iccv/HeZRS15}. Nous proposons donc un mécanisme de mise à
+l'échelle des distributions de poids. Ce mécanisme est basé sur la
+multiplication avec un paramètre apris. Pour chaque couche $\ell$ du réseau,
+nous multiplions les poids par un paramètre appris $s_\ell$. Cette méthode est
+plus rapide et moins couteuse en calcul que les méthodes de mise à l'échelle
+précédentes qui se basent sur le calcul explicite du taux d'élagage dans chaque
+couche \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19}.
+
+\subsection*{Expériences}
+Afin de valider notre méthode et ses composantes, nous l’avons comparé à
+d’autres méthodes ou variantes dans différents cas de figure pour montrer ex-
+périmentalement leurs pertinence.\\
+
+Pour valider le mécanisme de mise à l’échelle des distributions de poids, nous
+l'avons comparé à une variante sans mise à l'échelle et également aux autres
+méthodes de mise à l'échelle des distributions de poids. Il ressort de nos
+expériences que notre méthode de mise à l'échelle des distributions de poids
+permet de conserver les bonnes statistiques de poids et est plus rapide et moins
+couteux en calcul que les autres méthodes. De plus, notre méthode permet une
+réduction du nombre d'époques requises pour l'entrainement, ainsi qu'une
+amélioration des performances.\\
+
+Le taux d'apprentissage \emph{(learning rate)} que nous avons utilisé est de 50,
+ce qui est une valeur élevée au regard des méthodes d'entrainement classiques.
+Nous avons conduit une série d'expériences pour juger de l'impact du learning
+rate sur notre méthode et de la valeur optimale à choisir. Il en ressort d'une
+part que notre méthode d'entrainement des masques est robuste aux variations
+extrèmes du taux d'apprentissage car il est possible de l'entraîner avec des
+valeurs de 500 ou plus sans observer d'instabilité numérique. De manière
+remarquable, même un taux d'apprentissage de 50 permet d'obtenir des résultats
+convaincant. D'autre part nous avons observé que la diminution du taux
+d'apprentissage en cours d'entraînement n'avait pas d'effet, et nous avons pu
+valider le choix de 50 pour la valeur du taux d'apprentissage. Il s'agit de la
+valeur qui donne le meilleur compromis entre performance finales et temps
+d'entraînement.\\
+
+La topologie des réseaux  entraîné par notre méthode étant stochastique, nous
+avons choisi de la fixer pour pouvoir évaluer les performances de notre méthode
+sur les jeux de données d'entraînement. Pour ce faire nous gardons tous les
+poids qui ont une probabilité de selection supérieure ou égale à 0.5 et élaguons
+tous les autres. Nous avons pu montrer expérimentatlement que cette façon de
+faire donne de meilleures performances que la méthode de moyennage utilisée par
+les travaux précédents \cite{DBLP:conf/nips/ZhouLLY19}. De plus, nous avons mis
+en évidence la robustesse de notre méthode a une élévation du taux d'élagage une
+fois le réseau entraîné. Il nous a été possible d'augmenter celui-ci de près de
+30 points perte de performance notable.\\
+
+Enfin, nous avons comparré notre méthode à d'autres méthodes d'élagage sans
+entrainement des poids de l'état de l'art via un jeu d'expériences reproduisant
+de nombreuses configurations testées par les auteurs de ces méthodes (Edge Popup
+\cite{DBLP:conf/cvpr/RamanujanWKFR20} et Supermask
+\cite{DBLP:conf/nips/ZhouLLY19}). Nos résultats ont démontré la supériorité de
+notre méthode en terme de performance sur les jeux de données d'entraînement
+dans la totalité des scénarios testés et ce pour la quasi majorité des
+architecture et jeux de données considérés. La table \cref{tab:res2:r20_VGG16_performances_comparison}\\
+
+\begin{table}[htbp]
+  \centering\begin{tabular}{llcc}
+    \cmidrule[\heavyrulewidth]{3-4}
+                                                          &                                                  & \multicolumn{2}{c}{\textbf{Dataset}}                             \\
+                                                          &                                                  & \textbf{CIFAR-10}                    & \textbf{CIFAR-100}        \\
+    \toprule
+    \multirow{6}{*}{} \multirow{4}{*}{\textbf{ResNet-20}} & \ac{ASLP} (thresholding)                              & \textbf{ 81.08 $\pm$ 0.50}           & \textbf{44.63 $\pm$ 0.91} \\
+                                                          & \ac{ASLP} (averaging)                                 & 78.85 $\pm$ 0.41                     & 42.91 $\pm$ 1.14          \\
+                                                          & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 69.83 $\pm$ 1.20                     & 30.60 $\pm$ 0.91          \\
+                                                          & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 75.09 $\pm$ 1.41                     & 22.47 $\pm$ 1.37          \\
+    \midrule
+    \multirow{4}{*}{\textbf{VGG16}}                       & \ac{ASLP} (thresholding)                              & \textbf{24.93 $\pm$ 0.69}            & \textbf{8.66 $\pm$ 0.33}  \\
+                                                          & \ac{ASLP} (averaging)                                 & 24.93 $\pm$ 0.77                     & 8.58 $\pm$ 0.32           \\
+                                                          & \cite{DBLP:conf/nips/ZhouLLY19} (averaging)      & 25.07 $\pm$ 0.34                     & 7.97 $\pm$ 0.35           \\
+                                                          & \cite{DBLP:conf/cvpr/RamanujanWKFR20} ($k=50\%$) & 23.05 $\pm$ 0.84                     & 6.65 $\pm$ 0.38           \\
+    \bottomrule
+  \end{tabular}
+  \caption{Comparaison de la \textbf{précision de test} d'\ac{ASLP} par rapport
+  à Edge-Popup et Supermask
+  \cite{DBLP:conf/cvpr/RamanujanWKFR20,DBLP:conf/nips/ZhouLLY19} sur les bases
+  de données \textbf{CIFAR-10} et \textbf{CIFAR-100} en utilisant les
+  architectures VGG16 et ResNet-20. Les résultats présentent le scénario avec
+  augmentation de données, \acf{WR} et distribution de poids \acf{SC}. Sur
+  l'ensemble des bases de données et des architectures de réseau, \ac{ASLP}
+  dépasse les méthodes comparatives dans sa configuration de
+  \textit{thresholding} qui correspond à notre méthode de fixation de la
+  topologie. }
+  \label{tab:res2:r20_VGG16_performances_comparison}
+\end{table}
 
 
 \subsection*{Points Clefs}
 
-
+Nous avons introduit une méthode d'entrainement d'élagage de réseaux de neurones
+qui ne repose pas sur l'entrainement des poids mais bien sur celui de masques
+latent qui déterminent les probabilités de selection de ces poids. Cette méthode
+permet de procéder à la selection de la topologie la plus optimale pour un jeu
+de poid donné et fixés. Elle est basée sur deux composantes principales : une
+méthode d'échantillonnage des poids tirant profit d'une formulation simple et
+numériquement stable du vecteur de log-probabilité, ainsi que d'un mécanisme
+rapide de mise à l'échelle des distributions de poids. D'un point de vu général,
+cette méthode permet d'extraire un sous réseau performant d'un réseau plus grand
+sans en entrainer les poids. Cela permet d'une part d'obtenir des réseaux légers
+et d'autre part de jetter un nouvel éclairage sur l'entrainement des réseaux de
+neurones en considérant la selection de topologie comme une alternative à
+l'optimisation des poids.\\
 
 \section*{Conclusion}
+
+Cette thèse traite de la compression des réseaux de neurones profonds, en se
+concentrant sur le problème de la baisse de performance après l'élagage. Nous
+avons proposé des solutions pour ce problème et remis en question la nécessité
+de former les poids. Deux contributions principales sont présentées : d'abord,
+une méthode d'élagage respectueuse du budget avec reparamétrisation du poids,
+qui optimise conjointement les poids et la topologie du réseau. Elle a démontré
+une performance supérieure à l'élagage basé sur la magnitude dans diverses
+expérimentations. Deuxièmement, nous introduisons une méthode d'élagage sans
+formation de poids avec échantillonnage stochastique, qui estime l'importance
+d'un poids sans se lier à sa valeur, mais par l'optimisation des masques
+auxiliaires. Elle a montré de meilleures performances par rapport à d'autres
+méthodes de pointe. Notre code est disponible publiquement pour reproduire nos
+résultats.
+
+De futures perspectives de recherche pour améliorer les méthodes proposées dans
+cette thèse sont possibles.  Nous suggérons d'effectuer une validation
+expérimentale sur des ensembles de données et des architectures plus vastes,
+permettant une exploration plus approfondie de l'espace de la topologie. Nous
+envisageons également l'adoption de l'élagage structuré pour obtenir une
+accélération plus directe avec les logiciels et bibliothèques d'apprentissage
+profond populaires. Nous proposons des améliorations, telles que le contrôle de
+l'ampleur du masque, l'adoption d'un meilleur schéma d'initialisation pour la
+méthode \ac{ASLP}, et l'exploration de la possibilité d'entraîner un réseau par
+l'élagage sans entraîner les poids. Ces idées orientent les recherches futures
+pour optimiser les techniques d'élagage des réseaux neuronaux.
+
+
