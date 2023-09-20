@@ -4,44 +4,55 @@
 
 \begin{abstract}
 
-    Thanks to the miniaturisation of electronics, embedded devices have become,
-    more and more ubiquitous, since the 2010s, realising various tasks all
+    \DIFdelbegin \DIFdel{Since the 2010s, thanks }\DIFdelend \DIFaddbegin \DIFadd{Thanks }\DIFaddend to the miniaturisation of electronics, embedded devices have become\DIFaddbegin \DIFadd{,
+    }\DIFaddend more and more ubiquitous, \DIFaddbegin \DIFadd{since the 2010s, }\DIFaddend realising various tasks all
     around us. As their usage is developing, there is a growing demand for these
-    devices to process data and make complex decisions efficiently. Deep neural
-    networks are powerful tools to achieve this goal, however, these networks
+    devices to process data and make complex decisions \DIFdelbegin \DIFdel{quickly and
+    }\DIFdelend efficiently. Deep neural
+    networks are \DIFdelbegin \DIFdel{a powerful tool }\DIFdelend \DIFaddbegin \DIFadd{powerful tools }\DIFaddend to achieve this goal, however, these networks
     are often too heavy and complex to fit on embedded devices. Thus, there is a
     compelling need to devise methods to compress these large networks without
-    significantly compromising their efficacy. This PhD thesis introduces two
+    significantly compromising their efficacy. \DIFdelbegin \DIFdel{this
+    }\DIFdelend \DIFaddbegin \DIFadd{This PhD }\DIFaddend thesis introduces two
     innovative methods, centred around the concept of pruning, aiming to
-    compress neural networks while ensuring minimal impact on their accuracy.
+    compress neural networks while ensuring minimal impact on their \DIFdelbegin \DIFdel{efficacy}\DIFdelend \DIFaddbegin \DIFadd{accuracy}\DIFaddend .
 
-    This PhD thesis first introduces a budget-aware method for compressing large
+    \DIFdelbegin \DIFdel{In this thesis , we first present }\DIFdelend \DIFaddbegin \DIFadd{This PhD thesis first introduces }\DIFaddend a budget-aware method for compressing large
     neural networks with weight reparametrization and budget loss that does not
-    require fine-tuning. Traditional pruning methods often rely on post-training
+    \DIFdelbegin \DIFdel{requires }\DIFdelend \DIFaddbegin \DIFadd{require }\DIFaddend fine-tuning. Traditional pruning methods often rely on post-training
     saliency indicators to remove weights, disregarding the targeted pruning
     rate. Our approach integrates a budget loss, driving the pruning process
-    towards a specific pruning rate during training, thereby achieving a joint
+    towards a specific \DIFaddbegin \DIFadd{pruning }\DIFaddend rate during training\DIFdelbegin \DIFdel{itself, therefore
+    allowing for }\DIFdelend \DIFaddbegin \DIFadd{, thereby achieving a }\DIFaddend joint
     optimisation of topology and weights. By soft-pruning the smallest weights
-    using weight reparametrisation, our method significantly mitigates accuracy
-    degradation in comparison to traditional pruning techniques. We show the
-    effectiveness of our approach across various datasets and architectures.
+    using \DIFdelbegin \DIFdel{our weight reparametrisationtechnique}\DIFdelend \DIFaddbegin \DIFadd{weight reparametrisation}\DIFaddend , our method significantly mitigates \DIFdelbegin \DIFdel{performance }\DIFdelend \DIFaddbegin \DIFadd{accuracy
+    }\DIFaddend degradation in comparison to traditional pruning techniques. We show the
+    effectiveness of our approach across various datasets \DIFdelbegin \DIFdel{, architectures, and settings}\DIFdelend \DIFaddbegin \DIFadd{and architectures}\DIFaddend .
 
-    This PhD thesis later focuses on the extraction of effective subnetworks
-    without weight training. Our goal is to identify the best subnetwork
-    topology in a large network without optimising its weights while still
-    delivering compelling performance. This is achieved using our novel
+    This \DIFaddbegin \DIFadd{PhD }\DIFaddend thesis later focuses on the extraction of effective subnetworks
+    without weight training. \DIFdelbegin \DIFdel{The goal here is to only }\DIFdelend \DIFaddbegin \DIFadd{Our goal is to }\DIFaddend identify the best \DIFdelbegin \DIFdel{sub-topology }\DIFdelend \DIFaddbegin \DIFadd{subnetwork
+    topology }\DIFaddend in a large network \DIFdelbegin \DIFdel{with no optimisation of the weights that still
+    delivers
+    }\DIFdelend \DIFaddbegin \DIFadd{without optimising its weights while still
+    delivering }\DIFaddend compelling performance. \DIFdelbegin \DIFdel{We introduce the }%DIFDELCMD < \acl{ASLP} %%%
+\DIFdel{that enables discrete
+    yet differentiable
+    topology sampling}\DIFdelend \DIFaddbegin \DIFadd{This is achieved using our novel
     Arbitrarily Shifted Log Parametrisation, which serves as a differentiable
     relaxation of discrete topology sampling, enabling the training of masks
-    that represent the probability of selection of the weights. Alongside, a
+    that represent the probability of selection of the weights}\DIFaddend . Alongside, \DIFdelbegin \DIFdel{the introduced }%DIFDELCMD < \acl{SR}
+%DIFDELCMD <     %%%
+\DIFdel{mechanism rescales weight distributions, }\DIFdelend \DIFaddbegin \DIFadd{a
     weight rescaling mechanism (referred to as Smart Rescale) is also
-    introduced, which allows enhancing the performance of the extracted
-    subnetworks and speeding up their training. Our proposed approach also finds
+    introduced, which allows }\DIFaddend enhancing the performance of the extracted
+    \DIFdelbegin \DIFdel{subnetwork }\DIFdelend \DIFaddbegin \DIFadd{subnetworks }\DIFaddend and speeding up their training\DIFdelbegin \DIFdel{convergence. Our pruning
+    strategy further identifies optimal pruning rates post-training, side-stepping the need for costly iterative searches. Through }\DIFdelend \DIFaddbegin \DIFadd{. Our proposed approach also finds
     the optimal pruning rate after one training pass, thereby circumventing
     computationally expensive gird-search and training across various pruning
-    rates. As shown through comprehensive experiments, our method consistently
-    outperforms state-of-the-art techniques and allows designing lightweight
+    rates. As shown through }\DIFaddend comprehensive experiments, \DIFdelbegin \DIFdel{we show that }\DIFdelend our method consistently
+    outperforms state-of-the-art techniques \DIFdelbegin \DIFdel{, achieving high sparsity without significant
+    performance losses}\DIFdelend \DIFaddbegin \DIFadd{and allows designing lightweight
     networks which can reach high sparsity levels without significant loss in
-    accuracy.
+    accuracy}\DIFaddend .
 
 \end{abstract}
-
