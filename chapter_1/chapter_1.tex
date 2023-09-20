@@ -48,11 +48,13 @@
 
 This chapter addresses the challenge of pruning large neural networks without
 degrading their performance. Most of the existing pruning methods degrade the
+degrading their performance. Most of the existing pruning methods degrade the
 performance of neural networks due to the pruning step that removes weights from
 the networks. Therefore, a costly fine-tuning step is usually required in order
 to compensate for the loss in \DIFdelbegin \DIFdel{performances}\DIFdelend \DIFaddbegin \DIFadd{performance}\DIFaddend . The method we introduce in this
 chapter circumvents this issue and yields lightweight pruned networks with
 minimal performance degradation. This is achieved through a combination of
+weight reparametrisation that encompasses a surrogate $\ell_0$ norm and a budget
 weight reparametrisation that encompasses a surrogate $\ell_0$ norm and a budget
 loss that drives the sparsity toward the predefined pruning rate.
 
@@ -328,6 +330,9 @@ propose pruning methods that are \DIFdelbegin \DIFdel{design }\DIFdelend \DIFadd
 
 
 \ac{OBS} introduced in \cite{DBLP:conf/nips/HassibiS92} by
+\citeauthor{DBLP:conf/nips/HassibiS92} is a Hessian-based pruning method that
+builds upon \cite{DBLP:conf/nips/CunDS89} but contrary to the former, it relaxes
+the diagonal assumption of the loss Hessian matrix. \ac{OBS} is a second-order
 \citeauthor{DBLP:conf/nips/HassibiS92} is a Hessian-based pruning method that
 builds upon \cite{DBLP:conf/nips/CunDS89} but contrary to the former, it relaxes
 the diagonal assumption of the loss Hessian matrix. \ac{OBS} is a second-order
@@ -1145,7 +1150,12 @@ be compensated for with fine-tuning. \\
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/pipeline_comparison_with_pruning_reparam_pr.pdf}}
     \subfloat[Standard Pruning
     Pipeline\label{fig:chap1:standard_pruning_pipeline}]{
+    \subfloat[Standard Pruning
+    Pipeline\label{fig:chap1:standard_pruning_pipeline}]{
     \includegraphics[width=0.49\textwidth]{chapter_1/assets/pipeline_comparison_with_pruning_mag_pr.pdf}}
+    \caption{ Principle scheme of our pruning pipeline and the standard pruning
+    pipeline. With our pruning pipeline, the targeted pruning rate that will be
+    enforced during the \emph{effective pruning} step, is taken into account
     \caption{ Principle scheme of our pruning pipeline and the standard pruning
     pipeline. With our pruning pipeline, the targeted pruning rate that will be
     enforced during the \emph{effective pruning} step, is taken into account
@@ -1173,6 +1183,8 @@ and TinyImageNet \cite{TinyImageNet}, \DIFdelbegin \DIFdel{presentend }\DIFdelen
 will evaluate the impact of our method on several neural network architectures:
 VGG16 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4
 \cite{DBLP:conf/iclr/FrankleC19}, ResNet18, and ResNet20
+\cite{DBLP:conf/cvpr/HeZRS16}, introduced in
+\cref{sec:dlo:architectures_used}.\\
 \cite{DBLP:conf/cvpr/HeZRS16}, introduced in
 \cref{sec:dlo:architectures_used}.\\
 
@@ -1229,6 +1241,12 @@ for each method, depending on the pruning rate (\emph{x-axis}).\\
 
 Overall, our method performs consistently better than magnitude pruning without
 fine-tuning (\emph{MP w/o FT}) and, for almost all pruning rates, better than
+magnitude pruning with fine-tuning (\emph{MP w/ FT}) on the CIFAR-10 and
+CIFAR-100 datasets. In particular, our method significantly outperforms
+magnitude pruning in both setups (with and without fine-tuning) for Conv4
+networks (cf. \cref{fig:chap1:reparam_vs_mpft_conv4_cifar10}). For the VGG16
+network, we observe the same trend, although the difference is less significant.
+For ResNet20, magnitude pruning slightly overtakes our method on CIFAR-100 for
 magnitude pruning with fine-tuning (\emph{MP w/ FT}) on the CIFAR-10 and
 CIFAR-100 datasets. In particular, our method significantly outperforms
 magnitude pruning in both setups (with and without fine-tuning) for Conv4
@@ -1752,6 +1770,7 @@ function in synergy.
 In the previous sections, weights were initialised with the standard Kaiming
 initialisation scheme \cite{DBLP:conf/iccv/HeZRS15} (see
 \cref{sec:appendix:xavier_init}). In this section we study an alternative
+initialisation scheme: we initialise the weights of the network with trained
 initialisation scheme: we initialise the weights of the network with trained
 and pruned weights. These weights are obtained by training the network in its
 standard configuration (\emph{i.e.} without reparametrisation and budget loss)
