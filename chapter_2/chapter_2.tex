@@ -20,15 +20,15 @@
   pruning large untrained networks, without weight training. A new method, named
   \acf{ASLP}, is proposed to extract effective subnetworks from a large,
   untrained deep neural network using the \acf{STGS} technique, which enables
-  stochastic computation graphs to be trained with discrete variables while
-  still preserving differentiability. Additionally, a weight rescaling mechanism,
-  referred to as \acf{SR}, is introduced. It rescales the weight distributions
-  of the selected subnetworks and as a result, improves the performance and
-  reduces the number of epochs required for training as shown later in
-  experiments. Finally, we introduce a novel pruning strategy that automatically
-  finds the pruning rate yielding the best performances once the training
-  complete, eliminating the need to iteratively search and strictly enforce a
-  specific pruning rate throughout the training.\\
+  the training of stochastic discrete variables while still preserving
+  differentiability. Additionally, a weight rescaling mechanism, referred to as
+  \acf{SR}, is introduced. It rescales the weight distributions of the selected
+  subnetworks and as a result, improves the performance and reduces the number
+  of epochs required for training as shown later in experiments. Finally, we
+  introduce a novel pruning strategy that automatically finds the pruning rate
+  yielding the best performances once the training is completed, eliminating the
+  need to iteratively search and strictly enforce a specific pruning rate
+  throughout the training.
 
   The \ac{ASLP} method, which integrates the \ac{STGS} sampling technique and
   the \ac{SR} mechanism, is evaluated through experiments on CIFAR-10,
@@ -39,8 +39,8 @@
   performance. These experiments also show that our method can accept a broad
   range of learning rates and is robust to extremely large learning rate values.
   Additionally, the experiments show the effectiveness of the \ac{SR} mechanism
-  regarding performance improvement and the reduction in the number of
-  epochs needed to reach convergence.\\
+  regarding performance improvement and the reduction in the number of epochs
+  needed to reach convergence.\\
 
   \noindent This chapter presents work that has resulted in the publication of the
   following conference article:
@@ -99,7 +99,7 @@ standard training.\\
 
 \subsection{Pruning at initialisation} 
 
-In general, extracting an efficient subnetwork is still a challenging problem
+In general, extracting a lightweight subnetwork is still a challenging problem
 \cite{frankle2020pruning} and is computationally demanding as this amounts to
 full training of large networks (until convergence) prior to their pruning.
 Instead of pruning the network after an initial training phase, existing
@@ -177,12 +177,12 @@ $\theta_\ell$ of a layer $\ell$ is defined as :\\
 \end{equation}\\
 
 \noindent where $L$ is the total number of layers in the network and
-$\mathbb{1}$ is the all ones vector. Contrary to previous methods, namely
-SNIP \cite{DBLP:conf/iclr/LeeAT19} and GraSP \cite{DBLP:conf/iclr/WangZG20},
-SynFlow does not necessitate any data to compute the scores. These scores are
-computed and updated iteratively for 100 iterations, regardless of the targeted
-dataset or batch size. Since it prevents layer collapse, network pruning with
-SynFlow can reach higher pruning rates than with SNIP or GraSP (see
+$\mathbb{1}$ is the all ones vector. Contrary to previous methods, namely SNIP
+\cite{DBLP:conf/iclr/LeeAT19} and GraSP \cite{DBLP:conf/iclr/WangZG20}, SynFlow
+does not necessitate any data to compute the scores. These scores are computed
+and updated iteratively for 100 steps, regardless of the targeted dataset or
+batch size. Since it prevents layer collapse, network pruning with SynFlow can
+reach higher pruning rates than with SNIP or GraSP (see
 \cref{fig:chap2:synflow_perfs}).\\
 
 \begin{figure}[htbp]
@@ -299,11 +299,13 @@ Supermark is a method introduced by \citeauthor{DBLP:conf/nips/ZhouLLY19} in
 subnetworks from a large untrained network using stochastic mask training. The
 weights of the network are stochastically sampled following a Bernoulli
 distribution parametrised by a latent variable $m$. To that extent, weights are
-reparametrised as follows:
+reparametrised as follows:\\
+
 \begin{equation}
   \label{eqn:chap2:sigmoid_reparam}
-  \hat{w} = w_i \odot \text{Bern}(\sigma(m))
-\end{equation}
+  \hat{w} = w \odot \text{Bern}(\sigma(m))
+\end{equation}\\
+
 where $\hat{w}$ is the \emph{effective weight} (also referred to as the
 \emph{apparent weight} in \cref{chap:chapter1}) used in the network, $w_i$ is
 the original frozen weight, $\odot$ denotes the element-wise product and
@@ -327,12 +329,12 @@ issue of the sigmoid which makes mask training numerically challenging.
 \cite{DBLP:conf/cvpr/RamanujanWKFR20} proposed another alternative, entitled
 Edge-popup, based on binarised saliency indicators learned with \ac{STE}, which
 selects the most prominent weights in the resulting subnetworks. Each weight
-$w_{ij}$ is associated with a latent saliency indicator $s_{ij}.$ During the
-forward pass, the weights associated with the top-$k$ saliency indicators are
-selected and the others are pruned. Similarly to Supermask, binarised saliency
-indicators are not differentiable, therefore, the latter is made with \ac{STE}.
-The authors consider the following expression for the weights in the backward
-pass:
+$w_{ij}$, corresponding to the connection between neurons $i$ and $j$, is
+associated with a latent saliency indicator $s_{ij}$. During the forward pass,
+the weights associated with the top-$k$ saliency indicators are selected and the
+others are pruned. Similarly to Supermask, binarised saliency indicators are not
+differentiable, therefore, the latter is made with \ac{STE}. The authors
+consider the following expression for the weights in the backward pass:
 \begin{equation}
   \hat{w}_{ij} = s_{ij} w_{ij}
 \end{equation}
@@ -370,13 +372,13 @@ using \acl{GS}, including stochastic weight sampling and our weight rescaling
 approach. The overall workflow of our proposed method is detailed in
 \cref{sec:chap2:overview}. In \cref{sec:chap2:experiments}, we share the results
 of our comprehensive experiments, including performance benchmarks, the impact
-of our weight rescaling approach, the effect of increased a posteriori sparsity,
-and the impact of the learning rate on the training convergence speed and final
-performance. We conclude the chapter in \cref{sec:chap2:conclusion}, summarizing
-our contributions and our key findings. As we will demonstrate, our new approach
-overcomes several of the challenges associated with previous techniques,
-offering a more efficient and effective way to extract high-performance
-subnetworks without weight training.
+of our weight rescaling approach, the effect of increasing the pruning rate
+after training and the impact of the learning rate on the training convergence
+speed and final performance. We conclude the chapter in
+\cref{sec:chap2:conclusion}, summarizing our contributions and our key findings.
+As we will demonstrate, our new approach overcomes several of the challenges
+associated with previous techniques, offering a more efficient and effective way
+to extract high-performance subnetworks without weight training.
 
 
 \section{Extracting Effective Subnetworks with Gumbel-Softmax}\label{sec:chap2:method}
@@ -737,7 +739,7 @@ the weight distribution statistics. The performance boost attributable to
 \ac{DWR}, as noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the
 increase of the standard deviation of the Xavier (or Glorot) initialisation
 \cite{glorot2011deep} that the author used. Experimentaly, a larger standard
-deviation improve the performance within the context of this chapter. Indeed,
+deviation improves the performance within the context of this chapter. Indeed,
 the Kaiming initialisation\footnote{Kaiming and Glorot initialisation are
 detailed in \cref{sec:appendix:xavier_init}} \cite{DBLP:conf/cvpr/HeZRS16}, has
 a larger standard deviation than the Xavier initialisation and achieves superior
@@ -930,7 +932,7 @@ learning rate on the performance of our method, and validates our choice of
 learning rate. Finally, \cref{sec:chap2:increasing_sparsity} investigates the
 impact of imposing a fixed pruning rate after the training and presents
 experimental results that support the effectiveness of our thresholding pruning
-strategy method.
+strategy.
 
 
 \subsection{Experimental Setup}
@@ -1689,9 +1691,10 @@ networks lies at 50\%, and at 60\% for VGG16. These rates are precisely the
 observed pruning rates obtained using the \ac{ASLP} method with the
 \emph{thresholding} pruning strategy (see \cref{tab:chap2:observed_sparsity}).
 In other words, the \ac{ASLP} method together with \emph{thresholding} pruning
-automatically determine the optimal pruning rate for an architecture without the
-need for a costly grid search, contrary to the Edge-popup method
-\cite{DBLP:conf/cvpr/RamanujanWKFR20}.\\
+automatically determine the optimal pruning rate for an architecture in one shot
+without the need for a costly grid search. This is a significant advantage over
+the Edge-popup method \cite{DBLP:conf/cvpr/RamanujanWKFR20} which requires a
+full training for each tested pruning rate.\\
 
 \begin{figure}[htbp]
   \centering
@@ -1721,8 +1724,8 @@ selection method that uses \acl{GS} sampling and a new mask parametrisation to
 optimize the subnetwork topology while mitigating numerical instabilities.
 Additionally, we presented the \acl{SR} technique to accelerate training and
 improve the accuracy of the resulting subnetworks. Our experimental results show
-that \ac{ASLP} outperforms state-of-the-art methods, such as Edge-popup
-\cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
+that \ac{ASLP} outperforms closely related state-of-the-art methods, such as
+Edge-popup \cite{DBLP:conf/cvpr/RamanujanWKFR20} and Supermask
 \cite{DBLP:conf/nips/ZhouLLY19}, on the CIFAR-10 and CIFAR-100 datasets across
 various network architectures. Our proposed \textit{thresholding} pruning
 strategy consistently yields better performance than Supermask
