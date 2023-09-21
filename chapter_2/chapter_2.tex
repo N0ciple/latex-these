@@ -510,10 +510,10 @@ For mask sampling, only two possible outcomes are considered. Either the
 corresponding weight is selected and its mask is set to 1, or it is pruned from
 the sampled topology and its mask is set to 0. In what follows, and unless
 stated otherwise, we omit $\ell$ from $\bm{w}_\ell$ and we write it for short as
-$\bm{w}$. Let $\bm{w}_{ij}$ be the weight associated with the i-th and j-th
-neurons respectively belonging to layers $\ell-1$ and $\ell$. Since there are
-two possible outcomes for the masks, we define a two-class categorical
-distribution $\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
+$\bm{w}$. Let $w_{ij}$ be the weight associated with the $i$-th and $j$-th neurons
+respectively belonging to two consecutive layers. Since there are two possible
+outcomes for the masks, we define a two-class categorical distribution
+$\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
 
 \begin{equation}
   \left\{ \begin{array}{c}
@@ -524,14 +524,14 @@ distribution $\mathcal{P}_{ij}$ on $\{0,1\}$ as\\
 
 with, again, $\pi_1^{ij}=p_{ij}$ and $p_{ij}$ being the probability to keep the
 underlying connection. Since there are only two mutually exclusive outcomes,
-$\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $\bm{w}_{ij}$ (or not)
+$\pi_2^{ij}=1-p_{ij}$. In other words, keeping the weight $w_{ij}$ (or not)
 in the sampled topology is a Bernoulli trial with a probability $p_{ij}$.
-Considering \cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $\bm{m}_{ij}$
+Considering \cref{eqn:chap2:gumbel-softmax-argmax}, a binary mask  $m_{ij}$
 is defined as\\
 
 \begin{equation}
   \label{eqn:chap2:mask_value}
-  \bm{m}_{ij} = 1_{\{q_{ij}=1\}}
+  m_{ij} = 1_{\{q_{ij}=1\}}
 \end{equation}\\
 
 $1_{\{\}}$ being the indicator function and following
@@ -546,7 +546,7 @@ with $\pi^{ij}_1 = p_{ij}$ and $\pi^{ij}_2 = 1-p_{ij}$, the probability for a
 weight to be selected or not in the sampled topology, respectively.\\
 
 The proposed \ac{STGS} algorithm enables the learning of probabilities
-$p_{ij}$ for each weight $\bm{w}_{ij}$ through \ac{SGD}. However, optimizing
+$p_{ij}$ for each weight $w_{ij}$ through \ac{SGD}. However, optimizing
 $p_{ij}$ (with \ac{SGD}) raises a major issue. Since the optimisation is not
 constrained, $p_{ij}$ can take values larger than 1 or smaller than 0. As a
 consequence, it could no longer be interpreted as a probability, moreover,
@@ -555,8 +555,8 @@ $\log(p_{ij})$ and $\log(1-p_{ij})$ would also be undefined.\\
 On another hand, solving constrained SGD, besides being computationally
 expensive and challenging, may result in a worse local minimum. In order to
 overcome all these issues, one may consider an alternative reparametrisation
-$p_{ij}=\sigma(\bm{\hat{m}}_{ij})$, similar to the reparametrisation in
-\cite{DBLP:conf/nips/ZhouLLY19}, with $\bm{\hat{m}}_{ij}$ being a latent mask
+$p_{ij}=\sigma(\hat{m}_{ij})$, similar to the reparametrisation in
+\cite{DBLP:conf/nips/ZhouLLY19}, with $\hat{m}_{ij}$ being a latent mask
 variable and $\sigma$ the sigmoid function which bounds $p_{ij}$ in $[0,1]$.
 However, this workaround suffers in practice from numerical instability in
 gradient estimation and is also computationally demanding. Indeed, the
@@ -579,12 +579,12 @@ $\log(\mathcal{P}_{ij})$:\\
   \label{eqn:chap2:log-probabilities}
   \log(\mathcal{P}_{ij}) =
   \begin{bmatrix}
-    \log(p_{ij}) = \bm{\hat{m}}_{ij} \\
-    \log(1-p_{ij}) = \log(1-\exp(\bm{\hat{m}}_{ij}))
+    \log(p_{ij}) = \hat{m}_{ij} \\
+    \log(1-p_{ij}) = \log(1-\exp(\hat{m}_{ij}))
   \end{bmatrix}
 \end{equation}\\
 
-\noindent and learn the underlying mask $\bm{\hat{m}}_{ij}$. However, this
+\noindent and learn the underlying mask $\hat{m}_{ij}$. However, this
 reparametrisation is also flawed in the same way as the aforementioned sigmoid
 reparametrisation, namely: numerically unstable and high computational cost,
 again due to the combination of logarithmic and exponential functions.\\
@@ -599,7 +599,7 @@ weight level:\\
 \begin{equation}
   \label{eqn:chap2:our-input-formulation}
   \begin{bmatrix}
-    \bm{\hat{m}}_{ij} \\
+    \hat{m}_{ij} \\
     0                 \\
   \end{bmatrix}
 \end{equation}\\
@@ -612,7 +612,7 @@ We interpret the formulation of \cref{eqn:chap2:our-input-formulation} as:
 \begin{equation}
   \label{eqn:chap2:our-formulation}
   \begin{bmatrix}
-    \bm{\hat{m}}_{ij} \\
+    \hat{m}_{ij} \\
     0                 \\
   \end{bmatrix}
   = \log\big(\mathcal{P}_{ij}(.)\big) + c =
@@ -628,7 +628,7 @@ $\log(\mathcal{P}_{ij}(.)) + c$ , which is the input of the argmax in
 \cref{eqn:chap2:gumbel-softmax-argmax}.\\
 
 The constant $c \in \mathds{R}$ does not need to be known. Adding this constant
-ensures that even if $\bm{\hat{m}}_{ij} > 0$, we can still interpret $p_{ij}$ as
+ensures that even if $\hat{m}_{ij} > 0$, we can still interpret $p_{ij}$ as
 a probability with $\log(p_{ij}) \in ]-\infty,0] \Leftrightarrow p_{ij} \in
 [0,1]$. This is enforced by setting the second coefficient of
 \cref{eqn:chap2:our-input-formulation,eqn:chap2:our-formulation}  to zero,
@@ -637,14 +637,14 @@ rather than computing it explicitly. Although different, the formulation of
 aforementioned sigmoid reparametrisation (see
 \cref{eqn:chap2:sigmoid_reparam,eqn:chap2:pruned_layer_eq2}). Indeed, solving
 the system of \cref{eqn:chap2:our-formulation} with respect to
-$\bm{\hat{m}}_{ij}$ yields $p_{ij} = \sigma(\bm{\hat{m}}_{ij})$ (see
+$\hat{m}_{ij}$ yields $p_{ij} = \sigma(\hat{m}_{ij})$ (see
 \cref{prop:chap2:probability-interpretation}). \\
 
 \begin{proposition}
   [Formulation equivalence]
   \label{prop:chap2:probability-interpretation}
   The formulation in \cref{eqn:chap2:our-formulation} is equivalent to defining
-  $p_{ij} = \sigma(\bm{\hat{m}}_{ij})$ with $\sigma$ the sigmoid function,
+  $p_{ij} = \sigma(\hat{m}_{ij})$ with $\sigma$ the sigmoid function,
   provided that $p_{ij}\in ~ ]0,1[$.
 \end{proposition}
 \vspace*{\baselineskip}
@@ -654,25 +654,25 @@ $\bm{\hat{m}}_{ij}$ yields $p_{ij} = \sigma(\bm{\hat{m}}_{ij})$ (see
   $$
     \left\{
     \begin{array}{ll}
-      \bm{\hat{m}}_{ij} = \log(p_{ij})+c & (1) \\
+      \hat{m}_{ij} = \log(p_{ij})+c & (1) \\
       0 = \log(1-p_{ij})+c               & (2) \\
     \end{array}
     \right.
   $$\\
   Substracting $(2)$ from $(1)$ yields:\\
-  $$ (1) - (2) \Leftrightarrow \bm{\hat{m}}_{ij} = \displaystyle\log\left( \frac{p_{ij}}{1 - p_{ij}} \right)$$\\
+  $$ (1) - (2) \Leftrightarrow \hat{m}_{ij} = \displaystyle\log\left( \frac{p_{ij}}{1 - p_{ij}} \right)$$\\
   % $$ \Leftrightarrow \log\left(\frac{1-p_{ij}}{p_{ij}} \right) = -
-  %   \bm{\hat{m}}_{ij}$$\\
-  $$ \Leftrightarrow \frac{1}{p_{ij}} - 1 = \exp(-\bm{\hat{m}}_{ij})$$\\
-  % $$ \Leftrightarrow \frac{1}{p_{ij}} = \exp(-\bm{\hat{m}}_{ij}) + 1$$\\
-  $$ \Leftrightarrow p_{ij} = \frac{1}{\exp(-\bm{\hat{m}}_{ij}) + 1}$$\\
-  $$ \Leftrightarrow p_{ij} = \sigma(\bm{\hat{m}}_{ij})$$\\
+  %   \hat{m}_{ij}$$\\
+  $$ \Leftrightarrow \frac{1}{p_{ij}} - 1 = \exp(-\hat{m}_{ij})$$\\
+  % $$ \Leftrightarrow \frac{1}{p_{ij}} = \exp(-\hat{m}_{ij}) + 1$$\\
+  $$ \Leftrightarrow p_{ij} = \frac{1}{\exp(-\hat{m}_{ij}) + 1}$$\\
+  $$ \Leftrightarrow p_{ij} = \sigma(\hat{m}_{ij})$$\\
 
 \end{proof}
 
 
 Differently put, the formulation in \cref{eqn:chap2:our-formulation} considers a
-reparametrisation $\bm{\hat{m}}_{ij} = \log(p_{ij})+c$ and $\log(1-p_{ij})+ c =0$ which is strictly
+reparametrisation $\hat{m}_{ij} = \log(p_{ij})+c$ and $\log(1-p_{ij})+ c =0$ which is strictly
 equivalent to the sigmoid one while being computationally more efficient and
 also numerically stable.\\
 
@@ -680,15 +680,15 @@ also numerically stable.\\
 
 \Cref{prop:chap2:probability-interpretation} assumes that $p_{ij}\in ~ ]0,1[$,
 which, in practice, is verified. For the probabilities $p_{ij}$ to reach 0 or 1,
-the masks $\bm{\hat{m}}_{ij}$  would need to reach $\pm\infty$. This scenario
-cannot happen during training since $\bm{\hat{m}}_{ij}$ are initialised to 0
+the masks $\hat{m}_{ij}$  would need to reach $\pm\infty$. This scenario
+cannot happen during training since $\hat{m}_{ij}$ are initialised to 0
 (see \cref{sec:chap2:experiments}) and the sigmoid function applied to them
-makes the gradients of $\bm{\hat{m}}_{ij}$ vanishingly small when
-$\bm{\hat{m}}_{ij}$ deviate from 0. Because $\bm{\hat{m}}_{ij}$ are updated
+makes the gradients of $\hat{m}_{ij}$ vanishingly small when
+$\hat{m}_{ij}$ deviate from 0. Because $\hat{m}_{ij}$ are updated
 following the \ac{SGD} algorithm, vanishingly small gradients results in
-vanishingly small updates of $\bm{\hat{m}}_{ij}$. In practice, it prevents the
-$\bm{\hat{m}}_{ij}$ reaching $\pm\infty$ and thus
-$\sigma(\bm{\hat{m}}_{ij})=p_{ij}$ from reaching 0 or 1, which validates the
+vanishingly small updates of $\hat{m}_{ij}$. In practice, it prevents the
+$\hat{m}_{ij}$ reaching $\pm\infty$ and thus
+$\sigma(\hat{m}_{ij})=p_{ij}$ from reaching 0 or 1, which validates the
 assumption of \cref{prop:chap2:probability-interpretation} that $p_{ij}\in ~
 ]0,1[$.\\
 
@@ -799,23 +799,23 @@ A network trained with \ac{ASLP} has a stochastic topology that is sampled at
 each forward pass. To evaluate such a network, we chose to freeze its topology
 so that its outputs and thus performance are deterministic. This section
 presents a pruning strategy to evaluate network trained with our method on a
-fixed topology. Once the \emph{latent} masks $\bm{\hat{m}}_{ij}$ are trained, a
+fixed topology. Once the \emph{latent} masks $\hat{m}_{ij}$ are trained, a
 pruning step is applied to extract a subnetwork from the original heavy and
-unpruned network. This pruning fixes the values of the masks $\bm{m}_{ij}$ to
+unpruned network. This pruning fixes the values of the masks $m_{ij}$ to
 either 0 or 1 (\emph{c.f.} \cref{eqn:chap2:pruned_layer_eq}), effectively
 freezing the network topology which was previously stochastic. This pruning step
 does not enforce a specific pruning rate, it is rather based on thresholding the
 weights probability of being selected $p_{ij}$. The resulting \emph{observed}
 pruning rate is computed as the fraction of weights whose $p_{ij}$ is below the
 said threshold, denoted $\tau$. This pruning step can be defined by applying the
-function $\xi_\tau$ to each mask $\bm{\hat{m}}_{ij}$, and assigning its result
-to $\bm{m}_{ij}$, as shown in \cref{eq:chap2:pruning}.\\
+function $\xi_\tau$ to each mask $\hat{m}_{ij}$, and assigning its result
+to $m_{ij}$, as shown in \cref{eq:chap2:pruning}.\\
 
 \begin{equation}
-  \bm{m}_{ij} \leftarrow \xi_\tau(\bm{\hat{m}}_{ij}) =
+  m_{ij} \leftarrow \xi_\tau(\hat{m}_{ij}) =
   \left\{
   \begin{array}{ll}
-    1 & \text{if~~}  p_{ij} \geq \tau \Leftrightarrow  \bm{\hat{m}}_{ij} \geq \sigma^{-1}(\tau) \\
+    1 & \text{if~~}  p_{ij} \geq \tau \Leftrightarrow  \hat{m}_{ij} \geq \sigma^{-1}(\tau) \\
     0 & \text{otherwise.}                                                                       \\
   \end{array}
   \right.
@@ -834,13 +834,13 @@ Our pruning strategy seeks to retain the weights that have the highest
 probability of being present in the sampled topologies. Specifically, we set
 $\tau$ so that retained weights must be selected, on average, in at least half
 the sampled topologies. This implies that the weight selection probabilities
-$p_{ij}$, which are defined as $\sigma(\bf{\hat{m_{ij}}})$, must be greater or
-equal than $\tau=0.5$, otherwise, the related weight $\bm{w}_{ij}$ is pruned. In
+$p_{ij}$, which are defined as $\sigma(\bf{\hat{m_{ij}}})$, must be greater than
+or equal to $\tau=0.5$, otherwise, the related weight $w_{ij}$ is pruned. In
 other words, the weight is kept if the binary event of keeping a connection is
 more likely than its removal. Since $p_{ij}$ is defined as
-$\sigma(\bm{\hat{m}}_{i,j})$, in terms of latent masks, it means that a weight
-is kept if its associated latent mask $\bm{\hat{m}}_{i,j} \geq
-\sigma^{-1}(0.5)=0$. We refer to this pruning method as \textit{thresholding}.\\
+$\sigma(\hat{m}_{ij})$, in terms of latent masks, it means that a weight is kept
+if its associated latent mask $\hat{m}_{ij} \geq \sigma^{-1}(0.5)=0$. We refer
+to this pruning method as \textit{thresholding}.\\
 
 
 \section{Method Overview and Algorithm}\label{sec:chap2:overview}
@@ -895,11 +895,11 @@ pipelines rely on weight training and subsequent fine-tuning.\\
     \STATE \textbf{Forward Pass:}
     \STATE $q_{ij} \gets \text{argmax}
       \begin{bmatrix}
-        \bm{\hat{m}}_{ij} + g_{ij} \\
+        \hat{m}_{ij} + g_{ij} \\
         0 + g'_{ij}                 \\
       \end{bmatrix}$ \COMMENT{Sample of a topology}
     \STATE $m_{ij} \gets 1_{\{q_{ij}=1\}}$
-    \COMMENT{Give the masks $\bm{m}_{ij}$ their values}
+    \COMMENT{Give the masks $m_{ij}$ their values}
 
     \STATE ${\cal L}\big(f_\theta(X,
         s_\ell (\bm{m}_\ell \odot \bm{w}_\ell)),y \big)$
@@ -1009,7 +1009,7 @@ displayed in \cref{fig:chap2:data_augmentation_pipeline}.\\
 method, we chose to freeze the topology with our \emph{threhsolding} pruning
 strategy, described in \cref{sec:chap2:freezing_topology}, which thresholds the
 probabilities of selection $p_{ij}$ and consequently the latent masks
-$\bm{\hat{m}}_{ij}$. As a matter of comparison, we also consider the setting in
+$\hat{m}_{ij}$. As a matter of comparison, we also consider the setting in
 \cite{DBLP:conf/nips/ZhouLLY19} which is an averaging strategy to evaluate
 Supermask performance. It consists in sampling ten different topologies,
 yielding effectively 10 different subnetworks. The performances of each of these
