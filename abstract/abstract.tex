@@ -4,7 +4,7 @@
 
 \begin{abstract}
 
-    Thanks to the miniaturisation of electronics, embedded devices have become,
+    Thanks to the miniaturisation of electronics, embedded devices have become
     more and more ubiquitous, since the 2010s, realising various tasks all
     around us. As their usage is developing, there is a growing demand for these
     devices to process data and make complex decisions efficiently. Deep neural
@@ -16,11 +16,11 @@
     compress neural networks while ensuring minimal impact on their accuracy.
 
     This PhD thesis first introduces a budget-aware method for compressing large
-    neural networks with weight reparametrization and budget loss that does not
+    neural networks with weight reparametrisation and budget loss that does not
     require fine-tuning. Traditional pruning methods often rely on post-training
     saliency indicators to remove weights, disregarding the targeted pruning
     rate. Our approach integrates a budget loss, driving the pruning process
-    towards a specific pruning rate during training, thereby achieving a joint
+    towards a specific value during training, thereby achieving a joint
     optimisation of topology and weights. By soft-pruning the smallest weights
     using weight reparametrisation, our method significantly mitigates accuracy
     degradation in comparison to traditional pruning techniques. We show the
@@ -35,13 +35,13 @@
     that represent the probability of selection of the weights. Alongside, a
     weight rescaling mechanism (referred to as Smart Rescale) is also
     introduced, which allows enhancing the performance of the extracted
-    subnetworks and speeding up their training. Our proposed approach also finds
-    the optimal pruning rate after one training pass, thereby circumventing
-    computationally expensive gird-search and training across various pruning
-    rates. As shown through comprehensive experiments, our method consistently
-    outperforms state-of-the-art techniques and allows designing lightweight
-    networks which can reach high sparsity levels without significant loss in
-    accuracy.
+    subnetworks as well as speeding up their training. Our proposed approach
+    also finds the optimal pruning rate after one training pass, thereby
+    circumventing computationally expensive gird-search and training across
+    various pruning rates. As shown through comprehensive experiments, our
+    method consistently outperforms closely related state-of-the-art techniques
+    and allows designing lightweight networks which can reach high sparsity
+    levels without significant loss in accuracy.
 
 \end{abstract}
 
