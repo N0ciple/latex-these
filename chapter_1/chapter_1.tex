@@ -44,7 +44,7 @@
 
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction and Related Work}
 
 This chapter addresses the challenge of pruning large neural networks without
 degrading their performance. Most of the existing pruning methods degrade the
@@ -54,11 +54,7 @@ to compensate for the loss in performance. The method we introduce in this
 chapter circumvents this issue and yields lightweight pruned networks with
 minimal performance degradation. This is achieved through a combination of
 weight reparametrisation that encompasses a surrogate $\ell_0$ norm and a budget
-loss that drives the sparsity toward the predefined pruning rate.
-
-
-
-\subsection{Related Work}
+loss that drives the sparsity toward the predefined pruning rate.\\
 
 Pruning is an excellent way to obtain lightweight neural networks because it
 reduces the number of parameters in a pre-trained network without the need to
@@ -72,14 +68,18 @@ can be split into two major categories: \textit{(i)} unstructured weight
 pruning, where individual weights of a given network are removed based on their
 importance, and \textit{(ii)} structured pruning, where entire columns, rows,
 channels, filters or even entire parts, such as skip connections of a residual
-network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \\
+network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. Our method belongs to the
+first category. The subsequent sections provide an overview of related works on
+unstructured pruning, pruning with weight reparametrisation, budget loss and
+pruning without fine-tuning, followed by the contributio of this chapter.\\
 
 
-\noindent\textbf{Unstructured magnitude pruning.} It has emerged as an effective
-heuristic for determining the saliency of the weights. This method focuses on
-removing independent weights from the global structure of the network, hence
-offering greater flexibility compared to structured pruning which imposes a
-strong topological prior by eliminating whole sections of the original network.
+\subsection{Unstructured Magnitude Pruning.} 
+Unstructured magnitude pruning has emerged as an effective heuristic for
+determining the saliency of the weights. This method focuses on removing
+independent weights from the global structure of the network, hence offering
+greater flexibility compared to structured pruning which imposes a strong
+topological prior by eliminating whole sections of the original network.
 Magnitude pruning revolves around the hypothesis that the smallest weights
 contribute less to the final output of the network and can thereby be removed
 with minimal impact on the performance. Considering a weight tensor
@@ -143,14 +143,14 @@ computationally intensive training and fine-tuning steps required to obtain a
 trained lightweight subnetwork.\\
 
 
-\noindent \textbf{Weight reparametrisation.} it is a
-technique where the weights are expressed as a function of other variables.
-Typically the weights used in the network, here denoted $\mathbf{\hat{w}}$ and
-referred to as \emph{apparent weights}, are expressed as a function of the
-\emph{latent weights} $\mathbf{w}$ and other variables. In \cite{powerprop},
-\citeauthor{powerprop} presented a weight reparametrisation based on raising a
-weight to the power of $\alpha$ while preserving its sign. This
-reparametrisation is formalised as: \\
+\subsection{Weight Reparametrisation} 
+Weight reparametrisation is a technique where the weights are expressed as a
+function of other variables. Typically the weights used in the network, here
+denoted $\mathbf{\hat{w}}$ and referred to as \emph{apparent weights}, are
+expressed as a function of the \emph{latent weights} $\mathbf{w}$ and other
+variables. In \cite{powerprop}, \citeauthor{powerprop} presented a weight
+reparametrisation based on raising a weight to the power of $\alpha$ while
+preserving its sign. This reparametrisation is formalised as: \\
 
 \begin{equation}
   \label{eqn:chap1:power_propagation}
@@ -165,13 +165,13 @@ more increased. The pruning is enforced by pruning reparametrised weights with
 magnitude pruning.\\
 
 
-\noindent \textbf{Pruning with budget.} Most pruning techniques, including the
-ones presented in this section, enforce a pruning rate after the initial
-training. Consequently, the optimisation process does not take into account the
-final weight budget that will be allocated to the network. Some work tackled
-this issue by adding a loss that drives the network to respect a budget. Note
-that the works described subsequently all fall into the \emph{structured}
-pruning category.\\ 
+\subsection{Pruning with Budget} 
+Most pruning techniques, including the ones presented in this section, enforce a
+pruning rate after the initial training. Consequently, the optimisation process
+does not take into account the final weight budget that will be allocated to the
+network. Some work tackled this issue by adding a loss that drives the network
+to respect a budget. Note that the works described subsequently all fall into
+the \emph{structured} pruning category.\\ 
 
 \citeauthor{lemaire2019structured} introduced in \cite{lemaire2019structured} a
 Budget-Aware Regularisation loss or BAR loss that performs structured pruning on
@@ -244,12 +244,13 @@ fine-tuned the networks after the pruning with the same hyperparameters as the
 initial training phase and in particular with the same number of epochs,
 effectively doubling the training time.\\
 
-\noindent\textbf{Pruning without fine-tuning.} Most pruning methods cause a
-performance drop following the pruning step. This is due to the fact that the
-weights that are removed play a non-negligible role in the network. In this
-context, fine-tuning is a common technique that aims to recover the lost
-performance but fine-tuning is a computationally intensive task. Some works
-propose pruning methods that are designed to circumvent the need for fine-tuning
+\subsection{Pruning without fine-tuning} 
+Most pruning methods cause a performance drop following the pruning step. This
+is due to the fact that the weights that are removed play a non-negligible role
+in the network. In this context, fine-tuning is a common technique that aims to
+recover the lost performance but fine-tuning is a computationally intensive
+task. Some works propose pruning methods that are designed to circumvent the
+need for fine-tuning
 \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/icnn/HassibiSW93,DBLP:conf/icml/KangH20}.\\
 
 
