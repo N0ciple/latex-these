@@ -25,16 +25,14 @@ end of the \textsc{XIX}th century, is linked to the development of automobiles,
 crude oil extraction and assembly lines powered by electric energy. The third
 industrial revolution, also called the digital revolution, took place in the
 second half of the \textsc{XX}th century and brought electronics, information
-and communication technology, and automated production.
-%FIXME: eviter la répétition de and
-The Fourth Industrial Revolution, often known as Industry 4.0, inaugurates the
-digital integration of production chains as well as smart and connected devices
-that lead to more efficient manufacturing systems. The fourth industrial
-revolution focuses on the interconnectivity of devices and the development of
-their computational capabilities. This track leads to the emergence of
-ever-connected \ac{IOT} devices with embedded computing facilities, such as
-smartphones, autonomous vehicles or satellites, that leverage \ac{AI}
-algorithms.\\
+and communication technology, and automated production. The Fourth Industrial
+Revolution, often known as Industry 4.0, inaugurates the digital integration of
+production chains as well as smart and connected devices that lead to more
+efficient manufacturing systems. The fourth industrial revolution focuses on the
+interconnectivity of devices and the development of their computational
+capabilities. This track leads to the emergence of ever-connected \ac{IOT}
+devices with embedded computing facilities, such as smartphones, autonomous
+vehicles or satellites, that leverage \ac{AI} algorithms.\\
 
 In parallel with these industrial revolutions, the field of \ac{AI} has seen
 substantial growth and development. The term \emph{\acl{AI}} was first used at
@@ -53,7 +51,7 @@ attention from both researchers and industrials with the advent of Deep
 Learning. The latter is a subfield of machine learning which uses multi-layer
 \ac{ANN} to learn and model complex patterns in datasets in an end-to-end
 fashion, bringing significant improvement over manually engineered data
-processing. The fast development of Deep learning has been driving advancements
+representation. The fast development of Deep learning has been driving advancements
 in various domains such as natural language processing
 \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
 image and speech recognition
@@ -112,7 +110,7 @@ methods that can reduce the size of neural networks while preserving their
 performances, with a focus on topology selection. We introduce two new pruning
 methods: The first performs joint topology and weight optimisation allowing for
 a minimal loss in performance after pruning compared to standard methods. The
-second method does not require any weight training and instead focuses on
+second approach does not require any weight training and instead focuses on
 stochastic yet differentiable topology selection, achieving compelling results
 overall and outperforming other related state-of-the-art methods that, again, do
 not train the weights.
@@ -160,9 +158,9 @@ directly, reducing the need for manual feature extraction, and their capacity
 for hierarchical feature learning makes them particularly effective for tasks
 such as object recognition and classification. Their architecture is such that
 they perform well at recognising patterns in unstructured data and are able to
-learn gradually more complex and abstract concept representations from the raw
-data, enabling them to outperform other machine learning models and humans in
-computer vision tasks (see \cref{fig:intro:models_vs_humans}).\\
+learn gradually more complex and abstract concept representations from raw data,
+enabling them to outperform other machine learning models and humans in computer
+vision tasks (see \cref{fig:intro:models_vs_humans}).\\
 
 \begin{figure}[htbp]
       \centering
@@ -180,27 +178,27 @@ and allows for accurate and reliable object detection and recognition.\\
 \section{Challenges}
 
 While deep learning, particularly through the use of \acp{CNN}, is the
-technology of choice for computer vision applications, it comes with its set of
+technology of choice for computer vision applications, it comes with its
 challenges that need to be addressed, especially in the context of deploying
-these models on embedded devices. These challenges include model complexity and
-computational requirements. The necessity of compressing the neural networks
-have, as highlighted previously, also comes with its own set of challenges that
-comprises the following: preserving the performance,  controlling the size of
-the compressed model as well as the training time.\\
+these deep and large models on embedded devices. These challenges include model
+complexity and computational requirements. The necessity of compressing neural
+networks has been highlighted previously and also comes with its challenges that
+include: preserving the performance and controlling the size of the compressed
+model as well as training time.\\
 
 One of the most significant challenges in deploying deep learning models and
-especially \acp{CNN} on embedded devices, is the large model size. These models
-often have millions of parameters, making them computationally heavy and
+especially \acp{CNN} on embedded devices is the large model size. These models
+often have millions of parameters and this makes them computationally heavy and
 challenging to fit into the limited memory of embedded devices. Secondly, these
 complex models require substantial computational resources to operate. This
-translates to slow computations and processing times, a critical issue for
-devices which aim to perform real-time tasks.\\
+translates into slow computations which is a critical issue for devices which
+aim to perform real-time tasks.\\
 
-Compressing the large neural netwoks is a necessity to deploy them on embedded
-devices. However, this compression process comes with its own set of challenges.
-First, the compressed model should maintain the performance of the original
-model. However the original large model is trained to rely on all its parameters
-and removing more than a trivial number of parameters can lead to degraded
+Compressing large neural networks is a necessity to deploy them on embedded
+devices. However, this compression process comes with its challenges. First, the
+compressed model should maintain the performance of the original model. However,
+the original large model is trained with all its parameters and thus depends on
+all of them. Consequently, removing more than a few can lead to degraded
 performance. \\
 
 Second, the compressed model should be small enough to fit into the
@@ -219,7 +217,7 @@ loss of performance. This fine-tuning step can be computationally expensive and
 time-consuming, effectively doubling the training time of the model in some
 scenarios.\\
 
-To conclude, while deep learning and \acp{CNN} represent an exciting frontier
+To conclude, while deep learning and \acp{CNN} represent an exciting advancement
 in computer vision applications, several challenges need to be addressed for
 efficient and effective deployment on embedded devices. Addressing these
 challenges forms the crux of this research, with a particular focus on model
@@ -239,34 +237,33 @@ performance. These contributions are as follows:\\
 \noindent \textbf{Budget-aware pruning with weight reparametrisation.} The two
 main challenges when pruning a neural network are first, determining which
 weights should be removed and then, mitigating the loss of performance
-introduced by weight removal. 
-%FIXME: vérifier que weight doit bien être au singulier.
-The first challenge is often referred to as determining the saliency of the
-weights, which is a score that reflects the importance of the weights in the
-network. The second challenge is often sidestepped and the pruned network is
-simply fine-tuned to recover the lost performance. To address both of these
-challenges we propose the following main contributions:
-%FIXME: vérifier la formulation "both of these challenges"
+introduced by weight removal. The first challenge is often referred to as
+determining the saliency of the weights, which is a score that reflects the
+importance of the weights in the network. The second challenge is often
+sidestepped and the pruned network is simply fine-tuned to recover the lost
+performance. To address both of these challenges, we propose the following main
+contributions:
 
 \begin{itemize}
-      \item A numerically stable reparametrisation function, used in our weight
-            reparametrisation and budget regularisation loss (subsequently
-            detailed), that acts as a surrogate differentiable $\ell_0$ norm.
+      \item A numerically stable reparametrisation function, used in both our
+            weight reparametrisation and our budget regularisation loss
+            (subsequently detailed), that acts as a surrogate differentiable
+            $\ell_0$ norm.
 
       \item A weight reparametrisation that embeds the saliency score of the
             weight in its expression and therefore value. This reparametrisation
             allows to soft-prune the weights during training thereby significantly
             mitigating the performance drop that occurs after pruning. Moreover,
-            this reparametrization does not require the introduction of auxiliary
+            this reparametrisation does not require the introduction of auxiliary
             variables to determine the saliency of the weights, leading to a
             minimal impact on memory and computational requirements.
 
       \item A budget regularisation loss that allows to drive the optimisation
-            procedure to respect a given budget. This budget regularisation
+            procedure to respect a given budget. This budget regularisation loss
             benefits directly from the aforementioned reparametrisation function
-            to compute the current weight budget. The budget regularisation loss
-            is optimised jointly with the original loss, leading to an optimal
-            solution in terms of performance and budget.
+            to compute the current weight budget. It is optimised jointly with
+            the original loss, leading to an optimal solution in terms of
+            performance and budget.
 
       \item A comprehensive set of experiments that demonstrate the effectiveness
             of our method and validates each one of its components on various
@@ -275,10 +272,11 @@ challenges we propose the following main contributions:
 
 \noindent These contributions have been published in the following article:
 \begin{itemize}
-      \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight reparametrization for
-            budget-aware network pruning. In \emph{2021 IEEE International Conference on Image
-                  Processing, ICIP 2021, Anchorage, AK, USA, September 19-22, 2021}, pages 789–793.
-            IEEE, 2021.\\
+      \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight
+            reparametrization for budget-aware network pruning. In \emph{2021
+            IEEE International Conference on Image Processing, ICIP 2021,
+            Anchorage, AK, USA, September 19-22, 2021}, pages 789–793. IEEE,
+            2021.\\
 \end{itemize}
 
 
@@ -289,7 +287,7 @@ remove. This is especially challenging since weights, and consequently their
 saliency, can fluctuate throughout training. This implies that pruning should
 either be reversible or performed at the end of training. We propose a different
 approach that does not require training the network to determine the saliency of
-the weights, the latter being fixed throughout the process. Instead, we sample
+the weights, the latter being fixed throughout the process. Instead, we sample a
 subset of weights (effectively pruning the other weights) forming a subnetwork
 of the original network and evaluate its performance. This allows us to search
 for a topology that is both lightweight and performant inside the original
@@ -305,16 +303,16 @@ as follows: \\
             and therefore identifying and extracting an effective subnetwork.
 
       \item A pruning strategy for the masks that freeze the topology and
-            perfroms better than previous averaging methods used in the
-            state-of-the-art. Moreover, this pruning strategy allows to discover the
-            optimal pruning rate for the network, eliminating the need for costly grid
-            search to determine the optimal pruning rate.
+            performs better than averaging methods previously used in the
+            state-of-the-art. Moreover, this pruning strategy allows to discover
+            the optimal pruning rate for the network, eliminating the need for
+            costly grid search to determine it.
 
       \item An efficient learnt-based weight rescaling mechanism to compensate
             for the disruption in weight distribution statistics caused by
-            stochastic sampling. This learnt-based rescaling is less
-            computationally intensive, more flexible and allows for smoother
-            variations of the scaling factor than other rescaling methods.
+            stochastic sampling. This rescaling is less computationally
+            intensive, more flexible and allows for smoother variations of the
+            scaling factor than other rescaling methods.
 
       \item A comprehensive set of experiments that demonstrate the
             effectiveness of our method and validates each one of its components
@@ -355,7 +353,7 @@ validation, and test sets.\\
 state-of-the-art methods divided into different families. The chapter begins
 with acceleration techniques and presents a range of methods whose goal is to
 speed up matrix operations or convolutions. Then, it explores the teaching
-paradigm, highlighting methods that rely on a pre-trained large network to
+paradigm, highlighting methods that rely on a large pre-trained network to
 improve the training of lightweight ones. Furthermore, the chapter addresses the
 design aspects of lightweight architectures introducing building blocks for
 efficient architecture design and \acl{NAS}. Afterwards, the chapter discusses

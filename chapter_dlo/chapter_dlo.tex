@@ -5,7 +5,7 @@
 \section{Introduction}
 
 Deep Learning is a subfield of machine learning that focuses on the study of
-\acp{DNN} which have their roots in \acp{ANN}. \acp{DNN} aim to learn a data
+\acfp{DNN} which have their roots in \acfp{ANN}. \acp{DNN} aim to learn a data
 representation from unstructured data such as raw images
 \cite{DBLP:conf/nips/KrizhevskySH12}, text
 \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
@@ -139,9 +139,9 @@ A \ac{MLP} with one hidden layer is represented in \cref{fig:dlo:mlp}. In the
 latter, the circles represent the neurons and the connections between them,
 representing weights, are materialised by lines. The \ac{MLP} is the simplest
 type of feedforward \ac{ANN}. Feedforward refers to the fact that the
-connections between neurons in the \ac{MLP} form a \acf{DAG}, where the outputs
-of the neurons from one layer are passed to the next, with no backward
-connections or feedback. Using the same notations as in
+connections between neurons in the \ac{MLP} form a directed acyclic graph, where
+the outputs of the neurons from one layer are passed to the next, with no
+backward connections or feedback. Using the same notations as in
 \cref{eqn:dlo:perceptron_vector}, the vector form of the \ac{MLP} displayed in
 \cref{fig:dlo:mlp} can be written as in \cref{eqn:dlo:mlp}, where the subscript
 of activation functions $g_i$, weight matrices $\mathbf{w}_i$ and bias vectors
@@ -338,8 +338,8 @@ hyperparameter that balances the trade-off between fitting the training data
 (minimising the loss $\mathcal{L}$) and limiting the complexity of the model
 (minimising $\mathcal{R}$).\\
 
-For a network with L layers and parameters $\theta={\mathbf{w}_1, \dots,
-\mathbf{w}_L}$, the $\ell_1$ and $\ell_2$ regularisation term is defined as
+For a network with L layers and parameters $\theta=\{\mathbf{w}_1, \dots,
+\mathbf{w}_L\}$, the $\ell_1$ and $\ell_2$ regularisation term is defined as
 follows:\\
 
 \begin{equation}
@@ -456,12 +456,12 @@ descent to achieve faster and more stable convergence.\\
 
 For instance, \ac{SGD} with momentum
 \cite{sutskever2013importance,polyak1964some} uses a momentum coefficient
-$\gamma$ and smoothes the variations of the descent direction and thus,
-preventing the optimisation to get stuck in small local minimums. The momentum
-term is a moving average of the gradient, here denoted $v$, and it is used to
-update the parameters as shown in \cref{eqn:dlo:sgd_momentum_update}. In this
-equation, the momentum coefficient $\gamma \in [0,1]$ is a hyperparameter that
-is typically set close to 1, $0.9$ being a common value.\\
+$\gamma$ and smoothes the variations of the descent direction, thus preventing
+the optimisation from getting stuck in small local minima. The momentum term is
+a moving average of the gradient, here denoted $v$, and it is used to update the
+parameters as shown in \cref{eqn:dlo:sgd_momentum_update}. In this equation, the
+momentum coefficient $\gamma \in [0,1]$ is a hyperparameter that is typically
+set close to 1, $0.9$ being a common value.\\
 
 \begin{equation}
   \label{eqn:dlo:sgd_momentum_update}
