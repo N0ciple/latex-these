@@ -1,21 +1,27 @@
 \chapter{Introduction}\label{chap:intro}
 
-% - révolutions industrielles de la première à la 4ème avec pour objectifs la mecanisation du travail dans la première (détailler les 3 autres)
+%DIF <  - révolutions industrielles de la première à la 4ème avec pour objectifs la mecanisation du travail dans la première (détailler les 3 autres)
+\DIFdelbegin %DIFDELCMD < 
 
-% - composante de la 4ème révolution industrielle : 
-%     - l'intelligence artificielle permise par le développement des capacités de calcul
-%     - naissance d'objects intelligents et doté de capacités de calcul embarqués (smartphones, voitures autonomes, satellites, etc...)
+%DIFDELCMD < %%%
+%DIF <  - composante de la 4ème révolution industrielle : 
+%DIF <      - l'intelligence artificielle permise par le développement des capacités de calcul
+%DIF <      - naissance d'objects intelligents et doté de capacités de calcul embarqués (smartphones, voitures autonomes, satellites, etc...)
+%DIFDELCMD < 
 
-% - la taille des modèles est un frein au déploiement de l'intelligence artificielle sur des objets embarqués.
-% - CEPENDANT: la 4ème révolution industrielle est aussi celle des objets communiquants donc on pourrait déporter les calculs sur des serveurs distants.
-% - MAIS: il existe des raisons de vouloir faire du calcul embarqué:
-%     - confidentialité des données
-%     - distribuer la charge de calcul et ne pas assumer le coût, ni de la communication, ni du calcul
-%     - plus grand réactivité (temps de latence)
-%     - coût de la communication
-%     - pas necessairement d'accès à internet (autonomie: ex: rover sur Mars)
+%DIFDELCMD < %%%
+%DIF <  - la taille des modèles est un frein au déploiement de l'intelligence artificielle sur des objets embarqués.
+%DIF <  - CEPENDANT: la 4ème révolution industrielle est aussi celle des objets communiquants donc on pourrait déporter les calculs sur des serveurs distants.
+%DIF <  - MAIS: il existe des raisons de vouloir faire du calcul embarqué:
+%DIF <      - confidentialité des données
+%DIF <      - distribuer la charge de calcul et ne pas assumer le coût, ni de la communication, ni du calcul
+%DIF <      - plus grand réactivité (temps de latence)
+%DIF <      - coût de la communication
+%DIF <      - pas necessairement d'accès à internet (autonomie: ex: rover sur Mars)
+%DIFDELCMD < 
 
-From the spinning jenny, blast furnace and steam engine that sparked the first
+%DIFDELCMD < %%%
+\DIFdelend From the spinning jenny, blast furnace and steam engine that sparked the first
 industrial revolution to the \ac{IOT} devices that drives the fourth, the
 objective of mechanising labour and optimising productivity has been a
 persistent theme throughout the past centuries. The first industrial revolution,
@@ -51,7 +57,7 @@ attention from both researchers and industrials with the advent of Deep
 Learning. The latter is a subfield of machine learning which uses multi-layer
 \ac{ANN} to learn and model complex patterns in datasets in an end-to-end
 fashion, bringing significant improvement over manually engineered data
-processing. The fast development of Deep learning has been driving advancements
+\DIFdelbegin \DIFdel{processing}\DIFdelend \DIFaddbegin \DIFadd{representation}\DIFaddend . The fast development of Deep learning has been driving advancements
 in various domains such as natural language processing
 \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
 image and speech recognition
@@ -73,22 +79,23 @@ offload computations onto remote servers, leveraging the ever-interconnected
 nature of modern \ac{IOT} devices and appliances.\\
 
 Nonetheless, several compelling reasons exist for conducting embedded
-computation instead of moving them to the cloud. First, processing the data
+\DIFdelbegin \DIFdel{computation }\DIFdelend \DIFaddbegin \DIFadd{computations }\DIFaddend instead of moving them to the cloud. First, processing the data
 locally on premises ensures better data privacy, since the latter does not need
-to leave the device and be processed on the cloud. Indeed cloud instances can be
-located on various continents where the legislation about data privacy might be
-different from the one of the countries where the data is collected. Second,
-local computations can distribute the processing and limit communications. This
-is particularly relevant in more ways than one: first, it can reduce the cost of
-communication and bandwidth, which are typically billed to companies by cloud
-providers. Second, in some scenarios, the device might not have access to a
-large bandwidth or cannot afford to transmit a lot of data, which can be the
-case for remote areas or some devices with a low power budget. Third, local
-computations can lead to greater responsiveness by reducing latency, which might
-be critical in some applications such as autonomous vehicles. Fourth, local
-computations can enable autonomy, which is particularly relevant for devices
-that cannot rely on internet access, such as Mars rovers, submarine drones or
-any other devices that need to process data in radio silence.\\
+to leave the device \DIFdelbegin \DIFdel{and }\DIFdelend \DIFaddbegin \DIFadd{to }\DIFaddend be processed on the cloud. Indeed cloud instances can be
+located on various continents \DIFaddbegin \DIFadd{or countries }\DIFaddend where the legislation about data
+privacy might be different from the one of the countries where the data is
+collected. Second, local computations can distribute the processing and limit
+communications. This is particularly relevant in more ways than one: first, it
+can reduce the cost of communication and bandwidth, which are typically billed
+to companies by cloud providers. Second, in some scenarios, the device might not
+have access to a large bandwidth or cannot afford to transmit a lot of data,
+which can be the case for remote areas or some devices with a low power budget.
+Third, local computations can lead to greater responsiveness by reducing
+latency, which might be critical in some applications such as autonomous
+vehicles. Fourth, local computations can enable autonomy, which is particularly
+relevant for devices that cannot rely on internet access, such as Mars rovers,
+submarine drones or any other devices that need to process data in radio
+silence.\\
 
 The fourth industrial revolution and the rapid evolution in the field of \ac{AI}
 have opened up a myriad of applications, with \ac{AI} algorithms and in
@@ -109,10 +116,10 @@ methods that can reduce the size of neural networks while preserving their
 performances, with a focus on topology selection. We introduce two new pruning
 methods: The first performs joint topology and weight optimisation allowing for
 a minimal loss in performance after pruning compared to standard methods. The
-second method does not require any weight training and instead focuses on
+second \DIFdelbegin \DIFdel{method }\DIFdelend \DIFaddbegin \DIFadd{approach }\DIFaddend does not require any weight training and instead focuses on
 stochastic yet differentiable topology selection, achieving compelling results
-overall and outperforming other state-of-the-art methods that, again, do not
-train the weights.
+overall and outperforming other \DIFaddbegin \DIFadd{related }\DIFaddend state-of-the-art methods that, again, do
+not train the weights.
 
 \section{Industrial Context}
 
@@ -128,8 +135,8 @@ commercialises security cameras for individual use that perform tasks such as
 face recognition and object detection using \acp{DNN}. The objective is to run
 the \acp{DNN} directly on these cameras, sidestepping the need to send data to
 distant servers. This approach aligns well with the reasons outlined in the
-previous section, particularly in ensuring data privacy and allowing for a
-subscription-free business benefiting the end user, since there is no need to
+previous section, particularly in ensuring data privacy\DIFdelbegin \DIFdel{and allowing }\DIFdelend \DIFaddbegin \DIFadd{. Moreover, it allows }\DIFaddend for
+a subscription-free business benefiting the end user, since there is no need to
 pay for cloud infrastructures dedicated to running \acp{DNN}. Therefore, Netatmo
 needs to develop lightweight neural networks that can be run on embedded devices
 while maintaining the performance of their larger and more complex counterparts.
@@ -144,8 +151,9 @@ research efforts and numerous publications. It employs \aclp{ANN}, called
 \acfp{DNN}, that aim to learn and model complex patterns in unstructured data in
 an end-to-end fashion. Deep learning models have proven their effectiveness in
 numerous domains and have been particularly performant in the field of computer
-vision tasks
-\cite{DBLP:conf/cvpr/HeZRS16,DBLP:conf/nips/RenHGS15,DBLP:conf/eccv/LiuAESRFB16}.
+vision
+\DIFdelbegin \DIFdel{tasks
+}\DIFdelend \cite{DBLP:conf/cvpr/HeZRS16,DBLP:conf/nips/RenHGS15,DBLP:conf/eccv/LiuAESRFB16}.
 Computer vision, which lies at the heart of Netatmo smart camera
 functionalities, encompasses algorithms that enable computers to interpret and
 understand the visual world and in particular detect and classify objects.\\
@@ -157,9 +165,9 @@ directly, reducing the need for manual feature extraction, and their capacity
 for hierarchical feature learning makes them particularly effective for tasks
 such as object recognition and classification. Their architecture is such that
 they perform well at recognising patterns in unstructured data and are able to
-learn gradually more complex and abstract concept representations from the raw
-data, enabling them to outperform other machine learning models and humans in
-computer vision tasks (see \cref{fig:intro:models_vs_humans}).\\
+learn gradually more complex and abstract concept representations from \DIFdelbegin \DIFdel{the }\DIFdelend raw data,
+enabling them to outperform other machine learning models and humans in computer
+vision tasks (see \cref{fig:intro:models_vs_humans}).\\
 
 \begin{figure}[htbp]
       \centering
@@ -177,34 +185,42 @@ and allows for accurate and reliable object detection and recognition.\\
 \section{Challenges}
 
 While deep learning, particularly through the use of \acp{CNN}, is the
-technology of choice for computer vision applications, it comes with its set of
-challenges that need to be addressed, especially in the context of deploying
-these models on embedded devices. These challenges include model complexity and
-computational requirements. The necessity of compressing the neural networks
-have, highlighted previously, also comes with its own set of challenges that
-comprises the following: preserving the performance,  controlling the size of
-the compressed model as well as the training time.\\
+technology of choice for computer vision applications, it comes with its
+\DIFdelbegin \DIFdel{set of
+}\DIFdelend challenges that need to be addressed, especially in the context of deploying
+these \DIFaddbegin \DIFadd{deep and large }\DIFaddend models on embedded devices. These challenges include model
+complexity and computational requirements. The necessity of compressing \DIFdelbegin \DIFdel{the neural
+networks have, highlighted previously , }\DIFdelend \DIFaddbegin \DIFadd{neural
+networks has been highlighted previously and }\DIFaddend also comes with its \DIFdelbegin \DIFdel{own set of challenges that
+comprises the following}\DIFdelend \DIFaddbegin \DIFadd{challenges that
+include}\DIFaddend : preserving the performance \DIFdelbegin \DIFdel{,  }\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend controlling the size of the compressed
+model as well as \DIFdelbegin \DIFdel{the }\DIFdelend training time.\\
 
-One of the most significant challenges in deploying deep learning models,
-especially \acp{CNN}, on embedded devices, is the large model size. These models
-often have millions of parameters, making them computationally heavy and
-challenging to fit into the limited memory of embedded devices.\\
+One of the most significant challenges in deploying deep learning models \DIFdelbegin \DIFdel{,
+}\DIFdelend \DIFaddbegin \DIFadd{and
+}\DIFaddend especially \acp{CNN} \DIFdelbegin \DIFdel{, }\DIFdelend on embedded devices \DIFdelbegin \DIFdel{, }\DIFdelend is the large model size. These models
+often have millions of parameters \DIFdelbegin \DIFdel{, making }\DIFdelend \DIFaddbegin \DIFadd{and this makes }\DIFaddend them computationally heavy and
+challenging to fit into the limited memory of embedded devices. \DIFdelbegin %DIFDELCMD < \\
+%DIFDELCMD < 
 
-Secondly, these complex models require substantial computational resources to
-operate. This translates to slow computations and processing times, a critical
-issue for devices which aim to perform real-time tasks.\\
+%DIFDELCMD < %%%
+\DIFdelend Secondly, these
+complex models require substantial computational resources to operate. This
+translates \DIFdelbegin \DIFdel{to slow computations and processing times, }\DIFdelend \DIFaddbegin \DIFadd{into slow computations which is }\DIFaddend a critical issue for devices which
+aim to perform real-time tasks.\\
 
-Compressing the large neural netwoks is a necessity to deploy them on embedded
-devices. However, this compression process comes with its own set of challenges.
-First, the compressed model should maintain the performance of the original
-model. However the original large model is trained to rely on all its parameters
-and removing more than a trivial number of parameters can lead to degraded
-performance.
+Compressing \DIFdelbegin \DIFdel{the large neural netwoks }\DIFdelend \DIFaddbegin \DIFadd{large neural networks }\DIFaddend is a necessity to deploy them on embedded
+devices. However, this compression process comes with its \DIFdelbegin \DIFdel{own set of }\DIFdelend challenges. First, the
+compressed model should maintain the performance of the original model. However\DIFaddbegin \DIFadd{,
+}\DIFaddend the original large model is trained \DIFdelbegin \DIFdel{to rely on }\DIFdelend \DIFaddbegin \DIFadd{with }\DIFaddend all its parameters and \DIFaddbegin \DIFadd{thus depends on
+all of them. Consequently, }\DIFaddend removing more than a \DIFdelbegin \DIFdel{trivial number of parameters }\DIFdelend \DIFaddbegin \DIFadd{few }\DIFaddend can lead to degraded
+performance. \DIFaddbegin \\
+\DIFaddend 
 
-Second, the compressed model should be small enough to fit into the limited
-memory of embedded devices. It means that the compression process should be
-controlled to ensure that the size of the compressed model does not exceed the
-memory budget. However, compressing the model too much can lead to an
+Second, the compressed model should be small enough to fit into the
+limited memory of embedded devices. It means that the compression process should
+be controlled to ensure that the size of the compressed model does not exceed
+the memory budget. However, compressing the model too much can lead to an
 irrecoverable loss in performance. The compression procedure and hyperparameters
 should be carefully chosen to ensure that the compressed model has enough
 capacity to perform the task at hand. This is often achieved by grid-searching
@@ -217,8 +233,8 @@ loss of performance. This fine-tuning step can be computationally expensive and
 time-consuming, effectively doubling the training time of the model in some
 scenarios.\\
 
-To conclude, while deep learning and CNNs represent an exciting frontier in
-computer vision applications, several challenges need to be addressed for
+To conclude, while deep learning and \DIFdelbegin \DIFdel{CNNs }\DIFdelend \DIFaddbegin \acp{CNN} \DIFaddend represent an exciting \DIFdelbegin \DIFdel{frontier }\DIFdelend \DIFaddbegin \DIFadd{advancement
+}\DIFaddend in computer vision applications, several challenges need to be addressed for
 efficient and effective deployment on embedded devices. Addressing these
 challenges forms the crux of this research, with a particular focus on model
 compression techniques to reduce the size and complexity of neural networks
@@ -238,31 +254,33 @@ performance. These contributions are as follows:\\
 main challenges when pruning a neural network are first, determining which
 weights should be removed and then, mitigating the loss of performance
 introduced by weight removal. The first challenge is often referred to as
-determining the saliency of the weights. The latter is a score that reflects the
-importance of the weight in the network. The second challenge is often
+determining the saliency of the weights\DIFdelbegin \DIFdel{. The latter }\DIFdelend \DIFaddbegin \DIFadd{, which }\DIFaddend is a score that reflects the
+importance of the \DIFdelbegin \DIFdel{weight }\DIFdelend \DIFaddbegin \DIFadd{weights }\DIFaddend in the network. The second challenge is often
 sidestepped and the pruned network is simply fine-tuned to recover the lost
-performance. To address these challenges we propose the following main
+performance. To address \DIFdelbegin \DIFdel{these challenges }\DIFdelend \DIFaddbegin \DIFadd{both of these challenges, }\DIFaddend we propose the following main
 contributions:
 
 \begin{itemize}
-      \item A numerically stable reparametrisation function, used in our weight
-            reparametrisation and budget regularisation loss (subsequently
-            detailed), that acts as a surrogate differentiable $\ell_0$ norm.
+      \item A numerically stable reparametrisation function, used in \DIFaddbegin \DIFadd{both }\DIFaddend our
+            weight reparametrisation and \DIFaddbegin \DIFadd{our }\DIFaddend budget regularisation loss
+            (subsequently detailed), that acts as a surrogate differentiable
+            $\ell_0$ norm.
 
       \item A weight reparametrisation that embeds the saliency score of the
             weight in its expression and therefore value. This reparametrisation
             allows to soft-prune the weights during training thereby significantly
             mitigating the performance drop that occurs after pruning. Moreover,
-            this reparametrization does not require the introduction of auxiliary
+            this \DIFdelbegin \DIFdel{reparametrization }\DIFdelend \DIFaddbegin \DIFadd{reparametrisation }\DIFaddend does not require the introduction of auxiliary
             variables to determine the saliency of the weights, leading to a
             minimal impact on memory and computational requirements.
 
       \item A budget regularisation loss that allows to drive the optimisation
-            procedure to respect a given budget. This budget regularisation
-            benefits directly from the aforementioned reparametrisation function
-            to compute the current weight budget. The budget regularisation loss
-            is optimised jointly with the original loss, leading to an optimal
-            solution in terms of performance and budget.
+            procedure to respect a given budget. This budget regularisation \DIFaddbegin \DIFadd{loss
+            }\DIFaddend benefits directly from the aforementioned reparametrisation function
+            to compute the current weight budget. \DIFdelbegin \DIFdel{The budget regularisation loss
+            }\DIFdelend \DIFaddbegin \DIFadd{It }\DIFaddend is optimised jointly with
+            the original loss, leading to an optimal solution in terms of
+            performance and budget.
 
       \item A comprehensive set of experiments that demonstrate the effectiveness
             of our method and validates each one of its components on various
@@ -271,10 +289,11 @@ contributions:
 
 \noindent These contributions have been published in the following article:
 \begin{itemize}
-      \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight reparametrization for
-            budget-aware network pruning. In \emph{2021 IEEE International Conference on Image
-                  Processing, ICIP 2021, Anchorage, AK, USA, September 19-22, 2021}, pages 789–793.
-            IEEE, 2021.\\
+      \item Robin Dupont, Hichem Sahbi, and Guillaume Michel. Weight
+            reparametrization for budget-aware network pruning. In \emph{2021
+            IEEE International Conference on Image Processing, ICIP 2021,
+            Anchorage, AK, USA, September 19-22, 2021}, pages 789–793. IEEE,
+            2021.\\
 \end{itemize}
 
 
@@ -285,11 +304,11 @@ remove. This is especially challenging since weights, and consequently their
 saliency, can fluctuate throughout training. This implies that pruning should
 either be reversible or performed at the end of training. We propose a different
 approach that does not require training the network to determine the saliency of
-the weights, the latter being fixed throughout the process. Instead, we sample
-subset of weights (effectively pruning the other weights) forming a subnetwork
+the weights, the latter being fixed throughout the process. Instead, we sample \DIFaddbegin \DIFadd{a
+}\DIFaddend subset of weights (effectively pruning the other weights) forming a subnetwork
 of the original network and evaluate its performance. This allows us to search
 for a topology that is both lightweight and performant inside the original
-network without training the network. The main contributions of this method are
+network without training \DIFdelbegin \DIFdel{the network}\DIFdelend \DIFaddbegin \DIFadd{its weights}\DIFaddend . The main contributions of this method are
 as follows: \\
 
 \begin{itemize}
@@ -301,21 +320,22 @@ as follows: \\
             and therefore identifying and extracting an effective subnetwork.
 
       \item A pruning strategy for the masks that freeze the topology and
-            perfroms better than previous averaging methods used in the
-            state-of-the-art. Moreover, this pruning strategy allows to discover the
-            optimal pruning rate for the network, eliminating the need for costly grid
-            search to determine the optimal pruning rate.
+            \DIFdelbegin \DIFdel{perfroms better than previous averaging methods }\DIFdelend \DIFaddbegin \DIFadd{performs better than averaging methods previously }\DIFaddend used in the
+            state-of-the-art. Moreover, this pruning strategy allows to discover
+            the optimal pruning rate for the network, eliminating the need for
+            costly grid search to determine \DIFdelbegin \DIFdel{the optimal pruning rate}\DIFdelend \DIFaddbegin \DIFadd{it}\DIFaddend .
 
       \item An efficient learnt-based weight rescaling mechanism to compensate
             for the disruption in weight distribution statistics caused by
-            stochastic sampling. This learnt-based rescaling is less
-            computationally intensive, more flexible and allows for smoother
-            variations of the scaling factor than other rescaling methods.
+            stochastic sampling. This \DIFdelbegin \DIFdel{learnt-based }\DIFdelend rescaling is less computationally
+            intensive, more flexible and allows for smoother variations of the
+            scaling factor than other rescaling methods.
 
       \item A comprehensive set of experiments that demonstrate the
             effectiveness of our method and validates each one of its components
             on various datasets and architectures, as well as comparison with
-            other state-of-the-art methods in various configurations.
+            other \DIFaddbegin \DIFadd{closely related }\DIFaddend state-of-the-art methods in various
+            configurations.
 
       \item A public repository containing the implementation of our method and
             the methods we compare against, as well as detailed code and instructions to
@@ -335,22 +355,22 @@ as follows: \\
 The rest of this thesis is organised as follows:\\
 
 \Cref{chap:dlo} offers an introduction to deep learning, providing a detailed
-overview of its foundational and core concepts. It explores early architectures,
-beginning with the \emph{Perceptron} and the \ac{MLP}. The focus of the chapter
-then shifts towards neural network training, giving formal definitions of the
-loss function, regularisation, and optimisation process. A dedicated section
-delves into \aclp{CNN}, exposing and detailing their building blocks, and the
-evolution of their architectures. Then, the architectures used in the
-experiments of \cref{chap:chapter1,chap:chapter2} are detailed. Additionally,
-this chapter lists and describes prominent datasets, namely CIFAR-10, CIFAR-100,
-and TinyImageNet, and discusses their respective train, validation, and test
-sets.\\
+overview of its foundational and core concepts. It \DIFaddbegin \DIFadd{first }\DIFaddend explores early
+architectures, beginning with the \emph{Perceptron} and the \ac{MLP}. The focus
+of the chapter then shifts towards neural network training, giving formal
+definitions of the loss function, regularisation, and optimisation process. A
+dedicated section delves into \aclp{CNN}, exposing and detailing their building
+blocks, and the evolution of their architectures. Then, the architectures used
+in the experiments of \cref{chap:chapter1,chap:chapter2} are detailed.
+Additionally, this chapter lists and describes prominent datasets, namely
+CIFAR-10, CIFAR-100, and TinyImageNet, and discusses their respective train,
+validation, and test sets.\\
 
 \Cref{chap:sota} introduces deep neural network compression and presents
 state-of-the-art methods divided into different families. The chapter begins
 with acceleration techniques and presents a range of methods whose goal is to
 speed up matrix operations or convolutions. Then, it explores the teaching
-paradigm, highlighting methods that rely on a pre-trained large network to
+paradigm, highlighting methods that rely on a \DIFdelbegin \DIFdel{pre-trained large }\DIFdelend \DIFaddbegin \DIFadd{large pre-trained }\DIFaddend network to
 improve the training of lightweight ones. Furthermore, the chapter addresses the
 design aspects of lightweight architectures introducing building blocks for
 efficient architecture design and \acl{NAS}. Afterwards, the chapter discusses
@@ -364,7 +384,7 @@ related work. Then, the core method components are examined, starting with our
 weight reparametrisation and then our budget loss. Afterwards, a general
 overview of the algorithm is provided. Furthermore, the chapter details
 experiments assessing our method performance in various configurations as well
-as experiments validating the components of our methods and the choices of
+as experiments validating the components of our \DIFdelbegin \DIFdel{methods }\DIFdelend \DIFaddbegin \DIFadd{method }\DIFaddend and the choices of
 hyperparameters. A conclusion summarises the key findings and highlights of our
 method for neural network pruning.\\
 
@@ -378,5 +398,5 @@ its main benefits, as well as our pruning strategy to freeze the stochastic
 topology. Subsequently, a method and algorithm overview outlines the key points
 of our methods. Furthermore, the chapter exposes a comprehensive set of
 experiments that compares our method against other state-of-the-art methods in
-various scenarios, validates the components of our method. The chapter concludes
-by summarising our findings and results.\\
+various scenarios \DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{and }\DIFaddend validates the components of our method. The chapter
+concludes by summarising our findings and results.\\

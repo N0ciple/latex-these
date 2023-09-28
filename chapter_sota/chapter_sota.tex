@@ -383,7 +383,7 @@ between the two (see \cref{fig:sota:pkt_scheme}).\\
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_sota/assets/pkt_diagram.pdf}
   \caption{Conceptual scheme of the Probabilistic Knowledge Transfer method.
-    Both the student and the teacher feature maps are modeled using probability
+    Both the student and the teacher feature maps are \DIFdelbeginFL \DIFdelFL{modeled }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{modelled }\DIFaddendFL using probability
     distributions. The divergence of the latter is minimised in order to
     transfer knowledge from the teacher to the student. Illustration taken from
     \cite{DBLP:conf/eccv/PassalisT18}.}
@@ -424,8 +424,7 @@ This section explores techniques aimed at the creation of efficient and
 effective neural networks through the careful selection and assembly of
 optimised building blocks. The organization of these components plays an
 important role in network compression and optimization, highlighting that high
-performance can also be reached with designs that are less
-resource-demanding.\\
+performance can also be reached with designs that are less resource-demanding.\\
 
 \subsection{Building Blocks for Efficient Architecture Design}\label{sec:sota:efficient_archi}
 % region: depthwise separable convolutions
@@ -702,7 +701,7 @@ strategies \cite{DBLP:conf/iclr/LiuSY19,DBLP:conf/iclr/XuX0CQ0X20}, or
 stochastic methods, such as evolutionary algorithms and reinforcement learning
 \cite{DBLP:conf/iclr/ZophL17,DBLP:conf/icml/RealMSSSTLK17}. The choice of search
 space and search strategy significantly influences the ability of \ac{NAS} to
-discover effective and efficient architectures, and is thus a critical aspect of
+discover effective and efficient architectures \DIFdelbegin \DIFdel{, }\DIFdelend and is thus a critical aspect of
 NAS research. In the following paragraphs, we will delve deeper into some of the
 major strategies and their impact on the field of \ac{NAS}.\\
 
@@ -805,7 +804,7 @@ Subsequently, \cref{sec:sota:pruning} examines the application of
 pruning techniques. Pruning refers to the elimination of redundant or
 insignificant weights and connections in a network, leading to a sparser and
 more effective architecture. Pruning an existing network can further enhance
-efficiency by reducing computational resources needed with a minimal or
+efficiency by reducing \DIFaddbegin \DIFadd{the }\DIFaddend computational resources needed with a minimal or
 controlled impact on the performance.\\
 
 Through these methods, this section aims to demonstrate how the effectiveness of
@@ -843,21 +842,24 @@ weights. This codebook is later further compressed using Huffman coding
 but for training or inference, the weights need to be decompressed and their
 original value fetched in the code book before being used.\\
 
-\noindent\textbf{Logarithmic quantisation.} Logarithmic quantisation provides compelling alternatives to uniform
-quantisation. On the one hand, logarithmic quantisation enables to quantise
-weights with a larger dynamic range compared to uniform or linear quantisation.
-On the other hand, multiplication can be conveniently represented as an
-inexpensive bit shift operation if operands are properly represented in the
-logarithmic base. This is particularly beneficial for \ac{FPGA} implementations
-\cite{alemdar2017ternary}. To leverage this potential speedup,
-\cite{DBLP:journals/corr/LinCMB15} forced the weight representation to be a
-power of two and \cite{DBLP:conf/iclr/ZhouYGXC17} improved this technique by
-applying it iteratively.\\
+\noindent\textbf{Logarithmic quantisation.} Logarithmic quantisation provides
+compelling alternatives to uniform quantisation. On the one hand, logarithmic
+quantisation enables \DIFdelbegin \DIFdel{to quantise
+}\DIFdelend \DIFaddbegin \DIFadd{quantising }\DIFaddend weights with a larger dynamic range compared to
+uniform or linear quantisation. On the other hand, multiplication can be
+conveniently represented as an inexpensive bit shift operation if operands are
+properly represented in the logarithmic base. This is particularly beneficial
+for \ac{FPGA} implementations \cite{alemdar2017ternary}. To leverage this
+potential speedup, \cite{DBLP:journals/corr/LinCMB15} forced the weight
+representation to be a power of two and \cite{DBLP:conf/iclr/ZhouYGXC17}
+improved this technique by applying it iteratively.\\
 
-% FIXME: ajouter des méthodes de quantisation non uniforme qui ne sont pas basé
-% sur les puissances de 2.
+%DIF <  FIXME: ajouter des méthodes de quantisation non uniforme qui ne sont pas basé
+%DIF <  sur les puissances de 2.
+\DIFdelbegin %DIFDELCMD < 
 
-\begin{figure}[htbp]
+%DIFDELCMD < %%%
+\DIFdelend \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.40\textwidth,trim=5cm 9cm 5cm 9cm, clip]{chapter_sota/assets/binarised_kernels.pdf}
   \caption{Example of binarised kernels and activations in a convolutional
@@ -874,7 +876,7 @@ simplification of the computation in the neural network at the expense of a drop
 in performance. Binarisation has been further developed in
 \cite{DBLP:conf/nips/HubaraCSEB16}, where the authors proposed a method to
 binarise both weights and activations (see examples of binarised kernels in
-\cref{fig:sota:binarised_kernels}). DoReFa-Net \cite{zhou2016dorefa} build upon
+\cref{fig:sota:binarised_kernels}). DoReFa-Net \cite{zhou2016dorefa} \DIFdelbegin \DIFdel{build }\DIFdelend \DIFaddbegin \DIFadd{built }\DIFaddend upon
 the success of binarised neural networks and introduced the stochastic 8-bit
 quantisation of the gradients during the backward pass to accelerate both
 training and inference.\\
@@ -943,7 +945,7 @@ pruning literature \cite{li2023model,cheng2017survey,liang2021pruning}. Pruning
 a neural network removes weights and consequently reduces the theoretical
 computational complexity of the network as well as its memory footprint.  The
 fraction of weight removed during pruning is often denoted as the \emph{pruning
-  rate}, which is commonly defined as the fraction of the number of weights
+rate}, which is commonly defined as the fraction of the number of weights
 removed from the original network over the number of initial weights in that
 network. Arguably, the first pruning method, introduced in 1989, was based on
 biased weight decay \cite{hanson1988comparing}. In the following years,
@@ -1180,8 +1182,9 @@ the verb used by the authors (\citeauthor{DBLP:conf/nips/GuoYC16}) to denote the
 reactivation of a weight that was previously pruned} it. The saliency of the
 weights is ascertained based on the magnitude of the associated mask.\\
 
-\noindent\textbf{Effective subnetworks.} More recently, the unstructured pruning
-research focuses on the discovery of small sub-networks inside the original
+\noindent\textbf{Effective subnetworks.} More recently, \DIFdelbegin \DIFdel{the unstructured pruning
+research focuses }\DIFdelend \DIFaddbegin \DIFadd{unstructured pruning
+researches focus }\DIFaddend on the discovery of small sub-networks inside the original
 network. In other words, to identify a subset of weight that can perform, under
 certain conditions or assumptions, as well as the original network. Most
 notably, the Lottery Ticket Hypothesis \cite{DBLP:conf/iclr/FrankleC19} states
@@ -1202,8 +1205,8 @@ in \cite{DBLP:journals/corr/abs-1903-01611}, the necessity of training the
 original network to convergence to find the Lottery Tickets has been challenged
 in \cite{DBLP:conf/iclr/LiuSZHD19}. The existence of the \emph{lottery ticket}
 (or in other words the subnetwork) has been theoretically proven in
-\cite{DBLP:conf/icml/MalachYSS20} and the requirements of the theoretical size
-of the original network has been later refined in
+\cite{DBLP:conf/icml/MalachYSS20} and the requirements \DIFdelbegin \DIFdel{of }\DIFdelend \DIFaddbegin \DIFadd{on }\DIFaddend the theoretical size
+of the original network \DIFdelbegin \DIFdel{has }\DIFdelend \DIFaddbegin \DIFadd{have }\DIFaddend been later refined in
 \cite{DBLP:conf/nips/PensiaRNVP20,DBLP:conf/nips/OrseauHR20}.\\
 
 \section{Positioning}
@@ -1220,19 +1223,23 @@ considerations:
   \item First, pruning allows the creation of lightweight networks while
   preserving or sometimes improving the performance of the original network.
 
-  % FIXME: déplacer ce point dans l'introduction. c'est plus une justification
-  % pour avoir des petits réseaux que pour l'utilisation du pruning.
-  
-  % \item Then, pruning yields compact and lightweight neural networks. These
-  % networks are easier to transmit and store in embedded devices. This advantage
-  % is significant since companies are typically charged for bandwidth, therefore
-  % deploying a large neural network to hundreds of thousands of devices can come
-  % at a significant cost. Moreover, the storage capabilities of the said embedded
-  % devices can be limited and compact networks ease the pressure on storage
-  % resources.
+  %DIF <  FIXME: déplacer ce point dans l'introduction. c'est plus une justification
+  %DIF <  pour avoir des petits réseaux que pour l'utilisation du pruning.
+  \DIFdelbegin %DIFDELCMD < 
 
-  \item Then, pruning integrates well with other compression techniques and can
-  be applied in conjunction with them, on any kind of architectures.
+%DIFDELCMD <   %%%
+%DIF <  \item Then, pruning yields compact and lightweight neural networks. These
+  %DIF <  networks are easier to transmit and store in embedded devices. This advantage
+  %DIF <  is significant since companies are typically charged for bandwidth, therefore
+  %DIF <  deploying a large neural network to hundreds of thousands of devices can come
+  %DIF <  at a significant cost. Moreover, the storage capabilities of the said embedded
+  %DIF <  devices can be limited and compact networks ease the pressure on storage
+  %DIF <  resources.
+%DIFDELCMD < 
+
+%DIFDELCMD <   %%%
+\DIFdelend \item Then, pruning integrates well with other compression techniques and can
+  be applied in conjunction with them, on any kind of \DIFdelbegin \DIFdel{architectures}\DIFdelend \DIFaddbegin \DIFadd{architecture}\DIFaddend .
 
   \item  Finally, pruning does not necessitate the creation and development of
   an architecture from scratch. It can be applied to an already existing
@@ -1254,12 +1261,13 @@ resource-intensive.\\
 pruning method that circumvents the need for the expensive fine-tuning step. Its
 budget loss together with the weight reparametrisation allows for joint
 optimisation of the topology and the weights of the network without the need for
-auxiliary variables. As a result, the obtained lightweight networks is robust to
-effective pruning and does not require fine-tuning. Furthermore,
+auxiliary variables. As a result, the obtained lightweight networks \DIFdelbegin \DIFdel{is robust to
+}\DIFdelend \DIFaddbegin \DIFadd{preserve
+accuracy after }\DIFaddend effective pruning and \DIFdelbegin \DIFdel{does }\DIFdelend \DIFaddbegin \DIFadd{do }\DIFaddend not require fine-tuning. Furthermore,
 \cref{chap:chapter2} tackles the challenge of identifying relevant weights
 without even having to train them. It proposes a method of topology selection
 given a set of untrained weights that achieves compelling performances, thereby
-also sidestepping the fine-tuning. Contrary to other methods, the optimal
+also sidestepping the fine-tuning. \DIFdelbegin \DIFdel{Contrary }\DIFdelend \DIFaddbegin \DIFadd{In contrast }\DIFaddend to other methods, the optimal
 pruning rate is discovered in one shot by our pruning strategy that circumvents
 the costly gird search for its value. This innovative approach opens up new
 possibilities for further reducing the computational costs associated with

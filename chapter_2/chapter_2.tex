@@ -1,4 +1,4 @@
-\chapter{Mask Training}
+\chapter{\DIFdelbegin \DIFdel{Mask }\DIFdelend \DIFaddbegin \DIFadd{Effective Subnetworks Extraction without Weight }\DIFaddend Training}
 \label{chap:chapter2}
 
 
@@ -15,7 +15,7 @@
   require weight training, pruning and fine-tuning. These weights are pruned
   based on criteria or saliency indicators that are learned alongside the
   weights.
-  
+
   This chapter introduces approaches that extract effective subnetworks by
   pruning large untrained networks, without weight training. A new method, named
   \acf{ASLP}, is proposed to extract effective subnetworks from a large,
@@ -90,11 +90,16 @@ possible and activating or deactivating a weight is the only option. Finally,
 from a global standpoint, this method provides a new path to neural network
 training that does not rely on weight training, but rather on topology selection
 through the same widely spread gradient-based optimisation framework used by
-standard training.\\
+standard training. \DIFaddbegin \DIFadd{The following sections provide an overview of the related
+works on pruning at initialisation, Lottery Tickets, effective subnetwork
+existence and extraction, followed by the contributions of this chapter.}\DIFaddend \\
 
-%TODO: compléter l'intérêt de ce nouveau "chemin" ?
 
-% \subsection{Related Work}\label{sec:chap2:related_work}
+%DIF < TODO: compléter l'intérêt de ce nouveau "chemin" ?
+\DIFdelbegin %DIFDELCMD < 
+
+%DIFDELCMD < %%%
+\DIFdelend % \subsection{Related Work}\label{sec:chap2:related_work}
 
 
 \subsection{Pruning at initialisation} 
@@ -310,7 +315,7 @@ where $\hat{w}$ is the \emph{effective weight} (also referred to as the
 \emph{apparent weight} in \cref{chap:chapter1}) used in the network, $w_i$ is
 the original frozen weight, $\odot$ denotes the element-wise product and
 $\sigma$ the sigmoid function. At each iteration, a random variable is sampled
-from the Bernoulli distribution parametrised by $m$, that either selects or
+from the Bernoulli distribution parametrised by $m$, \DIFdelbegin \DIFdel{that }\DIFdelend \DIFaddbegin \DIFadd{which }\DIFaddend either selects or
 prunes the corresponding weight. The sampling being nondifferentiable, it is not
 possible to train directly $m$ with \ac{SGD}. Instead, the authors proposed to
 use the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}, a technique that
@@ -685,7 +690,7 @@ cannot happen during training since $\hat{m}_{ij}$ are initialised to 0
 (see \cref{sec:chap2:experiments}) and the sigmoid function applied to them
 makes the gradients of $\hat{m}_{ij}$ vanishingly small when
 $\hat{m}_{ij}$ deviate from 0. Because $\hat{m}_{ij}$ are updated
-following the \ac{SGD} algorithm, vanishingly small gradients results in
+following the \ac{SGD} algorithm, vanishingly small gradients \DIFdelbegin \DIFdel{results }\DIFdelend \DIFaddbegin \DIFadd{result }\DIFaddend in
 vanishingly small updates of $\hat{m}_{ij}$. In practice, it prevents the
 $\hat{m}_{ij}$ reaching $\pm\infty$ and thus
 $\sigma(\hat{m}_{ij})=p_{ij}$ from reaching 0 or 1, which validates the
@@ -738,7 +743,7 @@ inverse of the observed pruning rate is the optimal factor to prevent changes to
 the weight distribution statistics. The performance boost attributable to
 \ac{DWR}, as noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the
 increase of the standard deviation of the Xavier (or Glorot) initialisation
-\cite{glorot2011deep} that the author used. Experimentaly, a larger standard
+\cite{glorot2011deep} that the author used. \DIFdelbegin \DIFdel{Experimentaly}\DIFdelend \DIFaddbegin \DIFadd{Experimentally}\DIFaddend , a larger standard
 deviation improves the performance within the context of this chapter. Indeed,
 the Kaiming initialisation\footnote{Kaiming and Glorot initialisation are
 detailed in \cref{sec:appendix:xavier_init}} \cite{DBLP:conf/cvpr/HeZRS16}, has
@@ -798,18 +803,18 @@ abrupt due to stochastic mask sampling. \\
 A network trained with \ac{ASLP} has a stochastic topology that is sampled at
 each forward pass. To evaluate such a network, we chose to freeze its topology
 so that its outputs and thus performance are deterministic. This section
-presents a pruning strategy to evaluate network trained with our method on a
+presents a pruning strategy to evaluate \DIFaddbegin \DIFadd{a }\DIFaddend network trained with our method on a
 fixed topology. Once the \emph{latent} masks $\hat{m}_{ij}$ are trained, a
 pruning step is applied to extract a subnetwork from the original heavy and
-unpruned network. This pruning fixes the values of the masks $m_{ij}$ to
-either 0 or 1 (\emph{c.f.} \cref{eqn:chap2:pruned_layer_eq}), effectively
-freezing the network topology which was previously stochastic. This pruning step
-does not enforce a specific pruning rate, it is rather based on thresholding the
-weights probability of being selected $p_{ij}$. The resulting \emph{observed}
-pruning rate is computed as the fraction of weights whose $p_{ij}$ is below the
-said threshold, denoted $\tau$. This pruning step can be defined by applying the
-function $\xi_\tau$ to each mask $\hat{m}_{ij}$, and assigning its result
-to $m_{ij}$, as shown in \cref{eq:chap2:pruning}.\\
+unpruned network. This pruning fixes the values of the masks $m_{ij}$ to either
+0 or 1 (\emph{c.f.} \cref{eqn:chap2:pruned_layer_eq}), effectively freezing the
+network topology which was previously stochastic. This pruning step does not
+enforce a specific pruning rate, it is rather based on thresholding the weights
+probability of being selected $p_{ij}$. The resulting \emph{observed} pruning
+rate is computed as the fraction of weights whose $p_{ij}$ is below the said
+threshold, denoted $\tau$. This pruning step can be defined by applying the
+function $\xi_\tau$ to each mask $\hat{m}_{ij}$, and assigning its result to
+$m_{ij}$, as shown in \cref{eq:chap2:pruning}.\\
 
 \begin{equation}
   m_{ij} \leftarrow \xi_\tau(\hat{m}_{ij}) =
@@ -851,7 +856,7 @@ optimal topology by selecting a subset of the weights. This approach delivers an
 effective sparse subnetwork that demonstrates compelling performance compared to
 standard weight training, all without the need for weight training. Such a
 strategy is particularly beneficial in scenarios where a lightweight neural
-network is required due to limited computing ressources or where weight training
+network is required due to limited computing \DIFdelbegin \DIFdel{ressources }\DIFdelend \DIFaddbegin \DIFadd{resources }\DIFaddend or where weight training
 may not be feasible.\\
 
 Proceeding with this innovative approach, our method integrates the \acl{STGS}
@@ -1001,7 +1006,7 @@ displayed in \cref{fig:chap2:data_augmentation_pipeline}.\\
 \begin{figure}[h!]
   \centering
   \includegraphics[width=0.8\textwidth]{chapter_2/assets/data_augmentation_pipeline.pdf}
-  \caption{Data Augmentation pipeleine example used for CIFAR-10 and CIFAR-100.}
+  \caption{Data Augmentation \DIFdelbeginFL \DIFdelFL{pipeleine }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{pipeline }\DIFaddendFL example used for CIFAR-10 and CIFAR-100.}
   \label{fig:chap2:data_augmentation_pipeline}
 \end{figure}
 
@@ -1041,15 +1046,15 @@ compared to Supermask \textit{averaging} approach (see
 weights are incorporated into the final frozen network. It is accomplished by
 setting a threshold on $p_{ij}$, the probability for a weight of being selected.
 Only those weights exceeding this threshold are preserved, leading to the
-retention of most valuable connections in the network. This approach focuses on
-the utilisation of high impact weights, which contributes to the enhanced
+retention of \DIFaddbegin \DIFadd{the }\DIFaddend most valuable connections in the network. This approach focuses
+on the utilisation of \DIFdelbegin \DIFdel{high impact }\DIFdelend \DIFaddbegin \DIFadd{high-impact }\DIFaddend weights, which \DIFdelbegin \DIFdel{contributes }\DIFdelend \DIFaddbegin \DIFadd{contribute }\DIFaddend to the enhanced
 performance of the pruned network. Contrastingly, the \textit{averaging}
 strategy employed by the Supermask method \cite{DBLP:conf/nips/ZhouLLY19} takes
 a different approach. It draws 10 random subnetworks, each possessing a distinct
 set of weights. However, this strategy introduces a risk, as these randomly
 selected weight sets may contain weights that contribute minimally to the
-network overall performance. The inclusion of such potentially useless weights
-could reduce the performance of the pruned network.\\
+\DIFdelbegin \DIFdel{network overall performance }\DIFdelend \DIFaddbegin \DIFadd{overall performance of the network}\DIFaddend . The inclusion of such potentially useless
+weights could reduce the performance of the pruned network.\\
 
 Remarkably, for larger networks such as VGG16 and ResNet-20, our \ac{ASLP}
 method employing the \textit{thresholding} strategy also consistently surpasses
@@ -1079,7 +1084,7 @@ equal to the product of the number of batches and the number of epochs during
 which the network is trained. \Cref{tab:chap2:topologies_exploration} presents
 the details of 2 setups: ResNet-18 trained on TinyImageNet and Conv4 trained on
 CIFAR-10. It shows that the fraction of explored topologies by our \ac{ASLP}
-method, is considerably higher for the Conv4 network than for the ResNet-18 one
+method \DIFdelbegin \DIFdel{, }\DIFdelend is considerably higher for the Conv4 network than for the ResNet-18 one
 in the given configurations. The number of explored topologies might be
 sufficient to sweep the search space for Conv\{2,4,6\} networks and find a
 compelling and effective subnetwork, but it might not be enough for a ResNet-18
@@ -1087,7 +1092,34 @@ network.\\
 
 \begin{table}
   \centering
-  \resizebox{\textwidth}{!}{
+  \DIFdelbeginFL %DIFDELCMD < \resizebox{\textwidth}{!}{
+%DIFDELCMD <     \begin{tabular}{lcc}
+%DIFDELCMD <       \cmidrule[\heavyrulewidth]{2-3}
+%DIFDELCMD <                                                          & \textbf{Conv4 \&
+%DIFDELCMD <         CIFAR-10}
+%DIFDELCMD <                                                          &
+%DIFDELCMD <       \textbf{ ResNet-18 \& TinyImageNet}
+%DIFDELCMD <       \\
+%DIFDELCMD <       \midrule
+%DIFDELCMD <       Number of parameters ($N$)                         & 2,425,930                            & 11,685,608 \\
+%DIFDELCMD <       Train Dataset Size (number or images)              & 50,000                               & 90,000     \\
+%DIFDELCMD <       Batch Size used for training                       & 256                                  & 256        \\
+%DIFDELCMD <       Nb. of batches for 1 epoch                         & 196                                  & 352        \\
+%DIFDELCMD <       Nb. of explored topologies in $10^3$ epochs ($E$)  & 196,000                              & 352,000    \\
+%DIFDELCMD <       Nb. of possible topologies ($P$)                   & $P=2^N \approx
+%DIFDELCMD <       5\times 10^{10^{5.86}}$                    & $P=2^N \approx 5\times
+%DIFDELCMD <       10^{10^{6.54}}$              \\
+%DIFDELCMD <       Fraction of explored topologies ($\nu_\text{exp}$) &
+%DIFDELCMD <       $\nu_\text{exp}^\text{Conv4} = \displaystyle\frac{E}{P} \approx
+%DIFDELCMD <       10^{{-10}^{5.86}}$                                 & $\nu_\text{exp}^\text{ResNet-18} =
+%DIFDELCMD <       \displaystyle\frac{E}{P} \approx 10^{{-10}^{6.54}}$                                                    \\
+%DIFDELCMD <       Ratio of fraction of explored topologies           &
+%DIFDELCMD <       \multicolumn{2}{c}{$\displaystyle\frac{\nu_\text{exp}^\text{Conv4}}{\nu_\text{exp}^\text{ResNet-18}}
+%DIFDELCMD <       \approx 10^{10^{6.44}}$}                                                                               \\
+%DIFDELCMD <       \bottomrule
+%DIFDELCMD <     \end{tabular}
+%DIFDELCMD <   } %%%
+\DIFdelendFL \DIFaddbeginFL \resizebox{\textwidth}{!}{
     \begin{tabular}{lcc}
       \cmidrule[\heavyrulewidth]{2-3}
                                                          & \textbf{Conv4 \&
@@ -1108,12 +1140,12 @@ network.\\
       $\nu_\text{exp}^\text{Conv4} = \displaystyle\frac{E}{P} \approx
       10^{{-10}^{5.86}}$                                 & $\nu_\text{exp}^\text{ResNet-18} =
       \displaystyle\frac{E}{P} \approx 10^{{-10}^{6.54}}$                                                    \\
-      Ratio of fraction of explored topologies           &
+      Ratio of fractions of explored topologies           &
       \multicolumn{2}{c}{$\displaystyle\frac{\nu_\text{exp}^\text{Conv4}}{\nu_\text{exp}^\text{ResNet-18}}
       \approx 10^{10^{6.44}}$}                                                                               \\
       \bottomrule
     \end{tabular}
-  } \caption {Comparison of the number of explored topologies for the Conv4 and
+  } \DIFaddendFL \caption {Comparison of the number of explored topologies for the Conv4 and
     ResNet-18 networks with CIFAR-10 and TinyImageNet, respectively. Since a new
     topology is sampled for every batch, the number of explored topologies ($E$)
     is computed as the product of the number of batches and the number of epochs
@@ -1131,10 +1163,10 @@ network.\\
 
 However, this hypothesis warrants further clarification. Indeed, the VGG16
 network has more parameters than the ResNet-18 (see
-\cref{tab:dlo:networks_size}), nevertheles, in our experiments, \ac{ASLP}
+\cref{tab:dlo:networks_size}), \DIFdelbegin \DIFdel{nevertheles}\DIFdelend \DIFaddbegin \DIFadd{nevertheless}\DIFaddend , in our experiments, \ac{ASLP}
 achieves superior results compared to other methods on the VGG16 architecture.
 We suggest the following explanation: First, the CIFAR-10 and CIFAR-100 datasets
-are simpler datasets with less classes, compared to TinyImageNet. Secondly,
+are simpler datasets with \DIFdelbegin \DIFdel{less }\DIFdelend \DIFaddbegin \DIFadd{fewer }\DIFaddend classes, compared to TinyImageNet. Secondly,
 although the VGG16 has more parameters, it has fewer weights in its fully
 connected layers since the datasets it is benchmarked on have fewer classes.
 Indeed, a VGG16 network tailored for CIFAR-100 has 51,200 parameters in its last
@@ -1611,9 +1643,9 @@ rate. We found that a learning rate of 50 strikes the optimal balance between
 performance and training speed. Interestingly, this learning rate remains
 consistent across all architectures and datasets.\\
 
-In standard training, high learning rate values causes the optimisation to fail
+In standard training, high learning rate values \DIFdelbegin \DIFdel{causes }\DIFdelend \DIFaddbegin \DIFadd{cause }\DIFaddend the optimisation to fail
 because of parameters becoming too large and resulting in \ac{nan} values.
-However, this is not the case for \ac{ASLP} which exhibit robustness to high
+However, this is not the case for \ac{ASLP} which \DIFdelbegin \DIFdel{exhibit }\DIFdelend \DIFaddbegin \DIFadd{exhibits }\DIFaddend robustness to high
 learning rates. This robustness can be attributed to the fact that, in
 \ac{ASLP}, the trained variables are the latent masks, denoted by
 $\bm{\hat{m}}$, which can be interpreted as probabilities of selection by
@@ -1691,7 +1723,7 @@ networks lies at 50\%, and at 60\% for VGG16. These rates are precisely the
 observed pruning rates obtained using the \ac{ASLP} method with the
 \emph{thresholding} pruning strategy (see \cref{tab:chap2:observed_sparsity}).
 In other words, the \ac{ASLP} method together with \emph{thresholding} pruning
-automatically determine the optimal pruning rate for an architecture in one shot
+automatically \DIFdelbegin \DIFdel{determine }\DIFdelend \DIFaddbegin \DIFadd{determines }\DIFaddend the optimal pruning rate for an architecture in one shot
 without the need for a costly grid search. This is a significant advantage over
 the Edge-popup method \cite{DBLP:conf/cvpr/RamanujanWKFR20} which requires a
 full training for each tested pruning rate.\\
@@ -1742,8 +1774,5 @@ pruning, offering improved performance and faster convergence and a new
 perspective on neural network training which focuses on topology selection
 rather than weight training.
 
-% TODO: ajouter la partie qui lie le prochain chapitre.
-
-% \textit{Ajouter la partie qui lie le prochain chapitre.}
 
 %endregion : conclusion

@@ -1,4 +1,4 @@
-\chapter{Weight Reparametrisation}
+\chapter{Weight Reparametrisation \DIFaddbegin \DIFadd{and Budget Loss for Network Pruning without Fine-Tuning}\DIFaddend }
 \label{chap:chapter1}
 
 \localtableofcontents
@@ -44,7 +44,7 @@
 
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction \DIFaddbegin \DIFadd{and Related Work}\DIFaddend }
 
 This chapter addresses the challenge of pruning large neural networks without
 degrading their performance. Most of the existing pruning methods degrade the
@@ -54,63 +54,68 @@ to compensate for the loss in performance. The method we introduce in this
 chapter circumvents this issue and yields lightweight pruned networks with
 minimal performance degradation. This is achieved through a combination of
 weight reparametrisation that encompasses a surrogate $\ell_0$ norm and a budget
-loss that drives the sparsity toward the predefined pruning rate.
+loss that drives the sparsity toward the predefined pruning rate.\DIFdelbegin %DIFDELCMD < 
 
+%DIFDELCMD < %%%
+\subsection{\DIFdel{Related Work}}
+%DIFAUXCMD
+\addtocounter{subsection}{-1}%DIFAUXCMD
+%DIFDELCMD < 
 
+%DIFDELCMD < %%%
+%DIF <  region
+%DIF <  Neural networks have disrupted the field of machine learning, leading to
+%DIF <  breakthroughs in various areas such as image and speech recognition
+%DIF <  \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
+%DIF <  natural language processing
+%DIF <  \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
+%DIF <  as well as exotic domains like game playing
+%DIF <  \cite{silver2016mastering,silver2018general} or molecule folding
+%DIF <  \cite{jumper2021highly}. However, the size of neural networks has steadily
+%DIF <  increased in recent years, thanks to the availability of powerful \acp{GPU}. The
+%DIF <  latter makes possible the training of larger and more complex models. As the
+%DIF <  complexity and scale of neural networks have expanded, there has been a
+%DIF <  corresponding increase in the computational and memory demands necessary for
+%DIF <  their effective training and deployment. Origins of neural network architectures
+%DIF <  are rooted in the Rosenblatt Perceptron \cite{rosenblatt1958perceptron}, which
+%DIF <  is a single-layer feedforward network consisting of only one neuron. Over time,
+%DIF <  neural network architectures became more complex and included multiple layers,
+%DIF <  known as \ac{MLP} or fully connected network. Then, with the emergence of
+%DIF <  \acp{CNN}, the complexity of neural network architectures for image recognition
+%DIF <  significantly increased. \acp{CNN} use convolutional layers to automatically and
+%DIF <  adaptively learn spatial hierarchies of features from input images. This
+%DIF <  adaptivity allows \acp{CNN} to effectively learn and classify images with high
+%DIF <  accuracy. This enhancement in accuracy, however, is accompanied by a rise in
+%DIF <  complexity and, notably, a higher number of parameters. Noteworthy \ac{CNN}
+%DIF <  architectures typically encompass millions of parameters. For instance, AlexNet
+%DIF <  (2012) comprises 60 million parameters \cite{DBLP:conf/nips/KrizhevskySH12}, VGG
+%DIF <  networks (2014) is composed of 132 to 143 million parameters
+%DIF <  \cite{DBLP:journals/corr/SimonyanZ14a}, Inception (2014) incorporates 27 million
+%DIF <  parameters in its third version \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} and
+%DIF <  ResNet networks (2015) span from 11 to 60 million parameters
+%DIF <  \cite{DBLP:conf/cvpr/HeZRS16}.\\
+%DIFDELCMD < 
 
-\subsection{Related Work}
-
-% region
-% Neural networks have disrupted the field of machine learning, leading to
-% breakthroughs in various areas such as image and speech recognition
-% \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:journals/corr/SimonyanZ14a,DBLP:conf/cvpr/HeZRS16,DBLP:journals/corr/HannunCCCDEPSSCN14,DBLP:conf/icassp/ChanJLV16,DBLP:conf/icml/AmodeiABCCCCCCD16},
-% natural language processing
-% \cite{DBLP:conf/emnlp/BudzianowskiV19,DBLP:conf/naacl/DevlinCLT19,DBLP:conf/nips/VaswaniSPUJGKP17},
-% as well as exotic domains like game playing
-% \cite{silver2016mastering,silver2018general} or molecule folding
-% \cite{jumper2021highly}. However, the size of neural networks has steadily
-% increased in recent years, thanks to the availability of powerful \acp{GPU}. The
-% latter makes possible the training of larger and more complex models. As the
-% complexity and scale of neural networks have expanded, there has been a
-% corresponding increase in the computational and memory demands necessary for
-% their effective training and deployment. Origins of neural network architectures
-% are rooted in the Rosenblatt Perceptron \cite{rosenblatt1958perceptron}, which
-% is a single-layer feedforward network consisting of only one neuron. Over time,
-% neural network architectures became more complex and included multiple layers,
-% known as \ac{MLP} or fully connected network. Then, with the emergence of
-% \acp{CNN}, the complexity of neural network architectures for image recognition
-% significantly increased. \acp{CNN} use convolutional layers to automatically and
-% adaptively learn spatial hierarchies of features from input images. This
-% adaptivity allows \acp{CNN} to effectively learn and classify images with high
-% accuracy. This enhancement in accuracy, however, is accompanied by a rise in
-% complexity and, notably, a higher number of parameters. Noteworthy \ac{CNN}
-% architectures typically encompass millions of parameters. For instance, AlexNet
-% (2012) comprises 60 million parameters \cite{DBLP:conf/nips/KrizhevskySH12}, VGG
-% networks (2014) is composed of 132 to 143 million parameters
-% \cite{DBLP:journals/corr/SimonyanZ14a}, Inception (2014) incorporates 27 million
-% parameters in its third version \cite{DBLP:conf/cvpr/SzegedyLJSRAEVR15} and
-% ResNet networks (2015) span from 11 to 60 million parameters
-% \cite{DBLP:conf/cvpr/HeZRS16}.\\
-
-% The demand for neural networks in embedded applications has been rapidly
-% increasing in recent years, driven in part by the widespread use of mobile
-% devices. As these devices have become more advanced and ubiquitous, there has
-% been a growing need for intelligent applications capable of executing intricate
-% tasks in various contexts on the said devices. Such complex tasks include object
-% detection in self-driving cars
-% \cite{howard2017mobilenets,DBLP:conf/icml/TanL19,DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15,kuutti2020survey},
-% image and speech recognition in mobile devices
-% \cite{kim2020review,mcgraw2016personalized}, and text-to-speech models in smart
-% speakers \cite{arik2017deep,ren2019fastspeech}. These applications require
-% real-time processing and low power consumption, which are impossible with large
-% neural networks. Pruning techniques can reduce the size of neural networks,
-% making them more suitable for deployment on embedded devices while still
-% maintaining or improving their performance. Methods such as structured
-% \cite{DBLP:conf/iclr/0022KDSG17,DBLP:conf/iccv/LiuLSHYZ17} and unstructured
-% weight pruning
-% \cite{DBLP:conf/nips/CunDS89,DBLP:conf/iclr/FrankleC19,DBLP:conf/nips/HanPTD15}
-% can reduce the number of parameters and \acp{FLOP}, consequently reducing the
-% network size, memory and power consumption.\\
+%DIFDELCMD < %%%
+%DIF <  The demand for neural networks in embedded applications has been rapidly
+%DIF <  increasing in recent years, driven in part by the widespread use of mobile
+%DIF <  devices. As these devices have become more advanced and ubiquitous, there has
+%DIF <  been a growing need for intelligent applications capable of executing intricate
+%DIF <  tasks in various contexts on the said devices. Such complex tasks include object
+%DIF <  detection in self-driving cars
+%DIF <  \cite{howard2017mobilenets,DBLP:conf/icml/TanL19,DBLP:conf/cvpr/RedmonDGF16,DBLP:conf/nips/RenHGS15,kuutti2020survey},
+%DIF <  image and speech recognition in mobile devices
+%DIF <  \cite{kim2020review,mcgraw2016personalized}, and text-to-speech models in smart
+%DIF <  speakers \cite{arik2017deep,ren2019fastspeech}. These applications require
+%DIF <  real-time processing and low power consumption, which are impossible with large
+%DIF <  neural networks. Pruning techniques can reduce the size of neural networks,
+%DIF <  making them more suitable for deployment on embedded devices while still
+%DIF <  maintaining or improving their performance. Methods such as structured
+%DIF <  \cite{DBLP:conf/iclr/0022KDSG17,DBLP:conf/iccv/LiuLSHYZ17} and unstructured
+%DIF <  weight pruning
+%DIF <  \cite{DBLP:conf/nips/CunDS89,DBLP:conf/iclr/FrankleC19,DBLP:conf/nips/HanPTD15}
+%DIF <  can reduce the number of parameters and \acp{FLOP}, consequently reducing the
+%DIF <  network size, memory and power consumption.\\
 
 
 Pruning is an excellent way to obtain lightweight neural networks because it
@@ -125,14 +130,20 @@ can be split into two major categories: \textit{(i)} unstructured weight
 pruning, where individual weights of a given network are removed based on their
 importance, and \textit{(ii)} structured pruning, where entire columns, rows,
 channels, filters or even entire parts, such as skip connections of a residual
-network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \\
+network \cite{DBLP:conf/cvpr/HeZRS16}, are removed. \DIFaddbegin \DIFadd{Our method belongs to the
+first category. The subsequent sections provide an overview of related works on
+unstructured pruning, pruning with weight reparametrisation, budget loss and
+pruning without fine-tuning, followed by the contributions of this chapter.}\DIFaddend \\
 
 
-\noindent\textbf{Unstructured magnitude pruning.} It has emerged as an effective
-heuristic for determining the saliency of the weights. This method focuses on
-removing independent weights from the global structure of the network, hence
-offering greater flexibility compared to structured pruning which imposes a
-strong topological prior by eliminating whole sections of the original network.
+\DIFdelbegin %DIFDELCMD < \noindent%%%
+\textbf{\DIFdel{Unstructured magnitude pruning.}} %DIFAUXCMD
+\DIFdel{It }\DIFdelend \DIFaddbegin \subsection{\DIFadd{Unstructured Magnitude Pruning.}} 
+\DIFadd{Unstructured magnitude pruning }\DIFaddend has emerged as an effective heuristic for
+determining the saliency of the weights. This method focuses on removing
+independent weights from the global structure of the network, hence offering
+greater flexibility compared to structured pruning which imposes a strong
+topological prior by eliminating whole sections of the original network.
 Magnitude pruning revolves around the hypothesis that the smallest weights
 contribute less to the final output of the network and can thereby be removed
 with minimal impact on the performance. Considering a weight tensor
@@ -196,14 +207,16 @@ computationally intensive training and fine-tuning steps required to obtain a
 trained lightweight subnetwork.\\
 
 
-\noindent \textbf{Weight reparametrisation.} it is a
-technique where the weights are expressed as a function of other variables.
-Typically the weights used in the network, here denoted $\mathbf{\hat{w}}$ and
-referred to as \emph{apparent weights}, are expressed as a function of the
-\emph{latent weights} $\mathbf{w}$ and other variables. In \cite{powerprop},
-\citeauthor{powerprop} presented a weight reparametrisation based on raising a
-weight to the power of $\alpha$ while preserving its sign. This
-reparametrisation is formalised as: \\
+\DIFdelbegin %DIFDELCMD < \noindent %%%
+\textbf{\DIFdel{Weight reparametrisation.}} %DIFAUXCMD
+\DIFdel{it }\DIFdelend \DIFaddbegin \subsection{\DIFadd{Weight Reparametrisation}} 
+\DIFadd{Weight reparametrisation }\DIFaddend is a technique where the weights are expressed as a
+function of other variables. Typically the weights used in the network, here
+denoted $\mathbf{\hat{w}}$ and referred to as \emph{apparent weights}, are
+expressed as a function of the \emph{latent weights} $\mathbf{w}$ and other
+variables. In \cite{powerprop}, \citeauthor{powerprop} presented a weight
+reparametrisation based on raising a weight to the power of $\alpha$ while
+preserving its sign. This reparametrisation is formalised as: \\
 
 \begin{equation}
   \label{eqn:chap1:power_propagation}
@@ -218,13 +231,15 @@ more increased. The pruning is enforced by pruning reparametrised weights with
 magnitude pruning.\\
 
 
-\noindent \textbf{Pruning with budget.} Most pruning techniques, including the
-ones presented in this section, enforce a pruning rate after the initial
-training. Consequently, the optimisation process does not take into account the
-final weight budget that will be allocated to the network. Some work tackled
-this issue by adding a loss that drives the network to respect a budget. Note
-that the works described subsequently all fall into the \emph{structured}
-pruning category.\\ 
+\DIFdelbegin %DIFDELCMD < \noindent %%%
+\textbf{\DIFdel{Pruning with budget.}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \subsection{\DIFadd{Pruning with Budget}} 
+\DIFaddend Most pruning techniques, including the ones presented in this section, enforce a
+pruning rate after the initial training. Consequently, the optimisation process
+does not take into account the final weight budget that will be allocated to the
+network. Some work tackled this issue by adding a loss that drives the network
+to respect a budget. Note that the works described subsequently all fall into
+the \emph{structured} pruning category.\\ 
 
 \citeauthor{lemaire2019structured} introduced in \cite{lemaire2019structured} a
 Budget-Aware Regularisation loss or BAR loss that performs structured pruning on
@@ -297,12 +312,15 @@ fine-tuned the networks after the pruning with the same hyperparameters as the
 initial training phase and in particular with the same number of epochs,
 effectively doubling the training time.\\
 
-\noindent\textbf{Pruning without fine-tuning.} Most pruning methods cause a
-performance drop following the pruning step. This is due to the fact that the
-weights that are removed play a non-negligible role in the network. In this
-context, fine-tuning is a common technique that aims to recover the lost
-performance but fine-tuning is a computationally intensive task. Some works
-propose pruning methods that are designed to circumvent the need for fine-tuning
+\DIFdelbegin %DIFDELCMD < \noindent%%%
+\textbf{\DIFdel{Pruning without fine-tuning.}} %DIFAUXCMD
+\DIFdelend \DIFaddbegin \subsection{\DIFadd{Pruning without fine-tuning}} 
+\DIFaddend Most pruning methods cause a performance drop following the pruning step. This
+is due to the fact that the weights that are removed play a non-negligible role
+in the network. In this context, fine-tuning is a common technique that aims to
+recover the lost performance but fine-tuning is a computationally intensive
+task. Some works propose pruning methods that are designed to circumvent the
+need for fine-tuning
 \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/icnn/HassibiSW93,DBLP:conf/icml/KangH20}.\\
 
 
@@ -552,7 +570,7 @@ additional training time
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}. Moreover, the amount
 of weights pruned is enforced after the initial training, meaning that the final
 target size or weight budget is never considered in the optimisation procedure.
-Indeed, separating the optimisation of the topology from weight tuning is
+Indeed, separating the optimisation of \DIFdelbegin \DIFdel{the }\DIFdelend topology from weight tuning is
 sub-optimal and therefore introduces a performance drop when the pruning is
 enforced. Thus, the remaining weights need to undergo a fine-tuning step that
 adapts them to the enforced sparse topology. \\
@@ -582,8 +600,9 @@ The rest of this chapter is organised as follows: \cref{sec:chap1:pruning}
 details the proposed method and in particular the weight reparametrisation in
 \cref{sec:chap1:weight_reparam} and the budget loss in
 \cref{sec:chap1:budget_loss}. An overview of the method and a general algorithm
-are given in \cref{sec:chap1:overview}. \cref{sec:chap1:experiments} presents
-the results of our comprehensive experiments, including performance benchmarks,
+are given in \cref{sec:chap1:overview}. \DIFdelbegin %DIFDELCMD < \cref{sec:chap1:experiments} %%%
+\DIFdelend \DIFaddbegin \Cref{sec:chap1:experiments} \DIFaddend presents
+the results of our comprehensive experiments, including performance \DIFdelbegin \DIFdel{benchmarks}\DIFdelend \DIFaddbegin \DIFadd{comparisons}\DIFaddend ,
 the experimental validation of our two main components, the impact of $\lambda$
 and the initialisation. Finally, \cref{sec:chap1:conclusion} concludes the
 chapter by summarising our contributions and our key findings.\\
@@ -639,17 +658,17 @@ non-zero weights in the network, which is useful for computing the weight
 budget. \\
 
 We aim to propose an end-to-end method that fits into the backpropagation
-framework. Therefore, adding a $\ell_0$ regulariser and a $\ell_0$ based weight budget
-is not possible since $\ell_0$ norm is not differentiable. Thus, we propose our
-differentiable reparametrisation, which seeks to define a novel weight
-expression related to magnitude pruning
+framework. Therefore, adding a $\ell_0$ regulariser and a $\ell_0$ based weight
+budget is not possible since \DIFaddbegin \DIFadd{the }\DIFaddend $\ell_0$ norm is not differentiable. Thus, we
+propose our differentiable reparametrisation, which seeks to define a novel
+weight expression related to magnitude pruning
 \cite{DBLP:conf/nips/CunDS89,DBLP:conf/nips/HanPTD15}. This expression
 corresponds to the Hadamard product involving a weight tensor and a function
 applied entry-wise to the same tensor (as shown in
 \cref{fig:chap1:comparison_reparam_vs_mag_pruning}). This function acts as a
-mask that \emph{(i)} multiplies weights by soft-pruning factors which capture their
-importance and \emph{(ii)} pushes less important weights to zero through a particular
-budget added to the loss function $\mathcal{L}$. \\
+mask that \emph{(i)} multiplies weights by soft-pruning factors which capture
+their importance and \emph{(ii)} pushes less important weights to zero through a
+particular budget added to the loss function $\mathcal{L}$. \\
 
 \begin{figure}[ht]
   \centerline{\includegraphics[width=12.5cm]{chapter_1/assets/comparison_reparam_vs_mag_pruning.pdf}}
@@ -672,9 +691,9 @@ entirely uncorrelated with the input, and it becomes impossible to update the
 weights located upstream of this disconnection. On the other hand, our framework
 allows reaching a targeted pruning budget in a more convenient way than $\ell_1$
 regularisation (see \cref{sec:chap1:impact_of_budget_loss}). Our
-reparametrisation also helps minimising the performance drop between the
+reparametrisation also helps \DIFdelbegin \DIFdel{minimising }\DIFdelend \DIFaddbegin \DIFadd{to minimise }\DIFaddend the performance drop between the
 original and the pruned surrogate networks by maintaining competitive
-performances without fine-tuning. Learning the weights values and the network
+performances without fine-tuning. Learning the \DIFdelbegin \DIFdel{weights }\DIFdelend \DIFaddbegin \DIFadd{weight }\DIFaddend values and the network
 topology only requires one step that achieves pruning as a part of network
 design. This step zeroes out the targeted number of connections by constraining
 their reparametrised weights to vanish.
@@ -936,10 +955,10 @@ leading to\\
 
 Ideally, the budget of a neural network could be evaluated as the number of
 multiply-add operations, often referred to as \acp{FLOP} or
-\acp{MAC}\footnote{The number of \ac{MAC} operations  or \acp{FLOP} for a layer
-  cannot be fully determined by its number of parameters since it is heavily
-  dependent on the input size. More details are given in
-  \cref{sec:appendix:macs}}, needed for a forward pass or through the $\ell_0$
+\acp{MAC}\footnote{The number of \ac{MAC} operations or \acp{FLOP} for a layer
+cannot be fully determined by its number of parameters since it is heavily
+dependent on the input size. More details are given in
+\cref{sec:appendix:macs}}, needed for a forward pass or through the $\ell_0$
 norm of its weights. However, neither are known to be differentiable and,
 therefore, cannot be used in a gradient-based optimisation. In order to
 circumvent these limitations, we use our weight reparametrisation as a surrogate
@@ -1005,7 +1024,7 @@ our results are obtained after following this procedure, which is described in
 with our reparametrisation and our budget loss, then the \textit{effective
   pruning} step is applied, and finally, the performance is evaluated. In
 \cref{sec:chap1:impact_of_fine_tuning}, we assess the performance of our method
-with an already trained and pruned initalisation. In this precise setup, since
+with an already trained and pruned \DIFdelbegin \DIFdel{initalisation}\DIFdelend \DIFaddbegin \DIFadd{initialisation}\DIFaddend . In this precise setup, since
 the initialisation is already pruned to match the targeted budget, the
 \emph{effective pruning} step is not needed and thus not applied.\\
 
@@ -1500,9 +1519,9 @@ budget loss is applied but the weight reparametrisation is not. This variant is
 denoted \emph{budget only} in the following. The objective of this variant and
 the comparison is to isolate the impact of weight reparametrization. The budget
 loss is evaluated in the same way as described in \cref{sec:chap1:budget_loss}.
-Note that in the \emph{budget only} variant the budget evaluation uses our
+Note that in the \emph{budget only} variant\DIFaddbegin \DIFadd{, }\DIFaddend the budget evaluation uses our
 reparametrisation function as a surrogate $\ell_0$ norm but the weights used to
-poduce the network output are the standard weights $\mathbf{w}$, not the
+\DIFdelbegin \DIFdel{poduce }\DIFdelend \DIFaddbegin \DIFadd{produce }\DIFaddend the network output are the standard weights $\mathbf{w}$, not the
 reparametrised weights $\mathbf{\hat{w}}$.\\
 
 We evaluate the performance of our method and the \emph{budget only} variant on
@@ -1584,15 +1603,15 @@ sparsity.\\
 
 % endregion: table budget only
 
-The results presented in this comparison and the one of
+The results presented in this comparison and the \DIFdelbegin \DIFdel{one }\DIFdelend \DIFaddbegin \DIFadd{ones }\DIFaddend of
 \cref{sec:chap1:budget_loss} show that both components of our method are of
 crucial importance. In particular, the reparametrization allows for a
 considerably better generalization of the network after pruning, thus enabling a
 much higher level of performance.
 \Cref{sec:chap1:impact_of_budget_loss,sec:chap1:impact_of_reparametrisation}
 provide empirical evidence that no component of our method can be removed
-without significant impairment of the performance, and therefore, they
-function in synergy.
+without significant impairment of the performance, and therefore, they function
+in synergy.
 
 % region: budget only
 
@@ -1697,7 +1716,7 @@ pruning rate. With the enforcement of the budget through budget loss, the
 remaining unpruned weights cannot dwindle to zero, hence preserving them during
 the fine-tuning process. In contrast, in the absence of budget loss, the
 remaining weight values are not restricted, allowing them to possibly vanish,
-resulting in further a drop of network capacity with weights of vanishingly
+resulting in further a drop \DIFdelbegin \DIFdel{of }\DIFdelend \DIFaddbegin \DIFadd{in }\DIFaddend network capacity with weights of vanishingly
 small magnitude. This behaviour is highlighted by the following additional
 experimental results displayed in
 \cref{fig:chap1:finetuning_with_init_not_pruned}. This experiment involves a
@@ -1707,8 +1726,8 @@ demonstrate that initialising a network with weights that are fine-tuned and
 then pruned beforehand yields significantly superior results. Moreover, the
 networks produced by fine-tuning with our method are much more consistent from
 one run to another. This is illustrated by the standard deviation being so small
-that the colored area around the solid line is barely visible on the graphs.
-This is not the case for the conventional fine-tuning where performances vary
+that the \DIFdelbegin \DIFdel{colored }\DIFdelend \DIFaddbegin \DIFadd{coloured }\DIFaddend area around the solid line is barely visible on the graphs.
+This is not the case for \DIFdelbegin \DIFdel{the }\DIFdelend conventional fine-tuning where performances vary
 greatly from one run to another. This is especially visible in
 \cref{fig:chap1:finetuning_impact_conv4_cifar10}.\\
 
@@ -1801,7 +1820,7 @@ standard fine-tuning approaches.\\
     trained from scratch (denoted \emph{unpruned initialisation}) or trained from
     scratch and pruned with magnitude pruning (denoted \emph{pruned
       initialisation}). Fine-tuning a pruned initialisation always outperforms
-    fine-tuning an unpruned initalisation in the tested configurations.}
+    fine-tuning an unpruned \DIFdelbeginFL \DIFdelFL{initalisation }\DIFdelendFL \DIFaddbeginFL \DIFaddFL{initialisation }\DIFaddendFL in the tested configurations.}
   \label{fig:chap1:finetuning_with_init_not_pruned}
 
 \end{figure}
