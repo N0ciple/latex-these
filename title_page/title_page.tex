@@ -1,3 +1,79 @@
-\title{\vspace{-3.0cm}Manuscript}
-\author{Robin Dupont}
-\date{}
+% Original title page
+% \title{\vspace{-3.0cm}Manuscript}
+% \author{Robin Dupont}
+% \date{}
+
+% !TEX root = ../main.tex
+%
+% ------------------------------------  --> cover title page
+
+\newcommand{\jurymember}[6]{\hspace{1.5em}{#6} \textbf{{#1} {#2}}, {#3}, {#4} \hfill \textit{{#5}}\\}
+
+\newgeometry{left=2.8cm, right=2.5cm, top=2cm, bottom=2cm}
+\begin{titlepage}
+    \pdfbookmark[0]{Cover}{Cover}
+    \begin{flushleft}
+        \includegraphics[height=1.7cm]{title_page/assets/sorbonne.pdf}
+        \hfill
+        % TODO: replace with your Lab logo
+        \includegraphics[height=1.7cm]{title_page/assets/LogoLIP6.pdf}
+        \hfill
+        % TODO: replace with your Team logo
+        \includegraphics[height=1.7cm]{title_page/assets/netatmo_logo_color.pdf}
+        % TODO: you may add your company logo if you are a CIFRE PhD Student
+        % \hfill
+        % \includegraphics[height=1.7cm]{assets/cifre-logo.pdf}
+    \end{flushleft}
+    \vfill
+    \begin{center}
+        \vspace{1em}
+        {\large Thèse présentée pour l'obtention du grade de}\\
+        \vspace{1em}
+        {\LARGE \textbf{DOCTEUR de SORBONNE UNIVERSITÉ}}\\
+        \vspace{2em}
+        {\small Spécialité}\\
+        \vspace{0.5em}
+        % TODO: specialty of the doctoral school, this is the one that will appear in the diploma
+        {\Large \textbf{Informatique}}\\
+        \vspace{2em}
+        {\large École doctorale}\\
+        \vspace{0.5em}
+        {\Large \textbf{Informatique, Télécommunication et Électronique Paris (ED130)}}\\
+    \end{center}
+    \vfill
+    \begin{flushright}
+        \hfill
+        \vfill
+        {\LARGE Deep Neural Network Compression for Visual Recognition \par}
+        \rule[5pt]{\textwidth}{.4pt} \par
+        {\Large Robin Dupont}
+        \vfill
+    \end{flushright}
+    %% TODO: If final version:
+    Soutenue publiquement le : \textit{\large a définir}
+    %% Else, for review version:
+    % Version: \thesisVersion
+    \begin{flushleft}
+        Devant un jury composé de :\\
+        \begin{tabularx}{\textwidth}{lXr}
+            \textbf{Mme} & \begin{tabular}[t]{@{}l@{}}\textbf{Jenny Benois-Pineau} \\  Professeure, Université de Bordeaux \end{tabular}        & \textit{Rapportrice}              \\
+            \textbf{M.}  & \begin{tabular}[t]{@{}l@{}}\textbf{Titus Bogdan Zaharia} \\ Professeur, Télécom SudParis\end{tabular}                & \textit{Rapporteur}               \\
+            \textbf{M.}  & \begin{tabular}[t]{@{}l@{}}\textbf{Pierre Beauseroy} \\ Professeur, Université de Technologie de Troyes\end{tabular} & \textit{Examinateur}              \\
+            \textbf{M.}  & \begin{tabular}[t]{@{}l@{}}\textbf{Nicolas Gac} \\ Professeur, Université Paris-Saclay\end{tabular}                  & \textit{Examinateur}              \\
+            \textbf{M.}  & \begin{tabular}[t]{@{}l@{}}\textbf{Vincent Gripon} \\ Professeur, IMT Atlantique\end{tabular}                        & \textit{Examinateur}              \\
+            \textbf{Mme} & \begin{tabular}[t]{@{}l@{}}\textbf{Alice Lebois} \\ Ingénieure, Netatmo\end{tabular}                                 & \textit{Co-encadrant(e) de thèse} \\
+            \textbf{M.}  & \begin{tabular}[t]{@{}l@{}}\textbf{Hichem Sahbi} \\ Chercheur CNRS (HDR), Sorbonne Université\end{tabular}           & \textit{Directeur de thèse}       \\
+        \end{tabularx}
+
+    \end{flushleft}
+\end{titlepage}
+\restoregeometry
+
+
+
+% M.  Titus Bogdan Zaharia, Professeur, Télécom SudParis                  Rapporteur
+% M. Pierre Beauseroy, Professeur, Université de Technologie de Troyes                     Examinateur
+% M. Nicolas Gac, Professeur, Université Paris-Saclay                      Examinateur
+% M. Vincent Gripon, Professeur, IMT Atlantique                 Examinateur
+% Mme Alice Lebois, Ingénieure, Netatmo  Co-encadrant(e) de thèse
+% M. Hichem Sahbi, Chercheur CNRS (HDR), Sorbonne Université     Directeur de thèse
