@@ -147,9 +147,13 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 
 \renewcommand\linenumberfont{\normalfont\large} % régler la taille des numéros de ligne
 
+%espacement entre les lignes d'un tableau
+
+
 %======================== DEBUT DU DOCUMENT ========================
 
 \begin{document}
+\pagenumbering{roman} % numérotation des pages en chiffres romains
 
 % TODO: adapter pour le confort de lecture
 \fontsize{14}{16}\selectfont
@@ -169,33 +173,28 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 
 % \maketitle % Pas besoin de maketitle si on gère le tout dans une page à part.
 \input{./abstract/abstract.tex}
+\addcontentsline{toc}{chapter}{Abstract} 
 % ----- Tables des matières, figures et tableaux  + acronymes ------
 \tableofcontents
 \listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
 \listoftables
-\newpage
-% ---------------------------------------------------------------
-
-\thispagestyle{empty}
-\setcounter{page}{0}
-%ne pas numéroter le sommaire
-
+\addcontentsline{toc}{chapter}{List of Tables}
 \newpage
 \printacronyms
-
-%espacement entre les lignes d'un tableau
-\renewcommand{\arraystretch}{1.5}
-
-%====================== INCLUSION DES PARTIES ======================
-
-~
+\addcontentsline{toc}{chapter}{List of Acronyms}
+\newpage
+\input{./acknowledgement/acknowledgement.tex}
+\addcontentsline{toc}{chapter}{Remerciements}
+\newpage
 \thispagestyle{empty}
 %recommencer la numérotation des pages à "1"
-\setcounter{page}{0}
-\newpage
 
-% ################  A CHANGER POUR REVUE ?
-\linenumbers
+%====================== INCLUSION DES PARTIES ======================
+\renewcommand{\arraystretch}{1.5}
+\setcounter{page}{1}
+\pagenumbering{arabic} % numérotation des pages en chiffres normaux
+% \linenumbers
 \input{chapter_intro/chapter_intro.tex}
 \input{./chapter_dlo/chapter_dlo.tex}
 \input{./chapter_sota/chapter_sota.tex}
