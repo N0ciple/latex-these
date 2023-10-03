@@ -7,8 +7,8 @@
 % region: intro
 The fast development of neural networks has led, on the one hand, to the
 enhancement of their performance, but also, on the other hand, to a significant
-size growth and increase in their parameter count. The rapid evolution and
-adoption of these networks has given rise to various applications
+growth in size and parameter count. The rapid evolution and adoption of these
+networks has given rise to various applications
 \cite{DBLP:conf/nips/KrizhevskySH12,DBLP:conf/emnlp/BudzianowskiV19,silver2018general,jumper2021highly},
 particularly embedded ones\cite{kim2020review,kuutti2020survey}, whose resources
 are highly constrained in terms of computing power, energy consumption and
@@ -31,7 +31,7 @@ is transferred to a smaller and more efficient network (called the
 reduced footprint. Subsequently, \cref{sec:sota:archi_design} explores
 architecture design methods that aim at producing more efficient and effective
 networks. \Cref{sec:sota:efficient_archi} details ad-hoc architectures, referred
-to here as \emph{Efficient Architectures}. These architectures are lightweight
+to as \emph{Efficient Architectures}. These architectures are lightweight
 networks that revolve around a core technique to reduce their size while
 preserving performance as much as possible. Hence, \cref{sec:sota:nas} discusses
 \ac{NAS}, a method that automates the discovery of optimal network architectures
@@ -43,9 +43,9 @@ its architecture to produce a more compact and efficient model. First,
 \emph{binarisation} techniques, which aim to lower the numerical precision of
 weights and activations of networks in order to speed up their computation and
 reduce their memory footprint. Lastly, \cref{sec:sota:pruning} considers neural
-network pruning, a set of techniques that remove redundant or insignificant
-connections and weights from networks, resulting in sparser and more
-computationally efficient models.\\
+network pruning, which seeks to remove redundant or insignificant connections and
+weights from networks, resulting in sparser and more computationally efficient
+models.\\
 
 %TODO: faire une mindmap des méthodes
 
@@ -234,11 +234,11 @@ are widely implemented and used in state-of-the-art software
 \cite{pytorch_vision,DBLP:journals/corr/AbadiABBCCCDDDG16}. In particular, the
 Coppersmith-Winograd algorithm is used in various Deep Learning frameworks
 \cite{DBLP:journals/corr/AbadiABBCCCDDDG16,DBLP:conf/nips/PaszkeGMLBCKLGA19} or
-neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest the
+neural network \ac{GPU} libraries \cite{nvidia_cudnn} where the fastest
 algorithm is automatically selected based on the tensor sizes and the hardware.
-However, depending on the operand size, the execution speed can be bound to the
-hardware and more specifically, to the memory throughput and data access time,
-more than the computation time
+However, depending on the operand size, the total processing speed can be bound
+to the hardware and more specifically, to the memory throughput and data access
+time, more than the computation time
 \cite{DBLP:journals/pc/WhaleyPD01,DBLP:journals/cca/DrevetIS10}.\\
 
 \section{Teaching Paradigm}\label{sec:sota:teaching_paradigm}
@@ -732,9 +732,9 @@ models are exemplary of innovative architecture search strategies
 \emph{compound scaling}. A baseline, EfficientNet-B0, was developed through
 multi-objective \ac{NAS}, optimizing both accuracy and \acp{FLOP}. Subsequently,
 a compound scaling method was applied to this baseline, uniformly scaling depth,
-width, and resolution via a \emph{compound coefficient} $\phi$. This approach
-yielded a series of progressively larger EfficientNet models, whose performances
-are shown in \ref{fig:sota:efficientnet_perfs}.\\\
+width, and resolution via a \emph{compound coefficient}. This approach yielded a
+series of progressively larger EfficientNet models, whose performances are shown
+in \ref{fig:sota:efficientnet_perfs}.\\\
 
 
 \begin{figure}[htbp]

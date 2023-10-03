@@ -41,7 +41,7 @@ In the context of \acp{DNN}, the term \emph{deep} denotes the stacking of many
 layers within a neural network. The concept of \acp{DNN} is based on the idea
 that the depth and the numerous layers can help in learning features at various
 levels of abstraction, enabling the network to learn complex hierarchical
-patterns. For instance, in the context of image recognition, lower layers learn
+pattern representations. For instance, in the context of image recognition, lower layers learn
 local features like edges and textures, while deeper layers learn to identify
 more abstract concepts like shapes or objects.\\
 
@@ -67,8 +67,8 @@ focuses on the functional definition of a neural network and its training.
 \Cref{sec:dlo:cnn} presents the building blocks and architectures of various
 \acp{CNN} for computer vision, and in particular the ones we benchmark our
 methods with (see \cref{sec:chap1:experiments,sec:chap2:experiments}). Finally,
-\Cref{sec:dlo:datasets} gives an overview of the most used datasets that we used
-in our experiments.
+\Cref{sec:dlo:datasets} gives an overview of the most prevalent datasets that we
+used in our experiments.
 
 
 \section{Early Architectures}\label{sec:dlo:early_architectures}
@@ -149,7 +149,7 @@ $\mathbf{b}_i$ denotes their belonging to the $i$th layer.\\
 
 \begin{equation}
   \label{eqn:dlo:mlp}
-  \hat{\mathbf{y}} = g_2(\mathbf{w}_2^T \cdot  g_1(\mathbf{w}_2^T \cdot \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2)
+  \hat{\mathbf{y}} = g_2(\mathbf{w}_2^T \cdot  g_1(\mathbf{w}_1^T \cdot \mathbf{x} + \mathbf{b}_1) + \mathbf{b}_2)
 \end{equation}\\
 
 Each layer of the \ac{MLP}, being fully connected to the next one, enables the
@@ -344,7 +344,7 @@ follows:\\
 
 \begin{equation}
   \label{eqn:dlo:reg_l1}
-  \mathcal{R}_{\ell_1}(\theta) = \lambda \sum_{i=1}^{L} \left| \mathbf{w}_i \right|
+  \mathcal{R}_{\ell_1}(\theta) = \lambda \sum_{i=1}^{L} \| \mathbf{w}_i \|_1
 \end{equation}\\
 
 \begin{equation}
@@ -352,7 +352,7 @@ follows:\\
   \mathcal{R}_{\ell_2}(\theta) = \frac{\lambda}{2} \displaystyle \sum_{i=1}^{L} \| \mathbf{w}_i \|_2^2 
 \end{equation}\\
 
-\noindent where $\left|. \right|$ and $\|.\|_2^2$ respectively denote the sum of
+\noindent where $\|. \|_1$ and $\|.\|_2^2$ respectively denote the sum of
 the absolute value and the sum of the squaring of each element of the vector.\\
 
 \subsection{Loss Optimisation}\label{sec:dlo:backpropagation}
@@ -511,7 +511,7 @@ instead of convolution. In the former, the kernel is not spatially flipped
 leading to the cross-correlation not being commutative
 \cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically smaller than
 the input along width and height dimensions (they are generally $3\times 3$
-\cite{DBLP:conf/cvpr/HeZRS16}) but comprises as much channels as the input.
+\cite{DBLP:conf/cvpr/HeZRS16}) but comprise as much channels as the input.
 During the forward pass, each kernel is spatially convolved channel-wise with
 the input and the convolution outputs are summed along the channel dimension to
 yield a single scalar for each kernel position on the input (see also
@@ -617,8 +617,8 @@ pooling} and \cref{eqn:dlo:avg_pooling} for \emph{average pooling}:\\
 \end{equation}\\
 
 \noindent where $k_h$ and $k_w$ represent the height and width of the pooling
-windows respectively. Note that pooling has no learnable parameters. They only
-downsample the input based on a fixed function.\\
+windows respectively. Note that pooling has no learnable parameters. It only
+downsamples the input based on a fixed function.\\
 
 
 \noindent \textbf{Batch Normalisation.} \ac{BN} is a technique introduced in
@@ -674,7 +674,7 @@ independent features. The output of Dropout is given in \cref{eqn:dlo:dropout}:\
 
 \noindent In the above equation, $\mathbf{x}$ denote the output of a layer
 processed with dropout, $\mathbf{r}$ is a binary mask vector of the same shape
-as $\mathbf{x}$, where each element of $r$ is independently drawn from a
+as $\mathbf{x}$, where each element of $\mathbf{r}$ is independently drawn from a
 Bernoulli distribution with probability $1-p$, leading to $r_i=1$ if the
 associated weight is kept and a $r_i=0$ if not. The product $\mathbf{x} \odot
 \mathbf{r}$ is scaled by $1-p$ to ensure that the expected value of $\mathbf{x}$
@@ -697,7 +697,7 @@ layers and 3 fully connected layers. Its size is significantly smaller compared
 to the contemporary models (see \cref{fig:dlo:net_sizes}). With the introduction
 of AlexNet \cite{DBLP:conf/nips/KrizhevskySH12} in 2012, the network size
 considerably grew, comprising more layers and neurons to handle more complex
-tasks, like large-scale image recognition.AlexNet tackled the overfitting
+tasks, like large-scale image recognition. AlexNet tackled the overfitting
 issue in LeNet-5 using data augmentation and dropout techniques, while also
 introducing and popularising the \ac{ReLU} activation function.\\
 
@@ -904,8 +904,8 @@ image $X$ and its corresponding label $y$. Each image $X$ belongs to the set of
 all images of the dataset $\mathcal{X}$, and each label $y$ belongs to the set
 of all labels of the dataset $\mathcal{Y}$. The ensemble of the image-label
 pairs are gathered in a dataset, denoted $\mathcal{D}$, which is formally a set
-of pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$, so that $D
-\subset \mathcal{X} \times \mathcal{Y}$. \\
+of pairs $(X, y)$, where $X \in \mathcal{X}$ and $y \in \mathcal{Y}$, so that
+$\mathcal{D} \subset \mathcal{X} \times \mathcal{Y}$. \\
 
 Following these formal notations, the subsequent sections give details about the
 datasets used in our experiments. We evaluated our methods on three different
@@ -939,7 +939,7 @@ dataset \cite{4531741}. CIFAR-10 is a simple yet challenging dataset that allows
 for quicker iteration or hyperparameter tuning than larger datasets such as
 ImageNet \cite{DBLP:journals/ijcv/RussakovskyDSKS15}, but it is significantly
 more complex than the MNIST dataset \cite{6296535}, which contains grayscale
-handwritten digits images. the CIFAR-10 dataset contains 60,000 colour images of
+handwritten digits images. The CIFAR-10 dataset contains 60,000 colour images of
 size 32x32 pixels, split into 10 classes, namely: plane, car, bird, cat, deer,
 dog, horse, ship, and truck. Each class contains 6,000 images. The dataset is
 divided into two sets: a training set, composed of 50,000 images and a test set
