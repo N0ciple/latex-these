@@ -158,7 +158,7 @@ these products, as shown in
 \citeauthor{coppersmith1987matrix}, who introduced the Coppersmith-Winograd
 algorithm \cite{coppersmith1987matrix}. The latter brings down the complexity to
 $\mathcal{O}(n^{2.376})$. This algorithm is used in various works, mostly
-targeted towards a specific \ac{FPGA} \ac{CPU}
+targeted towards a specific \ac{FPGA} processor
 \cite{liu2018efficient,lu2018spwa,wang2020winonn}.\\
 
 \subsection{Leveraging Matrix Structures}\label{sec:sota:matrix_structures}
@@ -817,7 +817,7 @@ scratch.\\
 Quantization is the process of converting continuous, high-resolution input
 values into a lower-resolution and typically discrete representation.
 Historically, the training of neural networks has largely relied on the use of
-\ac{FP32}. FP32 has been the default choice due to its wide support across
+\ac{FP32}. \ac{FP32} has been the default choice due to its wide support across
 various hardware platforms and software libraries, which has made it a practical
 and convenient choice for the majority of machine learning tasks
 \cite{sze2017efficient}. However, using \acl{FP32} is not always necessary, and
@@ -831,7 +831,7 @@ hardware.\\
 Quantising a neural network has been proposed as early as the 1990s
 \cite{balzer1991weight,fiesler1990weight}. This later regains traction as
 \citeauthor{37631} leveraged Single Input Multiple Data instructions (SIMD) of
-x86 \ac{CPU} to speed up the fixed-point 8-bit operations \cite{37631}.
+x86 processor to speed up the fixed-point 8-bit operations \cite{37631}.
 \citeauthor{gupta2015deep} \cite{gupta2015deep} used uniform quantisation with
 fixed-point 16-bit representation and stochastic rounding to train neural
 networks. Quantisation has also been applied together with K-means clustering
