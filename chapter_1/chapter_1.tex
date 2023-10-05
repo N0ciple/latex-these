@@ -1,9 +1,14 @@
-\chapter{Weight Reparametrisation and Budget Loss for Network Pruning without Fine-Tuning}
+\chapter{Weight Reparametrization for Budget-Aware Network Pruning}
 \label{chap:chapter1}
 
 \localtableofcontents
 
-\begin{abstract}
+\begin{adjustwidth}{1.5cm}{1.5cm}
+  {
+  \let\oldsection\section
+  \renewcommand\section[1]{\oldsection*{\centering #1}}
+  \section{Chapter Abstract}
+    }  
   This chapter addresses the challenge of compressing large neural networks,
   whose time and memory footprints are increasingly high. Although large neural
   networks have shown impressive performances across various domains, they are
@@ -42,7 +47,7 @@
           IEEE, 2021.
   \end{itemize}
 
-\end{abstract}
+\end{adjustwidth}
 
 \section{Introduction and Related Work}
 
@@ -1808,6 +1813,5 @@ In the next chapter, the introduced approach seeks to determine the optimal
 topology without training the weights and without binding their saliency (or
 relevance) to their magnitude. The saliency of the initial weights is determined
 by a trained mask. In other words, the next method aims at determining the best
-topology, given a set of fixed weights.\\
-
+topology, given a set of fixed weights.
 % endregion: conclusion
