@@ -1,0 +1,49 @@
+
+
+% abstract
+
+\chapter*{Résumé}
+Grâce à la miniaturisation de l'électronique, les dispositifs embarqués sont
+devenus de plus en plus omniprésents depuis les années 2010, réalisant diverses
+tâches tout autour de nous. À mesure que leur utilisation se développe, la
+demande pour des dispositifs traitant les données et prennant des décisions
+complexes de manière efficace augmente. Les réseaux de neurones profonds sont
+des outils puissants pour atteindre cet objectif, cependant, ces réseaux sont
+souvent trop lourds et complexes pour être intégrés dans des appareils
+embarqués. C'est pourquoi il est impératif de concevoir des méthodes pour
+compresser ces grands réseaux de neurones sans compromettre significativement
+leur performance. Cette thèse de doctorat introduit deux méthodes innovantes,
+centrées autour du concept d'élagage, visant à compresser les réseaux de
+neurones tout en assurant un impact minimal sur leur précision.
+
+Cette thèse de doctorat introduit d'abord une méthode prenant en compte le
+budget pour compresser de grands réseaux de neurones à l'aide de
+reparamétrisation des poids et d'une fonction de coût budgétaire, le tout ne
+nécessitant pas de fine-tuning. Les méthodes d'élagage traditionnelles
+s'appuient souvent sur des indicateurs de saillance post-entraînement pour
+supprimer les poids, négligeant le taux d'élagage ciblé. Notre approche intègre
+une fonction de coût budgétaire, guidant le processus d'élagage vers une valeur
+spécifique de parcimonie pendant l'entraînement, réalisant ainsi une
+optimisation conjointe de la topologie et des poids. En simulant l'élaguage des
+poids les plus petits en cours d'entraînement grâce à la reparamétrisation des
+poids, notre méthode atténue significativement la perte de la précision par
+rapport aux techniques d'élagage traditionnelles. Nous démontrons l'efficacité
+de notre approche à travers divers ensembles de données et architectures.
+
+Cette thèse de doctorat se concentre ensuite sur l'extraction de sous-réseaux
+efficaces, sans entraînement des poids. Notre objectif est d'identifier la
+meilleure topologie d'un sous-réseau dans un grand réseau sans en optimiser les
+poids tout en offrant des performances convaincantes. Ceci est réalisé grâce à
+notre méthode appelée Arbitrarily Shifted Log-Parametrisation, qui sert à
+échantillonner des topologies discrètes de manière différentiable, permettant
+l'entraînement de masques représentant la probabilité de sélection des poids.
+Parallèlement, un mécanisme de recalibrage des poids (appelé Smart Rescale) est
+également introduit, permettant d'améliorer les performances des sous-réseaux
+extraits ainsi que d'accélérer leur entraînement. Notre approche proposée trouve
+également le taux d'élagage optimal après un unique entraînement, évitant ainsi
+la recherche exhaustive d'hyperparamètres et un entraînement pour chaque taux
+d'élagage. Nous montrons à travers un ensemble expériences que notre méthode
+surpasse constamment les techniques de l'état de l'art étroitement liées et
+permet de concevoir des réseaux légers pouvant atteindre des niveaux élevés de
+parcimonie sans perte significative de précision.
+
