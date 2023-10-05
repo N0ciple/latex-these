@@ -5,8 +5,12 @@
 \localtableofcontents
 
 
-\begin{abstract}
-
+\begin{adjustwidth}{1.5cm}{1.5cm}
+  {
+  \let\oldsection\section
+  \renewcommand\section[1]{\oldsection*{\centering #1}}
+  \section{Chapter Abstract}
+    }  
   This chapter focuses on the development of lightweight and efficient neural
   networks for image classification tasks, particularly in visual category
   recognition. These lightweight networks are increasingly important for
@@ -58,7 +62,7 @@
     \item \url{https://github.com/N0ciple/ASLP}
   \end{itemize}
 
-\end{abstract}
+\end{adjustwidth}
 
 \section{Introduction and Related Work}
 % region: introduction
@@ -1741,7 +1745,7 @@ All in all, the \acl{ASLP} method provides a promising solution for selecting
 efficient subnetworks from large untrained neural networks through stochastic
 pruning, offering improved performance and faster convergence and a new
 perspective on neural network training which focuses on topology selection
-rather than weight training.
+rather than weight training.\\
 
 
 %endregion : conclusion
