@@ -301,29 +301,29 @@ and efficient subnetwork from a large untrained network
 
 Supermark is a method introduced by \citeauthor{DBLP:conf/nips/ZhouLLY19} in
 \cite{DBLP:conf/nips/ZhouLLY19} which is the first attempt to extract efficient
-subnetworks from a large untrained network using stochastic mask training. The
-weights of the network are stochastically sampled following a Bernoulli
+subnetworks from a large untrained network using stochastic mask training. Each
+weight of the network is stochastically sampled following a Bernoulli
 distribution parametrised by a latent variable $m$. To that extent, weights are
 reparametrised as follows:\\
 
 \begin{equation}
   \label{eqn:chap2:sigmoid_reparam}
-  \hat{w} = w \odot \text{Bern}(\sigma(m))
+  \hat{w} = w \times \text{Bern}(\sigma(m))
 \end{equation}\\
 
-where $\hat{w}$ is the \emph{effective weight} (also referred to as the
+\noindent where $\hat{w}$ is the \emph{effective weight} (also referred to as the
 \emph{apparent weight} in \cref{chap:chapter1}) used in the network, $w_i$ is
-the original frozen weight, $\odot$ denotes the element-wise product and
-$\sigma$ the sigmoid function. At each iteration, a random variable is sampled
-from the Bernoulli distribution parametrised by $m$, which either selects or
-prunes the corresponding weight. The sampling being nondifferentiable, it is not
-possible to train directly $m$ with \ac{SGD}. Instead, the authors proposed to
-use the \ac{STE} \cite{DBLP:journals/corr/BengioLC13}, a technique that
-approximates the gradient in the backward pass with a continuous surrogate
-function of the forward pass non-differentiable function.
-\citeauthor{DBLP:conf/nips/ZhouLLY19} also introduced a weight rescaling
-mechanism, called \ac{DWR}, to mitigate the disruption of weight statistics due
-to pruning \cite{DBLP:conf/iccv/HeZRS15}. More details are given in
+the original frozen weight and $\sigma$ the sigmoid function. At each iteration,
+a random variable is sampled from the Bernoulli distribution parametrised by
+$m$, which either selects or prunes the corresponding weight. The sampling being
+nondifferentiable, it is not possible to train directly $m$ with \ac{SGD}.
+Instead, the authors proposed to use the \ac{STE}
+\cite{DBLP:journals/corr/BengioLC13}, a technique that approximates the gradient
+in the backward pass with a continuous surrogate function of the forward pass
+non-differentiable function. \citeauthor{DBLP:conf/nips/ZhouLLY19} also
+introduced a weight rescaling mechanism, called \ac{DWR}, to mitigate the
+disruption of weight statistics due to pruning \cite{DBLP:conf/iccv/HeZRS15}.
+More details are given in
 \cref{sec:chap2:stochastic-sampling,sec:chap2:smart-rescale}.\\
 
 

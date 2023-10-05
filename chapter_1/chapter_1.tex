@@ -101,8 +101,8 @@ $\mathbf{m}_\alpha$ is a binary mask that is defined as follows:\\
 
 \begin{equation}
   \label{eqn:chap1:magnitude_mask}
-  (\mathbf{m}_\alpha)_i = \begin{cases}
-  0 & \text{if } |\mathbf{w}_i| \leq \alpha \\
+  (\mathbf{m}_\alpha)_{ij} = \begin{cases}
+  0 & \text{if } |w_{ij}| \leq \alpha \\
     1 & \text{otherwise}
   \end{cases}
 \end{equation}\\
@@ -154,20 +154,19 @@ function of other variables. Typically the weights used in the network, here
 denoted $\mathbf{\hat{w}}$ and referred to as \emph{apparent weights}, are
 expressed as a function of the \emph{latent weights} $\mathbf{w}$ and other
 variables. In \cite{powerprop}, \citeauthor{powerprop} presented a weight
-reparametrisation based on raising a weight to the power of $\alpha$ while
+reparametrisation based on raising a weight to the power of $n$ while
 preserving its sign. This reparametrisation is formalised as: \\
 
 \begin{equation}
   \label{eqn:chap1:power_propagation}
-  \mathbf{\hat{w}} = \mathbf{w} |\mathbf{w}|^{n-1}
+  \mathbf{\hat{w}} = \mathbf{w} \odot |\mathbf{w}|^{n-1}
 \end{equation}\\
 
 \noindent where $n$ is a hyperparameter of the method, typically set
-between 1 and 3 \cite{powerprop}. This reparametrisation
-creates a \emph{rich get richer (sic)} dynamic according to the authors,
-referring to the fact that the weights with the largest magnitude are all the
-more increased. The pruning is enforced by pruning reparametrised weights with
-magnitude pruning.\\
+between 1 and 3 \cite{powerprop}. This reparametrisation creates a \emph{rich
+get richer (sic)} dynamic according to the authors, referring to the fact that
+the weights with the largest magnitude are all the more increased. The pruning
+is enforced by pruning reparametrised weights with magnitude pruning.\\
 
 
 \subsection{Pruning with Budget} 
@@ -901,7 +900,7 @@ measure of $\ell_0$, and we define the cost function as in
 
 \begin{equation}
   \label{eqn:chap1:cost_function}
-  C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) = \displaystyle \sum_{\ell=1}^{L} \sum_{i=1}^{\nu_\ell} h_t(\mathbf{w}_{\ell i}).
+  C(\{\mathbf{w}_1,\dots, \mathbf{w}_L\}) = \displaystyle \sum_{\ell=1}^{L} \sum_{i=1}^{\nu_\ell} h_t(w_{\ell i}).
 \end{equation} \\
 
 
@@ -924,7 +923,7 @@ One may argue that the cost should be normalised layer-wise and, therefore,
 that the right-hand term of \cref{eqn:chap1:cost_function} should be written as
 
 $$\displaystyle\sum_{\ell=1}^{L}\frac{\displaystyle \sum_{i=1}^{\nu_\ell}
-    h_t(\mathbf{w}_{\ell i})}{\nu_\ell}$$
+    h_t(w_{\ell i})}{\nu_\ell}$$
 
 However, the number of elements in a layer greatly varies from one to another
 (as displayed in \cref{fig:chap1:vgg16_per_layer_param_and_norm_factor}). As a
