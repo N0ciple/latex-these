@@ -184,25 +184,24 @@ translates into slow computations which is a critical issue for devices which
 aim to perform real-time tasks.\\
 
 Compressing large neural networks is a necessity to deploy them on embedded
-devices. However, this compression process comes with its challenges. First, the
-compressed model should maintain the performance of the original model. However,
-the original large model is trained with all its parameters and thus depends on
-all of them. Consequently, removing more than a few can lead to degraded
-performance. \\
+devices. However, it comes with its challenges. First, the compressed model
+should maintain the performance of the original model. However, the original
+large model is trained with all its parameters and thus depends on all of them.
+Consequently, removing more than a few can lead to degraded performance. \\
 
-Second, the compressed model should be small enough to fit into the
-limited memory of embedded devices. It means that the compression process should
-be controlled to ensure that the size of the compressed model does not exceed
-the memory budget. However, compressing the model too much can lead to an
-irrecoverable loss in performance. The compression procedure and hyperparameters
-should be carefully chosen to ensure that the compressed model has enough
-capacity to perform the task at hand. This is often achieved by grid-searching
-the optimal set of hyperparameters, which can be time-consuming.\\
+Second, the compressed model should be small enough to fit into the limited
+memory of embedded devices. It means that the process should be controlled to
+ensure that the size of the resulting model does not exceed the memory budget.
+However, compressing the model too much can lead to an irrecoverable loss in
+performance. The compression procedure and hyperparameters should be carefully
+chosen to ensure that the produced model has enough capacity to perform the task
+at hand. This is often achieved by grid-searching the optimal set of
+hyperparameters, which can be time-consuming.\\
 
 Third, the compression process should be fast enough to be practical. Indeed,
-the compression process is often performed after the training of the original
-model and often requires fine-tuning the compressed one to compensate for the
-loss of performance. This fine-tuning step can be computationally expensive and
+this process is often performed after the training of the original model and
+often requires fine-tuning the compressed one to compensate for the loss of
+performance. This fine-tuning step can be computationally expensive and
 time-consuming, effectively doubling the training time of the model in some
 scenarios.\\
 
@@ -298,10 +297,10 @@ as follows: \\
             costly grid search to determine it.
 
       \item An efficient learnt-based weight rescaling mechanism to compensate
-            for the disruption in weight distribution statistics caused by
-            stochastic sampling. This rescaling is less computationally
-            intensive, more flexible and allows for smoother variations of the
-            scaling factor than other rescaling methods.
+            for the disruption in weight distribution caused by stochastic
+            sampling. This rescaling is less computationally intensive, more
+            flexible and allows for smoother variations of the scaling factor
+            than other rescaling methods.
 
       \item A comprehensive set of experiments that demonstrate the
             effectiveness of our method and validates each one of its components

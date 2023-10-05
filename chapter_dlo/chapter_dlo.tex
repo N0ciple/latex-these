@@ -5,7 +5,7 @@
 \section{Introduction}
 
 Deep Learning is a subfield of machine learning that focuses on the study of
-\acfp{DNN} which have their roots in \acfp{ANN}. \acp{DNN} aim to learn a data
+\acfp{DNN} which have their roots in \acfp{ANN}. \acp{DNN} aim to learn a
 representation from unstructured data such as raw images
 \cite{DBLP:conf/nips/KrizhevskySH12}, text
 \cite{DBLP:conf/emnlp/BudzianowskiV19} or audio
@@ -236,34 +236,36 @@ vector.\\
 
 \subsection{Loss Function and Regularisation}
 Training a neural network aims at finding the optimal parameters $\theta$ that
-maximise a performance, quantified by a metric $P$, often based on the
-discrepancy between the predicted output $\hat{y}$ and the true output $y$.
-However, optimising directly the metric $P$ might be intractable. To solve for
-this issue, one may define a differentiable cost function and minimise the
-latter as a proxy for optimising $P$. Considering $\delta$ as the empirical
-distribution of the training data, the cost function $\mathcal{J}(\theta)$, also
-referred to as the \emph{empirical risk}, is defined in the following equation:
+maximise a performance, quantified by a metric, often based on the discrepancy
+between the predicted output $\hat{y}$ and the true output $y$. However,
+optimising directly the metric might be intractable. To solve this issue, one
+may define a differentiable cost function and minimise the latter as a proxy for
+optimising the metric. Considering $k$ example pairs $(X_k, y_k)$, the cost
+function $\mathcal{J}(\theta)$, also referred to as the
+\emph{empirical risk}, is defined in the following equation:
 
 \begin{equation}
   \label{eqn:dlo:cost_function}
-  \mathcal{J}(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right]
+  % \mathcal{J}_\text{emp}(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right]
+  \mathcal{J}(\theta) = \frac{1}{k} \sum_{i=1}^{k} \mathcal{L}(f(X_k,\theta), y_k)
 \end{equation}\\
 
 \noindent where $\mathcal{L}$ is the loss function. Note that the true data
-distribution is not known, and thus, the empirical distribution $\delta$ is used
-instead. The minimisation of the empirical risk alone is not sufficient to
-ensure good overall performance. Indeed, the neural network could learn to
-perfectly predict the output of the training set but may fail to generalise to
-unseen data. This phenomenon is called \emph{overfitting}. To prevent
-overfitting, we add a regularisation term to the empirical risk. The
-regularisation term, denoted $\mathcal{R}$, is a function of the parameters
-$\theta$ of the neural network which penalises the complexity of the model, and
-thus prevents overfitting. To account for regularisation, the cost function in
-\cref{eqn:dlo:cost_function} is updated to:
+distribution, and therefore the risk, is unknown. This is why the empirical
+risk, computed with a set of example pairs, is used instead. The minimisation of
+the empirical risk alone is not sufficient to ensure good overall performance.
+Indeed, the neural network could learn to perfectly predict the output of the
+training set but may fail to generalise to unseen data. This phenomenon is
+called \emph{overfitting}. To prevent overfitting, we add a regularisation term
+to the empirical risk. The regularisation term, denoted $\mathcal{R}$, is a
+function of the parameters $\theta$ of the neural network which penalises the
+complexity of the model, and thus prevents overfitting. To account for
+regularisation, the cost function in \cref{eqn:dlo:cost_function} is updated to:
 
 \begin{equation}
   \label{eqn:dlo:regularised_cost_fn}
-  \mathcal{J}_r(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right] + \mathcal{R}(\theta) 
+  % \mathcal{J}_r(\theta) = \mathds{E}_{(X, y) \sim \delta} \left[ \mathcal{L}(f(X,\theta), y) \right] + \mathcal{R}(\theta) 
+  \mathcal{J}_r(\theta) =   \frac{1}{k} \sum_{i=1}^{k} \mathcal{L}(f(X,\theta), y) + \mathcal{R}(\theta) 
 \end{equation}\\
 
 \noindent\textbf{Loss function.} In
@@ -942,7 +944,7 @@ more complex than the MNIST dataset \cite{6296535}, which contains grayscale
 handwritten digits images. The CIFAR-10 dataset contains 60,000 colour images of
 size 32x32 pixels, split into 10 classes, namely: plane, car, bird, cat, deer,
 dog, horse, ship, and truck. Each class contains 6,000 images. The dataset is
-divided into two sets: a training set, composed of 50,000 images and a test set
+divided into two subsets: a training set, composed of 50,000 images and a test set
 containing 10,000 of them.\\
 
 \begin{figure}[ht!]
