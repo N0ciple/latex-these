@@ -613,31 +613,31 @@ reported in \cite{DBLP:conf/cvpr/SandlerHZZC18,DBLP:conf/cvpr/HanKK17}.\\
 % endregion: mobilenetv2
 
 % region: mobilenetv3
-\noindent\textbf{Squeeze and excitation modules.} Advancing from MobileNet and
+\noindent\textbf{Squeeze-and-Excitation modules.} Advancing from MobileNet and
 MobileNetV2, its third version \cite{DBLP:conf/iccv/HowardPALSCWCTC19}
-incorporated \ac{SE} modules initially introduced in
+incorporated Squeeze-and-Excitation modules initially introduced in
 \cite{DBLP:conf/cvpr/HuSS18}. These modules adaptively recalibrate channel-wise
 feature responses, amplifying important features and suppressing less relevant
-ones. The \ac{SE} module (represented in \cref{fig:sota:se_module}) performs
-\emph{squeeze} and \emph{excitation} operations. The squeeze operation uses
-global average pooling to create a channel descriptor that summarises the
-spatial information for each channel. The excitation operation uses this
-descriptor to learn non-linear interactions between channels through two fully
-connected layers. The outputs of this mini-network are per-channel modulation
-weights that recalibrate the original feature maps, scaling or "exciting" them
-by these weights.\\
+ones. The Squeeze-and-Excitation module (represented in
+\cref{fig:sota:se_module}) performs \emph{squeeze} and \emph{excitation}
+operations. The squeeze operation uses global average pooling to create a
+channel descriptor that summarises the spatial information for each channel. The
+excitation operation uses this descriptor to learn non-linear interactions
+between channels through two fully connected layers. The outputs of this
+mini-network are per-channel modulation weights that recalibrate the original
+feature maps, scaling or "exciting" them by these weights.\\
 
 % endregion: mobilenetv3
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.70\textwidth]{chapter_sota/assets/SE_module.pdf}
-  \caption{Illustration scheme of the \acf{SE} module. The original feature
-    map is \emph{squeezed} into a channel descriptor through global average
-    pooling. This descriptor is then used to learn the interdependencies between
-    the channels through two fully connected layers. The output is then
-    multiplied layerwise with the original feature map (\emph{excitation}). Best
-    viewed in colours.}
+  \caption{Illustration scheme of the Squeeze-and-Excitation module. The
+    original feature map is \emph{squeezed} into a channel descriptor through
+    global average pooling. This descriptor is then used to learn the
+    interdependencies between the channels through two fully connected layers.
+    The output is then multiplied layerwise with the original feature map
+    (\emph{excitation}). Best viewed in colours.}
   \label{fig:sota:se_module}
 \end{figure}
 
@@ -645,15 +645,16 @@ by these weights.\\
 % region: transition paragraph
 The architectures we reviewed in this section revolve around specific key
 techniques such as depthwise separable convolutions, fire modules, channel
-shuffling, and \ac{SE} modules, among others. These architectures, while highly
-efficient, are manually crafted and require a significant degree of human
-expertise, intuition, and time to develop, optimise, and fine-tune. The manual
-design of these architectures often relies on a deep understanding of the tasks
-at hand, the data they will process, and the constraints of the environment in
-which they will operate. However, the process of designing these efficient
-architectures can be automated, which is the subject of the next section. Sizes
-and performance of network architectures detailed in this section can be
-compared to standard architecture sizes in \cref{fig:sota:net_sizes_std_eff}.\\
+shuffling, and Squeeze-and-Excitation modules, among others. These
+architectures, while highly efficient, are manually crafted and require a
+significant degree of human expertise, intuition, and time to develop, optimise,
+and fine-tune. The manual design of these architectures often relies on a deep
+understanding of the tasks at hand, the data they will process, and the
+constraints of the environment in which they will operate. However, the process
+of designing these efficient architectures can be automated, which is the
+subject of the next section. Sizes and performance of network architectures
+detailed in this section can be compared to standard architecture sizes in
+\cref{fig:sota:net_sizes_std_eff}.\\
 
 \begin{figure}[htbp]
   \centering
@@ -876,17 +877,18 @@ quantisation of the gradients during the backward pass to accelerate both
 training and inference.\\
 
 \noindent\textbf{When to quantise.} Quantisation methods that quantise weights
-or activations after the training are called \ac{PTQ} methods. Quantising an
-already existing network is a widely used technique in the most famous deep
-learning framework \cite{ncnn,qnnpack,snapdragon,tensorrt}. Because they
-quantise the weights after the training, \ac{PTQ} methods are fast and easy to
+or activations after the training are called Post-Training Quantisation methods.
+Quantising an already existing network is a widely used technique in the most
+famous deep learning framework \cite{ncnn,qnnpack,snapdragon,tensorrt}. Because
+they quantise the weights after the training, these methods are fast and easy to
 apply. However, they often introduce an irreversible information loss and a
 performance drop that needs to be compensated for
 \cite{DBLP:journals/ijon/LiangGWSZ21}. In order to solve this issue, several
 works proposed to take into account the effect of quantisation on the weights
-and feature maps during the training. These methods are called \ac{QAT} methods.
-Such methods include BinaryConnect \cite{courbariaux2015binaryconnect}, which
-use a variant of Bayesian inference called Expectation Back Propagation
+and feature maps during the training. These methods are called
+Quantisation-Aware Training methods. Such methods include BinaryConnect
+\cite{courbariaux2015binaryconnect}, which use a variant of Bayesian inference
+called Expectation Back Propagation
 \cite{DBLP:journals/corr/ChengSML15,DBLP:conf/nips/SoudryHM14}. Another
 binarisation method uses \ac{STE} \cite{DBLP:journals/corr/BengioLC13} to bypass
 the binarisation function in the backward pass
@@ -903,13 +905,13 @@ correctly and paired with suitable hardware. However, these benefits are not
 without their drawbacks. On the downside, such techniques introduce a certain
 degree of error which can result in a performance drop, especially if not
 properly managed during the training process. This information loss is
-particularly notable in the case of \acl{PTQ} methods, which necessitate
-additional efforts to mitigate these performance impacts. To address this,
-\ac{QAT} methods have been developed, which incorporate the effects of
-quantisation during the training phase itself. The more extreme approach,
-binarisation, further accentuates the advantages and disadvantages observed in
-quantisation. While it offers extreme compression of neural networks, this often
-comes at the cost of significant accuracy loss.\\
+particularly notable in the case of Post-Training Quantisation methods, which
+necessitate additional efforts to mitigate these performance impacts. To address
+this, Quantisation-Aware Training methods have been developed, which incorporate
+the effects of quantisation during the training phase itself. The more extreme
+approach, binarisation, further accentuates the advantages and disadvantages
+observed in quantisation. While it offers extreme compression of neural
+networks, this often comes at the cost of significant accuracy loss.\\
 
 
 \begin{figure}[htbp]
