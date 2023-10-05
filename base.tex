@@ -1,4 +1,4 @@
-\documentclass{report}
+\documentclass[twoside]{book}
 
 %====================== PACKAGES ======================
 
@@ -25,7 +25,7 @@
 %espacement entre les lignes
 \usepackage{setspace}
 %modifier la mise en page de l'abstract
-\usepackage{abstract}
+% \usepackage{abstract}
 %police et mise en page (marges) du document
 \usepackage[T1]{fontenc}
 \usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
@@ -63,9 +63,10 @@
 \usepackage{sectsty} % pour le style des sections (voir ici : https://tex.stackexchange.com/questions/311487/how-to-change-the-title-abstract-and-headings-font-to-sans-serif)
 \usepackage{bbold} % pour les 1 avec 2 barres
 \usepackage{stmaryrd} % pour les crochets d'intervalles
-% \usepackage{libertine}  
-% endregion: packages perso
+\usepackage{changepage} % pour changer la marge localement (voir ici : https://tex.stackexchange.com/questions/15596/how-do-i-modify-the-margins-of-a-book-class-document)
 
+
+% endregion: packages perso
 
 
 
@@ -112,8 +113,11 @@
 % Patch abstract pour ne pas utiliser de "titlepage" et ainsi avoir une
 % numérotation de page qui ne se remet pas à 1 à chaque chapitre.
 % Voir ici : https://tex.stackexchange.com/a/483381
-\patchcmd{\abstract}{\titlepage}{\cleardoublepage}{}{}
-\patchcmd{\endabstract}{\endtitlepage}{\clearpage}{}{}
+
+% On utilise plus abstract
+
+% \patchcmd{\abstract}{\titlepage}{\cleardoublepage}{}{}
+% \patchcmd{\endabstract}{\endtitlepage}{\clearpage}{}{}
 %====================== INFORMATION ET REGLES ======================
 
 %rajouter les numérotation pour les \paragraphe et \subparagraphe
@@ -143,20 +147,26 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 % }
 
 % ################  A CHANGER POUR REVUE ?
-\linespread{1} % régler l'espacement entre les lignes
+% \linespread{1} % régler l'espacement entre les lignes pour la correction
 
 \renewcommand\linenumberfont{\normalfont\large} % régler la taille des numéros de ligne
 
 %espacement entre les lignes d'un tableau
 
 
+\clubpenalty = 10000				% prevent single lines at the beginning of a paragraph (Schusterjungen)
+\widowpenalty = 10000				% prevent single lines at the end of a paragraph (Hurenkinder)
+\displaywidowpenalty = 10000    % prevent single lines at the end of a paragraph (Hurenkinder)
+
 %======================== DEBUT DU DOCUMENT ========================
 
 \begin{document}
-\pagenumbering{roman} % numérotation des pages en chiffres romains
+% \pagenumbering{roman} % numérotation des pages en chiffres romains
+
+\frontmatter
 
 % TODO: adapter pour le confort de lecture
-\fontsize{14}{16}\selectfont
+\fontsize{15}{17}\selectfont
 
 % style des sections : fonte sans serifs
 \allsectionsfont{\sffamily}
@@ -172,9 +182,14 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 %\newpage
 
 % \maketitle % Pas besoin de maketitle si on gère le tout dans une page à part.
+\cleardoublepage
 \input{./abstract/abstract.tex}
 \addcontentsline{toc}{chapter}{Abstract} 
+\cleardoublepage
+\input{./abstract_fr/abstract_fr.tex}
+\addcontentsline{toc}{chapter}{Résumé}
 % ----- Tables des matières, figures et tableaux  + acronymes ------
+\cleardoublepage
 \tableofcontents
 \listoffigures
 \addcontentsline{toc}{chapter}{List of Figures}
@@ -192,9 +207,16 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 
 %====================== INCLUSION DES PARTIES ======================
 \renewcommand{\arraystretch}{1.5}
-\setcounter{page}{1}
-\pagenumbering{arabic} % numérotation des pages en chiffres normaux
+% \setcounter{page}{1}
+% \pagenumbering{arabic} % numérotation des pages en chiffres normaux
 \linenumbers
+% \newpage
+% \thispagestyle{empty}
+% \mbox{}
+% \newpage
+
+\mainmatter
+
 \input{chapter_intro/chapter_intro.tex}
 \input{./chapter_dlo/chapter_dlo.tex}
 \input{./chapter_sota/chapter_sota.tex}
@@ -202,7 +224,6 @@ pdfstartview={FitH}}					% ajuste la page à la largueur de l'écran
 \input{./chapter_2/chapter_2.tex}
 \input{./chapter_conclusion/chapter_conclusion.tex}
 \input{./appendix/appendix.tex}
-\newpage
 
 %récupérer les citation avec "/footnotemark"
 \nocite{*}
