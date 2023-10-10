@@ -940,7 +940,7 @@ as determining the \emph{saliency} of weights, has been a hot spot in the
 pruning literature \cite{li2023model,cheng2017survey,liang2021pruning}. Pruning
 a neural network removes weights and consequently reduces the theoretical
 computational complexity of the network as well as its memory footprint.  The
-fraction of weight removed during pruning is often denoted as the \emph{pruning
+fraction of weights removed during pruning is often denoted as the \emph{pruning
 rate}, which is commonly defined as the fraction of the number of weights
 removed from the original network over the number of initial weights in that
 network. Arguably, the first pruning method, introduced in 1989, was based on
@@ -949,7 +949,7 @@ biased weight decay \cite{hanson1988comparing}. In the following years,
 Brain Damage \cite{DBLP:conf/nips/CunDS89} that used the Taylor expansion of the
 loss hessian matrix to identify the weights whose removal would have the least
 impact on the loss. This method, and in particular the computation of the
-hessian matrix were refined in Optimal Brain Surgeon
+hessian matrix was refined in Optimal Brain Surgeon
 \cite{DBLP:conf/nips/HassibiS92,DBLP:conf/nips/HassibiSW93,DBLP:conf/icnn/HassibiSW93}.
 As neural networks have become larger and more computationally intensive (see
 \cref{sec:dlo:architectures,fig:dlo:net_sizes}), pruning has been receiving
@@ -1209,8 +1209,8 @@ of the original network have been later refined in
 Within the various deep neural network compression methods presented in this
 chapter, we choose to focus specifically on pruning in the context of supervised
 image classification. Among various types of pruning, our interest goes towards
-structured pruning due to the flexibility it offers, in particular, its
-potential for achieving high pruning rates compared to unstructured pruning.\\
+unstructured pruning due to the flexibility it offers, in particular, its
+potential for achieving high pruning rates compared to structured pruning.\\
 
 \noindent Our decision to work on pruning is rooted in the following
 considerations:
@@ -1285,9 +1285,9 @@ computationally efficient models. In conclusion, these techniques provide a
 multi-faceted approach to neural network compression and acceleration, with each
 offering unique advantages and trade-offs.\\
 
-The next chapters will present approaches to neural network compression based on
-pruning. The \cref{chap:chapter1} details our first contributions that consist
-in a method to simultaneously train and prune neural networks while matching a
-budget. This method allows bypassing the need for the finetuning step present in
-most methods based on magnitude pruning by jointly optimising the topology and
-the weights without the need for additional auxiliary parameters. 
+The next chapters will present our contributions to neural network compression
+based on pruning. The \cref{chap:chapter1} details our first contribution that
+consists in a method to simultaneously train and prune neural networks while
+matching a budget. This method allows bypassing the need for the finetuning step
+present in most methods based on magnitude pruning by jointly optimising the
+topology and the weights without the need for additional auxiliary parameters. 

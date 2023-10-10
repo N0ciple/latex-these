@@ -124,11 +124,11 @@ in \cite{DBLP:conf/nips/HanPTD15} where a three-step process is proposed:\\
   for any loss of accuracy caused by the pruning.\\
 \end{enumerate}
 
-The authors also propose an iterative variant where steps 2 and 3 are
-repeated while gradually increasing the pruning rate until the final pruning
-rate is reached. This method was used in \cite{DBLP:journals/corr/HanMD15},
-where it was combined with quantisation and Huffman coding. In both methods
-\cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15} obtaining the final
+The authors also propose an iterative variant where steps 2 and 3 are repeated
+while gradually increasing the pruning rate until the final pruning rate is
+reached. This method was used in \cite{DBLP:journals/corr/HanMD15}, where it was
+combined with quantisation and Huffman coding. In both methods
+\cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}, obtaining the final
 network is computationally intensive due to the fine-tuning step, which can be
 all the more computationally intensive if the magnitude pruning and fine-tuning
 are performed iteratively. \\
@@ -211,7 +211,7 @@ the log barrier function \cite{boyd2004convex}, where $a$ controls the steepness
 of the function and $b$ is the target budget.\\
 
 ChipNet \cite{tiwari2021chipnet} is another channel-based structured pruning
-method that includes a sparsity inducing loss $\mathcal{L}_c$ dubbed
+method that includes a sparsity inducing loss $\mathcal{L}_c$ dubbed as
 \emph{crispness loss} and a budget loss $\mathcal{L}_b$. Both losses are
 combined with the task loss with two mixing coefficients $\alpha_1$ and
 $\alpha_2$ respectively, as shown in \cref{eqn:chap1:chipnet_loss}:\\
@@ -389,25 +389,27 @@ does not necessitate further fine-tuning.\\
 
 These structured or unstructured methods propose different saliency indicators
 and pruning criteria that aim at identifying and removing redundant or
-unnecessary weights or groups of weights. Removing weights, which is typically
-done after the training phase. This approach does not take into account the
-final desired model size, or weight budget, during the optimization process. In
-other words, the pruning strategy, rather than being integrated into the
-training process, is an afterthought. This results in an inefficient process
-where the network is first trained with a large number of weights, many of which
-are later pruned. This introduces a loss of functional performance - depending
-on the task considered - that needs to be compensated for (with the exception of
+unnecessary weights or groups of weights. Removing weights is typically done
+after the training phase. This approach does not take into account the final
+desired model size, or weight budget, during the optimization process. In other
+words, the pruning strategy is an afterthought and is not integrated into the
+training process. This results in an inefficient process where the network is
+first trained with a large number of weights, many of which are later pruned.
+This introduces a loss of functional performance - depending on the task
+considered - that needs to be compensated for (with the exception of
 \cite{DBLP:conf/icml/KangH20,DBLP:conf/nips/HassibiS92}). This is achieved
 through fine-tuning the sparse or lightened networks obtained after applying the
 pruning criterion. Fine-tuning is a computationally intensive task and requires
 additional training time
 \cite{DBLP:conf/nips/HanPTD15,DBLP:journals/corr/HanMD15}. Moreover, the amount
 of weights pruned is enforced after the initial training, meaning that the final
-target size or weight budget is never considered in the optimisation procedure.
-Indeed, separating the optimisation of topology from weight tuning is
+targeted size or weight budget is never considered in the optimisation
+procedure. Indeed, separating the optimisation of topology from weight tuning is
 sub-optimal and therefore introduces a performance drop when the pruning is
 enforced. Thus, the remaining weights need to undergo a fine-tuning step that
-adapts them to the enforced sparse topology. \\
+adapts them to the enforced sparse topology. Furthermore, the pruned connections
+are permanently removed with no possibility of reactivating them during
+fine-tuning.\\
 
 \subsection{Contributions}
 
@@ -436,9 +438,10 @@ details the proposed method and in particular the weight reparametrisation in
 \cref{sec:chap1:budget_loss}. An overview of the method and a general algorithm
 are given in \cref{sec:chap1:overview}. \Cref{sec:chap1:experiments} presents
 the results of our comprehensive experiments, including performance comparisons,
-the experimental validation of our two main components, the impact of $\lambda$
-and the initialisation. Finally, \cref{sec:chap1:conclusion} concludes the
-chapter by summarising our contributions and our key findings.\\
+the experimental validation of our two main components, the impact of the mixing
+coefficient $\lambda$ that balances the task loss and the budget loss, and the
+initialisation. Finally, \cref{sec:chap1:conclusion} concludes the chapter by
+summarising our contributions and our key findings.\\
 
 
 
@@ -1427,9 +1430,9 @@ sparsity.\\
     \bottomrule
   \end{tabular}
   \caption{Achieved budget for the \emph{budget only} variant. Results are
-    presented for $\lambda=5$. Across all experiments, the achieved budget matches
-    closely the targeted budget, which is computed as $1-$pruning
-    rate.}
+    presented for $\lambda=5$. Across all experiments, the achieved budget
+    matches closely the targeted budget, which is computed as ($1-$pruning
+    rate)$\times 100$ and is expressed in percent.}
   \label{tab:chap1:impact_of_reparametrisation}
 \end{table}
 

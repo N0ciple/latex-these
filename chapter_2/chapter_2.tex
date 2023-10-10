@@ -736,13 +736,14 @@ a mask value of 1) by the total number of weights in the layer. Subsequently,
 all weights are rescaled by multiplying them with the inverse of the observed
 pruning rate. A drawback of \ac{DWR} is that it demands the storage of sampled
 masks and the calculation of the observed pruning rate at each training step for
-every layer in the network. This makes the procedure computationally demanding.
-Furthermore, the flexibility and adaptability of the method are limited due to
-the rescaling being tied to the pruning rate; there is no guarantee that the
-inverse of the observed pruning rate is the optimal factor to prevent changes to
-the weight distribution statistics. The performance boost attributable to
-\ac{DWR}, as noted by \citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the
-increase of the standard deviation of the Xavier (or Glorot) initialisation
+every layer in the network. This makes the procedure computationally demanding
+and increases the memory requirements. Furthermore, the flexibility and
+adaptability of the method are limited due to the rescaling being tied to the
+pruning rate; there is no guarantee that the inverse of the observed pruning
+rate is the optimal factor to prevent changes to the weight distribution
+statistics. The performance boost attributable to \ac{DWR}, as noted by
+\citeauthor{DBLP:conf/nips/ZhouLLY19}, might be due to the increase of the
+standard deviation of the Xavier (or Glorot) initialisation
 \cite{glorot2011deep} that the author used. Experimentally, a larger standard
 deviation improves the performance within the context of this chapter. Indeed,
 the Kaiming initialisation\footnote{Kaiming and Glorot initialisation are
@@ -776,7 +777,7 @@ needed to reach convergence and also improving accuracy (to some extent) as
 shown later in \cref{sec:chap2:experiments}.\\
 
 Furthermore, \ac{SR} improves accuracy as it adjusts the weights to maintain the
-statistical distribution of the original network weights, preserving the
+statistics of the distribution of the original network weights, preserving the
 representative power of the network. Hence, rather than forcing the weights to
 follow an arbitrary distribution or scale, they are guided by the data-driven
 \ac{SR} method which results in better performance and reduced training time.
@@ -839,13 +840,13 @@ Our pruning strategy seeks to retain the weights that have the highest
 probability of being present in the sampled topologies. Specifically, we set
 $\tau$ so that retained weights must be selected, on average, in at least half
 the sampled topologies. This implies that the weight selection probabilities
-$p_{ij}$, which are defined as $\sigma(\bf{\hat{m_{ij}}})$, must be greater than
-or equal to $\tau=0.5$, otherwise, the related weight $w_{ij}$ is pruned. In
-other words, the weight is kept if the binary event of keeping a connection is
-more likely than its removal. Since $p_{ij}$ is defined as
-$\sigma(\hat{m}_{ij})$, in terms of latent masks, it means that a weight is kept
-if its associated latent mask $\hat{m}_{ij} \geq \sigma^{-1}(0.5)=0$. We refer
-to this pruning method as \textit{thresholding}.\\
+$p_{ij}$, which are defined as $\sigma(\hat{m_{ij}})$, must be greater than or
+equal to $\tau=0.5$, otherwise, the related weight $w_{ij}$ is pruned. In other
+words, the weight is kept if the binary event of keeping a connection is more
+likely than its removal. Since $p_{ij}$ is defined as $\sigma(\hat{m}_{ij})$, in
+terms of latent masks, it means that a weight is kept if its associated latent
+mask $\hat{m}_{ij} \geq \sigma^{-1}(0.5)=0$. We refer to this pruning method as
+\textit{thresholding}.\\
 
 
 \section{Method Overview and Algorithm}\label{sec:chap2:overview}
@@ -1128,7 +1129,7 @@ network.\\
     the ratio of the fraction of explored topologies for the Conv4 network and
     the fraction of explored topologies for the ResNet-18 network. In these
     experimental setups, the fraction of explored topologies for the Conv4
-    network significantly higher than the fraction of explored topologies for
+    network is significantly higher than the fraction of explored topologies for
     the ResNet-18 network.}
   \label{tab:chap2:topologies_exploration}
 \end{table}
@@ -1146,7 +1147,7 @@ Indeed, a VGG16 network tailored for CIFAR-100 has 51,200 parameters in its last
 fully connected layer, whereas a ResNet-18 network designed for TinyImageNet has
 102,400. Thus, the search space for the fully connected part of the VGG network
 is significantly smaller than on the ResNet-18 network. Therefore, because of
-the smaller search space, \ac{ASLP} founds a more optimal subset of weights for
+the smaller search space, \ac{ASLP} finds a more optimal subset of weights for
 the last layer of the VGG16 network than the ResNet-18 one. This final fully
 connected layer of a neural network plays a crucial role in determining its
 overall performance and accuracy in predicting outcomes.\\
@@ -1609,7 +1610,7 @@ considering only the first 50 epochs. Nevertheless, the former are eventually
 outperformed by the latter if the training is run for more epochs. Conversely,
 an excessively low learning rate may not allow networks to reach satisfying
 performance levels in a reasonable amount of time. Our experimental findings
-indicate that using a scheduling policy on the learning rate does not affect
+indicate that using a scheduling policy on the learning rate does not improve
 performance. In other words, opting for a high learning rate and subsequently
 decreasing it yields worse results than maintaining a lower, constant learning
 rate. We found that a learning rate of 50 strikes the optimal balance between
