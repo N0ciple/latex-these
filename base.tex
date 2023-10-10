@@ -64,8 +64,8 @@
 \usepackage{bbold} % pour les 1 avec 2 barres
 \usepackage{stmaryrd} % pour les crochets d'intervalles
 \usepackage{changepage} % pour changer la marge localement (voir ici : https://tex.stackexchange.com/questions/15596/how-do-i-modify-the-margins-of-a-book-class-document)
-
-
+\usepackage{fancyhdr} % pour les pieds de page
+\usepackage{etoolbox}
 % endregion: packages perso
 
 
@@ -118,6 +118,46 @@
 
 % \patchcmd{\abstract}{\titlepage}{\cleardoublepage}{}{}
 % \patchcmd{\endabstract}{\endtitlepage}{\clearpage}{}{}
+
+
+% % Redefine the footer
+% \fancyfoot{}
+% \fancyfoot[C]{\thepage}
+
+% % Preserve the default header settings of the book class
+% \renewcommand{\headrulewidth}{0.4pt} % Optional: add a rule under the header
+
+
+\fancypagestyle{chaptertitle}{
+    \fancyhf{} % Clear all header and footer fields
+    \fancyfoot[C]{\thepage} % Only page number in the center of the footer
+    \renewcommand{\headrulewidth}{0pt} % No line in the header
+    \renewcommand{\footrulewidth}{0pt} % No line in the footer
+}
+
+% Redefine the plain page style
+\fancypagestyle{plain}{
+    % Clear all header/footer entries
+    \fancyhf{}
+    % Set the right side of the odd pages and left side of the even pages header
+    % \fancyhead[RO,LE]{\thepage}
+    % Set the left side of the odd pages header to the chapter title
+    \fancyhead[LO]{\leftmark}
+    % Set the right side of the even pages header to the section title
+    \fancyhead[RE]{\rightmark}
+    % Set the page number in the center of the footer
+    \fancyfoot[C]{\thepage}
+    \renewcommand{\headrulewidth}{0pt} % Optional: add a rule under the header
+    \renewcommand{\footrulewidth}{0pt} % No line in the footer
+}
+
+
+% Patch the chapter command to use the chaptertitle page style
+\patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{chaptertitle}}{}{}
+
+
+\pagestyle{plain}
+
 %====================== INFORMATION ET REGLES ======================
 
 %rajouter les numérotation pour les \paragraphe et \subparagraphe
@@ -161,6 +201,8 @@
 %======================== DEBUT DU DOCUMENT ========================
 
 \begin{document}
+% \pagestyle{fancy} 
+
 % \pagenumbering{roman} % numérotation des pages en chiffres romains
 
 \frontmatter
@@ -209,7 +251,7 @@
 \renewcommand{\arraystretch}{1.5}
 % \setcounter{page}{1}
 % \pagenumbering{arabic} % numérotation des pages en chiffres normaux
-\linenumbers
+% \linenumbers
 % \newpage
 % \thispagestyle{empty}
 % \mbox{}
