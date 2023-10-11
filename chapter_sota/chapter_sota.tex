@@ -47,8 +47,6 @@ network pruning, which seeks to remove redundant or insignificant connections an
 weights from networks, resulting in sparser and more computationally efficient
 models.\\
 
-%TODO: faire une mindmap des méthodes
-
 % endregion: intro
 
 \section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
@@ -1179,12 +1177,12 @@ reactivation of a weight that was previously pruned} it. The saliency of the
 weights is ascertained based on the magnitude of the associated mask.\\
 
 \noindent\textbf{Effective subnetworks.} More recently, unstructured pruning
-researches focus on the discovery of small sub-networks inside the original
+researches focus on the discovery of small subnetworks inside the original
 network. In other words, to identify a subset of weight that can perform, under
 certain conditions or assumptions, as well as the original network. Most
 notably, the Lottery Ticket Hypothesis \cite{DBLP:conf/iclr/FrankleC19} states
 that within a large, randomly initialized neural network, there exist
-sub-networks or \emph{Lottery Tickets} that are capable of training effectively
+subnetworks or \emph{Lottery Tickets} that are capable of training effectively
 when isolated from the rest of the weights. These smaller networks, found by
 pruning the smallest magnitude weights from the trained original network, are
 observed to train faster and achieve comparable or even superior performance
@@ -1192,7 +1190,7 @@ with respect to the original network. The \emph{lottery ticket} is found by
 training the original network up to convergence, then pruned with magnitude
 pruning and finally, the remaining weights are reinitialized to their original
 values, it is to say the value they had before the training even started. The
-resulting sub-network is the \emph{lottery ticket}. This research sparked
+resulting subnetwork is the \emph{lottery ticket}. This research sparked
 significant interest and various works: \cite{DBLP:conf/nips/ZhouLLY19} proposed
 an analysis of the results presented in \cite{DBLP:conf/iclr/FrankleC19}. These
 results \cite{DBLP:conf/iclr/FrankleC19} have been extended to larger networks

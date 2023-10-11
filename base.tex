@@ -1,11 +1,13 @@
-\documentclass[twoside]{book}
-
+\documentclass[a4paper,twoside]{book}
 %====================== PACKAGES ======================
 
 % region: packages
 
+\usepackage[square,numbers]{natbib} % pour citer les auteurs directement [DEUX REFS] (1):https://tex.stackexchange.com/questions/69379/how-do-i-cite-author-in-latex (2) https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib
+
+
 %\usepackage{extsize}
-\usepackage[english]{babel}
+\usepackage[main=english,french]{babel}
 \usepackage[utf8x]{inputenc}
 %pour gérer les positionnement d'images
 \usepackage{float}
@@ -55,7 +57,6 @@
 \usepackage{bm} % pour les polices mathématiques ex: \mathbf{X}
 \usepackage{amssymb} % symboles mathématiques suplémentaires (comme \varnothing)
 \usepackage{amsthm} % pour les théorèmes et surtout les preuves (voir ici: https://stackoverflow.com/questions/1449370/latex-error-environment-proof-undefined)
-\usepackage[square,numbers]{natbib} % pour citer les auteurs directement [DEUX REFS] (1):https://tex.stackexchange.com/questions/69379/how-do-i-cite-author-in-latex (2) https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib
 \usepackage[left,modulo]{lineno} % pour numéroter les lignes
 \usepackage{etoolbox} % for the \patchcmd command
 \usepackage{subcaption}% pour avoir des sous tables et les sous figures (remplace subfig)
@@ -65,9 +66,10 @@
 \usepackage{stmaryrd} % pour les crochets d'intervalles
 \usepackage{changepage} % pour changer la marge localement (voir ici : https://tex.stackexchange.com/questions/15596/how-do-i-modify-the-margins-of-a-book-class-document)
 \usepackage{fancyhdr} % pour les pieds de page
-\usepackage{etoolbox}
-% endregion: packages perso
+\usepackage{etoolbox} % pour les pages des chapitres
 
+\usepackage{fontsize}
+% endregion: packages perso
 
 
 % %DIF LATEXDIFF DIFFERENCE FILE
@@ -155,7 +157,13 @@
 % Patch the chapter command to use the chaptertitle page style
 \patchcmd{\chapter}{\thispagestyle{plain}}{\thispagestyle{chaptertitle}}{}{}
 
+% Redefine the table environment to always use 10pt font size
+\AtBeginEnvironment{table}{\fontsize{10pt}{12pt}\selectfont}
+\AtBeginEnvironment{tabular}{\fontsize{10pt}{12pt}\selectfont}
 
+% Define a custom caption font
+\DeclareCaptionFont{customfont}{\fontsize{12pt}{12pt}\selectfont}
+\captionsetup{font=customfont}
 \pagestyle{plain}
 
 %====================== INFORMATION ET REGLES ======================
@@ -181,13 +189,16 @@
 % ----- Hyphenation
 \hyphenation{re-para-me-tri-za-tion}
 \hyphenation{re-para-me-tri-sa-tion}
+\hyphenation{data-sets}
+\hyphenation{data-set}
+\hyphenation{para-me-tri-sa-tion}
+\hyphenation{me-cha-nism}
 % ----- Style des liens
 % \hypersetup{
 %   citecolor=blue,
 % }
 
 % ################  A CHANGER POUR REVUE ?
-% \linespread{1} % régler l'espacement entre les lignes pour la correction
 
 \renewcommand\linenumberfont{\normalfont\large} % régler la taille des numéros de ligne
 
@@ -208,13 +219,17 @@
 \frontmatter
 
 % TODO: adapter pour le confort de lecture
-\fontsize{15}{17}\selectfont
+% \fontsize{15.5}{22}\selectfont
 
 % style des sections : fonte sans serifs
 \allsectionsfont{\sffamily}
 
 %page de garde
+\changefontsize[14.4]{11}
+
 \input{./title_page/title_page.tex}
+
+\changefontsize[18]{14.4}
 
 %page blanche
 %\newpage
@@ -222,6 +237,8 @@
 %ne pas numéroter cette page
 %\thispagestyle{empty}
 %\newpage
+
+% \linespread{2} % régler l'espacement entre les lignes pour la correction
 
 % \maketitle % Pas besoin de maketitle si on gère le tout dans une page à part.
 \cleardoublepage

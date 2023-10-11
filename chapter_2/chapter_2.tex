@@ -5,7 +5,7 @@
 \localtableofcontents
 
 
-\begin{adjustwidth}{1.5cm}{1.5cm}
+\begin{adjustwidth}{1.2cm}{1.2cm}
   {
   \let\oldsection\section
   \renewcommand\section[1]{\oldsection*{\centering #1}}
@@ -386,7 +386,7 @@ associated with previous techniques, offering a more efficient and effective way
 to extract high-performance subnetworks without weight training.
 
 
-\section{Extracting Effective Subnetworks with Gumbel-Softmax}\label{sec:chap2:method}
+\section{Extracting Effective Subnetworks with\\Gumbel-Softmax}\label{sec:chap2:method}
 % region: method
 
 Considering the same formalism as in \cref{chap:chapter1}, let $f_\theta$ be a
@@ -681,7 +681,6 @@ reparametrisation $\hat{m}_{ij} = \log(p_{ij})+c$ and $\log(1-p_{ij})+ c =0$ whi
 equivalent to the sigmoid one while being computationally more efficient and
 also numerically stable.\\
 
-% FIXME: ajouter un titre ici ?
 
 \Cref{prop:chap2:probability-interpretation} assumes that $p_{ij}\in ~ ]0,1[$,
 which, in practice, is verified. For the probabilities $p_{ij}$ to reach 0 or 1,
