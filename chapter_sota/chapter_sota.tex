@@ -49,18 +49,19 @@ models.\\
 
 % endregion: intro
 
-\section{Accelerating Computations in Neural Networks}\label{sec:sota:fast_convolutions}
+\section{Accelerating Computation in Neural Networks}\label{sec:sota:fast_convolutions}
 
 Among various operations and functions used in neural networks, two fundamental
 mathematical operations, convolution and matrix multiplication are used
 extensively and are the backbone of most computations in neural networks.
 However, performing these operations can be computationally demanding,
-particularly with large and complex networks. This may lead to long computation
-times, posing a challenge for real-time or resource-limited applications. To
-mitigate this issue, some research efforts have focused on developing techniques
-to speed up these operations. These strategies encompass optimizing the
-underlying algorithms to leveraging hardware acceleration, with the objective of
-enhancing the speed and efficiency of neural network computations.\\
+particularly with large and complex networks. This may lead to long and heavy
+computations, posing a challenge for real-time or resource-limited applications.
+To mitigate this issue, some research efforts have focused on developing
+techniques to speed up these operations. These strategies encompass optimizing
+the underlying algorithms to leveraging hardware acceleration, with the
+objective of enhancing the speed and efficiency of neural network
+computations.\\
 
 
 \subsection{\acl{FFT}}\label{sec:sota:fft}
@@ -296,7 +297,7 @@ chosen as a \emph{hint}\footnote{\emph{Hint} is the terminology used by
   transfer, the Gram matrix of the feature maps is employed to encapsulate the
   texture information of an image. Adapting this approach, the method presented
   in \cite{DBLP:conf/cvpr/YimJBK17} calculates the Gram matrix across the
-  feature maps of multiple layers. This computed Gram matrix, dubbed the Flow of
+  feature maps of multiple layers. This computed Gram matrix, dubbed as the Flow of
   Solution Procedure matrix, then serves as a \emph{hint} for the student
   network, guiding its training process. In practice, handling full-dimensional
   feature maps is cumbersome. That is why, in order to avoid this issue,

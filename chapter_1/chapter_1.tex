@@ -795,10 +795,10 @@ multiply-add operations, often referred to as \acp{FLOP} or
 cannot be fully determined by its number of parameters since it is heavily
 dependent on the input size. More details are given in
 \cref{sec:appendix:macs}}, needed for a forward pass or through the $\ell_0$
-norm of its weights. However, neither are known to be differentiable and,
-therefore, cannot be used in a gradient-based optimisation. In order to
-circumvent these limitations, we use our weight reparametrisation as a surrogate
-measure of $\ell_0$, and we define the cost function as in
+norm of its weights. However, in their basic form, neither are known to be
+differentiable and, therefore, cannot be used in a gradient-based optimisation.
+In order to circumvent these limitations, we use our weight reparametrisation as
+a surrogate measure of $\ell_0$, and we define the cost function as in
 \cref{eqn:chap1:cost_function}.\\
 
 \begin{equation}
