@@ -940,26 +940,30 @@ VGG16 \cite{DBLP:journals/corr/SimonyanZ14a}, Conv4
 
 Performances of our method are evaluated on CIFAR-10 and CIFAR-100 with Conv4,
 VGG16 and ResNet20. On TinyImageNet, we evaluate our method on ResNet18. We
-compare our method against magnitude pruning \cite{DBLP:conf/nips/HanPTD15}. The
-key differences between our method and magnitude pruning are the following:
-$(i)$ our method uses a budget loss to encourage sparsity, which takes into
-account the final pruning rate from the beginning of the training process and
-$(ii)$ our method does not require fine-tuning after pruning. Because of the
-latter, we compare our method against magnitude pruning with and without
-fine-tuning. Both methods share the following setup: networks are trained during
-300 epochs with an initial learning rate of $0.1$. A \emph{Reduce On Plateau}
-policy is applied to the learning rate: if the validation accuracy is not
-improving for 10 epochs in a row, then the learning rate is decreased by a
-factor of $0.3$. A weight decay is applied on the weights with a penalisation
-factor of $5\times10^{−5}$. This value is lower than the more conventional value
-of $1\times10^{-4}$, because we want some weights to be able to drift away from
-the origin, and therefore, escape from the pit of $h_t$. An Early Stopping
-policy was used to stop the training prematurely if no improvement in the test
-accuracy is observed in 60 epochs. To keep the comparison fair, for magnitude
-pruning, the 300 epochs are split into two phases: the first 150 epochs are
-dedicated to the training of the network, and the last 150 epochs are used for
-fine-tuning the pruned network. In the fine-tuning phase, the learning rate is
-divided by 100 for better convergence. \\
+compare our method against magnitude pruning \cite{DBLP:conf/nips/HanPTD15}.
+Despite its apparent simplicity, magnitude pruning remains the gold standard of
+pruning techniques
+\cite{DBLP:journals/corr/abs-2307-02973,DBLP:conf/mlsys/BlalockOFG20}, hence our
+choice to use it for comparison. The key differences between our
+method and magnitude pruning are the following: $(i)$ our method uses a budget
+loss to encourage sparsity, which takes into account the final pruning rate from
+the beginning of the training process and $(ii)$ our method does not require
+fine-tuning after pruning. Because of the latter, we compare our method against
+magnitude pruning with and without fine-tuning. Both methods share the following
+setup: networks are trained during 300 epochs with an initial learning rate of
+$0.1$. A \emph{Reduce On Plateau} policy is applied to the learning rate: if the
+validation accuracy is not improving for 10 epochs in a row, then the learning
+rate is decreased by a factor of $0.3$. A weight decay is applied on the weights
+with a penalisation factor of $5\times10^{−5}$. This value is lower than the
+more conventional value of $1\times10^{-4}$, because we want some weights to be
+able to drift away from the origin, and therefore, escape from the pit of $h_t$.
+An Early Stopping policy was used to stop the training prematurely if no
+improvement in the test accuracy is observed in 60 epochs. To keep the
+comparison fair, for magnitude pruning, the 300 epochs are split into two
+phases: the first 150 epochs are dedicated to the training of the network, and
+the last 150 epochs are used for fine-tuning the pruned network. In the
+fine-tuning phase, the learning rate is divided by 100 for better convergence.
+\\
 
 
 \subsection{Performances}\label{sec:chap1:performances}
