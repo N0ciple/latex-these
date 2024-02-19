@@ -362,7 +362,7 @@ the absolute value and the sum of the squaring of each element of the vector.\\
 As mentioned before, the training of a neural network involves finding the
 optimal set of parameters $\theta$ that minimises a cost function
 $\mathcal{J}(\theta)$. This process of optimisation is typically carried out
-using gradient-based methods which rely on the iterative adjustment of the
+using gradient-based me\-thods which rely on the iterative adjustment of the
 parameters in the opposite direction of the gradient of the cost function. The
 gradient of a function provides the direction of the steepest ascent at a given
 point \cite{boyd2004convex}. Thus, by moving the parameters in the opposite
@@ -510,7 +510,7 @@ feature engineering, the features learned by \ac{CL} layers are learned in a
 $k_h \times k_w$ and $(i,j)$ are the spatial coordinates in the output feature
 map. Note that some Deep Learning frameworks implement \emph{cross-correlation}
 instead of convolution. In the former, the kernel is not spatially flipped
-leading to the cross-correlation not being commutative
+leading to the cross-corre\-la\-tion not being commutative
 \cite{goodfellow2016deep}. The \ac{CL} layer kernels are typically smaller than
 the input along width and height dimensions (they are generally $3\times 3$
 \cite{DBLP:conf/cvpr/HeZRS16}) but comprise as much channels as the input.
@@ -911,12 +911,12 @@ $\mathcal{D} \subset \mathcal{X} \times \mathcal{Y}$. \\
 
 Following these formal notations, the subsequent sections give details about the
 datasets used in our experiments. We evaluated our methods on three different
-datasets tailored for image classification: CIFAR-10 \cite{CIFARdataset},
+datasets tailored for image classification: \mbox{CIFAR-10} \cite{CIFARdataset},
 CIFAR-100 \cite{CIFARdataset} and TinyImageNet \cite{TinyImageNet}. The
 following paragraphs give details about these datasets and
 \cref{tab:dlo:datasets} sums up their main characteristics.\\
 
-\begin{table}[ht!]
+\begin{table}[htbp]
   \centering
   \begin{tabular}{lcccc}
     \toprule
@@ -947,7 +947,7 @@ dog, horse, ship, and truck. Each class contains 6,000 images. The dataset is
 divided into two subsets: a training set, composed of 50,000 images and a test set
 containing 10,000 of them.\\
 
-\begin{figure}[ht!]
+\begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{chapter_dlo/assets/cifar-10_example.png}
   \caption{ A sample of images from CIFAR-10. Each row contains images from one

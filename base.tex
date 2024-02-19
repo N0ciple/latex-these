@@ -67,8 +67,9 @@
 \usepackage{changepage} % pour changer la marge localement (voir ici : https://tex.stackexchange.com/questions/15596/how-do-i-modify-the-margins-of-a-book-class-document)
 \usepackage{fancyhdr} % pour les pieds de page
 \usepackage{etoolbox} % pour les pages des chapitres
-
+\usepackage{mathpazo}
 \usepackage{fontsize}
+\usepackage[defaultlines=4,all]{nowidow} % pour éviter les lignes seules
 % endregion: packages perso
 
 
@@ -193,6 +194,8 @@
 \hyphenation{data-set}
 \hyphenation{para-me-tri-sa-tion}
 \hyphenation{me-cha-nism}
+\hyphenation{me-thod}
+
 % ----- Style des liens
 % \hypersetup{
 %   citecolor=blue,
@@ -205,9 +208,11 @@
 %espacement entre les lignes d'un tableau
 
 
-\clubpenalty = 10000				% prevent single lines at the beginning of a paragraph (Schusterjungen)
-\widowpenalty = 10000				% prevent single lines at the end of a paragraph (Hurenkinder)
-\displaywidowpenalty = 10000    % prevent single lines at the end of a paragraph (Hurenkinder)
+% \clubpenalty = 10000				% prevent single lines at the beginning of a paragraph (Schusterjungen)
+% \widowpenalty = 10000				% prevent single lines at the end of a paragraph (Hurenkinder)
+% \displaywidowpenalty = 10000    % prevent single lines at the end of a paragraph (Hurenkinder)
+
+\setlength{\emergencystretch}{1em}
 
 %======================== DEBUT DU DOCUMENT ========================
 
@@ -250,6 +255,7 @@
 % ----- Tables des matières, figures et tableaux  + acronymes ------
 \cleardoublepage
 \tableofcontents
+\addcontentsline{toc}{chapter}{Contents}
 \listoffigures
 \addcontentsline{toc}{chapter}{List of Figures}
 \listoftables
